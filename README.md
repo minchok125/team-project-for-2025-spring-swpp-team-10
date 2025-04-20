@@ -19,7 +19,7 @@
 | 이서영 | @leeSEOyoung-snu | UI|
 
 ### 팀 규칙 
-* [Programming Convention](https://github.com/SWPP-2025SPRING/team-project-for-2025-spring-swpp-team-10/wiki/Team-Rule-01:-Programming-Convention)
+* [Git&GitHub Workflow]([https://github.com/SWPP-2025SPRING/team-project-for-2025-spring-swpp-team-10/wiki/Team-Rule-01:-Programming-Convention](https://github.com/SWPP-2025SPRING/team-project-for-2025-spring-swpp-team-10/wiki/Team-Rule-01:-Git&GitHub-Workflow))
 
 ---
 
