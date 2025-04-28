@@ -7,14 +7,15 @@ public class GroundCheck : MonoBehaviour
 {
     public static bool isGround = false;
     public Transform player;
-    public int groundCount = 0; // 현재 닿아있는 플랫폼의 개수
+    [Tooltip("현재 닿아있는 플랫폼의 개수. 인스펙터에서 조절할 필요 없음")]
+    public int groundCount = 0;
 
     void Update()
     {
         if (PlayerManager.instance.isBall)
             transform.position = player.position - Vector3.up * 0.4f;
         else
-            transform.position = player.position - Vector3.up * 0.9f;
+            transform.position = player.position - Vector3.up * 0.4f;
     }
 
     void OnTriggerEnter(Collider other)

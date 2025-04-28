@@ -29,7 +29,7 @@ public class BallMovementController : MonoBehaviour, IMovement
 
     void RotateBasedOnMovement()
     {
-        if (PlayerManager.instance.onWire) return;
+        if (PlayerManager.instance.onWire && !GroundCheck.isGround) return;
 
         Vector3 currentPosition = transform.position;
         Vector3 delta = currentPosition - prevPosition;

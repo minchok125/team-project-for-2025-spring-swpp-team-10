@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float zoomMinDist = 1.5f, zoomMaxDist = 30f;
 
     private float currentDistance; // 현재 카메라 거리
-    private float smoothSpeed = 10f; // 부드럽게 이동할 속도
+    private float smoothSpeed = 5f; // 부드럽게 이동할 속도
 
     private LayerMask objLayer; // Player 레이어를 제외한 모든 레이어
     private Vector2 m_Input;

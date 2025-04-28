@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // 오브젝트의 특성
-// 해당 스크립트가 없다면 세 특성이 false인 것으로 간주
+// 해당 스크립트가 없다면 모든 특성이 false인 것으로 간주
 // 특성에 따라 DrawOutline.cs는 자동으로 추가
 
 public class ObjectProperties : MonoBehaviour
