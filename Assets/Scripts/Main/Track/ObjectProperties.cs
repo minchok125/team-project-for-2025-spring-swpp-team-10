@@ -16,7 +16,11 @@ public class ObjectProperties : MonoBehaviour
     private void Start()
     {
         if (canGrabInBallMode || canGrabInHamsterMode) {
+            gameObject.layer = LayerMask.NameToLayer("Attachable");
             gameObject.AddComponent<DrawOutline>();
+        }
+        else {
+            gameObject.layer = LayerMask.NameToLayer("Default");
         }
     }
 }
