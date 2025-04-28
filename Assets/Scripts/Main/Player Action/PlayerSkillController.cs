@@ -20,8 +20,6 @@ public class PlayerSkillController : MonoBehaviour
 
         if (txt != null)
             txt.text = "";
-
-        UnlockPullWire();
     }
 
 

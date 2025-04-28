@@ -3,8 +3,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerWireController : MonoBehaviour
 {
-    [Tooltip("훅을 걸 수 있는 오브젝트의 레이어")]
-    public LayerMask WhatIsgrappable;
+    private LayerMask WhatIsGrappable; // 훅을 걸 수 있는 오브젝트의 레이어
 
     private LineRenderer lr;
     private GameObject grabObject = null;
@@ -30,6 +29,7 @@ public class PlayerWireController : MonoBehaviour
 
     private void Awake()
     {
+        WhatIsGrappable = LayerMask.GetMask("Attachable");
         lr = GetComponent<LineRenderer>();
         hitPoint = transform.GetChild(0);
     }
@@ -75,11 +75,11 @@ public class PlayerWireController : MonoBehaviour
         RaycastHit sphereCastHit;
         Physics.SphereCast(cam.transform.position + cam.transform.forward * CameraController.zoom, 
                         predictionSphereCastRadius, cam.transform.forward,
-                        out sphereCastHit, grabDistance, WhatIsgrappable);
+                        out sphereCastHit, grabDistance, WhatIsGrappable);
 
         RaycastHit raycastHit;
         Physics.Raycast(cam.transform.position, cam.transform.forward,
-                        out raycastHit, grabDistance, WhatIsgrappable);
+                        out raycastHit, grabDistance, WhatIsGrappable);
 
         Vector3 realHitPoint;
 

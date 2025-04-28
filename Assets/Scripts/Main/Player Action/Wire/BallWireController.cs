@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BallWireController : MonoBehaviour, IWire
@@ -93,7 +91,9 @@ public class BallWireController : MonoBehaviour, IWire
     public void RopeUpdate()
     {
         sj.connectedAnchor = hitPoint.position;
-        transform.rotation = Quaternion.LookRotation(hitPoint.position - transform.position);
+        Debug.Log(GroundCheck.isGround);
+        if (!GroundCheck.isGround)
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(hitPoint.position - transform.position), 3 * Time.deltaTime);
 
         minY = Mathf.Min(minY, hitPoint.position.y - transform.position.y);
     }
