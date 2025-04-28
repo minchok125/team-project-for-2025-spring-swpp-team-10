@@ -2,12 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 햄스터 <-> 공 모드 스왑
-public class MeshConverter : MonoBehaviour
+public class ModeConverterController : MonoBehaviour
 {
-    public static bool isSphere;
-
-    
     [Header("References")]
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject hamster;
@@ -24,7 +20,7 @@ public class MeshConverter : MonoBehaviour
         hamRds = hamster.GetComponentsInChildren<Renderer>();
         rb = GetComponent<Rigidbody>();
 
-        isSphere = false;
+        PlayerManager.instance.isBall = false;
         rb.drag = 1f;
         transform.rotation = Quaternion.identity;
         rb.constraints |= RigidbodyConstraints.FreezeRotationX;
@@ -34,7 +30,7 @@ public class MeshConverter : MonoBehaviour
 
     public void Convert()
     {
-        if (isSphere) { // sphere -> hamster
+        if (PlayerManager.instance.isBall) { // sphere -> hamster
             HamsterSetActive(true);
             ball.SetActive(false);
             animator.SetTrigger("ChangeToHamster");
@@ -52,14 +48,14 @@ public class MeshConverter : MonoBehaviour
             Invoke(nameof(ChangeToSphere_AfterSeconds), 0.4f);
 
             rb.MovePosition(transform.position + Vector3.up * 0.5f);
-            rb.drag = 0.2f;
+            rb.drag = 0.5f;
 
             rb.constraints &= ~RigidbodyConstraints.FreezeRotationX;
             rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
             rb.constraints &= ~RigidbodyConstraints.FreezeRotationZ;
         }
 
-        isSphere = !isSphere;
+        PlayerManager.instance.isBall = !PlayerManager.instance.isBall;
     }
 
     private void ChangeToSphere_AfterSeconds()
@@ -74,15 +70,5 @@ public class MeshConverter : MonoBehaviour
         hamCol.enabled = value;
         foreach (Renderer rd in hamRds)
             rd.enabled = value;
-    }
-
-    public void ConvertToSphere()
-    {
-        if (!isSphere) Convert();
-    }
-
-    public void ConvertToHamster()
-    {
-        if (isSphere) Convert();
     }
 }

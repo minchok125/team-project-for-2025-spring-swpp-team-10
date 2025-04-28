@@ -2,15 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 햄스터 상태에서의 특화된 움직임
-public class HamsterMovement : MonoBehaviour
+public class HamsterMovementController : MonoBehaviour, IMovement
 {
     [Tooltip("걷는 속도")]
-    public float walkVelocity = 10;
+    private float walkVelocity = 8;
     [Tooltip("뛰는 속도")]
-    public float runVelocity = 20;
+    private float runVelocity = 16;
 
-    private Vector3 moveDir = Vector3.zero;
+    private Vector3 moveDir;
     private Rigidbody rb;
 
     private void Start()
@@ -18,12 +17,14 @@ public class HamsterMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    public void UpdateFunc()
+    public void OnUpdate()
     {
-        moveDir = GetInputMoveDir();
+        moveDir = PlayerManager.instance.moveDir;
         Rotate();
     }
 
+
+    float rotateSpeed = 15f;
     private void Rotate()
     {
         // 수평 속도가 거의 없으면 회전하지 않음
@@ -34,17 +35,18 @@ public class HamsterMovement : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(-flatVel.normalized, Vector3.up);
 
         // 부드럽게 회전
-        float rotateSpeed = 15f;
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
     }
-    
+
 
     // 움직이고 있다면 true 반환
     public bool Move()
     {
         float _maxVelocity = Input.GetKey(KeyCode.LeftShift) ? runVelocity : walkVelocity;
+        _maxVelocity *= PlayerManager.instance.skill.GetSpeedRate();
+
         // 오브젝트 잡고 움직이는 중
-        if (HamsterRope.onGrappling) _maxVelocity *= HamsterRope.speedFactor; 
+        if (PlayerManager.instance.onWire) _maxVelocity *= HamsterWireController.speedFactor; 
 
         Vector3 flatVel = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         float vel = flatVel.magnitude;
@@ -57,23 +59,14 @@ public class HamsterMovement : MonoBehaviour
             rb.velocity = new Vector3(moveDir.x * _maxVelocity, rb.velocity.y, moveDir.z * _maxVelocity);
 
         // 오브젝트 잡고 움직이는 중
-        if (HamsterRope.onGrappling)
-            HamsterRope.grapRb.velocity = new Vector3(rb.velocity.x, HamsterRope.grapRb.velocity.y, rb.velocity.z);
+        if (PlayerManager.instance.onWire)
+            HamsterWireController.grabRb.velocity = new Vector3(rb.velocity.x, HamsterWireController.grabRb.velocity.y, rb.velocity.z);
 
         return rb.velocity.sqrMagnitude > 0.1f;
     }
 
-
-    Vector3 GetInputMoveDir()
+    public void OnShift()
     {
-        float hor = Input.GetAxisRaw("Horizontal");
-        float ver = Input.GetAxisRaw("Vertical");
 
-        Transform cam = Camera.main.transform;
-        Vector3 forwardVec = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
-        Vector3 rightVec = new Vector3(cam.right.x, 0, cam.right.z).normalized;
-        Vector3 moveVec = (forwardVec * ver + rightVec * hor).normalized;
-
-        return moveVec;
     }
 }

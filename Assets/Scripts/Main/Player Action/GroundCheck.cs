@@ -11,7 +11,7 @@ public class GroundCheck : MonoBehaviour
 
     void Update()
     {
-        if (MeshConverter.isSphere)
+        if (PlayerManager.instance.isBall)
             transform.position = player.position - Vector3.up * 0.4f;
         else
             transform.position = player.position - Vector3.up * 0.9f;
@@ -19,8 +19,8 @@ public class GroundCheck : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        // if (other.CompareTag("Platform") || other.CompareTag("Pullable")) {
-        if (!other.CompareTag("Player")) {
+        ObjectProperties obj = other.gameObject.GetComponent<ObjectProperties>();
+        if (obj != null && obj.canPlayerJump) {
             groundCount++;
             isGround = true;
         }
@@ -28,8 +28,8 @@ public class GroundCheck : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        // if (other.CompareTag("Platform") || other.CompareTag("Pullable")) {
-        if (!other.CompareTag("Player")) {
+        ObjectProperties obj = other.gameObject.GetComponent<ObjectProperties>();
+        if (obj != null && obj.canPlayerJump) {
             if (--groundCount <= 0) {
                 isGround = false;
             }

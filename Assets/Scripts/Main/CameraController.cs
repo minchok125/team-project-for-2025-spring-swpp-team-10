@@ -5,12 +5,12 @@ using UnityEngine;
 // https://jeonhw.tistory.com/17, https://gps-homepage.tistory.com/16 참고
 public class CameraController : MonoBehaviour
 {
+    public static float zoom { get; private set; } = 10f; // 줌 거리
+
     [SerializeField] private Transform point;
     [SerializeField] private float rotSpeed = 15f;
     [SerializeField] private float zoomSpeed = 5f;
     [SerializeField] private float zoomMinDist = 1.5f, zoomMaxDist = 30f;
-
-    public static float zoom { get; private set; } = 10f;
 
     private float currentDistance; // 현재 카메라 거리
     private float smoothSpeed = 10f; // 부드럽게 이동할 속도
@@ -59,6 +59,8 @@ public class CameraController : MonoBehaviour
         if (Physics.Raycast(point.position, -point.forward, out var hit, zoom, objLayer)) {
             float dis = Vector3.Distance(hit.point, point.position) - 1f;
             targetDistance = Mathf.Clamp(dis, zoomMinDist, zoom);
+            if (targetDistance < currentDistance) // 장애물로 인해 카메라를 땡겨야 한다면 즉시 땡김
+                currentDistance = targetDistance;
         }
 
         // 거리를 부드럽게 보간

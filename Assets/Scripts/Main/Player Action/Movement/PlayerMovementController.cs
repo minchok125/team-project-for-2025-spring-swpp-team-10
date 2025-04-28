@@ -1,28 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-[RequireComponent(typeof(HamsterMovement))]
-[RequireComponent(typeof(SphereMovement))]
-[RequireComponent(typeof(MeshConverter))]
 // 점프, 글라이딩, 부스트
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovementController : MonoBehaviour
 {
-    public static bool isGliding;
-
-
-    [Tooltip("점프 시 가해지는 힘")]
-    public float jumpPower = 600;
+    
     [SerializeField] private Vector3 initPos;
 
     [Header("References")]
     [SerializeField] private Animator animator;
 
-    private HamsterMovement hamsterMove;
-    private SphereMovement sphereMove;
-    private PlayerSkill skill;
+    private IMovement curMovement; // ModeConvert할 때 PlayerManager에서 알아서 바꿈
+
+
+    [Header("Jump")]
+    [Tooltip("점프 시 가해지는 힘")]
+    [SerializeField] private float jumpPower = 600;
 
 
     [Header("Boost")]
@@ -37,45 +31,35 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float burstBoostPower = 1000;
     [Tooltip("지속적인 가속")]
     [SerializeField] private float sustainedBoostPower = 400;
-    public bool isBoost;
+
 
     [Header("Gliding")]
     [SerializeField] private GameObject glidingMesh;
 
-    // [Header("Setting Input")]
-    // [SerializeField] private TMP_InputField massI;
-    // [SerializeField] private TMP_InputField burstBoostI;
-    // [SerializeField] private TMP_InputField sustainedBoostI;
 
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI velocityTxt;
 
+
     private Rigidbody rb;
-    public int jumpCount;
+    private int jumpCount;
 
     
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        hamsterMove = GetComponent<HamsterMovement>();
-        sphereMove = GetComponent<SphereMovement>();
-        skill = GetComponent<PlayerSkill>();
+        curMovement = GetComponent<HamsterMovementController>();
 
         currentBoostEnergy = 1;
-        isBoost = false;
-        isGliding = false;
-        
-        // ChangeInputFieldText(massI, rb.mass.ToString());
-        // ChangeInputFieldText(burstBoostI, burstBoostPower.ToString());
-        // ChangeInputFieldText(sustainedBoostI, sustainedBoostPower.ToString());
+        PlayerManager.instance.isBoosting = false;
+        PlayerManager.instance.isGliding = false;
     }
 
   
     void Update()
     {
-        // GetInputField();
-
         Jump();
+
         GlidingInput();
 
         if (Input.GetKeyDown(KeyCode.R) || transform.position.y < -100)
@@ -84,8 +68,7 @@ public class PlayerMovement : MonoBehaviour
         Boost();
         BoostEnergyControl();
 
-        if (MeshConverter.isSphere) sphereMove.UpdateFunc();
-        else hamsterMove.UpdateFunc();
+        curMovement.OnUpdate();
 
         if (velocityTxt != null)
             velocityTxt.text = $"Velocity : {rb.velocity.magnitude:F1}\n({rb.velocity.x:F1},{rb.velocity.y:F1},{rb.velocity.z:F1})";
@@ -93,11 +76,10 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (MeshConverter.isSphere) sphereMove.Move();
-        else {
-            bool isMoving = hamsterMove.Move();
+        bool isMoving = curMovement.Move();
+
+        if (!PlayerManager.instance.isBall) 
             animator.SetBool("IsWalking", isMoving);
-        }
 
         Gliding();
     }
@@ -110,17 +92,17 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+
     private float jumpStartTime = -10;
     private bool jumped = false; // 현재 프레임에 점프가 발동됐는지
     void Jump()
     {
-        if (RopeAction.onGrappling) return; // 와이어 액션 중에는 점프 x
+        if (PlayerManager.instance.onWire) return; // 와이어 액션 중에는 점프 x
 
         jumped = false;
         if (GroundCheck.isGround) {
             if (Time.time - jumpStartTime > 0.2f) {// 점프한 뒤 착지했으나, 통통 튀겨서 위로 올라가 ground 판정이 안 된 경우를 대비
                 jumpCount = 0;
-                //animator.SetBool("IsJumping", false);
             }
             if (Input.GetKeyDown(KeyCode.Space)) {
                 Jump_sub();
@@ -128,7 +110,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         else if (Input.GetKeyDown(KeyCode.Space)) { // 공중
-            if (skill.HasDoubleJump() && jumpCount < 2) {
+            if (PlayerManager.instance.skill.HasDoubleJump() && jumpCount < 2) {
                 Jump_sub();
                 jumpCount = 2;
             }
@@ -137,11 +119,10 @@ public class PlayerMovement : MonoBehaviour
 
     void Jump_sub()
     {
-        rb.AddForce(Vector3.up * jumpPower, ForceMode.Acceleration);
+        rb.AddForce(Vector3.up * jumpPower * PlayerManager.instance.skill.GetJumpForceRate(), ForceMode.Acceleration);
         jumpCount++;
         jumped = true;
 
-        //animator.SetBool("IsJumping", true);
         animator.SetTrigger("Jump");
     }
 
@@ -149,18 +130,18 @@ public class PlayerMovement : MonoBehaviour
     // 점프 다 하고 스페이스바 다시 누르면 활공
     void GlidingInput()
     {
-        if (!GroundCheck.isGround && Input.GetKeyDown(KeyCode.Space) && !RopeAction.onGrappling) {
-            if (!jumped && skill.HasGliding())
-                isGliding = !isGliding;
+        if (!GroundCheck.isGround && Input.GetKeyDown(KeyCode.Space) && !PlayerManager.instance.onWire) {
+            if (!jumped && PlayerManager.instance.skill.HasGliding())
+                PlayerManager.instance.isGliding = !PlayerManager.instance.isGliding;
         }
         if (GroundCheck.isGround) {
-            isGliding = false;
+            PlayerManager.instance.isGliding = false;
         }
     }
 
     void Gliding()
     {
-        if (isGliding) {
+        if (PlayerManager.instance.isGliding) {
             Rigidbody rb = GetComponent<Rigidbody>();
             Vector3 antiGravity = -0.8f * rb.mass * Physics.gravity;
             if (rb.velocity.y > 0)
@@ -169,25 +150,27 @@ public class PlayerMovement : MonoBehaviour
             if (rb.velocity.y < -7)
                 rb.velocity = new Vector3(rb.velocity.x, -7, rb.velocity.z);
         }
-        glidingMesh.SetActive(isGliding);
+        glidingMesh.SetActive(PlayerManager.instance.isGliding);
     }
     
 
     void Boost()
     {
-        if (!RopeAction.onGrappling || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0 || !MeshConverter.isSphere || !skill.HasBoost()) {
-            isBoost = false;
+        if (!PlayerManager.instance.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0 
+                || !PlayerManager.instance.isBall || !PlayerManager.instance.skill.HasBoost()) {
+            PlayerManager.instance.isBoosting = false;
             return;
         }
 
         Vector3 vel = rb.velocity.normalized;
+
         // 지속성 부스트
-        if (isBoost) { 
+        if (PlayerManager.instance.isBoosting) { 
             rb.AddForce(vel * Time.deltaTime * sustainedBoostPower, ForceMode.Force);
         }
         // 즉발성 부스트
         if (Input.GetKeyDown(KeyCode.LeftShift) && currentBoostEnergy >= burstEnergyUsage) { 
-            isBoost = true;
+            PlayerManager.instance.isBoosting = true;
             rb.AddForce(vel * burstBoostPower, ForceMode.Acceleration);
             currentBoostEnergy -= burstEnergyUsage;
         }
@@ -196,9 +179,10 @@ public class PlayerMovement : MonoBehaviour
     // 부스터 게이지 조절
     void BoostEnergyControl()
     {
-        if (isBoost) { // 부스터 사용중
-            currentBoostEnergy -= energyUsageRatePerSeconds * Time.deltaTime;
-            if (currentBoostEnergy < 0)
+        if (PlayerManager.instance.isBoosting) { // 부스터 사용중
+            if (currentBoostEnergy > 0)
+                currentBoostEnergy -= energyUsageRatePerSeconds * Time.deltaTime;
+            else
                 currentBoostEnergy = 0;
         }
         else {
@@ -210,23 +194,11 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
-    // void GetInputField()
-    // {
-    //     rb.mass = GetFloatValue(rb.mass, massI);
-    //     burstBoostPower = GetFloatValue(burstBoostPower, burstBoostI);
-    //     sustainedBoostPower = GetFloatValue(sustainedBoostPower, sustainedBoostI);
-    // }
-
-    // void ChangeInputFieldText(TMP_InputField inputField, string s)
-    // {
-    //     if (inputField != null)
-    //         inputField.text = s;
-    // }
-
-    // float GetFloatValue(float defaultValue, TMP_InputField inputField)
-    // {
-    //     if (inputField != null && float.TryParse(inputField.text, out float result))
-    //         return result;
-    //     return defaultValue;
-    // }
+    public void ChangeCurMovement()
+    {
+        if (PlayerManager.instance.isBall)
+            curMovement = GetComponent<BallMovementController>();
+        else
+            curMovement = GetComponent<HamsterMovementController>();
+    }
 }

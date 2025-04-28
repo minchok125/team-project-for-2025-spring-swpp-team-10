@@ -2,15 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 공 상태에서의 로프액션
-public class SphereRope : MonoBehaviour, IRope 
+public class BallWireController : MonoBehaviour, IWire
 {
     [SerializeField] private float spring = 10000;
     [SerializeField] private float damper = 1, mass = 10;
     [Tooltip("줄 감기/풀기 속도")]
     [SerializeField] private float retractorSpeed = 12;
 
-    private float grapDistance;
+    private float grabDistance;
     private float minY;
 
     private SpringJoint sj;
@@ -20,8 +19,8 @@ public class SphereRope : MonoBehaviour, IRope
 
     private void Start()
     {
-        grapDistance = GetComponent<RopeAction>().grapDistance;
-        hitPoint = GetComponent<RopeAction>().hitPoint;
+        grabDistance = GetComponent<PlayerWireController>().grabDistance;
+        hitPoint = GetComponent<PlayerWireController>().hitPoint;
     }
 
 
@@ -65,10 +64,12 @@ public class SphereRope : MonoBehaviour, IRope
         }
     }
 
-    public void ShortenRope(float value)
+    public void ShortenRope(bool isFast)
     {
         if (sj.maxDistance <= 1) 
             return;
+
+        float value = isFast ? 40 : retractorSpeed;
 
         if (sj.maxDistance < 20) {
             // maxDist가 1일 때는 0.4f, 20일 때는 1f. maxDist가 짧으면 천천히 수축함
@@ -83,7 +84,7 @@ public class SphereRope : MonoBehaviour, IRope
 
     public void ExtendRope()
     {
-        if (sj.maxDistance > grapDistance) 
+        if (sj.maxDistance > grabDistance) 
             return;
 
         sj.maxDistance = sj.minDistance = sj.maxDistance + retractorSpeed * Time.deltaTime;
