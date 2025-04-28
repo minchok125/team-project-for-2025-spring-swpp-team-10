@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(RopeAction))]
-public class RopeActionEditor : Editor
+[CustomEditor(typeof(PlayerWireController))]
+public class PlayerWireControllerEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         // RopeAction 오브젝트 가져오기
-        RopeAction ropeAction = (RopeAction)target;
+        PlayerWireController ropeAction = (PlayerWireController)target;
         Transform transform = ropeAction.transform;
 
         // 자식이 없을 경우에만 메시지 출력

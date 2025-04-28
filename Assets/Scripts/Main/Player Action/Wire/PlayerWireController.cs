@@ -1,78 +1,58 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using TMPro;
-using DG.Tweening;
 
-// https://www.youtube.com/watch?v=-E_pRXqNYSk 참고
-
-[RequireComponent(typeof(HamsterRope))]
-[RequireComponent(typeof(SphereRope))]
-// 와이어를 관리하는 스크립트 (RopeActionEditor.cs 존재)
-public class RopeAction : MonoBehaviour
+public class PlayerWireController : MonoBehaviour
 {
-    public static bool onGrappling = false;
-
-    [SerializeField] private Transform player;
     [Tooltip("훅을 걸 수 있는 오브젝트의 레이어")]
-    public LayerMask WhatIsGrappable;
+    public LayerMask WhatIsgrappable;
 
-    private Camera cam;
     private LineRenderer lr;
-    private GameObject grapObject = null;
+    private GameObject grabObject = null;
+
     // 해당 스크립트를 가지는 오브젝트의 0번째 자식으로 빈 오브젝트를 할당하기. 와이어를 걸었을 때 후크를 부착하는 포인트가 됨
     public Transform hitPoint { get; private set; }
-    private MeshConverter meshConverter;
-    private PlayerSkill skill;
 
-    private IRope currentWire;
+    private IWire currentWire;
 
 
     [Tooltip("와이어를 걸 수 있는 최대 거리")]
-    public float grapDistance { get; private set; } = 50f;
+    public float grabDistance { get; private set; } = 50f;
     [Tooltip("줄 감기/풀기 속도")]
-    public float retractorSpeed { get; private set; } = 12;
+    //public float retractorSpeed { get; private set; } = 12;
 
 
     [Header("Prediction")]
-    public RaycastHit predictionHit;
-    public float predictionSphereCastRadius;
+    private RaycastHit predictionHit;
+    public float predictionSphereCastRadius = 5f;
+    [Tooltip("와이어 설치 위치를 표시하는 점 오브젝트")]
     public Transform predictionPoint;
 
-    // [Header("Setting Input")]
-    // [SerializeField] private TMP_InputField retractorSpeedI;
 
     private void Awake()
     {
-        cam = Camera.main;
         lr = GetComponent<LineRenderer>();
-        meshConverter = GetComponent<MeshConverter>();
-        skill = GetComponent<PlayerSkill>();
         hitPoint = transform.GetChild(0);
-
-        // ChangeInputFieldText(retractorSpeedI, retractorSpeed.ToString());
     }
 
     private void Update()
     {
-        // GetInputField();
-
         // UI 위에 마우스가 있지 않을 때만 마우스 클릭 입력 받음
         if (!EventSystem.current.IsPointerOverGameObject()) {
             if (Input.GetMouseButtonDown(0)) {
                 RopeShoot();
             }
-            if (Input.GetMouseButtonUp(0) && onGrappling) {
+            if (Input.GetMouseButtonUp(0) && PlayerManager.instance.onWire) {
                 EndShoot();
             }
-            if (Input.GetMouseButton(1) && skill.HasRetractor()) {
-                ShortenRope(40); // 빠르게 오브젝트에 접근
+            if (Input.GetMouseButton(1) && PlayerManager.instance.skill.HasRetractor()) {
+                ShortenRope(true); // 빠르게 수축
             }
         }
 
-        if (Input.GetKey(KeyCode.Q) && skill.HasRetractor()) {
-            ShortenRope(retractorSpeed);
+        if (Input.GetKey(KeyCode.Q) && PlayerManager.instance.skill.HasRetractor()) {
+            ShortenRope(false); // 천천히 수축
         }
-        if (Input.GetKey(KeyCode.E) && skill.HasRetractor()) {
+        if (Input.GetKey(KeyCode.E) && PlayerManager.instance.skill.HasRetractor()) {
             ExtendRope();
         }
         
@@ -90,16 +70,16 @@ public class RopeAction : MonoBehaviour
     // https://www.youtube.com/watch?v=HPjuTK91MA8
     private void CheckForSwingPoints()
     {
-        //if (onGrappling) return;
+        Camera cam = Camera.main;
 
         RaycastHit sphereCastHit;
         Physics.SphereCast(cam.transform.position + cam.transform.forward * CameraController.zoom, 
                         predictionSphereCastRadius, cam.transform.forward,
-                        out sphereCastHit, grapDistance, WhatIsGrappable);
+                        out sphereCastHit, grabDistance, WhatIsgrappable);
 
         RaycastHit raycastHit;
         Physics.Raycast(cam.transform.position, cam.transform.forward,
-                        out raycastHit, grapDistance, WhatIsGrappable);
+                        out raycastHit, grabDistance, WhatIsgrappable);
 
         Vector3 realHitPoint;
 
@@ -126,9 +106,15 @@ public class RopeAction : MonoBehaviour
         predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
 
         // 당기는 오브젝트를 감지했으나 당기는 스킬이 없으면 not found 판정
-        if (realHitPoint != Vector3.zero && predictionHit.collider.CompareTag("Pullable") && !skill.HasPull()) {
-            predictionPoint.gameObject.SetActive(false);
-            predictionHit.point = Vector3.zero;
+        if (realHitPoint != Vector3.zero) {
+            ObjectProperties obj = predictionHit.collider.gameObject.GetComponent<ObjectProperties>();
+            if (obj == null) {
+                Debug.LogWarning(predictionHit.collider.gameObject.name + " 오브젝트에 ObjectProperties 스크립트가 없습니다.");
+            }
+            else if (obj.canGrabInHamsterMode && !PlayerManager.instance.skill.HasPullWire()) {
+                predictionPoint.gameObject.SetActive(false);
+                predictionHit.point = Vector3.zero;
+            }
         }
     }
 
@@ -139,29 +125,35 @@ public class RopeAction : MonoBehaviour
 
         if (predictionHit.collider.gameObject == gameObject) // 자기 자신이면 return
             return;
-        grapObject = predictionHit.collider.gameObject;
+        grabObject = predictionHit.collider.gameObject;
 
-        // 햄스터 와이어
-        if (grapObject.CompareTag("Pullable")) { 
-            if (!skill.HasPull()) { // 스킬이 없다면 못 씀
-                grapObject = null;
-                return;
-            }
-            currentWire = GetComponent<HamsterRope>();
-            meshConverter.ConvertToHamster();
+        ObjectProperties objProperty = grabObject.GetComponent<ObjectProperties>();
+
+        // 햄스터, 공 와이어 둘 다 가능한 오브젝트
+        if (objProperty.canGrabInBallMode && objProperty.canGrabInHamsterMode) {
+            currentWire = PlayerManager.instance.isBall ? GetComponent<BallWireController>() : GetComponent<HamsterWireController>();
         }
         // 공 와이어
-        else { 
-            currentWire = GetComponent<SphereRope>();
-            meshConverter.ConvertToSphere();
+        else if (objProperty.canGrabInBallMode) {
+            currentWire = GetComponent<BallWireController>();
+            PlayerManager.instance.ConvertToBall();
+        }
+        // 햄스터 와이어
+        else if (objProperty.canGrabInHamsterMode) {
+            if (!PlayerManager.instance.skill.HasPullWire()) { // 스킬이 없다면 못 씀
+                grabObject = null;
+                return;
+            }
+            currentWire = GetComponent<HamsterWireController>();
+            PlayerManager.instance.ConvertToHamster();
         }
 
-        PlayerMovement.isGliding = false;
+        PlayerManager.instance.isGliding = false;
 
-        hitPoint.SetParent(grapObject.transform);
+        hitPoint.SetParent(grabObject.transform);
         hitPoint.position = predictionHit.point;
 
-        onGrappling = true;
+        PlayerManager.instance.onWire = true;
 
         // LineRenderer 세팅
         lr.positionCount = 2;
@@ -172,26 +164,30 @@ public class RopeAction : MonoBehaviour
         currentWire.RopeShoot(predictionHit);
     }
 
+    // 현재 잡고 있는 와이어를 놓음
     public void EndShoot()
     {
-        grapObject = null;
+        if (!PlayerManager.instance.onWire)
+            return;
+
+        grabObject = null;
         hitPoint.SetParent(this.transform);
-        onGrappling = false;
+        PlayerManager.instance.onWire = false;
         lr.positionCount = 0;
         currentWire.EndShoot();
     }
 
 
-    private void ShortenRope(float value)
+    private void ShortenRope(bool isFast)
     {
-        if (!onGrappling)
+        if (!PlayerManager.instance.onWire)
             return;
         
-        currentWire.ShortenRope(value);
+        currentWire.ShortenRope(isFast);
     }
     private void ExtendRope()
     {
-        if (!onGrappling) 
+        if (!PlayerManager.instance.onWire) 
             return;
 
         currentWire.ExtendRope();
@@ -200,7 +196,7 @@ public class RopeAction : MonoBehaviour
 
     private void DrawRope()
     {
-        if (onGrappling) {
+        if (PlayerManager.instance.onWire) {
             lr.SetPosition(0, transform.position);
             lr.SetPosition(1, hitPoint.position);
             currentWire.RopeUpdate();
@@ -209,46 +205,27 @@ public class RopeAction : MonoBehaviour
 
     private void DrawOutline()
     {
-        if (predictionHit.point != Vector3.zero) {
-            // Pullable이며 pull스킬이 없는 경우를 제외
-            if (predictionHit.collider.gameObject != gameObject && (!predictionHit.collider.CompareTag("Pullable") || skill.HasPull()))
+        if (predictionHit.point != Vector3.zero && predictionHit.collider.gameObject != gameObject) {
+            // PullableTarget이며 pull스킬이 없는 경우를 제외
+            bool reject = !PlayerManager.instance.isBall && !PlayerManager.instance.skill.HasPullWire();
+            if (!reject)
                 predictionHit.collider.gameObject.GetComponent<DrawOutline>().Draw();
         }
 
         // 현재 잡고 있는 오브젝트의 외곽선 표시
-        if (grapObject != null) {
-            grapObject.GetComponent<DrawOutline>().Draw();
+        if (grabObject != null) {
+            grabObject.GetComponent<DrawOutline>().Draw();
         }
     }
 
 
-    private float tabCoolTime = -10;
+    private float convertedTime = -10;
     private void ModeConvert()
     {
-        if (Input.GetKeyDown(KeyCode.Tab) && Time.time - tabCoolTime > 0.5f) { // 연타 방지
-            meshConverter.Convert();
-            if (onGrappling)
-                EndShoot();
-            tabCoolTime = Time.time;
+        if (Input.GetKeyDown(KeyCode.Tab) && Time.time - convertedTime > 0.5f) { // 연타 방지
+            PlayerManager.instance.ModeConvert();
+            EndShoot();
+            convertedTime = Time.time;
         }
     }
-
-
-    // private void GetInputField()
-    // {
-    //     retractorSpeed = GetFloatValue(retractorSpeed, retractorSpeedI);
-    // }
-
-    // private void ChangeInputFieldText(TMP_InputField inputField, string s)
-    // {
-    //     if (inputField != null)
-    //         inputField.text = s;
-    // }
-
-    // private float GetFloatValue(float defaultValue, TMP_InputField inputField)
-    // {
-    //     if (inputField != null && float.TryParse(inputField.text, out float result))
-    //         return result;
-    //     return defaultValue;
-    // }
 }
