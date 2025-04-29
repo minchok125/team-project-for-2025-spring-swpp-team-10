@@ -15,6 +15,8 @@ public class PingPongMovingPlatformControllerEditor : Editor
 
     public override void OnInspectorGUI()
     {
+        EditorGUILayout.HelpBox("Start <-> End 왔다갔다 움직이는 스크립트", MessageType.Info);
+
         p.inputType = (PingPongMovingPlatformController.Type)EditorGUILayout.EnumPopup("Input Type", p.inputType);
         if (p.inputType == PingPongMovingPlatformController.Type.Transform) {
             p.start = (Transform)EditorGUILayout.ObjectField("Start", p.start, typeof(Object), true);
