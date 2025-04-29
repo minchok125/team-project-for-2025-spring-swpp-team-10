@@ -9,16 +9,27 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     [Tooltip("뛰는 속도")]
     private float runVelocity = 16;
 
+    [Header("PhysicMaterial")]
+    [Tooltip("땅에 있을 때 PhysicMaterial")]
+    [SerializeField] private PhysicMaterial hamsterGround;
+    [Tooltip("공중에서 PhysicMaterial")]
+    [SerializeField] private PhysicMaterial hamsterJump;
+
+    private CapsuleCollider col;
     private Vector3 moveDir;
     private Rigidbody rb;
 
     private void Start()
     {
+        col = transform.Find("Hamster Normal").GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
     }
 
     public void OnUpdate()
     {
+        if (GroundCheck.isGround) col.material = hamsterGround;
+        else col.material = hamsterJump;
+
         moveDir = PlayerManager.instance.moveDir;
         Rotate();
     }
@@ -62,7 +73,7 @@ public class HamsterMovementController : MonoBehaviour, IMovement
         if (PlayerManager.instance.onWire)
             HamsterWireController.grabRb.velocity = new Vector3(rb.velocity.x, HamsterWireController.grabRb.velocity.y, rb.velocity.z);
 
-        return rb.velocity.sqrMagnitude > 0.1f;
+        return moveDir != Vector3.zero && rb.velocity.sqrMagnitude > 0.1f;
     }
 
     public void OnShift()

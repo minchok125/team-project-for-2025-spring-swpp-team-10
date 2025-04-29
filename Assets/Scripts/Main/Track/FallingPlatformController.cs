@@ -22,9 +22,8 @@ public class FallingPlatformController : MonoBehaviour
 
     private float initY; // 오브젝트의 원래 y 좌표
     private bool onPlayer; // 플레이어가 위에 있으면 true
-    //[HideInInspector]
+    [HideInInspector]
     public bool onWire; // 이 오브젝트에 와이어가 걸리면 true
-    public bool onGround;
     private float collisionVelocityRatio = 0.4f; // 충돌했을 때 플랫폼이 플레이어의 속도를 전달받는 정도
     private float drag = 3f; // 감속 정도
 
@@ -51,15 +50,15 @@ public class FallingPlatformController : MonoBehaviour
         // 플랫폼이 움직이는 범위 표시
         if (dotted != null) {
             cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder).transform;
+            cylinder.SetParent(transform);
             cylinder.gameObject.name = "PlatformMovementBoundary"; 
-            SetCylinder();
+            SetDottedCylinder();
         }
     }
 
 
     void Update()
     {
-        onGround = GroundCheck.isGround;
         if (onPlayer || onWire && !GroundCheck.isGround) {
             Down();
         }
@@ -69,6 +68,11 @@ public class FallingPlatformController : MonoBehaviour
         else {
             Up();
         }
+    }
+
+    void LateUpdate()
+    {
+        cylinder.position = new Vector3(transform.position.x, initY - maxDownLength * 0.5f, transform.position.z);
     }
 
     private void Down()
@@ -93,15 +97,15 @@ public class FallingPlatformController : MonoBehaviour
         rb.velocity = Vector3.up * Mathf.Lerp(rb.velocity.y, speed, lerpSpeed * Time.deltaTime);
     }
 
-
-    private void SetCylinder()
+    // 플랫폼이 움직이는 범위 표시
+    private void SetDottedCylinder()
     {
         // 콜라이더 켜져 있으면 끄기
         cylinder.GetComponent<Collider>().enabled = false;
 
         // Transform값 설정
         cylinder.position = new Vector3(transform.position.x, initY - maxDownLength * 0.5f, transform.position.z);
-        cylinder.localScale = new Vector3(0.2f, maxDownLength * 0.5f, 0.2f);
+        cylinder.localScale = new Vector3(0.2f / transform.localScale.x, maxDownLength * 0.5f / transform.localScale.y, 0.2f  / transform.localScale.z);
         cylinder.rotation = Quaternion.identity;
 
         // Dotted 매테리얼의 점선 간격 조정

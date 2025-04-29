@@ -5,10 +5,9 @@ using UnityEngine;
 using DG.Tweening;
 using DG.Tweening.Core.Easing;
 
-// 현재 방식은 Position, Rotation, Scale 중 하나를 전제하고 Vector3값을 조정하여 애니메이션을 출력하는 방식이다.
 // ith 애니메이션 각각에서 Position, Rotation, Scale 중 하나를 선택하고,
-// Vector3값 자체가 아닌 x, y, z 중 1~3가지만 골라서 그 값만 바꾸게 하는 함수가 필요해 보인다.
-// position에서 (x,z)와 y가 다른 방식으로 움직이거나, 이동->회전->이동이 가능하게끔 하는 것이 필요해 보인다.
+// Vector3값 자체가 아닌 x, y, z 중 1~3가지만 골라서 그 값만 바꾼다.
+
 public class MovingPlatformController : MonoBehaviour
 {
     public enum Type { Position, Rotation, Scale }
@@ -60,8 +59,8 @@ public class MovingPlatformController : MonoBehaviour
             return;
         }
 
-        if (seqs[idx].xb) value.x = seqs[idx].x; 
-        if (seqs[idx].yb) value.y = seqs[idx].y; 
+        if (seqs[idx].xb) value.x = seqs[idx].x;
+        if (seqs[idx].yb) value.y = seqs[idx].y;
         if (seqs[idx].zb) value.z = seqs[idx].z;
         return;
     }
@@ -74,9 +73,10 @@ public class MovingPlatformController : MonoBehaviour
                .AppendInterval(seqs[i].intervalAfterMove);
         }
         
-        seq.Append(transform.DOLocalMove(initPos, seqs[0].moveTime))
-           .Join(transform.DOLocalRotate(initRot, seqs[0].moveTime))
-           .Join(transform.DOScale(initScale, seqs[0].moveTime));
+        seq.Append(DoInit());
+        // seq.Append(transform.DOLocalMove(initPos, seqs[0].moveTime))
+        //    .Join(transform.DOLocalRotate(initRot, seqs[0].moveTime))
+        //    .Join(transform.DOScale(initScale, seqs[0].moveTime));
         seq.AppendInterval(seqs[0].intervalAfterMove);
         seq.SetLoops(-1, LoopType.Restart);
     }
@@ -104,6 +104,43 @@ public class MovingPlatformController : MonoBehaviour
                 if (seqs[i].zb) seq.Join(CustomSetEase(transform.DOScaleZ(seqs[i].z, seqs[i].moveTime), i));
                 break;
         }
+        return seq;
+    }
+
+    Sequence DoInit()
+    {
+        bool[] move = new bool[3];
+        bool rot = false;
+        bool[] scale = new bool[3];
+
+        foreach (MoveSequence ms in seqs) {
+            switch (ms.modifyType) {
+                case Type.Position:
+                    if (ms.xb) move[0] = true;
+                    if (ms.yb) move[1] = true;
+                    if (ms.zb) move[2] = true;
+                    break;
+                case Type.Rotation:
+                    rot = true;
+                    break;
+                case Type.Scale:
+                    if (ms.xb) scale[0] = true;
+                    if (ms.yb) scale[1] = true;
+                    if (ms.zb) scale[2] = true;
+                    break;
+            }
+        }
+
+        Sequence seq = DOTween.Sequence();
+        if (move[0]) seq.Join(CustomSetEase(transform.DOLocalMoveX(initPos.x, seqs[0].moveTime), 0));
+        if (move[1]) seq.Join(CustomSetEase(transform.DOLocalMoveY(initPos.y, seqs[0].moveTime), 0));
+        if (move[2]) seq.Join(CustomSetEase(transform.DOLocalMoveZ(initPos.z, seqs[0].moveTime), 0));
+
+        if (rot) seq.Join(CustomSetEase(transform.DOLocalRotate(initRot, seqs[0].moveTime), 0));
+
+        if (scale[0]) seq.Join(CustomSetEase(transform.DOScaleX(initScale.x, seqs[0].moveTime), 0));
+        if (scale[1]) seq.Join(CustomSetEase(transform.DOScaleY(initScale.y, seqs[0].moveTime), 0));
+        if (scale[2]) seq.Join(CustomSetEase(transform.DOScaleZ(initScale.z, seqs[0].moveTime), 0));
         return seq;
     }
 
@@ -170,12 +207,12 @@ public class MoveSequenceDrawer : PropertyDrawer
         var easeProp = property.FindPropertyRelative("ease");
         var customEaseProp = property.FindPropertyRelative("customEase");
 
-        
+        EditorGUI.DrawRect(new Rect(position.x, y, position.width, lineHeight), new Color(0.2f, 0.3f, 0.6f, 0.2f));
         EditorGUI.PropertyField(new Rect(position.x, y, position.width, lineHeight), modifyTypeProp);
         y += (lineHeight + padding) * 1.5f;
 
         EditorGUI.LabelField(new Rect(position.x, y, position.width, lineHeight), "조정할 변수 선택");
-        y += (lineHeight + padding);
+        y += lineHeight + padding;
 
         float toggleWidth = position.width / 3f;
 
@@ -258,7 +295,7 @@ public class MovingPlatformControllerEditor : Editor
 
         // HelpBox로 설명 출력
         string str = "Transform을 주기적으로 조정하는 스크립트. \nPosition, Scale 등을 동시에 조정하고 싶다면 스크립트를 하나 더 추가해 주세요";
-        str += "\n0th -> 1th -> ... -> nth -> 0th -> ...\nmoveTime 동안 움직인 뒤 interval 동안 체류";
+        str += "\n0th : Init Value\nmoveTime 동안 움직인 뒤 interval 동안 체류";
         EditorGUILayout.HelpBox(str, MessageType.Info);
 
         // Start Delay
