@@ -16,8 +16,6 @@ public class PlayerWireController : MonoBehaviour
 
     [Tooltip("와이어를 걸 수 있는 최대 거리")]
     public float grabDistance { get; private set; } = 50f;
-    [Tooltip("줄 감기/풀기 속도")]
-    //public float retractorSpeed { get; private set; } = 12;
 
 
     [Header("Prediction")]
@@ -75,11 +73,11 @@ public class PlayerWireController : MonoBehaviour
         RaycastHit sphereCastHit;
         Physics.SphereCast(cam.transform.position + cam.transform.forward * CameraController.zoom, 
                         predictionSphereCastRadius, cam.transform.forward,
-                        out sphereCastHit, grabDistance, WhatIsGrappable);
+                        out sphereCastHit, grabDistance + CameraController.zoom, WhatIsGrappable);
 
         RaycastHit raycastHit;
         Physics.Raycast(cam.transform.position, cam.transform.forward,
-                        out raycastHit, grabDistance, WhatIsGrappable);
+                        out raycastHit, grabDistance + CameraController.zoom, WhatIsGrappable);
 
         Vector3 realHitPoint;
 
@@ -162,6 +160,8 @@ public class PlayerWireController : MonoBehaviour
 
         // 와이어 세팅
         currentWire.RopeShoot(predictionHit);
+
+        GrabbedObjectEnter();
     }
 
     // 현재 잡고 있는 와이어를 놓음
@@ -169,6 +169,8 @@ public class PlayerWireController : MonoBehaviour
     {
         if (!PlayerManager.instance.onWire)
             return;
+
+        GrabbedObjectExit();
 
         grabObject = null;
         hitPoint.SetParent(this.transform);
@@ -212,9 +214,9 @@ public class PlayerWireController : MonoBehaviour
                 predictionHit.collider.gameObject.GetComponent<DrawOutline>().Draw();
         }
 
-        // 현재 잡고 있는 오브젝트의 외곽선 표시
+        // 현재 잡고 있는 오브젝트
         if (grabObject != null) {
-            grabObject.GetComponent<DrawOutline>().Draw();
+            GrabbedObjectStay();
         }
     }
 
@@ -227,5 +229,31 @@ public class PlayerWireController : MonoBehaviour
             EndShoot();
             convertedTime = Time.time;
         }
+    }
+
+
+
+
+    // 와이어로 잡고 있는 오브젝트 관리하기
+
+    private void GrabbedObjectEnter()
+    {
+        // 공 모드에서 떨어지는 플랫폼에 와이어를 걸면 떨어트리기
+        FallingPlatformController fpc = grabObject.GetComponent<FallingPlatformController>();
+        if (fpc != null && PlayerManager.instance.isBall)
+            fpc.onWire = true;
+    }
+
+    private void GrabbedObjectStay()
+    {
+        grabObject.GetComponent<DrawOutline>().Draw();
+    }
+
+    private void GrabbedObjectExit()
+    {
+        // 공 모드에서 떨어지는 플랫폼에 와이어를 걸면 떨어트리기 종료
+        FallingPlatformController fpc = grabObject.GetComponent<FallingPlatformController>();
+        if (fpc != null && PlayerManager.instance.isBall)
+            fpc.onWire = false;
     }
 }
