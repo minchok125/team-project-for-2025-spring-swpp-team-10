@@ -73,7 +73,7 @@ public class MovingPlatformController : MonoBehaviour
             seq.Append(Do(i))
                .AppendInterval(seqs[i].intervalAfterMove);
         }
-        //seq.Append(Do(0))
+        
         seq.Append(transform.DOLocalMove(initPos, seqs[0].moveTime))
            .Join(transform.DOLocalRotate(initRot, seqs[0].moveTime))
            .Join(transform.DOScale(initScale, seqs[0].moveTime));
@@ -127,6 +127,7 @@ public class MoveSequence {
     public float intervalAfterMove;
     [Tooltip("ease를 직접 설계하려면 체크해 주세요.\n출발점: (0,0), 도착점: (1,1)")]
     public bool isCustomCurve;
+    [Tooltip("각 애니메이션 확인: \nhttps://ruyagames.tistory.com/24\n또는 'Dotween Ease' 검색")]
     public DG.Tweening.Ease ease;
     public AnimationCurve customEase; // 직접 조절 가능한 ease
 }
@@ -142,7 +143,7 @@ public class MoveSequenceDrawer : PropertyDrawer
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         int lines = 8; // 기본 라인 수
-        return EditorGUIUtility.singleLineHeight * (lines + 2) + padding * (lines - 1);
+        return EditorGUIUtility.singleLineHeight * (lines + 2.5f) + padding * (lines - 1);
     }
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -227,6 +228,9 @@ public class MoveSequenceDrawer : PropertyDrawer
             EditorGUI.PropertyField(new Rect(position.x, y, position.width, lineHeight), easeProp);
         }
 
+        y += lineHeight + padding;
+        EditorGUI.LabelField(new Rect(position.x, y, position.width, lineHeight), "=====================================");
+        
         EditorGUI.EndProperty();
     }
 
