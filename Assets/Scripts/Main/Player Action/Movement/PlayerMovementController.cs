@@ -194,6 +194,31 @@ public class PlayerMovementController : MonoBehaviour
     }
 
 
+    private Collider curPlatform;
+    private Vector3 prevVec;
+    void OnCollisionEnter(Collision collision)
+    {
+         // 현재 ground 역할을 하는 collider와 닿았다면
+        if (GroundCheck.isGround && GroundCheck.currentGroundColliders.Contains(collision.collider)) {
+            curPlatform = collision.collider;
+            prevVec = collision.transform.position;
+        }
+    }
+    void OnCollisionStay(Collision collision)
+    {
+        if (collision.collider == curPlatform) {
+            rb.MovePosition(rb.transform.position + (collision.transform.position - prevVec));
+            prevVec = collision.transform.position;
+        }
+    }
+    void OnCollisionExit(Collision collision)
+    {
+        if (curPlatform == collision.collider) {
+            curPlatform = null;
+        }
+    }
+
+
     public void ChangeCurMovement()
     {
         if (PlayerManager.instance.isBall)

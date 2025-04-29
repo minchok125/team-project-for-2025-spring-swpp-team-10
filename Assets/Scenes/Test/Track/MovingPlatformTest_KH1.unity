@@ -350,8 +350,8 @@ Transform:
   m_GameObject: {fileID: 66573008}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 196359938}
   m_Father: {fileID: 0}
@@ -370,7 +370,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1660489775}
-  groundCount: 0
 --- !u!54 &66573014
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -702,8 +701,8 @@ Transform:
   m_GameObject: {fileID: 196359937}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.1, z: 0}
-  m_LocalScale: {x: 2.3, y: 0.1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 4.6, y: 0.2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 66573012}
   m_RootOrder: 0
@@ -1260,7 +1259,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550892405}
-  m_Material: {fileID: 13400000, guid: 27859fd26c96fd84f867f66f7f9dab80, type: 2}
+  m_Material: {fileID: 13400000, guid: e05b397de4d099444a2ccd11f5f27195, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.7422714
@@ -3505,7 +3504,6 @@ MonoBehaviour:
   lerpSpeed: 2
   dotted: {fileID: 2100000, guid: b5a8d542447437f419a2a5412e0895f5, type: 2}
   onWire: 0
-  onGround: 0
 --- !u!114 &1269544289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3593,7 +3591,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1269544287}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.15, y: 10.16, z: -52.65}
+  m_LocalPosition: {x: -3.15, y: -3.29, z: -52.65}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -4901,6 +4899,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b5743a6351efba47ae28946128a0d49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hamsterGround: {fileID: 13400000, guid: e05b397de4d099444a2ccd11f5f27195, type: 2}
+  hamsterJump: {fileID: 13400000, guid: 27859fd26c96fd84f867f66f7f9dab80, type: 2}
 --- !u!114 &1660489794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4913,7 +4913,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61360c67a10cf34aafdbaf5edae4485, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initPos: {x: 0, y: 0, z: 0}
+  initPos: {x: 0, y: 2, z: 0}
   animator: {fileID: 550892407}
   jumpPower: 1000
   currentBoostEnergy: 0
@@ -5943,6 +5943,7 @@ GameObject:
   - component: {fileID: 1894411612}
   - component: {fileID: 1894411611}
   - component: {fileID: 1894411610}
+  - component: {fileID: 1894411616}
   m_Layer: 6
   m_Name: Cube (5)
   m_TagString: Untagged
@@ -5957,7 +5958,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1894411609}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f9270ade250d6b49aa6eea420946349, type: 3}
   m_Name: 
@@ -5967,7 +5968,6 @@ MonoBehaviour:
   lerpSpeed: 2
   dotted: {fileID: 2100000, guid: b5a8d542447437f419a2a5412e0895f5, type: 2}
   onWire: 0
-  onGround: 0
 --- !u!114 &1894411611
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6055,13 +6055,78 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1894411609}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 31.07, y: 10.16, z: -52.65}
+  m_LocalPosition: {x: 30, y: 10.16, z: -58.56}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1894411616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894411609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d1da05046bd35148986cae7896a0d82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startWaitTime: 0
+  seqs:
+  - modifyType: 0
+    xb: 0
+    yb: 0
+    zb: 1
+    x: 31
+    y: 0
+    z: -60
+    moveTime: 1
+    intervalAfterMove: 0
+    isCustomCurve: 0
+    ease: 0
+    customEase:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - modifyType: 0
+    xb: 1
+    yb: 0
+    zb: 0
+    x: 40
+    y: 0
+    z: 0
+    moveTime: 1
+    intervalAfterMove: 0
+    isCustomCurve: 0
+    ease: 0
+    customEase:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
+  - modifyType: 0
+    xb: 1
+    yb: 0
+    zb: 1
+    x: 35
+    y: 0
+    z: -70
+    moveTime: 1
+    intervalAfterMove: 0
+    isCustomCurve: 0
+    ease: 0
+    customEase:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 0
+      m_PostInfinity: 0
+      m_RotationOrder: 0
 --- !u!1 &1912546945
 GameObject:
   m_ObjectHideFlags: 0
