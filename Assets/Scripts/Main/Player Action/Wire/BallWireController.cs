@@ -32,6 +32,7 @@ public class BallWireController : MonoBehaviour, IWire
         sj = gameObject.AddComponent<SpringJoint>();
         sj.autoConfigureConnectedAnchor = false;
         sj.connectedAnchor = hit.point;
+        sj.anchor = new Vector3(0, 0.5f, 0);
 
         sj.maxDistance = dis;
         sj.minDistance = dis;
@@ -91,7 +92,7 @@ public class BallWireController : MonoBehaviour, IWire
     public void RopeUpdate()
     {
         sj.connectedAnchor = hitPoint.position;
-        Debug.Log(GroundCheck.isGround);
+
         if (!GroundCheck.isGround)
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(hitPoint.position - transform.position), 3 * Time.deltaTime);
 
