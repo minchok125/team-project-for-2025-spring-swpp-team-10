@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 // 점프, 글라이딩, 부스트
 public class PlayerMovementController : MonoBehaviour
@@ -103,6 +104,7 @@ public class PlayerMovementController : MonoBehaviour
         if (PlayerManager.instance.onWire) return; // 와이어 액션 중에는 점프 x
 
         jumped = false;
+        // 땅에 착지했거나 접착벽에 붙어있을 떄 점프가 가능
         if (GroundCheck.isGround || PlayerManager.instance.isOnStickyWall) {
             if (Time.time - jumpStartTime > 0.2f) {// 점프한 뒤 착지했으나, 통통 튀겨서 위로 올라가 ground 판정이 안 된 경우를 대비
                 jumpCount = 0;
@@ -112,7 +114,8 @@ public class PlayerMovementController : MonoBehaviour
                 jumpStartTime = Time.time;
             }
         }
-        else if (Input.GetKeyDown(KeyCode.Space)) { // 공중
+        // 공중에서 점프
+        else if (Input.GetKeyDown(KeyCode.Space)) { 
             if (PlayerManager.instance.skill.HasDoubleJump() && jumpCount < 2) {
                 Jump_sub();
                 jumpCount = 2;
@@ -126,18 +129,38 @@ public class PlayerMovementController : MonoBehaviour
         jumpCount++;
         jumped = true;
 
-        // 접착벽에 붙어 있다면
+        // 접착벽에 붙어 있다면 전용 점프 로직
         if (PlayerManager.instance.isOnStickyWall) {
-            float power = 300f;
+            float power = 7f;
             Vector3 normal = PlayerManager.instance.stickyWallNormal;
-            rb.MovePosition(rb.transform.position + normal * 0.5f);
-            rb.AddForce(normal * power, ForceMode.Acceleration);
+            rb.AddForce(normal * power + Vector3.up * 2, ForceMode.VelocityChange);
             
             PlayerManager.instance.isInputLock = true;
             PlayerManager.instance.SetInputLockAfterSeconds(false, 0.3f);
+
+            StartCoroutine(StickyWallJumpRotate());
         }
 
         animator.SetTrigger("Jump");
+    }
+
+    // 접착벽에 점프 후 입력이 제한되는 0.3초 동안, 플레이어가 움직이는 방향으로 Rotate시킴
+    IEnumerator StickyWallJumpRotate()
+    {
+        float _rotateSpeed = 15;
+        float time = 0f;
+
+        while(time < 0.3f) {
+            Vector3 dir = rb.velocity;
+            dir = new Vector3(dir.x, 0, dir.z);
+
+            // 부드럽게 회전 (HamsterMovement의 Rotate)
+            Quaternion targetRotation = Quaternion.LookRotation(-dir, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed);
+
+            yield return null;
+            time += Time.deltaTime;
+        }
     }
 
 

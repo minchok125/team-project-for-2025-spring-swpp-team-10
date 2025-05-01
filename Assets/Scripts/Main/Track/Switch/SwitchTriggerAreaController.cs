@@ -35,7 +35,7 @@ public class SwitchTriggerAreaController : MonoBehaviour
         {
             // 충돌 속도 계산 (여기서는 들어온 오브젝트의 속도 사용)
             // 좀 더 정확하려면 충돌 시점의 상대 속도 등을 계산할 수 있지만, 보통은 이것으로 충분
-            float speed = interactingRb.velocity.magnitude;
+            float speed = -interactingRb.velocity.y;
 
             // switchController에게 상태 전환 시도 요청
             switchController.AttemptToggle(this.gameObject, speed);

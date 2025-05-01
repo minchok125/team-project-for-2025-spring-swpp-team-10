@@ -7,7 +7,7 @@ public class TreadmillController : MonoBehaviour
 {
     [Header("벨트 이동 속도 (물리)")]
     [Tooltip("벨트 위의 Rigidbody에 가할 속도 (유닛/초)")]
-    public float beltSpeed = 2f;
+    public float beltSpeed = 6f;
 
     [Header("텍스처 스크롤 속도")]
     [Tooltip("벨트 텍스처가 얼마나 빠르게 흐르는지")]
@@ -40,13 +40,14 @@ public class TreadmillController : MonoBehaviour
     void FixedUpdate()
     {
         // 벨트 위의 모든 Rigidbody에 속도 추가
-        Vector3 beltDir = transform.right; // 벨트 전진 방향: 오브젝트의 로컬 X축
+        Vector3 beltDir = -transform.right; // 벨트 전진 방향: 오브젝트의 로컬 X축
         foreach (var body in bodiesOnBelt)
         {
             if (body == null) continue;
-            Vector3 v = body.velocity;
-            v += beltDir * beltSpeed;
-            body.velocity = v;
+            body.MovePosition(body.transform.position + beltDir * beltSpeed * Time.fixedDeltaTime);
+            // Vector3 v = body.velocity;
+            // v += beltDir * beltSpeed;
+            // body.velocity = v;
         }
     }
 
