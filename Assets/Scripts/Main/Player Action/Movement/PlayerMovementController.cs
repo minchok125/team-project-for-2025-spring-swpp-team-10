@@ -40,7 +40,7 @@ public class PlayerMovementController : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI velocityTxt;
 
-
+    public Vector3 lastVelocity { get; private set; }
     private Rigidbody rb;
     private int jumpCount;
 
@@ -86,6 +86,8 @@ public class PlayerMovementController : MonoBehaviour
         Gliding();
 
         AddExtraForce();
+
+        lastVelocity = rb.velocity;
     }
 
 
