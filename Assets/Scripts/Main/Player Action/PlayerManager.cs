@@ -19,8 +19,14 @@ public class PlayerManager : MonoBehaviour
     public bool onWire; // 와이어 발사 중이면 true
     public bool isGliding; // 글라이딩 중이면 true
     public bool isBoosting; // 부스터 중이면 true
+
     public bool isInsideFan; // 선풍기 바람 영역 안에 있으면 true
     public Vector3 fanDirection; // 선풍기 바람의 방향벡터 (바람맞고 있지 않다면 Vector3.zero)
+
+    public bool isOnStickyWall; // 접착벽에 접착 중이면 true
+    public Vector3 stickyWallNormal; // 접착벽의 노말벡터 (normalized)
+
+    public bool isInputLock; // 입력을 막아놓은 상태면 true
 
     public Vector3 moveDir; // 현재 Input에 의해 이동하려는 방향 (Input이 없으면 Vector3.zero)
 
@@ -59,9 +65,43 @@ public class PlayerManager : MonoBehaviour
         Vector3 rightVec = new Vector3(cam.right.x, 0, cam.right.z).normalized;
         Vector3 moveVec = (forwardVec * ver + rightVec * hor).normalized;
 
+        // 접착벽에서는 이동 방향이 제한됨
+        if (isOnStickyWall) {
+            moveVec = GetStickyMoveVec(moveVec);
+        }
+
         return moveVec;
     }
 
+
+    // moveVec에서 StickyWall의 법선벡터와 평행한 성분 제거
+    private Vector3 GetStickyMoveVec(Vector3 moveVec)
+    {
+        // 벽의 법선벡터에서 y축 성분 제거
+        float normalMag = Vector3.Dot(Vector3.up, stickyWallNormal);
+        stickyWallNormal = (stickyWallNormal - Vector3.up * normalMag).normalized;
+
+        // moveVec에서 StickyWall의 노말벡터와 평행한 성분 제거
+        normalMag = Vector3.Dot(moveVec, stickyWallNormal);
+        moveVec = (moveVec - stickyWallNormal * normalMag).normalized;
+        //Debug.Log(moveVec);
+        return moveVec;
+    }
+
+
+    public void SetInputLockAfterSeconds(bool isLock, float time)
+    {
+        if (isLock) Invoke(nameof(SetInputLockTrue), time);
+        else Invoke(nameof(SetInputLockFalse), time);
+    }
+    private void SetInputLockTrue()
+    {
+        isInputLock = true;
+    }
+    private void SetInputLockFalse()
+    {
+        isInputLock = false;
+    }
 
 
     public void ModeConvert()
