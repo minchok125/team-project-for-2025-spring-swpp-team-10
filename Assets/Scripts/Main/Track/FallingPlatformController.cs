@@ -13,7 +13,7 @@ public class FallingPlatformController : MonoBehaviour
     [SerializeField] private float maxDownLength = 20f;
     [Tooltip("플랫폼이 움직이는 속도")]
     [SerializeField] private float speed = 5f;
-    [Tooltip("속도가 목표값으로 얼마나 빠르게 수렴하는지 조절")]
+    [Tooltip("속도가 목표값으로 얼마나 빠르게 수렴하는지 조절 (속도가 변하는 속도)")]
     [SerializeField] private float lerpSpeed = 2f;
 
     

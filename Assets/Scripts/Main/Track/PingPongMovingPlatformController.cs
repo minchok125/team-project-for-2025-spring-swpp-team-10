@@ -6,6 +6,7 @@ using UnityEngine;
 public class PingPongMovingPlatformController : MonoBehaviour
 {
     public enum Type { Transform, Vector3 }
+    [Tooltip("Vector3: start, end 위치를 왔다갔다\nTransform: start, end에 할당한 오브젝트의 위치를 왔다갔다")]
     public Type inputType;
     public Transform start, end;
     public Vector3 startVec, endVec;

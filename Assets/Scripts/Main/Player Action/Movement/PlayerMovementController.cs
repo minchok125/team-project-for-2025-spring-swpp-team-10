@@ -82,6 +82,8 @@ public class PlayerMovementController : MonoBehaviour
             animator.SetBool("IsWalking", isMoving);
 
         Gliding();
+
+        AddExtraForce();
     }
 
 
@@ -141,16 +143,43 @@ public class PlayerMovementController : MonoBehaviour
 
     void Gliding()
     {
-        if (PlayerManager.instance.isGliding) {
-            Rigidbody rb = GetComponent<Rigidbody>();
-            Vector3 antiGravity = -0.8f * rb.mass * Physics.gravity;
-            if (rb.velocity.y > 0)
-                antiGravity = 0.4f * rb.mass * Physics.gravity;
-            rb.AddForce(antiGravity);
-            if (rb.velocity.y < -7)
-                rb.velocity = new Vector3(rb.velocity.x, -7, rb.velocity.z);
-        }
+        // if (PlayerManager.instance.isGliding) {
+        //     Rigidbody rb = GetComponent<Rigidbody>();
+        //     Vector3 antiGravity = -0.8f * rb.mass * Physics.gravity;
+        //     if (rb.velocity.y > 0)
+        //         antiGravity = 0.4f * rb.mass * Physics.gravity;
+        //     rb.AddForce(antiGravity);
+        //     if (rb.velocity.y < -7)
+        //         rb.velocity = new Vector3(rb.velocity.x, -7, rb.velocity.z);
+        // }
         glidingMesh.SetActive(PlayerManager.instance.isGliding);
+    }
+
+
+    // 오브젝트와 상호작용할 때 외적으로 힘을 주는 로직을 관리
+    void AddExtraForce()
+    {
+        if (PlayerManager.instance.isGliding) {
+            Vector3 antiGravity;
+            // 평상시 글라이딩
+            if (!PlayerManager.instance.isInsideFan) {
+                antiGravity = -0.8f * rb.mass * Physics.gravity;
+                if (rb.velocity.y > 0) // 속도가 위로 향할 때도 감속
+                    antiGravity = 0.4f * rb.mass * Physics.gravity;
+                
+                if (rb.velocity.y > -7)
+                    rb.AddForce(antiGravity);
+                else 
+                    rb.velocity = new Vector3(rb.velocity.x, -7, rb.velocity.z); // y방향으로 등속으로 떨어짐
+            }
+            // 선풍기 안에서 글라이딩
+            else {
+                antiGravity = -1f * rb.mass * Physics.gravity; // 중력 완전 상쇄
+                if (PlayerManager.instance.fanDirection.y <= 0.1f) // 선풍기 방향이 아랫방향이라면 약간씩은 중력에 의해 떨어지게 하기
+                    antiGravity = -0.95f * rb.mass * Physics.gravity;
+                rb.AddForce(antiGravity);
+            }
+        }
     }
     
 
