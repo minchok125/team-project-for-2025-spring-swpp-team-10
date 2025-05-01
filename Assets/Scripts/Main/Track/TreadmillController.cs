@@ -40,7 +40,7 @@ public class TreadmillController : MonoBehaviour
     void FixedUpdate()
     {
         // 벨트 위의 모든 Rigidbody에 속도 추가
-        Vector3 beltDir = -transform.right; // 벨트 전진 방향: 오브젝트의 로컬 X축
+        Vector3 beltDir = transform.right; // 벨트 전진 방향: 오브젝트의 로컬 X축
         foreach (var body in bodiesOnBelt)
         {
             if (body == null) continue;
