@@ -5,7 +5,6 @@ using TMPro;
 // 점프, 글라이딩, 부스트
 public class PlayerMovementController : MonoBehaviour
 {
-    
     [SerializeField] private Vector3 initPos;
 
     [Header("References")]
@@ -74,9 +73,11 @@ public class PlayerMovementController : MonoBehaviour
             velocityTxt.text = $"Velocity : {rb.velocity.magnitude:F1}\n({rb.velocity.x:F1},{rb.velocity.y:F1},{rb.velocity.z:F1})";
     }
 
+    bool isMoving = false;
     void FixedUpdate()
     {
-        bool isMoving = curMovement.Move();
+        if (!PlayerManager.instance.isInputLock)
+            isMoving = curMovement.Move();
 
         if (!PlayerManager.instance.isBall) 
             animator.SetBool("IsWalking", isMoving);
@@ -102,7 +103,7 @@ public class PlayerMovementController : MonoBehaviour
         if (PlayerManager.instance.onWire) return; // 와이어 액션 중에는 점프 x
 
         jumped = false;
-        if (GroundCheck.isGround) {
+        if (GroundCheck.isGround || PlayerManager.instance.isOnStickyWall) {
             if (Time.time - jumpStartTime > 0.2f) {// 점프한 뒤 착지했으나, 통통 튀겨서 위로 올라가 ground 판정이 안 된 경우를 대비
                 jumpCount = 0;
             }
@@ -124,6 +125,17 @@ public class PlayerMovementController : MonoBehaviour
         rb.AddForce(Vector3.up * jumpPower * PlayerManager.instance.skill.GetJumpForceRate(), ForceMode.Acceleration);
         jumpCount++;
         jumped = true;
+
+        // 접착벽에 붙어 있다면
+        if (PlayerManager.instance.isOnStickyWall) {
+            float power = 300f;
+            Vector3 normal = PlayerManager.instance.stickyWallNormal;
+            rb.MovePosition(rb.transform.position + normal * 0.5f);
+            rb.AddForce(normal * power, ForceMode.Acceleration);
+            
+            PlayerManager.instance.isInputLock = true;
+            PlayerManager.instance.SetInputLockAfterSeconds(false, 0.3f);
+        }
 
         animator.SetTrigger("Jump");
     }
