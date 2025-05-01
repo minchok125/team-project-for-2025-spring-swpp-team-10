@@ -5,14 +5,16 @@ using UnityEngine;
 // https://jeonhw.tistory.com/17, https://gps-homepage.tistory.com/16 참고
 public class CameraController : MonoBehaviour
 {
-    public static float zoom { get; private set; } = 10f; // 줌 거리
+    public static float zoom { get {return currentDistance;} }
+    
 
     [SerializeField] private Transform point;
     [SerializeField] private float rotSpeed = 15f;
     [SerializeField] private float zoomSpeed = 5f;
     [SerializeField] private float zoomMinDist = 1.5f, zoomMaxDist = 30f;
 
-    private float currentDistance; // 현재 카메라 거리
+    private static float currentDistance; // 현재 카메라 거리
+    private float zoomDist = 10f; // 줌 거리
     private float smoothSpeed = 5f; // 부드럽게 이동할 속도
 
     private LayerMask objLayer; // Player 레이어를 제외한 모든 레이어
@@ -22,7 +24,7 @@ public class CameraController : MonoBehaviour
     {
         int playerLayerIndex = LayerMask.NameToLayer("Player");
         objLayer = ~(1 << playerLayerIndex); // Player 레이어를 제외한 모든 레이어
-        currentDistance = zoom;
+        currentDistance = zoomDist;
     }
 
     void Rotate()
@@ -48,17 +50,17 @@ public class CameraController : MonoBehaviour
     {
         float scroll = Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
 
-        zoom -= scroll;
-        zoom = Mathf.Clamp(zoom, zoomMinDist, zoomMaxDist);
+        zoomDist -= scroll;
+        zoomDist = Mathf.Clamp(zoomDist, zoomMinDist, zoomMaxDist);
     }
 
     void CameraUpdate()
     {
-        float targetDistance = zoom;
+        float targetDistance = zoomDist;
 
-        if (Physics.Raycast(point.position, -point.forward, out var hit, zoom, objLayer)) {
+        if (Physics.Raycast(point.position, -point.forward, out var hit, zoomDist, objLayer)) {
             float dis = Vector3.Distance(hit.point, point.position) - 1f;
-            targetDistance = Mathf.Clamp(dis, zoomMinDist, zoom);
+            targetDistance = Mathf.Clamp(dis, zoomMinDist, zoomDist);
             if (targetDistance < currentDistance) // 장애물로 인해 카메라를 땡겨야 한다면 즉시 땡김
                 currentDistance = targetDistance;
         }
