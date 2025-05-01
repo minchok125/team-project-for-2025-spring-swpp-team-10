@@ -7,13 +7,13 @@ public class StickyWallController : MonoBehaviour
 {
     [Header("--- 접착 설정 ---")]
     [Tooltip("특정 태그를 가진 오브젝트만 붙게 하려면 태그를 입력하세요. 비워두면 Rigidbody가 있는 모든 오브젝트가 붙습니다.")]
-    public string stickyTag = ""; // 예: "Player", "Grabbable" 등
+    public string stickyTag = "Player"; // 예: "", "Player", "Grabbable" 등
 
     [Tooltip("연결이 끊어지는 데 필요한 최소 힘. Infinity로 설정하면 힘으로 끊어지지 않습니다.")]
-    public float breakForce = 1000f; // 값을 조절하여 필요한 강도 설정
+    public float breakForce = 100f; // 값을 조절하여 필요한 강도 설정
 
     [Tooltip("연결이 끊어지는 데 필요한 최소 토크(회전력). Infinity로 설정하면 힘으로 끊어지지 않습니다.")]
-    public float breakTorque = 1000f; // 값을 조절하여 필요한 강도 설정
+    public float breakTorque = 100f; // 값을 조절하여 필요한 강도 설정
 
     // --- 내부 변수 ---
     private FixedJoint currentJoint = null; // 현재 연결된 조인트 참조

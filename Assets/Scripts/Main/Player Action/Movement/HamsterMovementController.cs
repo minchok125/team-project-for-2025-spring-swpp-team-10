@@ -27,7 +27,7 @@ public class HamsterMovementController : MonoBehaviour, IMovement
 
     public void OnUpdate()
     {
-        if (GroundCheck.isGround) col.material = hamsterGround;
+        if (GroundCheck.isGround && !PlayerManager.instance.isOnStickyWall) col.material = hamsterGround;
         else col.material = hamsterJump;
 
         moveDir = PlayerManager.instance.moveDir;
@@ -36,17 +36,35 @@ public class HamsterMovementController : MonoBehaviour, IMovement
 
 
     float rotateSpeed = 15f;
+    // private void Rotate()
+    // {
+    //     // 수평 속도가 거의 없으면 회전하지 않음
+    //     Vector3 flatVel = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+    //     if (flatVel.sqrMagnitude < 0.1f) return;
+
+    //     // 바라볼 방향 (y축 고정)
+    //     Quaternion targetRotation = Quaternion.LookRotation(-flatVel.normalized, Vector3.up);
+
+    //     // 부드럽게 회전
+    //     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
+    // }
+
     private void Rotate()
     {
-        // 수평 속도가 거의 없으면 회전하지 않음
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-        if (flatVel.sqrMagnitude < 0.1f) return;
+        if (PlayerManager.instance.moveDir == Vector3.zero)
+            return;
+
+        Vector3 moveDir = PlayerManager.instance.moveDir;
 
         // 바라볼 방향 (y축 고정)
-        Quaternion targetRotation = Quaternion.LookRotation(-flatVel.normalized, Vector3.up);
+        Quaternion targetRotation = Quaternion.LookRotation(-moveDir.normalized, Vector3.up);
 
         // 부드럽게 회전
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
+        float _rotateSpeed = rotateSpeed;
+        if (PlayerManager.instance.isOnStickyWall)
+            _rotateSpeed *= 2.5f;
+
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed);
     }
 
 
