@@ -4,16 +4,20 @@ public class SwitchController : MonoBehaviour
 {
     [Header("--- 연결 오브젝트 ---")]
     [Tooltip("처음 보이는 '안 눌린' 상태의 시각적 오브젝트")]
-    public GameObject unpressedVisualObject;
+    [SerializeField] private GameObject unpressedVisualObject;
 
     [Tooltip("눌렸을 때 보일 '눌린' 상태의 시각적 오브젝트")]
-    public GameObject pressedVisualObject;
+    [SerializeField] private GameObject pressedVisualObject;
 
     [Tooltip("'안 눌린' 상태를 누르는 영역을 감지하는 트리거 오브젝트")]
-    public GameObject triggerAreaA; // 안 눌린 상태(A)를 누르는 트리거
+    [SerializeField] private GameObject triggerAreaA; // 안 눌린 상태(A)를 누르는 트리거
 
     [Tooltip("'눌린' 상태를 누르는 영역을 감지하는 트리거 오브젝트")]
-    public GameObject triggerAreaB; // 눌린 상태(B)를 누르는 트리거 (다른 쪽이 높아졌을 때)
+    [SerializeField] private GameObject triggerAreaB; // 눌린 상태(B)를 누르는 트리거 (다른 쪽이 높아졌을 때)
+
+    [Tooltip("'눌린' 상태를 누르는 영역을 감지하는 트리거 오브젝트")]
+    [SerializeField] private ISwitchListener switchListener;
+
 
     [Header("--- 설정 ---")]
     [Tooltip("스위치를 작동시키는 데 필요한 최소 충돌 속도(충격량)")]
@@ -30,6 +34,15 @@ public class SwitchController : MonoBehaviour
         isPressed = startsPressed;
         UpdateVisuals(); // 초기 시각적 상태 설정
     }
+
+
+    void Update()
+    {
+        // 스위치 이벤트 리스너의 함수 호출
+        if (isPressed) switchListener?.OnStay();
+        else switchListener?.OffStay();
+    }
+
 
     /// <summary>
     /// 트리거 영역으로부터 호출되어 스위치 상태 전환을 시도하는 함수.
@@ -70,6 +83,7 @@ public class SwitchController : MonoBehaviour
         {
             isPressed = !isPressed; // 상태 반전
             UpdateVisuals();
+            InvokeSwitchStateEvents();
             Debug.Log($"스위치 상태 변경! 현재 상태: {(isPressed ? "눌림" : "안 눌림")}");
         }
     }
@@ -86,6 +100,21 @@ public class SwitchController : MonoBehaviour
         if (pressedVisualObject != null)
         {
             pressedVisualObject.SetActive(isPressed);
+        }
+    }
+
+    /// <summary>
+    /// 스위치 상태 변화에 따라 적절한 리스너 이벤트를 호출합니다.
+    /// </summary>
+    void InvokeSwitchStateEvents()
+    {
+        if (isPressed) {
+            switchListener.OffEnd();
+            switchListener.OnStart();
+        }
+        else {
+            switchListener.OnEnd();
+            switchListener.OffStart();
         }
     }
 }

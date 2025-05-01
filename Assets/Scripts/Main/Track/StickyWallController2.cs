@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class StickyWallController2 : MonoBehaviour
 {
+    [Header("원본 오브젝트보다 살짝 큰 자식 오브젝트를 만들고, 여기에 원본 모델을 \n복사해 Renderer를 끄고, Collider를 Trigger로 설정해 주세요.\n해당 영역은 접착벽을 감지하는 영역이 됩니다.\n이 스크립트는 자식 오브젝트에 부착합니다.")]
     [Header("--- 접착 설정 ---")]
     [Tooltip("특정 태그를 가진 오브젝트만 붙게 하려면 태그를 입력하세요. 비워두면 Rigidbody가 있는 모든 오브젝트가 붙습니다.")]
     public string stickyTag = ""; // 예: "Player", "Grabbable" 등
@@ -11,6 +12,13 @@ public class StickyWallController2 : MonoBehaviour
     // --- 내부 변수 ---
     private FixedJoint currentJoint = null; // 현재 연결된 조인트 참조
     private Rigidbody connectedBody = null; // 현재 연결된 리지드바디 참조
+
+
+    void Start()
+    {
+        Collider col = GetComponent<Collider>();
+        col.isTrigger = true;
+    }
 
     //void OnCollisionEnter(Collision collision)
     void OnTriggerEnter(Collider other)
@@ -51,48 +59,52 @@ public class StickyWallController2 : MonoBehaviour
     }
 
     // 플레이어가 이동할 방향 반환. 방향이 존재한다면 true
-    bool TryGetPlayerDir(out Vector3 playerDir)
-    {
-        playerDir = Vector3.zero;
+    // bool TryGetPlayerDir(out Vector3 playerDir)
+    // {
+    //     playerDir = Vector3.zero;
 
-        RaycastHit hit;
-        if (!TryGetAttachedStickyWall(out hit, connectedBody.transform.right))
-            if (!TryGetAttachedStickyWall(out hit, connectedBody.transform.forward))
-                return false;
+    //     RaycastHit hit;
+    //     if (!TryGetAttachedStickyWall(out hit, connectedBody.transform.right))
+    //         if (!TryGetAttachedStickyWall(out hit, connectedBody.transform.forward))
+    //             return false;
 
-        // 접착벽의 법선벡터가 (0, y, 0)
-        if (Mathf.Abs(hit.normal.x) < 1e-5f && Mathf.Abs(hit.normal.z) < 1e-5f)
-            return false;
+    //     // 접착벽의 법선벡터가 (0, y, 0)
+    //     if (Mathf.Abs(hit.normal.x) < 1e-5f && Mathf.Abs(hit.normal.z) < 1e-5f)
+    //         return false;
 
-        // hit.normal : 접착벽의 법선벡터
-        // hit.normal와 수직이면서 y성분이 0인 벡터 B 구하기
-        // playerDir = (Bx, 0, Bz), 조건: Ax * Bx + Az * Bz = 0
-        // 임의로 Bz = 1로 두고 Bx 계산
-        if (Mathf.Abs(hit.normal.x) < 1e-5f){
-            // hit.normal.x가 0일 경우, Bx = 1, Bz = 0으로 고정
-            playerDir = new Vector3(1f, 0f, 0f);
-        }
-        else {
-            float Bz = 1f;
-            float Bx = -hit.normal.z / hit.normal.x * Bz;
-            playerDir = new Vector3(Bx, 0f, Bz).normalized;
-        }
+    //     // hit.normal : 접착벽의 법선벡터
+    //     // hit.normal와 수직이면서 y성분이 0인 벡터 B 구하기
+    //     // playerDir = (Bx, 0, Bz), 조건: Ax * Bx + Az * Bz = 0
+    //     // 임의로 Bz = 1로 두고 Bx 계산
+    //     if (Mathf.Abs(hit.normal.x) < 1e-5f){
+    //         // hit.normal.x가 0일 경우, Bx = 1, Bz = 0으로 고정
+    //         playerDir = new Vector3(1f, 0f, 0f);
+    //     }
+    //     else {
+    //         float Bz = 1f;
+    //         float Bx = -hit.normal.z / hit.normal.x * Bz;
+    //         playerDir = new Vector3(Bx, 0f, Bz).normalized;
+    //     }
 
-        float dir = Vector3.Dot(connectedBody.velocity, playerDir);
-        // 현재 이동 방향 쪽으로 회전
-        if (dir < 0)
-            playerDir *= -1;
+    //     float dir = Vector3.Dot(connectedBody.velocity, playerDir);
+    //     // 현재 이동 방향 쪽으로 회전
+    //     if (dir < 0)
+    //         playerDir *= -1;
 
-        Debug.Log("normal: " + hit.normal);
-        Debug.Log("dir: " + playerDir);
+    //     Debug.Log("normal: " + hit.normal);
+    //     Debug.Log("dir: " + playerDir);
 
-        return true;
-    }
+    //     return true;
+    // }
 
     void OnTriggerStay(Collider other) 
     {
         // 현재 참조 중인 객체와 다르면 반환
         if (other.attachedRigidbody != connectedBody)
+            return;
+
+        // 접착벽에서 점프를 해서 입력에 락 걸림
+        if (PlayerManager.instance.isInputLock)
             return;
 
         connectedBody.velocity = new Vector3(connectedBody.velocity.x, 0, connectedBody.velocity.z);

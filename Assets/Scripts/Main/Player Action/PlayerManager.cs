@@ -18,11 +18,14 @@ public class PlayerManager : MonoBehaviour
     public bool onWire; // 와이어 발사 중이면 true
     public bool isGliding; // 글라이딩 중이면 true
     public bool isBoosting; // 부스터 중이면 true
+
     public bool isInsideFan; // 선풍기 바람 영역 안에 있으면 true
     public Vector3 fanDirection; // 선풍기 바람의 방향벡터 (바람맞고 있지 않다면 Vector3.zero)
+
     public bool isOnStickyWall; // 접착벽에 접착 중이면 true
     public Vector3 stickyWallNormal; // 접착벽의 노말벡터 (normalized)
-    public bool isInputLock; // 입력을 막아놓으면 true
+
+    public bool isInputLock; // 입력을 막아놓은 상태면 true
 
     public Vector3 moveDir; // 현재 Input에 의해 이동하려는 방향 (Input이 없으면 Vector3.zero)
 
