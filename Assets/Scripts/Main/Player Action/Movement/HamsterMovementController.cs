@@ -5,9 +5,9 @@ using UnityEngine;
 public class HamsterMovementController : MonoBehaviour, IMovement
 {
     [Tooltip("걷는 속도")]
-    private float walkVelocity = 8;
+    [SerializeField] private float walkVelocity = 8;
     [Tooltip("뛰는 속도")]
-    private float runVelocity = 16;
+    [SerializeField] private float runVelocity = 16;
 
     [Header("PhysicMaterial")]
     [Tooltip("땅에 있을 때 PhysicMaterial")]
@@ -92,10 +92,5 @@ public class HamsterMovementController : MonoBehaviour, IMovement
             HamsterWireController.grabRb.velocity = new Vector3(rb.velocity.x, HamsterWireController.grabRb.velocity.y, rb.velocity.z);
 
         return moveDir != Vector3.zero && rb.velocity.sqrMagnitude > 0.1f;
-    }
-
-    public void OnShift()
-    {
-
     }
 }

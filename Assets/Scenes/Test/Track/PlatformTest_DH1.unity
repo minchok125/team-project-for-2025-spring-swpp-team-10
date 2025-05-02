@@ -4929,8 +4929,8 @@ Transform:
   m_GameObject: {fileID: 1615249827}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.06, y: 1.06, z: 1.06}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1.06, y: 0.97, z: 1.06}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1850578024}
   m_RootOrder: 0
@@ -5109,7 +5109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d2525b3ad2d4f04a9a0cc5c81d528dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounceStrength: 1.5
+  bounceStrengthHamster: 1.6
+  bounceStrengthBall: 1.27
 --- !u!65 &1645399004
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5545,6 +5546,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e2457d6c25a71f43a21f35b445c1e83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movePower: 6000
+  maxVelocity: 20
 --- !u!114 &1660489793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5557,6 +5560,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b5743a6351efba47ae28946128a0d49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  walkVelocity: 8
+  runVelocity: 16
   hamsterGround: {fileID: 13400000, guid: e05b397de4d099444a2ccd11f5f27195, type: 2}
   hamsterJump: {fileID: 13400000, guid: 27859fd26c96fd84f867f66f7f9dab80, type: 2}
 --- !u!114 &1660489794

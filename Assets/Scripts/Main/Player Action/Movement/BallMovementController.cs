@@ -6,9 +6,9 @@ public class BallMovementController : MonoBehaviour, IMovement
 {
 
     [Tooltip("이동 시 가해지는 힘")]
-    private float movePower = 2000;
+    [SerializeField] private float movePower = 2000;
     [Tooltip("최대 속도")]
-    private float maxVelocity = 20;
+    [SerializeField] private float maxVelocity = 20;
 
 
     private Vector3 moveDir;
@@ -58,11 +58,14 @@ public class BallMovementController : MonoBehaviour, IMovement
         float addSpeed, accelSpeed, currentSpeed;
         float speedRate = PlayerManager.instance.skill.GetSpeedRate();
 
-        currentSpeed = Vector2.Dot(new Vector2(rb.velocity.x, rb.velocity.z), new Vector2(moveDir.x, moveDir.z));
+        float cos = Vector2.Dot(new Vector2(rb.velocity.x, rb.velocity.z).normalized, new Vector2(moveDir.x, moveDir.z));
+        currentSpeed = cos * new Vector2(rb.velocity.x, rb.velocity.z).magnitude;
         addSpeed = maxVelocity * speedRate - currentSpeed;
         if (addSpeed <= 0)
             return true;
-        accelSpeed = Mathf.Min(addSpeed, movePower * Time.fixedDeltaTime);
+
+        float magnitude = 2 - cos; // 현재 속도와 가려는 방향의 각도 차이가 많이 날수록 힘을 크게 줌
+        accelSpeed = magnitude * Mathf.Min(addSpeed, movePower * Time.fixedDeltaTime);
         rb.AddForce(moveDir * accelSpeed * speedRate, ForceMode.Acceleration);
 
         return moveDir != Vector3.zero;

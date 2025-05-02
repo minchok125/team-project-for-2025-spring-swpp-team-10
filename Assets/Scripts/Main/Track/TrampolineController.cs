@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TrampolineController : MonoBehaviour
 {
     [Header("Values")]
-    [Tooltip("¹Ý¹ß °è¼ö")]
-    public float bounceStrength = 1.5f;
+    [Tooltip("ï¿½Ý¹ï¿½ ï¿½ï¿½ï¿½")]
+    public float bounceStrengthHamster = 1.6f;
+    public float bounceStrengthBall = 1.27f;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -17,11 +16,12 @@ public class TrampolineController : MonoBehaviour
 
             var tracker = collision.gameObject.GetComponent<PlayerMovementController>();
 
-            // Ãæµ¹ Á÷ÀüÀÇ ÇÃ·¹ÀÌ¾îÀÇ ¼Óµµ ÃßÀû
+            // ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½
             Vector3 preVelocity = tracker != null ? tracker.lastVelocity : rb.velocity;
 
-            // Ãæµ¹ Á÷ÈÄ ÇÃ·¹ÀÌ¾îÀÇ yÃà ¼Óµµ º¯°æ
+            // ï¿½æµ¹ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ yï¿½ï¿½ ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½
             Vector3 newVel = preVelocity;
+            float bounceStrength = PlayerManager.instance.isBall ? bounceStrengthBall : bounceStrengthHamster;
             newVel.y = Mathf.Abs(newVel.y) * bounceStrength;
             rb.velocity = newVel;
         }
