@@ -20,8 +20,11 @@ public class BallMovementController : MonoBehaviour, IMovement
 
 
 
+    public Vector3 prevPlatformMovement; // PlayerMovementController에서 받아오는 변수. 공이 밟고 있는 플랫폼의 이동속도를 받아옴
+
     private Vector3 moveDir;
     private Vector3 prevPosition;
+    private Vector3 prevFixedPosition; // FixedUpdate 쪽에서 계산하는 prevPosition
     private Rigidbody rb;
 
 
@@ -29,6 +32,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     {
         rb = GetComponent<Rigidbody>();
         prevPosition = transform.position;
+        prevFixedPosition = transform.position;
     }
 
     public void OnUpdate()
@@ -36,7 +40,6 @@ public class BallMovementController : MonoBehaviour, IMovement
         moveDir = PlayerManager.instance.moveDir;
 
         StickyWallAngularDragSetting();
-        RotateBasedOnMovement();
 
         prevPosition = transform.position;
     }
@@ -59,12 +62,13 @@ public class BallMovementController : MonoBehaviour, IMovement
     }
 
 
+    
     void RotateBasedOnMovement()
     {
         if (PlayerManager.instance.onWire && !GroundCheck.isGround) return;
 
-        Vector3 currentPosition = transform.position;
-        Vector3 delta = currentPosition - prevPosition;
+        Vector3 currentPosition = rb.transform.position;
+        Vector3 delta = (currentPosition - prevFixedPosition) - prevPlatformMovement;
 
         if (delta.magnitude > 0.001f)
         {
@@ -75,6 +79,8 @@ public class BallMovementController : MonoBehaviour, IMovement
 
             transform.Rotate(rotationAxis, rotationSpeed * rotateFactor, Space.World);
         }
+
+        prevFixedPosition = currentPosition;
     }
     
 
@@ -106,6 +112,8 @@ public class BallMovementController : MonoBehaviour, IMovement
 
         // 계산해 놓은 건 같이 넘기기
         SustainBoost(dirOrthogonalMoveDir);
+
+        RotateBasedOnMovement();
 
         return moveDir != Vector3.zero;
     }
