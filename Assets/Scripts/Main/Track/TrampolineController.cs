@@ -6,7 +6,7 @@ public class TrampolineController : MonoBehaviour
 {
     [Header("Values")]
     [Tooltip("반발 계수")]
-    public float bounceStrength = 1.2f;
+    public float bounceStrength = 1.5f;
 
     private void OnCollisionEnter(Collision collision)
     {
