@@ -5335,7 +5335,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -25.93}
+  m_AnchoredPosition: {x: 0, y: -25.930054}
   m_SizeDelta: {x: 1000, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1419791353
@@ -6727,7 +6727,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c683722accebc54c9ec7edde93833c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isJumping: 0
   isMoving: 0
+  moveDir: {x: 0, y: 0, z: 0}
   isBall: 0
   onWire: 0
   isGliding: 0
@@ -6737,7 +6739,6 @@ MonoBehaviour:
   isOnStickyWall: 0
   stickyWallNormal: {x: 0, y: 0, z: 0}
   isInputLock: 0
-  moveDir: {x: 0, y: 0, z: 0}
   skill: {fileID: 0}
 --- !u!114 &1660489787
 MonoBehaviour:
@@ -6783,7 +6784,7 @@ MonoBehaviour:
   damper: 1
   mass: 10
   retractorSpeed: 16
-  kuuaaaForce: 6000
+  shortenForce: 6000
 --- !u!114 &1660489790
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6832,6 +6833,7 @@ MonoBehaviour:
   wireMovePower: 20
   burstBoostPower: 15
   sustainedBoostPower: 60
+  prevPlatformMovement: {x: 0, y: 0, z: 0}
 --- !u!114 &1660489793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9113,7 +9115,7 @@ MonoBehaviour:
     zb: 1
     x: 20
     y: 0
-    z: -54
+    z: -70
     moveTime: 1
     intervalAfterMove: 0.5
     isCustomCurve: 0
@@ -9147,7 +9149,7 @@ MonoBehaviour:
     zb: 1
     x: 30
     y: 0
-    z: -65
+    z: -80
     moveTime: 1
     intervalAfterMove: 0.5
     isCustomCurve: 0
