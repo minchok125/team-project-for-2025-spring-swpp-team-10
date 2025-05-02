@@ -48,7 +48,7 @@ public class ModeConverterController : MonoBehaviour
             Invoke(nameof(ChangeToSphere_AfterSeconds), 0.4f);
 
             rb.MovePosition(transform.position + Vector3.up * 0.5f);
-            rb.drag = 0.5f;
+            rb.drag = 1f;
 
             rb.constraints &= ~RigidbodyConstraints.FreezeRotationX;
             rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;

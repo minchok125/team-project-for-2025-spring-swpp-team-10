@@ -112,8 +112,10 @@ public class StickyWallController2 : MonoBehaviour
 
         RaycastHit hit;
         if (!TryGetAttachedStickyWall(out hit, connectedBody.transform.right))
-            if (!TryGetAttachedStickyWall(out hit, connectedBody.transform.forward)) // 좌우에 없다면 앞뒤로 검사
+            if (!TryGetAttachedStickyWall(out hit, connectedBody.transform.forward)) { // 좌우에 없다면 앞뒤로 검사
+                Debug.LogWarning("StickyWall : 주변에 접착벽 없음");
                 return;
+            }
         
         PlayerManager.instance.stickyWallNormal = hit.normal;
         float force = PlayerManager.instance.isBall ? 200 : 50;
@@ -158,7 +160,6 @@ public class StickyWallController2 : MonoBehaviour
             hit = leftHit;
         }
         else {
-            Debug.LogWarning("StickyWall : 양쪽에 물체 없음");
             hit = leftHit;
             return false;
         }

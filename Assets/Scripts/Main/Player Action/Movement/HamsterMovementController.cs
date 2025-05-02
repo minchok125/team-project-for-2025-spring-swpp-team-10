@@ -30,10 +30,9 @@ public class HamsterMovementController : MonoBehaviour, IMovement
         // hamsterGround: 마찰력O, hamsterJump: 마찰력X
         // 마찰력O : 땅, 접착벽에서 움직임 멈춤
         // 마찰력X : 공중, 접착벽에서 움직일 때
-        if (!PlayerManager.instance.isBall)
-            if (GroundCheck.isGround && !PlayerManager.instance.isOnStickyWall) col.material = hamsterGround;
-            else if (PlayerManager.instance.isOnStickyWall && !PlayerManager.instance.isMoving) col.material = hamsterGround; // 접착벽에서 안 움직이면 마찰력 높임
-            else col.material = hamsterJump;
+        if (GroundCheck.isGround && !PlayerManager.instance.isOnStickyWall) col.material = hamsterGround;
+        else if (PlayerManager.instance.isOnStickyWall && !PlayerManager.instance.isMoving) col.material = hamsterGround; // 접착벽에서 안 움직이면 마찰력 높임
+        else col.material = hamsterJump;
 
         moveDir = PlayerManager.instance.moveDir;
         Rotate();

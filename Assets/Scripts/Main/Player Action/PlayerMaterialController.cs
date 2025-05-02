@@ -13,7 +13,7 @@ public class PlayerMaterialController : MonoBehaviour
 
     void Start()
     {
-        Renderer[] rds = GetComponentsInChildren<Renderer>();
+        Renderer[] rds = GetComponentsInChildren<Renderer>(true); // true: 비활성화된 자식도 검색
         mts = new Material[rds.Length];
 
         for(int i = 0; i < rds.Length; i++) {
