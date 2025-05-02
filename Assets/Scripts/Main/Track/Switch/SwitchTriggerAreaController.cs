@@ -4,7 +4,7 @@ using UnityEngine;
 public class SwitchTriggerAreaController : MonoBehaviour
 {
     [Tooltip("연결된 SwitchController 스크립트")]
-    public SwitchController switchController;
+    [SerializeField] private SwitchController switchController;
 
     private Collider triggerCollider;
 

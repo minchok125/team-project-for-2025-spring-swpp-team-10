@@ -36,8 +36,8 @@ public class PlayerWireController : MonoBehaviour
     private bool isExtendWire;
     private bool prevIsExtendWire;
 
-    private float shortenStartTime; // 수축버튼 누른 시간
-    private float extendStartTime; // extend버튼 누른 시간
+    private float shortenStartTime; // shorten 버튼 누른 시간
+    private float extendStartTime; // extend 버튼 누른 시간
 
 
     private void Awake()
@@ -104,6 +104,12 @@ public class PlayerWireController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        DoRetractor();
+    }
+
+    // 와이어 감기/풀기 동작
+    private void DoRetractor()
+    {
         if (shortenStartTime > extendStartTime) {
             if (isShortenWireFast) {
                 ShortenWire(true);
@@ -129,6 +135,40 @@ public class PlayerWireController : MonoBehaviour
         prevIsShortenWireFast = isShortenWireFast;
         prevIsShortenWireSlow = isShortenWireSlow;
         prevIsExtendWire = isExtendWire;
+    }
+
+
+    private void ShortenWire(bool isFast)
+    {
+        if (!PlayerManager.instance.onWire)
+            return;
+        
+        Debug.Log("Shorten");
+        currentWire.ShortenWire(isFast);
+    }
+    private void ShortenWireEnd(bool isFast)
+    {
+        if (!PlayerManager.instance.onWire)
+            return;
+        
+        Debug.Log("Shorten End");
+        currentWire.ShortenWireEnd(isFast);
+    }
+    private void ExtendWire()
+    {
+        if (!PlayerManager.instance.onWire) 
+            return;
+
+        Debug.Log("Extend");
+        currentWire.ExtendWire();
+    }
+    private void ExtendWireEnd()
+    {
+        if (!PlayerManager.instance.onWire) 
+            return;
+
+        Debug.Log("Extend End");
+        currentWire.ExtendWireEnd();
     }
 
 
@@ -244,40 +284,6 @@ public class PlayerWireController : MonoBehaviour
         PlayerManager.instance.onWire = false;
         lr.positionCount = 0;
         currentWire.EndShoot();
-    }
-
-
-    private void ShortenWire(bool isFast)
-    {
-        if (!PlayerManager.instance.onWire)
-            return;
-        
-        Debug.Log("Shorten");
-        currentWire.ShortenWire(isFast);
-    }
-    private void ShortenWireEnd(bool isFast)
-    {
-        if (!PlayerManager.instance.onWire)
-            return;
-        
-        Debug.Log("Shorten End");
-        currentWire.ShortenWireEnd(isFast);
-    }
-    private void ExtendWire()
-    {
-        if (!PlayerManager.instance.onWire) 
-            return;
-
-        Debug.Log("Extend");
-        currentWire.ExtendWire();
-    }
-    private void ExtendWireEnd()
-    {
-        if (!PlayerManager.instance.onWire) 
-            return;
-
-        Debug.Log("Extend End");
-        currentWire.ExtendWireEnd();
     }
     
 

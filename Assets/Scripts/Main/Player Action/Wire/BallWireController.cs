@@ -6,8 +6,8 @@ public class BallWireController : MonoBehaviour, IWire
     [SerializeField] private float damper = 1, mass = 10;
     [Tooltip("줄 감기/풀기 속도")]
     [SerializeField] private float retractorSpeed = 16;
-
-    public float kuuaaaForce;
+    [Tooltip("줄 감을 때 플레이어에게 가해지는 힘")]
+    [SerializeField] private float shortenForce = 6000;
 
 
     private bool isUsingRetractor;
@@ -104,14 +104,14 @@ public class BallWireController : MonoBehaviour, IWire
         if (velocityAlongDiff < 0.5f * value)
             rb.velocity += diff * (0.5f * value - velocityAlongDiff);
 
-        // 거리가 1일 때는 0.4*value, 거리가 5 이상일 때는 1*value
-        value = value * Mathf.Lerp(0.4f, 1f, (Mathf.Clamp(sj.maxDistance, 1, 5) - 1) / 4f);
+        // 거리가 1일 때는 0.5*value, 거리가 5 이상일 때는 1*value
+        value = value * Mathf.Lerp(0.5f, 1f, (Mathf.Clamp(sj.maxDistance, 1, 5) - 1) / 4f);
         // 최저 힘 보장
         value = Mathf.Max(12, value);
 
         // diff 방향으로 value 속도까지 속도 상승
         if (velocityAlongDiff < value)
-            rb.AddForce(diff * kuuaaaForce * value / 40f * Time.fixedDeltaTime, ForceMode.Acceleration);
+            rb.AddForce(diff * shortenForce * value / 40f * Time.fixedDeltaTime, ForceMode.Acceleration);
 
         if (sj.maxDistance < 2)
             sj.maxDistance = 2;
