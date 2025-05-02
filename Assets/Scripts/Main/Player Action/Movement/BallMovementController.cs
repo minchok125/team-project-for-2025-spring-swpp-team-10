@@ -10,13 +10,13 @@ public class BallMovementController : MonoBehaviour, IMovement
     [Tooltip("최대 속도")]
     [SerializeField] private float maxVelocity = 15;
     [Tooltip("공중 와이어 액션에서 추가로 가할 힘")]
-    [SerializeField] private float wireMovePower;
+    [SerializeField] private float wireMovePower = 20;
 
     [Header("Boost")]
     [Tooltip("순간 가속")]
-    [SerializeField] private float burstBoostPower = 1000;
+    [SerializeField] private float burstBoostPower = 15;
     [Tooltip("지속적인 가속")]
-    [SerializeField] private float sustainedBoostPower = 400;
+    [SerializeField] private float sustainedBoostPower = 60;
 
 
 

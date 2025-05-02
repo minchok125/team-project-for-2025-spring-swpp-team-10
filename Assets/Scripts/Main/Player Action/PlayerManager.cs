@@ -16,6 +16,7 @@ public class PlayerManager : MonoBehaviour
 
     public bool isJumping; // 점프하고 있으면 true
     public bool isMoving; // 움직이고 있으면 true
+    public Vector3 moveDir; // 현재 Input에 의해 이동하려는 방향 (Input이 없으면 Vector3.zero)
     public bool isBall; // 공 모드이면 true, 햄스터 모드면 false
     public bool onWire; // 와이어 발사 중이면 true
     public bool isGliding; // 글라이딩 중이면 true
@@ -28,8 +29,6 @@ public class PlayerManager : MonoBehaviour
     public Vector3 stickyWallNormal; // 접착벽의 노말벡터 (normalized)
 
     public bool isInputLock; // 입력을 막아놓은 상태면 true
-
-    public Vector3 moveDir; // 현재 Input에 의해 이동하려는 방향 (Input이 없으면 Vector3.zero)
 
     [HideInInspector]
     public PlayerSkillController skill;

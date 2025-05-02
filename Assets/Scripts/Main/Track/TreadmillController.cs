@@ -7,11 +7,11 @@ public class TreadmillController : MonoBehaviour
 {
     [Header("벨트 이동 속도 (물리)")]
     [Tooltip("벨트 위의 Rigidbody에 가할 속도 (유닛/초)")]
-    public float beltSpeed = 6f;
+    [SerializeField] private float beltSpeed = 6f;
 
     [Header("텍스처 스크롤 속도")]
     [Tooltip("벨트 텍스처가 얼마나 빠르게 흐르는지")]
-    public float textureScrollSpeed = 1f;
+    [SerializeField] private float textureScrollSpeed = 1f;
 
     // 벨트 텍스처 스크롤을 위한 렌더러
     private Renderer beltRenderer;
