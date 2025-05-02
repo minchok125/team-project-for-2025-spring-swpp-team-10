@@ -5085,7 +5085,7 @@ MonoBehaviour:
   follow: {fileID: 1660489775}
   offset: {x: 0, y: 1, z: 0}
   isLerp: 1
-  lerpSpeed: 10
+  lerpSpeed: 20
 --- !u!4 &1488844982
 Transform:
   m_ObjectHideFlags: 0
@@ -5897,8 +5897,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d2525b3ad2d4f04a9a0cc5c81d528dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounceStrengthBall: 1.27
-  bounceStrengthHamster: 1.6
+  bounceStrength: 1.6
   maxVelocityY: 50
 --- !u!65 &1645399004
 BoxCollider:
