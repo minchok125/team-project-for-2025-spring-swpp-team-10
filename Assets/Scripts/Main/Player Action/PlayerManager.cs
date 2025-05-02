@@ -14,6 +14,7 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager instance;
 
+    public bool isJumping; // 점프하고 있으면 true
     public bool isMoving; // 움직이고 있으면 true
     public bool isBall; // 공 모드이면 true, 햄스터 모드면 false
     public bool onWire; // 와이어 발사 중이면 true

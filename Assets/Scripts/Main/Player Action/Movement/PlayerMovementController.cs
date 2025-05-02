@@ -27,10 +27,7 @@ public class PlayerMovementController : MonoBehaviour
     public float burstEnergyUsage = 0.2f;
     [Tooltip("부스트 상태가 아닐 때 1초 당 회복되는 에너지")]
     [SerializeField] private float energyRecoveryRatePerSeconds = 0.125f;
-    [Tooltip("순간 가속")]
-    [SerializeField] private float burstBoostPower = 1000;
-    [Tooltip("지속적인 가속")]
-    [SerializeField] private float sustainedBoostPower = 400;
+    private BallMovementController ball;
 
 
     [Header("Gliding")]
@@ -49,8 +46,10 @@ public class PlayerMovementController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         curMovement = GetComponent<HamsterMovementController>();
+        ball = GetComponent<BallMovementController>();
 
         currentBoostEnergy = 1;
+        PlayerManager.instance.isJumping = false;
         PlayerManager.instance.isBoosting = false;
         PlayerManager.instance.isGliding = false;
     }
@@ -65,7 +64,7 @@ public class PlayerMovementController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) || transform.position.y < -100)
             Init();
 
-        Boost();
+        BoostInput();
         BoostEnergyControl();
 
         curMovement.OnUpdate();
@@ -109,7 +108,7 @@ public class PlayerMovementController : MonoBehaviour
     private bool jumped = false; // 현재 프레임에 점프가 발동됐는지
     void Jump()
     {
-        if (PlayerManager.instance.onWire) return; // 와이어 액션 중에는 점프 x
+        // if (PlayerManager.instance.onWire) return; // 와이어 액션 중에는 점프 x
 
         jumped = false;
         // 땅에 착지했거나 접착벽에 붙어있을 떄 점프가 가능
@@ -129,6 +128,9 @@ public class PlayerMovementController : MonoBehaviour
                 jumpCount = 2;
             }
         }
+
+        if (PlayerManager.instance.isJumping && GroundCheck.isGround && Time.time - jumpStartTime > 0.2f)
+            PlayerManager.instance.isJumping = false;
     }
 
     void Jump_sub()
@@ -136,6 +138,7 @@ public class PlayerMovementController : MonoBehaviour
         rb.AddForce(Vector3.up * jumpPower * PlayerManager.instance.skill.GetJumpForceRate(), ForceMode.Acceleration);
         jumpCount++;
         jumped = true;
+        PlayerManager.instance.isJumping = true;
 
         // 접착벽에 붙어 있다면 전용 점프 로직
         if (PlayerManager.instance.isOnStickyWall) {
@@ -232,7 +235,7 @@ public class PlayerMovementController : MonoBehaviour
     }
     
 
-    void Boost()
+    void BoostInput()
     {
         if (!PlayerManager.instance.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0 
                 || !PlayerManager.instance.isBall || !PlayerManager.instance.skill.HasBoost()) {
@@ -240,18 +243,13 @@ public class PlayerMovementController : MonoBehaviour
             return;
         }
 
-        Vector3 vel = rb.velocity.normalized;
-
-        // 지속성 부스트
-        if (PlayerManager.instance.isBoosting) { 
-            rb.AddForce(vel * Time.deltaTime * sustainedBoostPower, ForceMode.Force);
-        }
         // 즉발성 부스트
         if (Input.GetKeyDown(KeyCode.LeftShift) && currentBoostEnergy >= burstEnergyUsage) { 
             PlayerManager.instance.isBoosting = true;
-            rb.AddForce(vel * burstBoostPower, ForceMode.Acceleration);
+            ball.BurstBoost();
             currentBoostEnergy -= burstEnergyUsage;
         }
+        // 지속성 부스트는 BallMovementController에서
     }
 
     // 부스터 게이지 조절

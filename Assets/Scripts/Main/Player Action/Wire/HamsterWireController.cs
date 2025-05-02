@@ -32,7 +32,7 @@ public class HamsterWireController : MonoBehaviour, IWire
     }
 
 
-    public void RopeShoot(RaycastHit hit)
+    public void WireShoot(RaycastHit hit)
     {
         // SpringJoint 세팅
         float dis = Vector3.Distance(transform.position, hit.point);
@@ -59,7 +59,7 @@ public class HamsterWireController : MonoBehaviour, IWire
         }
     }
 
-    public void ShortenRope(bool isFast)
+    public void ShortenWire(bool isFast)
     {
         if (sj.maxDistance <= 1) 
             return;
@@ -72,13 +72,18 @@ public class HamsterWireController : MonoBehaviour, IWire
         if (Vector3.Dot(forceDir, grabRb.velocity) > _retractorMaxSpeed)
             return;
 
-        grabRb.AddForce(forceDir * retractorForce * Time.deltaTime);
+        grabRb.AddForce(forceDir * retractorForce * Time.fixedDeltaTime);
         
         sj.maxDistance = Vector3.Distance(transform.position, hitPoint.position) * 1.1f;
         sj.minDistance = Vector3.Distance(transform.position, hitPoint.position) * 0.9f;
     }
 
-    public void ExtendRope()
+    public void ShortenWireEnd(bool isFast)
+    {
+
+    }
+
+    public void ExtendWire()
     {
         if (sj.maxDistance > grabDistance) 
             return;
@@ -87,13 +92,18 @@ public class HamsterWireController : MonoBehaviour, IWire
         forceDir = new Vector3(forceDir.x, 0, forceDir.z).normalized;
         if (Vector3.Dot(forceDir, grabRb.velocity) > retractorMaxSpeed)
             return;
-        grabRb.AddForce(forceDir * retractorForce * Time.deltaTime);
+        grabRb.AddForce(forceDir * retractorForce * Time.fixedDeltaTime);
         
         sj.maxDistance = Vector3.Distance(transform.position, hitPoint.position) * 1.1f;
         sj.minDistance = Vector3.Distance(transform.position, hitPoint.position) * 0.9f;
     }
 
-    public void RopeUpdate()
+    public void ExtendWireEnd()
+    {
+        
+    }
+
+    public void WireUpdate()
     {
         if (sj == null) return;
 
