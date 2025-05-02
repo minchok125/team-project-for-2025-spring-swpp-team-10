@@ -72,7 +72,13 @@ public class PlayerMovementController : MonoBehaviour
 
         if (velocityTxt != null)
             velocityTxt.text = $"Velocity : {rb.velocity.magnitude:F1}\n({rb.velocity.x:F1},{rb.velocity.y:F1},{rb.velocity.z:F1})";
+
+        // 점프 높이 디버그
+        if (prevVelY > 0 && rb.velocity.y < 0)
+            Debug.Log("최고높이 : " + transform.position.y);
+        prevVelY = rb.velocity.y;
     }
+    float prevVelY = 0;
 
 
     void FixedUpdate()
