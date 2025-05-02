@@ -59,7 +59,7 @@ public class PlayerWireController : MonoBehaviour
             if (Input.GetMouseButtonDown(0)) {
                 WireShoot();
             }
-            if (Input.GetMouseButtonUp(0) && PlayerManager.instance.onWire) {
+            if ((Input.GetMouseButtonUp(0) || !Input.GetMouseButton(0)) && PlayerManager.instance.onWire) {
                 EndShoot();
             }
 
