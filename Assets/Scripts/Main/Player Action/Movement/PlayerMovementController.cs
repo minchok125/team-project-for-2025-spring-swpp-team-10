@@ -285,6 +285,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (collision.collider == curPlatform) {
             rb.MovePosition(rb.transform.position + (collision.transform.position - prevVec));
+            ball.prevPlatformMovement = collision.transform.position - prevVec;
             prevVec = collision.transform.position;
         }
     }
@@ -292,6 +293,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (curPlatform == collision.collider) {
             curPlatform = null;
+            ball.prevPlatformMovement = Vector3.zero;
         }
     }
 

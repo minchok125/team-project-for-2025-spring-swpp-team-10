@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using System.Threading;
 
 public class PlayerSkillController : MonoBehaviour
 {
@@ -84,7 +83,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         if (txt != null) {
             str += newStr;
-            txt.text = $"Speed : {speedRate:F2}x\nJump :  {jumpRate:F2}x\n{newStr}";
+            txt.text = $"Speed : {speedRate:F2}x\nJump :  {jumpRate:F2}x\n{str}";
         }
     }
 }
