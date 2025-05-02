@@ -14,8 +14,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float zoomMinDist = 1.5f, zoomMaxDist = 30f;
 
     private static float currentDistance; // 현재 카메라 거리
-    private float zoomDist = 10f; // 줌 거리
-    private float smoothSpeed = 5f; // 부드럽게 이동할 속도
+    private float zoomDist = 12f; // 줌 거리
+    private float smoothSpeed = 2f; // 부드럽게 이동할 속도
 
     private LayerMask objLayer; // Player 레이어를 제외한 모든 레이어
     private Vector2 m_Input;
@@ -26,6 +26,18 @@ public class CameraController : MonoBehaviour
         objLayer = ~(1 << playerLayerIndex); // Player 레이어를 제외한 모든 레이어
         currentDistance = zoomDist;
     }
+
+    void LateUpdate()
+    {
+        Rotate();
+        Zoom();
+    }
+
+    void FixedUpdate()
+    {
+        CameraUpdate();
+    }
+
 
     void Rotate()
     {
@@ -54,32 +66,38 @@ public class CameraController : MonoBehaviour
         zoomDist = Mathf.Clamp(zoomDist, zoomMinDist, zoomMaxDist);
     }
 
+
+    bool isBallWire = false;
     void CameraUpdate()
     {
         float targetDistance = zoomDist;
+        float _smoothSpeed = smoothSpeed;
 
-        if (Physics.Raycast(point.position, -point.forward, out var hit, zoomDist, objLayer)) {
+        if (PlayerManager.instance.onWire && PlayerManager.instance.isBall) {
+            isBallWire = true;
+
+            targetDistance = Mathf.Max(16, targetDistance);
+            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, 70, 2 * Time.fixedDeltaTime);
+        }
+        else {
+            if (isBallWire && zoomDist < 15)
+                zoomDist = Mathf.Lerp(zoomDist, 16, 0.2f);
+            isBallWire = false;
+
+            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, 60, 0.2f * Time.fixedDeltaTime);
+        }
+
+        if (Physics.Raycast(point.position, -point.forward, out var hit, targetDistance, objLayer)) {
             float dis = Vector3.Distance(hit.point, point.position) - 1f;
-            targetDistance = Mathf.Clamp(dis, zoomMinDist, zoomDist);
+            targetDistance = Mathf.Clamp(dis, zoomMinDist, targetDistance);
             if (targetDistance < currentDistance) // 장애물로 인해 카메라를 땡겨야 한다면 즉시 땡김
                 currentDistance = targetDistance;
         }
 
         // 거리를 부드럽게 보간
-        currentDistance = Mathf.Lerp(currentDistance, targetDistance, Time.fixedDeltaTime * smoothSpeed);
+        currentDistance = Mathf.Lerp(currentDistance, targetDistance, Time.fixedDeltaTime * _smoothSpeed);
 
         Camera.main.transform.position = point.position - point.forward * currentDistance;
         Camera.main.transform.LookAt(point.transform);
-    }
-
-    public void LateUpdate()
-    {
-        Rotate();
-        Zoom();
-    }
-
-    void FixedUpdate()
-    {
-        CameraUpdate();
     }
 }

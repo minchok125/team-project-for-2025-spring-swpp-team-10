@@ -23,6 +23,13 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     {
         col = transform.Find("Hamster Normal").GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
+
+        if (hamsterGround == null) {
+            Debug.LogWarning("HamsterMovementController : PhysicMaterial에서 PlayerHamsterGround를 할당해 주세요");
+        }
+        if (hamsterJump == null) {
+            Debug.LogWarning("HamsterMovementController : PhysicMaterial에서 PlayerHamsterJump를 할당해 주세요");
+        }
     }
 
     public void OnUpdate()

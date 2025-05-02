@@ -18,9 +18,26 @@ public class ObjectProperties : MonoBehaviour
         if (canGrabInBallMode || canGrabInHamsterMode) {
             gameObject.layer = LayerMask.NameToLayer("Attachable");
             gameObject.AddComponent<DrawOutline>();
+
+            if (canGrabInHamsterMode) {
+                if (!TryGetComponent(out Rigidbody rb)) {
+                    Debug.LogWarning(gameObject.name + ": Rigidbody가 없습니다. Rigidbody를 추가합니다.");
+                    AddHamsterObjectRigidbody();
+                }
+            }
         }
         else {
             gameObject.layer = LayerMask.NameToLayer("Default");
         }
+    }
+
+
+    private void AddHamsterObjectRigidbody()
+    {
+        Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+
+        rb.constraints |= RigidbodyConstraints.FreezeRotationX;
+        rb.constraints |= RigidbodyConstraints.FreezeRotationY;
+        rb.constraints |= RigidbodyConstraints.FreezeRotationZ;
     }
 }

@@ -25,11 +25,31 @@ public class PlayerWireController : MonoBehaviour
     public Transform predictionPoint;
 
 
+
+
+    private bool isShortenWireFast;
+    private bool prevIsShortenWireFast;
+
+    private bool isShortenWireSlow;
+    private bool prevIsShortenWireSlow;
+
+    private bool isExtendWire;
+    private bool prevIsExtendWire;
+
+    private float shortenStartTime; // 수축버튼 누른 시간
+    private float extendStartTime; // extend버튼 누른 시간
+
+
     private void Awake()
     {
         WhatIsGrappable = LayerMask.GetMask("Attachable");
         lr = GetComponent<LineRenderer>();
         hitPoint = transform.GetChild(0);
+
+        isShortenWireFast = prevIsShortenWireFast = false;
+        isShortenWireSlow = prevIsShortenWireSlow = false;
+        isExtendWire = prevIsExtendWire = false;
+        shortenStartTime = extendStartTime = -1f;
     }
 
     private void Update()
@@ -37,31 +57,78 @@ public class PlayerWireController : MonoBehaviour
         // UI 위에 마우스가 있지 않을 때만 마우스 클릭 입력 받음
         if (!EventSystem.current.IsPointerOverGameObject()) {
             if (Input.GetMouseButtonDown(0)) {
-                RopeShoot();
+                WireShoot();
             }
             if (Input.GetMouseButtonUp(0) && PlayerManager.instance.onWire) {
                 EndShoot();
             }
-            if (Input.GetMouseButton(1) && PlayerManager.instance.skill.HasRetractor()) {
-                ShortenRope(true); // 빠르게 수축
+
+            if (Input.GetMouseButtonDown(1) && PlayerManager.instance.skill.HasRetractor()) {
+                shortenStartTime = Time.time;
+                isShortenWireFast = true;
+            }
+            if (Input.GetMouseButtonUp(1) && PlayerManager.instance.skill.HasRetractor()) {
+                isShortenWireFast = false;
             }
         }
 
-        if (Input.GetKey(KeyCode.Q) && PlayerManager.instance.skill.HasRetractor()) {
-            ShortenRope(false); // 천천히 수축
-        }
-        if (Input.GetKey(KeyCode.E) && PlayerManager.instance.skill.HasRetractor()) {
-            ExtendRope();
+        if (PlayerManager.instance.skill.HasRetractor()) {
+            if (Input.GetKeyDown(KeyCode.Q)) {
+                shortenStartTime = Time.time;
+                isShortenWireSlow = true;
+            }
+            if (Input.GetKeyUp(KeyCode.Q)) {
+                isShortenWireSlow = false;
+            }
+            if (Input.GetKeyDown(KeyCode.E)) {
+                extendStartTime = Time.time;
+                isExtendWire = true;
+            }
+            if (Input.GetKeyUp(KeyCode.E)) {
+                isExtendWire = false;
+            }
         }
         
         DrawOutline();
-        DrawRope();
+        DrawWire();
         ModeConvert();
     }
 
     private void LateUpdate()
     {
         CheckForSwingPoints();
+    }
+
+
+    
+
+    private void FixedUpdate()
+    {
+        if (shortenStartTime > extendStartTime) {
+            if (isShortenWireFast) {
+                ShortenWire(true);
+            }
+            else if (isShortenWireSlow) {
+                ShortenWire(false);
+            }
+        }
+        else {
+            if (isExtendWire) {
+                ExtendWire();
+            }
+        }
+
+
+        if (prevIsShortenWireFast && !isShortenWireFast)
+            ShortenWireEnd(true);
+        if (prevIsShortenWireSlow && !isShortenWireSlow)
+            ShortenWireEnd(false);
+        if (prevIsExtendWire && !isExtendWire)
+            ExtendWireEnd();
+
+        prevIsShortenWireFast = isShortenWireFast;
+        prevIsShortenWireSlow = isShortenWireSlow;
+        prevIsExtendWire = isExtendWire;
     }
 
 
@@ -116,7 +183,7 @@ public class PlayerWireController : MonoBehaviour
         }
     }
 
-    private void RopeShoot()
+    private void WireShoot()
     {
         // return if predictionHit not found
         if (predictionHit.point == Vector3.zero) return;
@@ -159,7 +226,7 @@ public class PlayerWireController : MonoBehaviour
         lr.SetPosition(1, predictionHit.point);
 
         // 와이어 세팅
-        currentWire.RopeShoot(predictionHit);
+        currentWire.WireShoot(predictionHit);
 
         GrabbedObjectEnter();
     }
@@ -180,28 +247,46 @@ public class PlayerWireController : MonoBehaviour
     }
 
 
-    private void ShortenRope(bool isFast)
+    private void ShortenWire(bool isFast)
     {
         if (!PlayerManager.instance.onWire)
             return;
         
-        currentWire.ShortenRope(isFast);
+        Debug.Log("Shorten");
+        currentWire.ShortenWire(isFast);
     }
-    private void ExtendRope()
+    private void ShortenWireEnd(bool isFast)
+    {
+        if (!PlayerManager.instance.onWire)
+            return;
+        
+        Debug.Log("Shorten End");
+        currentWire.ShortenWireEnd(isFast);
+    }
+    private void ExtendWire()
     {
         if (!PlayerManager.instance.onWire) 
             return;
 
-        currentWire.ExtendRope();
+        Debug.Log("Extend");
+        currentWire.ExtendWire();
+    }
+    private void ExtendWireEnd()
+    {
+        if (!PlayerManager.instance.onWire) 
+            return;
+
+        Debug.Log("Extend End");
+        currentWire.ExtendWireEnd();
     }
     
 
-    private void DrawRope()
+    private void DrawWire()
     {
         if (PlayerManager.instance.onWire) {
             lr.SetPosition(0, transform.position);
             lr.SetPosition(1, hitPoint.position);
-            currentWire.RopeUpdate();
+            currentWire.WireUpdate();
         }
     }
 
@@ -210,6 +295,9 @@ public class PlayerWireController : MonoBehaviour
         if (predictionHit.point != Vector3.zero && predictionHit.collider.gameObject != gameObject) {
             // PullableTarget이며 pull스킬이 없는 경우를 제외
             bool reject = !PlayerManager.instance.isBall && !PlayerManager.instance.skill.HasPullWire();
+            bool isHamsterObj = predictionHit.collider.gameObject.GetComponent<ObjectProperties>()?.canGrabInHamsterMode == true;
+            reject = reject && isHamsterObj;
+
             if (!reject)
                 predictionHit.collider.gameObject.GetComponent<DrawOutline>().Draw();
         }
