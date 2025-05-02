@@ -8,22 +8,56 @@ public class BallMovementController : MonoBehaviour, IMovement
     [Tooltip("이동 시 가해지는 힘")]
     [SerializeField] private float movePower = 2000;
     [Tooltip("최대 속도")]
-    [SerializeField] private float maxVelocity = 20;
+    [SerializeField] private float maxVelocity = 15;
+    
+    [Header("PhysicMaterial")]
+    [Tooltip("마찰력 없는 평상시 PhysicMaterial")]
+    [SerializeField] private PhysicMaterial ball;
+    [Tooltip("마찰력 있는 PhysicMaterial")]
+    [SerializeField] private PhysicMaterial ballSticky;
 
 
+    private SphereCollider col;
     private Vector3 moveDir;
     private Vector3 prevPosition;
+    private Rigidbody rb;
 
 
     private void Start()
     {
+        col = transform.Find("Hamster Ball").GetComponent<SphereCollider>();
+        rb = GetComponent<Rigidbody>();
         prevPosition = transform.position;
     }
 
     public void OnUpdate()
     {
+        // if (PlayerManager.instance.isOnStickyWall && PlayerManager.instance.isMoving) col.material = ballSticky;
+        // else col.material = ball;
+
         moveDir = PlayerManager.instance.moveDir;
+
+        StickyWallAngularDragSetting();
         RotateBasedOnMovement();
+
+        prevPos = transform.position;
+    }
+
+
+    void StickyWallAngularDragSetting()
+    {
+        if (PlayerManager.instance.isOnStickyWall) {
+            if (moveDir == Vector3.zero) {
+                transform.position = prevPos;
+                rb.angularDrag = 200;
+            }
+            else {
+                rb.angularDrag = 0;
+            }
+        }
+        else {
+            rb.angularDrag = 1;
+        }
     }
 
 
@@ -49,18 +83,19 @@ public class BallMovementController : MonoBehaviour, IMovement
     
 
 
-    
+    Vector3 prevPos = Vector3.zero;
+
     // AddForce : https://www.youtube.com/watch?v=8dFDRWCQ3Hs 참고
     public bool Move()
     {
-        Rigidbody rb = GetComponent<Rigidbody>();
+        
 
         float addSpeed, accelSpeed, currentSpeed;
         float speedRate = PlayerManager.instance.skill.GetSpeedRate();
 
         float cos = Vector2.Dot(new Vector2(rb.velocity.x, rb.velocity.z).normalized, new Vector2(moveDir.x, moveDir.z));
         currentSpeed = cos * new Vector2(rb.velocity.x, rb.velocity.z).magnitude;
-        addSpeed = maxVelocity * speedRate - currentSpeed;
+        addSpeed = maxVelocity * 2 * speedRate - currentSpeed;
         if (addSpeed <= 0)
             return true;
 

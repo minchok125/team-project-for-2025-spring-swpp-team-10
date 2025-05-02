@@ -149,6 +149,11 @@ public class PlayerMovementController : MonoBehaviour
             StartCoroutine(StickyWallJumpRotate());
         }
 
+        SetJumpAnimator();
+    }
+
+    public void SetJumpAnimator()
+    {
         animator.SetTrigger("Jump");
     }
 
