@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BallMovementController : MonoBehaviour, IMovement
@@ -7,16 +8,18 @@ public class BallMovementController : MonoBehaviour, IMovement
 
     [Tooltip("이동 시 가해지는 힘")]
     [SerializeField] private float movePower = 6000;
-    [Tooltip("최대 속도")]
-    [SerializeField] private float maxVelocity = 15;
+    [Tooltip("방향키로 이동하는 최대 속도")]
+    [SerializeField] private float maxMoveVelocity = 15;
+    [Tooltip("공 자체가 가질 최대 속도. 이 속도보다 높으면 감속함")]
+    [SerializeField] private float maxBallVelocity = 60;
     [Tooltip("공중 와이어 액션에서 추가로 가할 힘")]
-    [SerializeField] private float wireMovePower = 20;
+    [SerializeField] private float wireMovePower = 12;
 
     [Header("Boost")]
     [Tooltip("순간 가속")]
-    [SerializeField] private float burstBoostPower = 15;
+    [SerializeField] private float burstBoostPower = 12;
     [Tooltip("지속적인 가속")]
-    [SerializeField] private float sustainedBoostPower = 60;
+    [SerializeField] private float sustainedBoostPower = 40;
 
 
 
@@ -40,11 +43,31 @@ public class BallMovementController : MonoBehaviour, IMovement
         moveDir = PlayerManager.instance.moveDir;
 
         StickyWallAngularDragSetting();
+        BallDragSetting();
 
         prevPosition = transform.position;
     }
 
 
+    // rb.drag 설정
+    void BallDragSetting()
+    {
+        if (GroundCheck.isGround) {
+            rb.drag = 1.2f;
+        }
+        else {
+            float maxVel = maxBallVelocity * PlayerManager.instance.skill.GetSpeedRate();
+            if (rb.velocity.sqrMagnitude > maxVel * maxVel) {
+                rb.drag = 1f;
+            }
+            else {
+                rb.drag = 0.2f;
+            }
+        }
+    }
+
+
+    // rb.angularDrag 설정
     void StickyWallAngularDragSetting()
     {
         if (PlayerManager.instance.isOnStickyWall) {
@@ -92,12 +115,14 @@ public class BallMovementController : MonoBehaviour, IMovement
 
         float cos = Vector2.Dot(new Vector2(rb.velocity.x, rb.velocity.z).normalized, new Vector2(moveDir.x, moveDir.z));
         currentSpeed = cos * new Vector2(rb.velocity.x, rb.velocity.z).magnitude;
-        addSpeed = maxVelocity * 2 * speedRate - currentSpeed;
+        addSpeed = maxMoveVelocity * 2 * speedRate - currentSpeed;
         if (addSpeed <= 0)
             return true;
 
         float magnitude = 2 - cos; // 현재 속도와 가려는 방향의 각도 차이가 많이 날수록 힘을 크게 줌
         accelSpeed = magnitude * Mathf.Min(addSpeed, movePower * Time.fixedDeltaTime);
+        if (!GroundCheck.isGround)
+            accelSpeed *= 0.4f;
         rb.AddForce(moveDir * accelSpeed * speedRate, ForceMode.Acceleration);
 
         // 공중 와이어 액션에서 추가로 주는 힘
@@ -166,7 +191,7 @@ public class BallMovementController : MonoBehaviour, IMovement
             Vector3 dirOrthogonalMoveDir = (moveDir - dir * Vector3.Dot(dir, moveDir)).normalized;
             
             dir = (dirOrthogonalMoveDir + rb.velocity.normalized).normalized;
-            Debug.Log(dirOrthogonalMoveDir + "," + dir);
+            
             rb.AddForce(dir * burstBoostPower * speedRate, ForceMode.VelocityChange);
         }
     }
