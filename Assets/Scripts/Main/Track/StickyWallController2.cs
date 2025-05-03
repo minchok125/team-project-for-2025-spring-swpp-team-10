@@ -7,7 +7,7 @@ public class StickyWallController2 : MonoBehaviour
     [Header("원본 오브젝트보다 살짝 큰 자식 오브젝트를 만들고, 여기에 원본 모델을 \n복사해 Renderer를 끄고, Collider를 Trigger로 설정해 주세요.\n해당 영역은 접착벽을 감지하는 영역이 됩니다.\n이 스크립트는 자식 오브젝트에 부착합니다.")]
     [Header("--- 접착 설정 ---")]
     [Tooltip("특정 태그를 가진 오브젝트만 붙게 하려면 태그를 입력하세요. 비워두면 Rigidbody가 있는 모든 오브젝트가 붙습니다.")]
-    public string stickyTag = "Player"; // 예: "Player", "Grabbable" 등
+    [SerializeField] private string stickyTag = "Player"; // 예: "Player", "Grabbable" 등
 
     // --- 내부 변수 ---
     private FixedJoint currentJoint = null; // 현재 연결된 조인트 참조
@@ -20,7 +20,6 @@ public class StickyWallController2 : MonoBehaviour
         col.isTrigger = true;
     }
 
-    //void OnCollisionEnter(Collision collision)
     void OnTriggerEnter(Collider other)
     {
         // 이미 다른 오브젝트와 붙어있다면 새로 붙지 않음 (하나만 붙도록)

@@ -6,7 +6,7 @@ using UnityEngine;
 public class TreadmillTextureScroller : MonoBehaviour
 {
     [Tooltip("벨트 텍스처가 얼마나 빠르게 흐르는지")]
-    public float textureScrollSpeed = 1f;
+    [SerializeField] private float textureScrollSpeed = 1f;
 
     private Renderer beltRenderer;
     private Vector2 currentOffset;

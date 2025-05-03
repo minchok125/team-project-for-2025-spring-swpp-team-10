@@ -19,8 +19,8 @@ public class SkillSelectManager : MonoBehaviour
     void OnEnable()
     {
         if (isFood) {
-            speed.interactable = (skill.GetSpeedRate() == 1);
-            jump.interactable = (skill.GetJumpForceRate() == 1);
+            speed.interactable = true;
+            jump.interactable = true;
         }
         else {
             boost.interactable = !skill.HasBoost();
