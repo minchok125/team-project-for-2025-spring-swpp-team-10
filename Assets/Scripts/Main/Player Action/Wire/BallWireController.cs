@@ -171,8 +171,10 @@ public class BallWireController : MonoBehaviour, IWire
                 if (prevIsGround) {
                     waitUntilFall = false;
                     // 점프중이 아니라면 바로 와이어 길이 고정 
-                    if (!PlayerManager.instance.isJumping)
-                        sj.maxDistance = (hitPoint.transform.position - transform.position).magnitude;
+                    if (!PlayerManager.instance.isJumping) {
+                        sj.maxDistance = (hitPoint.transform.position - rb.transform.position).magnitude;
+                        sj.minDistance = Mathf.Max(Mathf.Max(2, sj.maxDistance - 1.5f), sj.maxDistance * 0.9f);
+                    }
                     else
                         waitUntilFall = true;
                 }
@@ -180,7 +182,8 @@ public class BallWireController : MonoBehaviour, IWire
                 else if (waitUntilFall) {
                     // 아래로 떨어지기 시작했으면 와이어 길이 고정
                     if (rb.velocity.y < 0) {
-                        sj.maxDistance = (hitPoint.transform.position - transform.position).magnitude;
+                        sj.maxDistance = (hitPoint.transform.position - rb.transform.position).magnitude;
+                        sj.minDistance = Mathf.Max(Mathf.Max(2, sj.maxDistance - 1.5f), sj.maxDistance * 0.9f);
                         waitUntilFall = false;
                     }
                     // 아니라면 점프가 정상적으로 되도록 와이어 최소 길이 설정
@@ -191,7 +194,14 @@ public class BallWireController : MonoBehaviour, IWire
             }
         }
 
-        //Debug.Log((hitPoint.position - transform.position).magnitude);
         prevIsGround = GroundCheck.isGround;
+
+        // 디버그
+        if (debugMax != sj.maxDistance || debugMin != sj.minDistance) {
+            Debug.Log($"time: {Time.time:F2} | wire max: {sj.maxDistance:F3}, min: {sj.minDistance:F3}");
+            debugMax = sj.maxDistance;
+            debugMin = sj.minDistance;
+        }
     }
+    float debugMax = -2, debugMin = -2;
 }
