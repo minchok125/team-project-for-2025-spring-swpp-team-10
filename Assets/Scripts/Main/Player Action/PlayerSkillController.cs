@@ -1,12 +1,12 @@
 using UnityEngine;
 using TMPro;
-using System.Threading;
 
 public class PlayerSkillController : MonoBehaviour
 {
     private int skill;
     private float speedRate; // 기본 이동 속도에 대한 배율
     private float jumpRate; // 기본 점프 높이에 대한 배율 (실제 주는 힘의 배율은 sqrt(jumpRate))
+    string str;
 
 
     [Header("Debug")]
@@ -17,9 +17,10 @@ public class PlayerSkillController : MonoBehaviour
     {
         skill = 0;
         speedRate = jumpRate = 1;
+        str = "";
 
         if (txt != null)
-            txt.text = "";
+            AddText("");
     }
 
 
@@ -38,13 +39,13 @@ public class PlayerSkillController : MonoBehaviour
     {
         speedRate += rate;
 
-        AddText("\nSpeed");
+        AddText("");
     }
     public void AddJumpHeightRate(float rate)
     {   
         jumpRate += rate;
 
-        AddText("\nJump");
+        AddText("");
     }
     public void UnlockBoost() 
     {
@@ -78,9 +79,11 @@ public class PlayerSkillController : MonoBehaviour
     }
 
 
-    private void AddText(string str)
+    private void AddText(string newStr)
     {
-        if (txt != null)
-            txt.text += str;
+        if (txt != null) {
+            str += newStr;
+            txt.text = $"Speed : {speedRate:F2}x\nJump :  {jumpRate:F2}x\n{str}";
+        }
     }
 }
