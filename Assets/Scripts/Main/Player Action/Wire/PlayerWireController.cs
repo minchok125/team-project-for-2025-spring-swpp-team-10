@@ -3,13 +3,18 @@ using UnityEngine.EventSystems;
 
 public class PlayerWireController : MonoBehaviour
 {
-    private LayerMask WhatIsGrappable; // 훅을 걸 수 있는 오브젝트의 레이어
+    [SerializeField] private LayerMask WhatIsGrappable; // 훅을 걸 수 있는 오브젝트의 레이어
 
     private LineRenderer lr;
     private GameObject grabObject = null;
 
     // 해당 스크립트를 가지는 오브젝트의 0번째 자식으로 빈 오브젝트를 할당하기. 와이어를 걸었을 때 후크를 부착하는 포인트가 됨
     public Transform hitPoint { get; private set; } // 와이어가 부착된 위치
+
+    public Transform hitPoint1, hitPoint2;
+    public bool isHitPoint1;
+
+    private Transform playerGroundCheck; // hitPoint의 부모
 
     private IWire currentWire;
 
@@ -20,7 +25,7 @@ public class PlayerWireController : MonoBehaviour
 
     [Header("Prediction")]
     private RaycastHit predictionHit;
-    public float predictionSphereCastRadius = 5f;
+    public float predictionSphereCastRadius = 10f;
     [Tooltip("와이어 설치 위치를 표시하는 점 오브젝트")]
     public Transform predictionPoint;
 
@@ -44,10 +49,16 @@ public class PlayerWireController : MonoBehaviour
 
     private void Awake()
     {
-        WhatIsGrappable = LayerMask.GetMask("Attachable");
+        WhatIsGrappable = LayerMask.GetMask("Default", "Attachable");
         lr = GetComponent<LineRenderer>();
         rb = GetComponent<Rigidbody>();
-        hitPoint = transform.GetChild(0);
+
+        hitPoint1 = new GameObject("HitPoint1").transform;
+        hitPoint2 = new GameObject("HitPoint2").transform;
+        playerGroundCheck = GameObject.Find("PlayerGroundCheck").transform;
+        hitPoint1.SetParent(playerGroundCheck);
+        hitPoint2.SetParent(playerGroundCheck);
+        hitPoint = hitPoint1;
 
         isShortenWireFast = prevIsShortenWireFast = false;
         isShortenWireSlow = prevIsShortenWireSlow = false;
@@ -220,7 +231,6 @@ public class PlayerWireController : MonoBehaviour
         if (realHitPoint != Vector3.zero) {
             ObjectProperties obj = predictionHit.collider.gameObject.GetComponent<ObjectProperties>();
             if (obj == null) {
-                Debug.LogWarning(predictionHit.collider.gameObject.name + " 오브젝트에 ObjectProperties 스크립트가 없습니다.");
                 canGrab = false;
             }
             // 이미 잡고 있는 오브젝트일 때
@@ -276,6 +286,7 @@ public class PlayerWireController : MonoBehaviour
         PlayerManager.instance.isGliding = false;
         PlayerManager.instance.onWire = true;
 
+        hitPoint = isHitPoint1 ? hitPoint1 : hitPoint2;
         hitPoint.SetParent(grabObject.transform);
         hitPoint.position = predictionHit.point;
 
@@ -299,11 +310,12 @@ public class PlayerWireController : MonoBehaviour
         GrabbedObjectExit();
 
         grabObject = null;
-        hitPoint.SetParent(this.transform);
-        hitPoint.localPosition = Vector3.zero;
+        hitPoint.SetParent(playerGroundCheck);
         PlayerManager.instance.onWire = false;
         lr.positionCount = 0;
         currentWire.EndShoot();
+
+        isHitPoint1 = !isHitPoint1;
     }
     
 
@@ -325,7 +337,7 @@ public class PlayerWireController : MonoBehaviour
             reject = reject && isHamsterObj;
 
             if (!reject)
-                predictionHit.collider.gameObject.GetComponent<DrawOutline>().Draw();
+                predictionHit.collider.gameObject.GetComponent<DrawOutline>()?.Draw();
         }
 
         // 현재 잡고 있는 오브젝트

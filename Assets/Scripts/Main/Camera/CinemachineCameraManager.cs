@@ -7,7 +7,7 @@ public class CinemachineCameraManager : MonoBehaviour
     [Header("CM")]
     [SerializeField] private CinemachineFreeLook hamsterCam;
     [SerializeField] private CinemachineFreeLook ballCam;
-    [SerializeField] private CinemachineFreeLook ballWireCam;
+    [SerializeField] private CinemachineFreeLook ballWireCam1, ballWireCam2;
 
     [Header("Value")]
     [Tooltip("카메라 줌 최소")]
@@ -34,6 +34,8 @@ public class CinemachineCameraManager : MonoBehaviour
     private float mouseDefaultVerticalSensitivity = 8f;
     private float mouseDefaultHorizontalSensitivity = 1000f;
 
+    private PlayerWireController player;
+
 
     private struct CamRig {
         public Vector2[] rig;
@@ -54,6 +56,8 @@ public class CinemachineCameraManager : MonoBehaviour
         isBallWireCam = false;
         targetZoom = actualZoom = zoomDefault;
 
+        player = GameObject.Find("Player").GetComponent<PlayerWireController>();
+
         hamsterRig = new CamRig(new Vector2(hamsterCam.m_Orbits[0].m_Height, hamsterCam.m_Orbits[0].m_Radius),
                                 new Vector2(hamsterCam.m_Orbits[1].m_Height, hamsterCam.m_Orbits[1].m_Radius),
                                 new Vector2(hamsterCam.m_Orbits[2].m_Height, hamsterCam.m_Orbits[2].m_Radius));
@@ -62,9 +66,9 @@ public class CinemachineCameraManager : MonoBehaviour
                             new Vector2(ballCam.m_Orbits[1].m_Height, ballCam.m_Orbits[1].m_Radius),
                             new Vector2(ballCam.m_Orbits[2].m_Height, ballCam.m_Orbits[2].m_Radius));
 
-        ballWireRig = new CamRig(new Vector2(ballWireCam.m_Orbits[0].m_Height, ballWireCam.m_Orbits[0].m_Radius),
-                                 new Vector2(ballWireCam.m_Orbits[1].m_Height, ballWireCam.m_Orbits[1].m_Radius),
-                                 new Vector2(ballWireCam.m_Orbits[2].m_Height, ballWireCam.m_Orbits[2].m_Radius));
+        ballWireRig = new CamRig(new Vector2(ballWireCam1.m_Orbits[0].m_Height, ballWireCam1.m_Orbits[0].m_Radius),
+                                 new Vector2(ballWireCam1.m_Orbits[1].m_Height, ballWireCam1.m_Orbits[1].m_Radius),
+                                 new Vector2(ballWireCam1.m_Orbits[2].m_Height, ballWireCam1.m_Orbits[2].m_Radius));
     }
 
 
@@ -94,7 +98,7 @@ public class CinemachineCameraManager : MonoBehaviour
     {
         SetHeightRadius(hamsterCam, hamsterRig);
         SetHeightRadius(ballCam, ballRig);
-        SetHeightRadius(ballWireCam, ballWireRig);
+        SetHeightRadius(ballWireCam1, ballWireRig);
     }
 
     void SetHeightRadius(CinemachineFreeLook cam, CamRig camRig)
@@ -117,8 +121,11 @@ public class CinemachineCameraManager : MonoBehaviour
 
         // 활성화할 카메라
         if (PlayerManager.instance.isBall) {
-            if (isBallWireCam) {
-                FreeLookCamChange(ballWireCam);
+            if (isBallWireCam && player.isHitPoint1) {
+                FreeLookCamChange(ballWireCam1);
+            }
+            else if (isBallWireCam && !player.isHitPoint1) {
+                FreeLookCamChange(ballWireCam2);
             }
             else {
                 FreeLookCamChange(ballCam);
@@ -130,10 +137,10 @@ public class CinemachineCameraManager : MonoBehaviour
 
 
         // 카메라 민감도 설정
-        hamsterCam.m_YAxis.m_MaxSpeed = ballCam.m_YAxis.m_MaxSpeed = ballWireCam.m_YAxis.m_MaxSpeed
+        hamsterCam.m_YAxis.m_MaxSpeed = ballCam.m_YAxis.m_MaxSpeed = ballWireCam1.m_YAxis.m_MaxSpeed
             = mouseDefaultVerticalSensitivity * mouseVerticalSensitivity;
 
-        hamsterCam.m_XAxis.m_MaxSpeed = ballCam.m_XAxis.m_MaxSpeed = ballWireCam.m_XAxis.m_MaxSpeed
+        hamsterCam.m_XAxis.m_MaxSpeed = ballCam.m_XAxis.m_MaxSpeed = ballWireCam1.m_XAxis.m_MaxSpeed
             = mouseDefaultHorizontalSensitivity * mouseHorizontalSensitivity;
 
         // 카메라가 뚝 끊기니까 그거 해결해 보려고 한 것
@@ -149,38 +156,37 @@ public class CinemachineCameraManager : MonoBehaviour
                 freeLookCam.m_YAxis.Value = y;
             }
 
-            if (activeCam.VirtualCameraGameObject == ballWireCam.VirtualCameraGameObject) {
-                ballWireCam.m_YAxisRecentering.m_enabled = true;
+            if (activeCam.VirtualCameraGameObject == ballWireCam1.VirtualCameraGameObject) {
+                ballWireCam1.m_YAxisRecentering.m_enabled = true;
             }
             else {
-                ballWireCam.m_YAxisRecentering.m_enabled = false;
+                ballWireCam1.m_YAxisRecentering.m_enabled = false;
             }
 
             x = freeLookCam.m_XAxis.Value;
             y = freeLookCam.m_YAxis.Value;
         }
 
-        txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\nball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\nballWire:({ballWireCam.m_XAxis.Value:F2},{ballWireCam.m_YAxis.Value:F2})\n{s}";
-    
+        txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\nball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\nballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
     }
 
     void FixedUpdate()
     {
-        ICinemachineCamera activeCam = brain.ActiveVirtualCamera;
+        // ICinemachineCamera activeCam = brain.ActiveVirtualCamera;
 
-        if (activeCam is CinemachineFreeLook freeLookCam) {
-            if (!changed && 
-                (Mathf.Abs(Mathf.DeltaAngle(freeLookCam.m_XAxis.Value, x)) > 20f || Mathf.Abs(freeLookCam.m_YAxis.Value - y) > 0.15f)) {
-                Debug.Log($"({freeLookCam.m_XAxis.Value},{freeLookCam.m_YAxis.Value}) => ({x},{y})");
-                freeLookCam.m_XAxis.Value = x;
-                freeLookCam.m_YAxis.Value = y;
-            }
+        // if (activeCam is CinemachineFreeLook freeLookCam) {
+        //     if (!changed && 
+        //         (Mathf.Abs(Mathf.DeltaAngle(freeLookCam.m_XAxis.Value, x)) > 20f || Mathf.Abs(freeLookCam.m_YAxis.Value - y) > 0.15f)) {
+        //         Debug.Log($"({freeLookCam.m_XAxis.Value},{freeLookCam.m_YAxis.Value}) => ({x},{y})");
+        //         freeLookCam.m_XAxis.Value = x;
+        //         freeLookCam.m_YAxis.Value = y;
+        //     }
 
-            x = freeLookCam.m_XAxis.Value;
-            y = freeLookCam.m_YAxis.Value;
-        }
+        //     x = freeLookCam.m_XAxis.Value;
+        //     y = freeLookCam.m_YAxis.Value;
+        // }
 
-        txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_XAxis.Value:F2})\nball:({ballCam.m_XAxis.Value:F2},{ballCam.m_XAxis.Value:F2})\nballWire:({ballWireCam.m_XAxis.Value:F2},{ballWireCam.m_XAxis.Value:F2})";
+        // txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_XAxis.Value:F2})\nball:({ballCam.m_XAxis.Value:F2},{ballCam.m_XAxis.Value:F2})\nballWire:({ballWireCam.m_XAxis.Value:F2},{ballWireCam.m_XAxis.Value:F2})";
     }
 
     void FreeLookCamChange(CinemachineFreeLook curCam)
@@ -192,7 +198,6 @@ public class CinemachineCameraManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("Changed");
         curCam.MoveToTopOfPrioritySubqueue();
     }
 }
