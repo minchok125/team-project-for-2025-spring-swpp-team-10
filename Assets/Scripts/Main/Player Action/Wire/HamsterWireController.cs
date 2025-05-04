@@ -34,6 +34,8 @@ public class HamsterWireController : MonoBehaviour, IWire
 
     public void WireShoot(RaycastHit hit)
     {
+        hitPoint = GetComponent<PlayerWireController>().hitPoint;
+        
         // SpringJoint 세팅
         float dis = Vector3.Distance(transform.position, hit.point);
 
