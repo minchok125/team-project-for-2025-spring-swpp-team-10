@@ -237,6 +237,10 @@ public class PlayerWireController : MonoBehaviour
             else if (predictionHit.collider.gameObject == grabObject) {
                 canGrab = false;
             }
+            // 공, 햄스터 모드 둘 다 잡을 수 없는 오브젝트일 때
+            else if (!obj.canGrabInBallMode && !obj.canGrabInHamsterMode) {
+                canGrab = false;
+            }
             // 햄스터 그랩이 가능한 오브젝트이며, 햄스터 와이어는 없을 때
             else if (obj.canGrabInHamsterMode && !PlayerManager.instance.skill.HasPullWire()) {
                 bool isBall = PlayerManager.instance.isBall;
@@ -250,7 +254,7 @@ public class PlayerWireController : MonoBehaviour
         if (!canGrab) {
             predictionPoint.gameObject.SetActive(false);
             predictionHit.point = Vector3.zero;
-        }   
+        }
     }
 
     private void WireShoot()
@@ -377,7 +381,7 @@ public class PlayerWireController : MonoBehaviour
 
     private void GrabbedObjectStay()
     {
-        grabObject.GetComponent<DrawOutline>().Draw();
+        grabObject.GetComponent<DrawOutline>()?.Draw();
     }
 
     private void GrabbedObjectExit()

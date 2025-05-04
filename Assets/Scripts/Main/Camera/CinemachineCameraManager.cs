@@ -2,10 +2,12 @@ using UnityEngine;
 using Cinemachine;
 using TMPro;
 
+[RequireComponent(typeof(CMFreeLookSetting))]
 public class CinemachineCameraManager : MonoBehaviour
 {
     [Header("CM")]
     [SerializeField] private CinemachineFreeLook hamsterCam;
+    [SerializeField] private CinemachineFreeLook hamsterWireCam;
     [SerializeField] private CinemachineFreeLook ballCam;
     [SerializeField] private CinemachineFreeLook ballWireCam1, ballWireCam2;
 
@@ -47,7 +49,7 @@ public class CinemachineCameraManager : MonoBehaviour
         }
     }
 
-    private CamRig hamsterRig, ballRig, ballWireRig;
+    private CamRig hamsterRig, hamsterWireRig, ballRig, ballWireRig;
 
 
     void Start()
@@ -58,17 +60,29 @@ public class CinemachineCameraManager : MonoBehaviour
 
         player = GameObject.Find("Player").GetComponent<PlayerWireController>();
 
-        hamsterRig = new CamRig(new Vector2(hamsterCam.m_Orbits[0].m_Height, hamsterCam.m_Orbits[0].m_Radius),
-                                new Vector2(hamsterCam.m_Orbits[1].m_Height, hamsterCam.m_Orbits[1].m_Radius),
-                                new Vector2(hamsterCam.m_Orbits[2].m_Height, hamsterCam.m_Orbits[2].m_Radius));
+        // hamsterRig = new CamRig(new Vector2(hamsterCam.m_Orbits[0].m_Height, hamsterCam.m_Orbits[0].m_Radius),
+        //                         new Vector2(hamsterCam.m_Orbits[1].m_Height, hamsterCam.m_Orbits[1].m_Radius),
+        //                         new Vector2(hamsterCam.m_Orbits[2].m_Height, hamsterCam.m_Orbits[2].m_Radius));
 
-        ballRig = new CamRig(new Vector2(ballCam.m_Orbits[0].m_Height, ballCam.m_Orbits[0].m_Radius),
-                            new Vector2(ballCam.m_Orbits[1].m_Height, ballCam.m_Orbits[1].m_Radius),
-                            new Vector2(ballCam.m_Orbits[2].m_Height, ballCam.m_Orbits[2].m_Radius));
+        // ballRig = new CamRig(new Vector2(ballCam.m_Orbits[0].m_Height, ballCam.m_Orbits[0].m_Radius),
+        //                     new Vector2(ballCam.m_Orbits[1].m_Height, ballCam.m_Orbits[1].m_Radius),
+        //                     new Vector2(ballCam.m_Orbits[2].m_Height, ballCam.m_Orbits[2].m_Radius));
 
-        ballWireRig = new CamRig(new Vector2(ballWireCam1.m_Orbits[0].m_Height, ballWireCam1.m_Orbits[0].m_Radius),
-                                 new Vector2(ballWireCam1.m_Orbits[1].m_Height, ballWireCam1.m_Orbits[1].m_Radius),
-                                 new Vector2(ballWireCam1.m_Orbits[2].m_Height, ballWireCam1.m_Orbits[2].m_Radius));
+        // ballWireRig = new CamRig(new Vector2(ballWireCam1.m_Orbits[0].m_Height, ballWireCam1.m_Orbits[0].m_Radius),
+        //                          new Vector2(ballWireCam1.m_Orbits[1].m_Height, ballWireCam1.m_Orbits[1].m_Radius),
+        //                          new Vector2(ballWireCam1.m_Orbits[2].m_Height, ballWireCam1.m_Orbits[2].m_Radius));
+
+        hamsterRig = SetCamRig(hamsterCam);
+        hamsterWireRig = SetCamRig(hamsterWireCam);
+        ballRig = SetCamRig(ballCam);
+        ballWireRig = SetCamRig(ballWireCam1);
+    }
+
+    CamRig SetCamRig(CinemachineFreeLook curCam)
+    {
+        return new CamRig(new Vector2(curCam.m_Orbits[0].m_Height, curCam.m_Orbits[0].m_Radius),
+                          new Vector2(curCam.m_Orbits[1].m_Height, curCam.m_Orbits[1].m_Radius),
+                          new Vector2(curCam.m_Orbits[2].m_Height, curCam.m_Orbits[2].m_Radius));
     }
 
 
@@ -97,8 +111,10 @@ public class CinemachineCameraManager : MonoBehaviour
     void SetHeightRadius()
     {
         SetHeightRadius(hamsterCam, hamsterRig);
+        SetHeightRadius(hamsterWireCam, hamsterWireRig);
         SetHeightRadius(ballCam, ballRig);
         SetHeightRadius(ballWireCam1, ballWireRig);
+        SetHeightRadius(ballWireCam2, ballWireRig);
     }
 
     void SetHeightRadius(CinemachineFreeLook cam, CamRig camRig)
@@ -132,15 +148,20 @@ public class CinemachineCameraManager : MonoBehaviour
             }
         }
         else {
-            FreeLookCamChange(hamsterCam);
+            if (PlayerManager.instance.onWire) {
+                FreeLookCamChange(hamsterWireCam);
+            }
+            else {
+                FreeLookCamChange(hamsterCam);
+            }
         }
 
 
         // 카메라 민감도 설정
-        hamsterCam.m_YAxis.m_MaxSpeed = ballCam.m_YAxis.m_MaxSpeed = ballWireCam1.m_YAxis.m_MaxSpeed
+        hamsterCam.m_YAxis.m_MaxSpeed = hamsterWireCam.m_YAxis.m_MaxSpeed = ballCam.m_YAxis.m_MaxSpeed = ballWireCam1.m_YAxis.m_MaxSpeed = ballWireCam2.m_YAxis.m_MaxSpeed
             = mouseDefaultVerticalSensitivity * mouseVerticalSensitivity;
 
-        hamsterCam.m_XAxis.m_MaxSpeed = ballCam.m_XAxis.m_MaxSpeed = ballWireCam1.m_XAxis.m_MaxSpeed
+        hamsterCam.m_XAxis.m_MaxSpeed = hamsterWireCam.m_XAxis.m_MaxSpeed = ballCam.m_XAxis.m_MaxSpeed = ballWireCam1.m_XAxis.m_MaxSpeed = ballWireCam2.m_XAxis.m_MaxSpeed
             = mouseDefaultHorizontalSensitivity * mouseHorizontalSensitivity;
 
         // 카메라가 뚝 끊기니까 그거 해결해 보려고 한 것
@@ -156,18 +177,18 @@ public class CinemachineCameraManager : MonoBehaviour
                 freeLookCam.m_YAxis.Value = y;
             }
 
-            if (activeCam.VirtualCameraGameObject == ballWireCam1.VirtualCameraGameObject) {
-                ballWireCam1.m_YAxisRecentering.m_enabled = true;
-            }
-            else {
-                ballWireCam1.m_YAxisRecentering.m_enabled = false;
-            }
+            // if (activeCam.VirtualCameraGameObject == ballWireCam1.VirtualCameraGameObject) {
+            //     ballWireCam1.m_YAxisRecentering.m_enabled = true;
+            // }
+            // else {
+            //     ballWireCam1.m_YAxisRecentering.m_enabled = false;
+            // }
 
             x = freeLookCam.m_XAxis.Value;
             y = freeLookCam.m_YAxis.Value;
         }
 
-        txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\nball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\nballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
+        //txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\nball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\nballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
     }
 
     void FixedUpdate()
