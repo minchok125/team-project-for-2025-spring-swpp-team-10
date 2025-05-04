@@ -9,7 +9,7 @@ public class PlayerWireController : MonoBehaviour
     private GameObject grabObject = null;
 
     // 해당 스크립트를 가지는 오브젝트의 0번째 자식으로 빈 오브젝트를 할당하기. 와이어를 걸었을 때 후크를 부착하는 포인트가 됨
-    public Transform hitPoint { get; private set; }
+    public Transform hitPoint { get; private set; } // 와이어가 부착된 위치
 
     private IWire currentWire;
 
@@ -24,6 +24,8 @@ public class PlayerWireController : MonoBehaviour
     [Tooltip("와이어 설치 위치를 표시하는 점 오브젝트")]
     public Transform predictionPoint;
 
+    private float camDist;
+    private Rigidbody rb;
 
 
 
@@ -44,6 +46,7 @@ public class PlayerWireController : MonoBehaviour
     {
         WhatIsGrappable = LayerMask.GetMask("Attachable");
         lr = GetComponent<LineRenderer>();
+        rb = GetComponent<Rigidbody>();
         hitPoint = transform.GetChild(0);
 
         isShortenWireFast = prevIsShortenWireFast = false;
@@ -92,6 +95,8 @@ public class PlayerWireController : MonoBehaviour
         DrawOutline();
         DrawWire();
         ModeConvert();
+
+        camDist = (Camera.main.transform.position - rb.transform.position).magnitude;
     }
 
     private void LateUpdate()
@@ -178,13 +183,13 @@ public class PlayerWireController : MonoBehaviour
         Camera cam = Camera.main;
 
         RaycastHit sphereCastHit;
-        Physics.SphereCast(cam.transform.position + cam.transform.forward * CameraController.zoom, 
+        Physics.SphereCast(cam.transform.position + cam.transform.forward * camDist, 
                         predictionSphereCastRadius, cam.transform.forward,
-                        out sphereCastHit, grabDistance + CameraController.zoom, WhatIsGrappable);
+                        out sphereCastHit, grabDistance + camDist, WhatIsGrappable);
 
         RaycastHit raycastHit;
         Physics.Raycast(cam.transform.position, cam.transform.forward,
-                        out raycastHit, grabDistance + CameraController.zoom, WhatIsGrappable);
+                        out raycastHit, grabDistance + camDist, WhatIsGrappable);
 
         Vector3 realHitPoint;
 
@@ -210,17 +215,32 @@ public class PlayerWireController : MonoBehaviour
 
         predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
 
-        // 당기는 오브젝트를 감지했으나 당기는 스킬이 없으면 not found 판정
+        
+        bool canGrab = true;
         if (realHitPoint != Vector3.zero) {
             ObjectProperties obj = predictionHit.collider.gameObject.GetComponent<ObjectProperties>();
             if (obj == null) {
                 Debug.LogWarning(predictionHit.collider.gameObject.name + " 오브젝트에 ObjectProperties 스크립트가 없습니다.");
+                canGrab = false;
             }
+            // 이미 잡고 있는 오브젝트일 때
+            else if (predictionHit.collider.gameObject == grabObject) {
+                canGrab = false;
+            }
+            // 햄스터 그랩이 가능한 오브젝트이며, 햄스터 와이어는 없을 때
             else if (obj.canGrabInHamsterMode && !PlayerManager.instance.skill.HasPullWire()) {
-                predictionPoint.gameObject.SetActive(false);
-                predictionHit.point = Vector3.zero;
+                bool isBall = PlayerManager.instance.isBall;
+                // 현재 공 모드라면, 공 모드에서 못 잡는 오브젝트여야 함. 또는 햄스터 모드여야 함.
+                // 만약 그렇다면 not found 판정
+                if (isBall && !obj.canGrabInBallMode || !isBall) {
+                    canGrab = false;
+                }
             }
         }
+        if (!canGrab) {
+            predictionPoint.gameObject.SetActive(false);
+            predictionHit.point = Vector3.zero;
+        }   
     }
 
     private void WireShoot()
@@ -254,11 +274,10 @@ public class PlayerWireController : MonoBehaviour
         }
 
         PlayerManager.instance.isGliding = false;
+        PlayerManager.instance.onWire = true;
 
         hitPoint.SetParent(grabObject.transform);
         hitPoint.position = predictionHit.point;
-
-        PlayerManager.instance.onWire = true;
 
         // LineRenderer 세팅
         lr.positionCount = 2;
@@ -281,6 +300,7 @@ public class PlayerWireController : MonoBehaviour
 
         grabObject = null;
         hitPoint.SetParent(this.transform);
+        hitPoint.localPosition = Vector3.zero;
         PlayerManager.instance.onWire = false;
         lr.positionCount = 0;
         currentWire.EndShoot();
@@ -330,9 +350,14 @@ public class PlayerWireController : MonoBehaviour
 
     // 와이어로 잡고 있는 오브젝트 관리하기
 
+    private string prevGrabObjectTag;
     private void GrabbedObjectEnter()
     {
-        // 공 모드에서 떨어지는 플랫폼에 와이어를 걸면 떨어트리기
+        // 잡고 있는 오브젝트의 태그 변경
+        prevGrabObjectTag = grabObject.tag;
+        grabObject.tag = "CurAttachedObject";
+
+        // 공 모드에서, 떨어지는 플랫폼에 와이어를 걸면 떨어트리기
         FallingPlatformController fpc = grabObject.GetComponent<FallingPlatformController>();
         if (fpc != null && PlayerManager.instance.isBall)
             fpc.onWire = true;
@@ -345,6 +370,9 @@ public class PlayerWireController : MonoBehaviour
 
     private void GrabbedObjectExit()
     {
+        // 잡고 있던 오브젝트의 태그 되돌리기
+        grabObject.tag = prevGrabObjectTag;
+
         // 공 모드에서 떨어지는 플랫폼에 와이어를 걸면 떨어트리기 종료
         FallingPlatformController fpc = grabObject.GetComponent<FallingPlatformController>();
         if (fpc != null && PlayerManager.instance.isBall)
