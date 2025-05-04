@@ -600,7 +600,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 2
-  wireCamPointDist: 7
+  wireCamPointDist: 5
 --- !u!1 &66573008
 GameObject:
   m_ObjectHideFlags: 0
@@ -6961,7 +6961,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 3
-  wireCamPointDist: 7
+  wireCamPointDist: 5
 --- !u!1 &1121261944
 GameObject:
   m_ObjectHideFlags: 0
@@ -10840,6 +10840,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b2941f2c882f67479e17a1ec88d1525, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  WhatIsGrappable:
+    serializedVersion: 2
+    m_Bits: 0
   hitPoint1: {fileID: 0}
   hitPoint2: {fileID: 0}
   isHitPoint1: 0
