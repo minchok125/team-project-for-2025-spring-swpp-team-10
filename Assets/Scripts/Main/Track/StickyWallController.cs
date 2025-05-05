@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody), typeof(Collider))]
 public class StickyWallController : MonoBehaviour
 {
-    [Header("물체가 딱 붙어서 떨어지지 않는 오브젝트. 탈출 조건: Detach() 외부에서 실행 or 플레이어라면 Space바 입력")]
+    [Header("물체가 딱 붙어서 떨어지지 않는 오브젝트. \n탈출 조건: Detach() 외부에서 실행 or 플레이어라면 Space바 입력")]
     [Header("--- 접착 설정 ---")]
     [Tooltip("특정 태그를 가진 오브젝트만 붙게 하려면 태그를 입력하세요. 비워두면 Rigidbody가 있는 모든 오브젝트가 붙습니다.")]
     [SerializeField] private string[] stickyTags = new string[] {"Player"}; // 예: "", "Player", "Grabbable" 등
@@ -78,7 +78,7 @@ public class StickyWallController : MonoBehaviour
 
     void Update()
     {
-        if (currentJoint != null)
+        if (currentJoint != null && isPlayer)
         {
             if (Input.GetKeyDown(KeyCode.Space)) {
                 Detach();
