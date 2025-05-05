@@ -114,8 +114,8 @@ public class PlayerMovementController : MonoBehaviour
         // if (PlayerManager.instance.onWire) return; // 와이어 액션 중에는 점프 x
 
         jumped = false;
-        // 땅에 착지했거나 접착벽에 붙어있을 떄 점프가 가능
-        if (GroundCheck.isGround || PlayerManager.instance.isOnStickyWall) {
+        // 땅에 착지했거나 슬라이드벽/접착벽에 붙어있을 떄 점프가 가능
+        if (GroundCheck.isGround || PlayerManager.instance.isOnSlideWall || PlayerManager.instance.isOnStickyWall) {
             if (Time.time - jumpStartTime > 0.2f) {// 점프한 뒤 착지했으나, 통통 튀겨서 위로 올라가 ground 판정이 안 된 경우를 대비
                 jumpCount = 0;
             }
@@ -143,16 +143,16 @@ public class PlayerMovementController : MonoBehaviour
         jumped = true;
         PlayerManager.instance.isJumping = true;
 
-        // 접착벽에 붙어 있다면 전용 점프 로직
-        if (PlayerManager.instance.isOnStickyWall) {
+        // 슬라이드벽에 붙어 있다면 전용 점프 로직
+        if (PlayerManager.instance.isOnSlideWall) {
             float power = 7f;
-            Vector3 normal = PlayerManager.instance.stickyWallNormal;
+            Vector3 normal = PlayerManager.instance.slideWallNormal;
             rb.AddForce(normal * power + Vector3.up * 2, ForceMode.VelocityChange);
             
             PlayerManager.instance.isInputLock = true;
             PlayerManager.instance.SetInputLockAfterSeconds(false, 0.3f);
 
-            StartCoroutine(StickyWallJumpRotate());
+            StartCoroutine(SlideWallJumpRotate());
         }
 
         SetJumpAnimator();
@@ -163,8 +163,8 @@ public class PlayerMovementController : MonoBehaviour
         animator.SetTrigger("Jump");
     }
 
-    // 접착벽에 점프 후 입력이 제한되는 0.3초 동안, 플레이어가 움직이는 방향으로 Rotate시킴
-    IEnumerator StickyWallJumpRotate()
+    // 슬라이드벽에 점프 후 입력이 제한되는 0.3초 동안, 플레이어가 움직이는 방향으로 Rotate시킴
+    IEnumerator SlideWallJumpRotate()
     {
         float _rotateSpeed = 15;
         float time = 0f;
