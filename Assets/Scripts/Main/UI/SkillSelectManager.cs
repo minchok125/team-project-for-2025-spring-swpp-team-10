@@ -10,6 +10,7 @@ public class SkillSelectManager : MonoBehaviour
     [SerializeField] private Button jump; 
     [Header("Skill")]
     [SerializeField] private Button boost;
+    [SerializeField] private GameObject boostUI;
     [SerializeField] private Button retractor;
     [SerializeField] private Button gliding;
     [SerializeField] private Button pull;
@@ -44,6 +45,7 @@ public class SkillSelectManager : MonoBehaviour
     public void OnBoost()
     {
         skill.UnlockBoost();
+        boostUI.SetActive(true);
         Close();
     }
     public void OnRetractor()
