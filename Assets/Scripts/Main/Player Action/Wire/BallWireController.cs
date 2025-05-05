@@ -33,6 +33,7 @@ public class BallWireController : MonoBehaviour, IWire
     public void WireShoot(RaycastHit hit)
     {
         this.hit = hit;
+        hitPoint = GetComponent<PlayerWireController>().hitPoint;
 
         // SpringJoint 세팅
         float dis = Vector3.Distance(transform.position, hit.point);
@@ -42,7 +43,7 @@ public class BallWireController : MonoBehaviour, IWire
         sj.connectedAnchor = hit.point;
         sj.anchor = new Vector3(0, 0.5f, 0);
 
-        sj.maxDistance = dis;
+        sj.maxDistance = Mathf.Max(2, dis);
         sj.minDistance = 2;
         sj.damper = damper;
         sj.spring = spring;
@@ -51,6 +52,7 @@ public class BallWireController : MonoBehaviour, IWire
         minY = hitPoint.position.y - transform.position.y;
 
         Debug.Log("=============Start=============");
+        Debug.Log($"time: {Time.time:F2} | wire max: {sj.maxDistance:F3}, min: {sj.minDistance:F3}");
     }
 
     public void EndShoot()
@@ -193,6 +195,8 @@ public class BallWireController : MonoBehaviour, IWire
                 }
             }
         }
+
+        sj.maxDistance = Mathf.Max(2, sj.maxDistance);
 
         prevIsGround = GroundCheck.isGround;
 
