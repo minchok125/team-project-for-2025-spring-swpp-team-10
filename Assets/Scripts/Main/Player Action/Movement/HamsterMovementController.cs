@@ -35,10 +35,10 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     public void OnUpdate()
     {
         // hamsterGround: 마찰력O, hamsterJump: 마찰력X
-        // 마찰력O : 땅, 접착벽에서 움직임 멈춤
-        // 마찰력X : 공중, 접착벽에서 움직일 때
-        if (GroundCheck.isGround && !PlayerManager.instance.isOnStickyWall) col.material = hamsterGround;
-        else if (PlayerManager.instance.isOnStickyWall && !PlayerManager.instance.isMoving) col.material = hamsterGround; // 접착벽에서 안 움직이면 마찰력 높임
+        // 마찰력O : 땅, 슬라이드벽에서 움직임 멈춤
+        // 마찰력X : 공중, 슬라이드벽에서 움직일 때
+        if (GroundCheck.isGround && !PlayerManager.instance.isOnSlideWall) col.material = hamsterGround;
+        else if (PlayerManager.instance.isOnSlideWall && !PlayerManager.instance.isMoving) col.material = hamsterGround; // 슬라이드벽에서 안 움직이면 마찰력 높임
         else col.material = hamsterJump;
 
         moveDir = PlayerManager.instance.moveDir;
@@ -62,7 +62,8 @@ public class HamsterMovementController : MonoBehaviour, IMovement
 
     private void Rotate()
     {
-        if (PlayerManager.instance.moveDir == Vector3.zero)
+        // 입력이 없거나 접착벽에 붙었다면 회전X
+        if (PlayerManager.instance.moveDir == Vector3.zero || PlayerManager.instance.isOnStickyWall)
             return;
 
         Vector3 moveDir = PlayerManager.instance.moveDir;
@@ -72,7 +73,7 @@ public class HamsterMovementController : MonoBehaviour, IMovement
 
         // 부드럽게 회전
         float _rotateSpeed = rotateSpeed;
-        if (PlayerManager.instance.isOnStickyWall)
+        if (PlayerManager.instance.isOnSlideWall)
             _rotateSpeed *= 2.5f;
 
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotateSpeed);

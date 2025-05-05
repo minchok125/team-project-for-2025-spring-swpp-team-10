@@ -42,7 +42,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     {
         moveDir = PlayerManager.instance.moveDir;
 
-        StickyWallAngularDragSetting();
+        SlideWallAngularDragSetting();
         BallDragSetting();
 
         prevPosition = transform.position;
@@ -68,9 +68,9 @@ public class BallMovementController : MonoBehaviour, IMovement
 
 
     // rb.angularDrag 설정
-    void StickyWallAngularDragSetting()
+    void SlideWallAngularDragSetting()
     {
-        if (PlayerManager.instance.isOnStickyWall) {
+        if (PlayerManager.instance.isOnSlideWall) {
             if (moveDir == Vector3.zero) {
                 transform.position = prevPosition;
                 rb.angularDrag = 200;
