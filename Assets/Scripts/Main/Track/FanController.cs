@@ -8,12 +8,12 @@ public class FanController : MonoBehaviour
     [Header("Particle의 Shape을 조절해 주세요")]
     [Space]
     [Tooltip("바람 세기")]
-    public float pushForce = 10f;          // 바람 세기
+    public float pushForce = 20f;          // 바람 세기
     [Tooltip("바람 닿는 거리 (원기둥 길이)")]
     public float pushLength = 20f;          // 바람 닿는 거리 (원기둥 길이)
     [Tooltip("바람 퍼지는 반경 (원기둥 반지름)")]
     public float pushRadius = 5f;          // 바람 퍼지는 반경 (원기둥 반지름)
-    [Tooltip("바람 시작 위치 (없으면 자기 자신)")]
+    [Space, Tooltip("바람 시작 위치 (없으면 자기 자신)")]
     public Transform windOrigin;          // 바람 시작 위치 (없으면 자기 자신)
 
 
