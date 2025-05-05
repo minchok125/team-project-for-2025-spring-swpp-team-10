@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
-// 점프, 글라이딩, 부스트
+// 위치 리셋, 점프, 글라이딩, 부스트
 public class PlayerMovementController : MonoBehaviour
 {
     [SerializeField] private Vector3 initPos;
@@ -61,8 +61,7 @@ public class PlayerMovementController : MonoBehaviour
 
         GlidingInput();
 
-        if (Input.GetKeyDown(KeyCode.R) || transform.position.y < -100)
-            Init();
+        ResetPos();
 
         BoostInput();
         BoostEnergyControl();
@@ -96,10 +95,14 @@ public class PlayerMovementController : MonoBehaviour
     }
 
 
-    void Init()
+    // R키를 눌러 위치 조정
+    void ResetPos()
     {
-        transform.position = initPos;
-        rb.velocity = Vector3.zero;
+        if (Input.GetKeyDown(KeyCode.R) || transform.position.y < -100) {
+            transform.position = initPos;
+            rb.velocity = Vector3.zero;
+            GetComponent<PlayerWireController>().EndShoot();
+        }
     }
 
 

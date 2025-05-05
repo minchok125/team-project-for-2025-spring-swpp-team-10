@@ -8,20 +8,23 @@ public class GroundCheck : MonoBehaviour
     public static bool isGround = false; // 지면에 닿아있다면 true
     public static HashSet<Collider> currentGroundColliders; // 현재 지면 역할을 하는 Collider 모임
 
-    public Transform player;
-
+    private Transform player;
 
     void Start()
     {
         currentGroundColliders = new HashSet<Collider>();
+
+        player = GameObject.Find("Player").transform;
     }
 
     void Update()
     {
-        if (PlayerManager.instance.isBall)
-            transform.position = player.position - Vector3.up * 0.7f;
-        else
+        if (PlayerManager.instance.isBall) {
+                transform.position = player.position - Vector3.up * 0.7f;
+        }
+        else {
             transform.position = player.position - Vector3.up * 0.2f;
+        }
     }
 
     void OnTriggerEnter(Collider other)
