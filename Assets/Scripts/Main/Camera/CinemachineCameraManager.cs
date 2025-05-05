@@ -29,10 +29,11 @@ public class CinemachineCameraManager : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI txt;
 
+
     private CinemachineBrain brain;
-    private bool isBallWireCam;
+    private bool isBallWireCam; // ballWireCam1/2 라면 true
     private float targetZoom; // 목표 줌 거리
-    private float actualZoom; // 현재 줌 거리
+    private float actualZoom; // 현재 줌 거리 (targetZoom으로 수렴)
     private float mouseDefaultVerticalSensitivity = 8f;
     private float mouseDefaultHorizontalSensitivity = 1000f;
 
@@ -60,24 +61,15 @@ public class CinemachineCameraManager : MonoBehaviour
 
         player = GameObject.Find("Player").GetComponent<PlayerWireController>();
 
-        // hamsterRig = new CamRig(new Vector2(hamsterCam.m_Orbits[0].m_Height, hamsterCam.m_Orbits[0].m_Radius),
-        //                         new Vector2(hamsterCam.m_Orbits[1].m_Height, hamsterCam.m_Orbits[1].m_Radius),
-        //                         new Vector2(hamsterCam.m_Orbits[2].m_Height, hamsterCam.m_Orbits[2].m_Radius));
-
-        // ballRig = new CamRig(new Vector2(ballCam.m_Orbits[0].m_Height, ballCam.m_Orbits[0].m_Radius),
-        //                     new Vector2(ballCam.m_Orbits[1].m_Height, ballCam.m_Orbits[1].m_Radius),
-        //                     new Vector2(ballCam.m_Orbits[2].m_Height, ballCam.m_Orbits[2].m_Radius));
-
-        // ballWireRig = new CamRig(new Vector2(ballWireCam1.m_Orbits[0].m_Height, ballWireCam1.m_Orbits[0].m_Radius),
-        //                          new Vector2(ballWireCam1.m_Orbits[1].m_Height, ballWireCam1.m_Orbits[1].m_Radius),
-        //                          new Vector2(ballWireCam1.m_Orbits[2].m_Height, ballWireCam1.m_Orbits[2].m_Radius));
-
         hamsterRig = SetCamRig(hamsterCam);
         hamsterWireRig = SetCamRig(hamsterWireCam);
         ballRig = SetCamRig(ballCam);
         ballWireRig = SetCamRig(ballWireCam1);
     }
 
+    /// <summary>
+    /// freelook 카메라의 Toprig, MiddleRig, BottomRig의 height, radius 정보 저장
+    /// </summary>
     CamRig SetCamRig(CinemachineFreeLook curCam)
     {
         return new CamRig(new Vector2(curCam.m_Orbits[0].m_Height, curCam.m_Orbits[0].m_Radius),
@@ -96,6 +88,9 @@ public class CinemachineCameraManager : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// 마우스 휠로 줌 거리 조절
+    /// </summary>
     void Zoom()
     {
         float scroll = Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
@@ -108,6 +103,10 @@ public class CinemachineCameraManager : MonoBehaviour
         SetHeightRadius();
     }
 
+
+    /// <summary>
+    /// zoom 거리에 따라서 모든 freelook 카메라 Rig의 height, radius 갱신
+    /// </summary>
     void SetHeightRadius()
     {
         SetHeightRadius(hamsterCam, hamsterRig);
@@ -117,6 +116,11 @@ public class CinemachineCameraManager : MonoBehaviour
         SetHeightRadius(ballWireCam2, ballWireRig);
     }
 
+    /// <summary>
+    /// 주어진 FreeLook 카메라의 Rig 설정(height, radius)을 현재 줌 비율(actualZoom)에 따라 갱신합니다.
+    /// </summary>
+    /// <param name="cam">설정을 적용할 CinemachineFreeLook 카메라</param>
+    /// <param name="camRig">초기 height, radius 값을 저장한 CamRig 구조체</param>
     void SetHeightRadius(CinemachineFreeLook cam, CamRig camRig)
     {
         for (int i = 0; i < 3; i++) {
@@ -125,6 +129,12 @@ public class CinemachineCameraManager : MonoBehaviour
         }
     }
 
+
+
+    /// <summary>
+    /// 플레이어 상태에 따라 적절한 FreeLook 카메라를 활성화하고,
+    /// 각 카메라의 마우스 감도 설정 및 카메라 전환 시 자연스럽게 이어지도록 보정합니다.
+    /// </summary>
     void FreeLookCamSetting()
     {
         // 공중 와이어 액션 때 BallWireCam 활성화
@@ -191,25 +201,12 @@ public class CinemachineCameraManager : MonoBehaviour
         //txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\nball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\nballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
     }
 
-    void FixedUpdate()
-    {
-        // ICinemachineCamera activeCam = brain.ActiveVirtualCamera;
 
-        // if (activeCam is CinemachineFreeLook freeLookCam) {
-        //     if (!changed && 
-        //         (Mathf.Abs(Mathf.DeltaAngle(freeLookCam.m_XAxis.Value, x)) > 20f || Mathf.Abs(freeLookCam.m_YAxis.Value - y) > 0.15f)) {
-        //         Debug.Log($"({freeLookCam.m_XAxis.Value},{freeLookCam.m_YAxis.Value}) => ({x},{y})");
-        //         freeLookCam.m_XAxis.Value = x;
-        //         freeLookCam.m_YAxis.Value = y;
-        //     }
-
-        //     x = freeLookCam.m_XAxis.Value;
-        //     y = freeLookCam.m_YAxis.Value;
-        // }
-
-        // txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_XAxis.Value:F2})\nball:({ballCam.m_XAxis.Value:F2},{ballCam.m_XAxis.Value:F2})\nballWire:({ballWireCam.m_XAxis.Value:F2},{ballWireCam.m_XAxis.Value:F2})";
-    }
-
+    /// <summary>
+    /// 전달된 카메라(curCam)를 현재 활성 카메라로 전환하며,
+    /// 이미 활성화된 카메라일 경우 전환하지 않습니다.
+    /// </summary>
+    /// <param name="curCam">우선순위를 최상위로 설정할 CinemachineFreeLook 카메라</param>
     void FreeLookCamChange(CinemachineFreeLook curCam)
     {
         changed = true;
