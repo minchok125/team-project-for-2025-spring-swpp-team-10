@@ -27,7 +27,7 @@ public class SkillSelectManager : MonoBehaviour
             boost.interactable = !skill.HasBoost();
             retractor.interactable = !skill.HasRetractor();
             gliding.interactable = !skill.HasGliding();
-            pull.interactable = !skill.HasPullWire();
+            pull.interactable = !skill.HasHamsterWire();
             doubleJump.interactable = !skill.HasDoubleJump();
         }
     }
@@ -60,7 +60,7 @@ public class SkillSelectManager : MonoBehaviour
     }
     public void OnPullWire()
     {
-        skill.UnlockPullWire();
+        skill.UnlockHamsterWire();
         Close();
     }
     public void OnDoubleJump()

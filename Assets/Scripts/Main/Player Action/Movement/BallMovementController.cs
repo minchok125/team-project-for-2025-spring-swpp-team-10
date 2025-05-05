@@ -52,7 +52,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     // rb.drag 설정
     void BallDragSetting()
     {
-        if (GroundCheck.isGround) {
+        if (PlayerManager.instance.isGround) {
             rb.drag = 1.2f;
         }
         else {
@@ -88,7 +88,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     
     void RotateBasedOnMovement()
     {
-        if (PlayerManager.instance.onWire && !GroundCheck.isGround) return;
+        if (PlayerManager.instance.onWire && !PlayerManager.instance.isGround) return;
 
         Vector3 currentPosition = rb.transform.position;
         Vector3 delta = (currentPosition - prevFixedPosition) - prevPlatformMovement;
@@ -121,13 +121,13 @@ public class BallMovementController : MonoBehaviour, IMovement
 
         float magnitude = 2 - cos; // 현재 속도와 가려는 방향의 각도 차이가 많이 날수록 힘을 크게 줌
         accelSpeed = magnitude * Mathf.Min(addSpeed, movePower * Time.fixedDeltaTime);
-        if (!GroundCheck.isGround)
+        if (!PlayerManager.instance.isGround)
             accelSpeed *= 0.4f;
         rb.AddForce(moveDir * accelSpeed * speedRate, ForceMode.Acceleration);
 
         // 공중 와이어 액션에서 추가로 주는 힘
         Vector3 dirOrthogonalMoveDir = Vector3.zero;
-        if (PlayerManager.instance.onWire && !GroundCheck.isGround) {
+        if (PlayerManager.instance.onWire && !PlayerManager.instance.isGround) {
             Transform hitPoint = GetComponent<PlayerWireController>().hitPoint;
             Vector3 dir = (hitPoint.position - rb.transform.position).normalized;
             // moveDir의 dir과 수직인 성분
@@ -157,12 +157,13 @@ public class BallMovementController : MonoBehaviour, IMovement
             }
             // 방향키 입력이 있다면 
             // 땅 위에서 부스트를 쓴다면 moveDir 방향으로 부스트
-            else if (GroundCheck.isGround) {
+            else if (PlayerManager.instance.isGround) {
                 rb.AddForce(moveDir * sustainedBoostPower * speedRate, ForceMode.Acceleration);
             }
             // 공중에서 부스트를 쓴다면 와이어와 수직인 방향으로 부스트
             else {
-                Vector3 dir = (dirOrthogonalMoveDir + rb.velocity.normalized).normalized;
+                // 현재 속도를 일부 반영
+                Vector3 dir = (dirOrthogonalMoveDir * 2f + rb.velocity.normalized).normalized;
                 rb.AddForce(dir * (sustainedBoostPower - wireMovePower) * speedRate, ForceMode.Acceleration);
             }
         }
@@ -180,7 +181,7 @@ public class BallMovementController : MonoBehaviour, IMovement
         }
         // 방향키 입력이 있다면 
         // 땅 위에서 부스트를 쓴다면 moveDir 방향으로 부스트
-        else if (GroundCheck.isGround) {
+        else if (PlayerManager.instance.isGround) {
             rb.AddForce(moveDir * burstBoostPower * speedRate, ForceMode.VelocityChange);
         }
         // 공중에서 부스트를 쓴다면 와이어와 수직인 방향으로 부스트

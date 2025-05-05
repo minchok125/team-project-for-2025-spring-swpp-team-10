@@ -1,89 +1,190 @@
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// 플레이어의 스킬과 능력치를 관리하는 컨트롤러 클래스
+/// 플레이어의 이동 속도, 점프력 증가 및 다양한 특수 능력 잠금 해제를 처리합니다.
+/// </summary>
 public class PlayerSkillController : MonoBehaviour
 {
-    private int skill;
-    private float speedRate; // 기본 이동 속도에 대한 배율
-    private float jumpRate; // 기본 점프 높이에 대한 배율 (실제 주는 힘의 배율은 sqrt(jumpRate))
-    string str;
+    private int skill; // 스킬 상태를 비트 플래그로 저장 (각 비트는 특정 스킬의 활성화 여부를 나타냄)
+    private float speedRate; // 기본 이동 속도에 대한 배율 (1.0 = 100% = 기본 속도)
+    private float jumpRate; // 기본 점프 높이에 대한 배율 (실제 적용되는 힘은 sqrt(jumpRate)로 계산됨)
 
 
-    [Header("Debug")]
-    public TextMeshProUGUI txt;
+    private const int SKILL_BOOST = 0;
+    private const int SKILL_RETRACTOR = 1;
+    private const int SKILL_GLIDING = 2;
+    private const int SKILL_HamsterWire = 3;
+    private const int SKILL_DOUBLEJUMP = 4;
+
+    
+    [Header("디버그 UI")]
+    [Tooltip("플레이어 스킬 및 스탯 정보를 표시할 텍스트 컴포넌트")]
+    [SerializeField] private TextMeshProUGUI txt;
+    // 획득한 스킬을 텍스트로 표시하기 위한 문자열
+    private string skillListText;
 
 
+    /// <summary>
+    /// 컴포넌트 초기화 시 호출되는 메서드
+    /// 모든 스킬 및 능력치를 기본값으로 설정합니다.
+    /// </summary>
     private void Start()
     {
-        skill = 0;
-        speedRate = jumpRate = 1;
-        str = "";
+        ResetSkills();
+    }
 
-        if (txt != null)
-            AddText("");
+    /// <summary>
+    /// 모든 스킬과 능력치를 초기 상태로 재설정합니다.
+    /// </summary>
+    public void ResetSkills()
+    {
+        skill = 0;                      // 모든 스킬 비활성화
+        speedRate = jumpRate = 1.0f;    // 기본 속도 및 점프력으로 재설정
+        skillListText = "";             // 스킬 텍스트 초기화
+
+        UpdateUI();
     }
 
 
-    // 현재 보유한 스킬 확인 함수
+    #region 스킬 확인 메서드
+    /// <summary>
+    /// 현재 이동 속도 배율을 반환합니다.
+    /// </summary>
+    /// <returns>현재 이동 속도 배율</returns>
     public float GetSpeedRate() => speedRate;
+
+    /// <summary>
+    /// 현재 점프력 배율을 반환합니다. 
+    /// 실제 물리적 힘은 점프 높이 배율의 제곱근으로 계산됩니다.
+    /// </summary>
+    /// <returns>점프력에 적용할 배율 (제곱근 적용 후)</returns>
     public float GetJumpForceRate() => Mathf.Sqrt(jumpRate);
-    public bool HasBoost() => (skill & (1 << 0)) != 0;
-    public bool HasRetractor() => (skill & (1 << 1)) != 0;
-    public bool HasGliding() => (skill & (1 << 2)) != 0;
-    public bool HasPullWire() => (skill & (1 << 3)) != 0;
-    public bool HasDoubleJump() => (skill & (1 << 4)) != 0;
+
+    /// <summary>
+    /// 부스트 스킬 보유 여부를 확인합니다. (비트 0)
+    /// </summary>
+    /// <returns>부스트 스킬 활성화 여부</returns>
+    public bool HasBoost() => (skill & (1 << SKILL_BOOST)) != 0; 
+    
+    /// <summary>
+    /// 리트랙터 스킬 보유 여부를 확인합니다. (비트 1)
+    /// </summary>
+    /// <returns>리트랙터 스킬 활성화 여부</returns>
+    public bool HasRetractor() => (skill & (1 << SKILL_RETRACTOR)) != 0;
+
+    /// <summary>
+    /// 글라이딩 스킬 보유 여부를 확인합니다. (비트 2)
+    /// </summary>
+    /// <returns>글라이딩 스킬 활성화 여부</returns>
+    public bool HasGliding() => (skill & (1 << SKILL_GLIDING)) != 0;
+
+    /// <summary>
+    /// 햄스터 와이어 스킬 보유 여부를 확인합니다. (비트 3)
+    /// </summary>
+    /// <returns>와이어 당기기 스킬 활성화 여부</returns>
+    public bool HasHamsterWire() => (skill & (1 << SKILL_HamsterWire)) != 0;
+
+    /// <summary>
+    /// 이중 점프 스킬 보유 여부를 확인합니다. (비트 4)
+    /// </summary>
+    /// <returns>이중 점프 스킬 활성화 여부</returns>
+    public bool HasDoubleJump() => (skill & (1 << SKILL_DOUBLEJUMP)) != 0;
+    #endregion
 
 
-    // 스킬 획득 함수
+    #region 스킬 획득 메서드
+    /// <summary>
+    /// 플레이어의 이동 속도 배율을 증가시킵니다.
+    /// </summary>
+    /// <param name="rate">증가시킬 속도 배율</param>
     public void AddSpeedRate(float rate)
     {
         speedRate += rate;
-
-        AddText("");
+        UpdateUI();
     }
+
+    /// <summary>
+    /// 플레이어의 점프 높이 배율을 증가시킵니다.
+    /// </summary>
+    /// <param name="rate">증가시킬 점프 높이 배율</param>
     public void AddJumpHeightRate(float rate)
     {   
         jumpRate += rate;
-
-        AddText("");
+        UpdateUI();
     }
+
+    /// <summary>
+    /// 부스트 스킬을 해금합니다. (빠른 대쉬 또는 가속)
+    /// </summary>
     public void UnlockBoost() 
     {
-        skill |= 1 << 0;
-
-        AddText("\nBoost");
+        skill |= 1 << SKILL_BOOST;
+        AddSkillText("Boost");
     }
+
+    /// <summary>
+    /// 리트랙터 스킬을 해금합니다.
+    /// </summary>
     public void UnlockRetractor()
     {
-        skill |= 1 << 1;
-
-        AddText("\nRetractor");
+        skill |= 1 << SKILL_RETRACTOR;
+        AddSkillText("Retractor");
     }
+
+    /// <summary>
+    /// 글라이딩 스킬을 해금합니다. (플라스틱 백으로 공중에서 천천히 낙하)
+    /// </summary>
     public void UnlockGliding() 
     {
-        skill |= 1 << 2;
-
-        AddText("\nPlastic Bag");
+        skill |= 1 << SKILL_GLIDING;
+        AddSkillText("Plastic Bag");
     }
-    public void UnlockPullWire()
+
+    /// <summary>
+    /// 와이어 당기기 스킬을 해금합니다.
+    /// </summary>
+    public void UnlockHamsterWire()
     {
-        skill |= 1 << 3;
-
-        AddText("\nPull WIre");
+        skill |= 1 << SKILL_HamsterWire;
+        AddSkillText("Pull Wire");
     }
+
+    /// <summary>
+    /// 이중 점프 스킬을 해금합니다.
+    /// </summary>
     public void UnlockDoubleJump()
     {
-        skill |= 1 << 4;
+        skill |= 1 << SKILL_DOUBLEJUMP;
+        AddSkillText("Double Jump");
+    }
+    #endregion
 
-        AddText("\nDouble Jump");
+
+    #region Debug UI 및 텍스트 관련 메서드
+    /// <summary>
+    /// 스킬 목록 텍스트에 새로운 스킬을 추가합니다.
+    /// </summary>
+    /// <param name="newSkillName">추가할 스킬 이름</param>
+    private void AddSkillText(string newSkillName)
+    {
+        if (!string.IsNullOrEmpty(newSkillName))
+        {
+            skillListText += $"\n{newSkillName}";
+        }
+        UpdateUI();
     }
 
-
-    private void AddText(string newStr)
+    /// <summary>
+    /// UI 텍스트를 최신 정보로 업데이트합니다.
+    /// </summary>
+    private void UpdateUI()
     {
-        if (txt != null) {
-            str += newStr;
-            txt.text = $"Speed : {speedRate:F2}x\nJump :  {jumpRate:F2}x\n{str}";
+        if (txt != null)
+        {
+            txt.text = $"Speed : {speedRate:F2}x\nJump : {jumpRate:F2}x\n{skillListText}";
         }
     }
+    #endregion
 }

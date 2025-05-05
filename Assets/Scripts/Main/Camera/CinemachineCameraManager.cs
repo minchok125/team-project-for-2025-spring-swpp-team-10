@@ -138,7 +138,7 @@ public class CinemachineCameraManager : MonoBehaviour
     void FreeLookCamSetting()
     {
         // 공중 와이어 액션 때 BallWireCam 활성화
-        if (PlayerManager.instance.onWire && !GroundCheck.isGround)
+        if (PlayerManager.instance.onWire && !PlayerManager.instance.isGround)
             isBallWireCam = true;
         // 와이어를 아예 놓아야 BallNotWireCam 활성화
         else if (!PlayerManager.instance.onWire)
@@ -198,7 +198,10 @@ public class CinemachineCameraManager : MonoBehaviour
             y = freeLookCam.m_YAxis.Value;
         }
 
-        //txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\nball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\nballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
+        if (txt != null) {
+            txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\nball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\nballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
+            txt.text += "\n" + s;
+        }
     }
 
 

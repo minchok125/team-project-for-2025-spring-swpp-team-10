@@ -1,23 +1,48 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
+/// <summary>
+/// 공 모드에서 와이어 동작을 제어하는 클래스
+/// SpringJoint를 이용한 물리 기반 와이어 메커니즘 구현
+/// IWire 인터페이스를 구현하여 PlayerWireController와 연동
+/// </summary>
 public class BallWireController : MonoBehaviour, IWire
 {
-    [SerializeField] private float spring = 10000;
-    [SerializeField] private float damper = 1, mass = 10;
-    [Tooltip("줄 감기/풀기 속도")]
-    [SerializeField] private float retractorSpeed = 16;
-    [Tooltip("줄 감을 때 플레이어에게 가해지는 힘")]
-    [SerializeField] private float shortenForce = 6000;
+    #region Serialized Fields
+    [SerializeField, Tooltip("와이어의 탄성 계수 - 높을수록 더 빠르게 당겨짐")]
+    private float spring = 10000f;
+    
+    [SerializeField, Tooltip("와이어의 감쇠 계수 - 진동을 감소시킴")]
+    private float damper = 1f;
+    
+    [SerializeField, Tooltip("와이어에 작용하는 질량 배율")]
+    private float mass = 10f;
+    
+    [SerializeField, Tooltip("줄 감기/풀기 속도")]
+    private float retractorSpeed = 16f;
+    
+    [SerializeField, Tooltip("줄 감을 때 플레이어에게 가해지는 힘")]
+    private float shortenForce = 6000f;
+    #endregion
 
 
-    private bool isUsingRetractor;
-    private float grabDistance;
-    private float minY;
+    #region Private Fields
+    // 와이어 관련 상태 변수
+    private bool isUsingRetractor;  // 리트랙터(줄 감기/풀기) 사용 중인지 여부
+    private float grabDistance;     // 와이어를 걸 수 있는 최대 거리
 
-    private SpringJoint sj;
-    private RaycastHit hit;
-    private Transform hitPoint;
-    private Rigidbody rb;
+    // 컴포넌트 캐싱
+    private SpringJoint sj;     // 와이어 물리 동작을 위한 스프링 조인트
+    private Transform hitPoint;          // 와이어가 붙은 지점의 트랜스폼
+    private Rigidbody rb;   // 플레이어의 리지드바디
+
+    // 점프 관련 상태 변수
+    private bool prevIsGround = false;   // 이전 프레임에 땅에 있었는지 여부
+    private bool waitUntilFall = false;  // 점프 후 낙하를 기다리는 중인지 여부
+
+    // 디버그 변수
+    private float debugMax = -2f, debugMin = -2f;  // 디버그 출력용 이전 min/max 거리 저장
+    #endregion
 
 
     private void Start()
@@ -32,46 +57,38 @@ public class BallWireController : MonoBehaviour, IWire
 
     public void WireShoot(RaycastHit hit)
     {
-        this.hit = hit;
+        // 현재 와이어 연결 지점 가져오기
         hitPoint = GetComponent<PlayerWireController>().hitPoint;
 
-        // SpringJoint 세팅
-        float dis = Vector3.Distance(transform.position, hit.point);
+        // 플레이어와 타겟 간의 거리 계산
+        float dist = Vector3.Distance(transform.position, hit.point);
 
-        sj = gameObject.AddComponent<SpringJoint>();
-        sj.autoConfigureConnectedAnchor = false;
-        sj.connectedAnchor = hit.point;
-        sj.anchor = new Vector3(0, 0.5f, 0);
-
-        sj.maxDistance = Mathf.Max(2, dis);
-        sj.minDistance = 2;
-        sj.damper = damper;
-        sj.spring = spring;
-        sj.massScale = mass;
-
-        minY = hitPoint.position.y - transform.position.y;
+        // SpringJoint 컴포넌트 추가 및 초기 설정
+        ConfigureSpringJoint(hit, dist);
 
         Debug.Log("=============Start=============");
         Debug.Log($"time: {Time.time:F2} | wire max: {sj.maxDistance:F3}, min: {sj.minDistance:F3}");
     }
 
+    private void ConfigureSpringJoint(RaycastHit hit, float dist)
+    {
+        sj = gameObject.AddComponent<SpringJoint>();
+        sj.autoConfigureConnectedAnchor = false;
+        sj.connectedAnchor = hit.point;
+        sj.anchor = new Vector3(0, 0.5f, 0);
+
+        sj.maxDistance = Mathf.Max(2, dist);
+        sj.minDistance = 2;
+        sj.damper = damper;
+        sj.spring = spring;
+        sj.massScale = mass;
+    }
+
+
     public void EndShoot()
     {
         if (sj != null) {
             Destroy(sj);
-            
-            // // 그랩을 놓을 때 가속도를 주는 스크립트
-            // Rigidbody rb = GetComponent<Rigidbody>();
-            // Vector3 dir = ((hit.point - transform.position).normalized + rb.velocity.normalized).normalized;
-            // rb.AddForce(dir * 10f * rb.velocity.magnitude, ForceMode.Acceleration);
-
-            // // 위로 가속도를 줌
-            // float yDist = (hitPoint.position.y - transform.position.y) - minY; // 그랩 도중에 가장 낮았던 y좌표와의 차이
-            // if (yDist > 1) {
-            //     float value = Mathf.Clamp01(yDist / 5f);
-            //     float value2 = (20 - Mathf.Clamp(rb.velocity.y, 5, 20)) / 15f; // 현재 y속도가 20 이상이면 가속 안 줌
-            //     rb.AddForce(Vector3.up * value * value2 * 600f, ForceMode.Acceleration);
-            // }
         }
     }
 
@@ -79,64 +96,91 @@ public class BallWireController : MonoBehaviour, IWire
     
     public void ShortenWire(bool isFast)
     {
-        if (sj.maxDistance <= 1) 
+        // 최소 길이에 도달했으면 더 이상 감지 않음
+        if (sj.maxDistance <= 2)
             return;
 
+        // 와이어 최소 길이 설정
         sj.minDistance = 2;
 
-        float value = isFast ? 40 : retractorSpeed;
+        // 감기 속도 설정
+        float retractionValue = isFast ? 40 : retractorSpeed;
 
-        // 공 -> 와이어 지점 방향
-        Vector3 diff = hitPoint.transform.position - rb.transform.position;
+        // 플레이어 -> 와이어 연결 지점 벡터 계산
+        Vector3 directionToHitPoint = hitPoint.transform.position - rb.transform.position;
 
-        // 와이어 길이 최대치를 현재 거리로 설정
-        sj.maxDistance = diff.magnitude;
+        // 현재 와이어 길이 최대치 설정
+        sj.maxDistance = directionToHitPoint.magnitude;
 
-        // diff : 방향 노멀벡터
-        diff = diff.normalized;
-        
-        // velocity의 diff 방향 성분 크기
-        float velocityAlongDiff = Vector3.Dot(diff, rb.velocity);
-        
-        // diff 방향과 수직인 방향의 속도는 줄임
-        Vector3 velocityDiffOrthogonal = rb.velocity - diff * velocityAlongDiff;
-        rb.velocity -= velocityDiffOrthogonal * value / 10f * Time.fixedDeltaTime;
+        // 방향 벡터 정규화
+        directionToHitPoint = directionToHitPoint.normalized;
 
-        // diff 방향으로 최저 속도 보장
-        if (velocityAlongDiff < 0.5f * value)
-            rb.velocity += diff * (0.5f * value - velocityAlongDiff);
-
-        // 거리가 1일 때는 0.5*value, 거리가 5 이상일 때는 1*value
-        value = value * Mathf.Lerp(0.5f, 1f, (Mathf.Clamp(sj.maxDistance, 1, 5) - 1) / 4f);
-        // 최저 힘 보장
-        value = Mathf.Max(12, value);
-
-        // diff 방향으로 value 속도까지 속도 상승
-        if (velocityAlongDiff < value)
-            rb.AddForce(diff * shortenForce * value / 40f * Time.fixedDeltaTime, ForceMode.Acceleration);
-
-        if (sj.maxDistance < 2)
-            sj.maxDistance = 2;
+        // 플레이어 속도 제어 및 힘 적용
+        ApplyWireShorteningForces(directionToHitPoint, retractionValue);
 
         isUsingRetractor = true;
     }
 
     public void ShortenWireEnd(bool isFast)
     {
-        Vector3 diff = (hitPoint.transform.position - transform.position).normalized;
-        float velocityAlongDiff = Vector3.Dot(diff, rb.velocity);
-        // diff 방향 속도 제거
-        rb.velocity -= velocityAlongDiff * diff;
+        Vector3 directionToHitPoint = (hitPoint.transform.position - rb.transform.position).normalized;
+        float velocityAlongWire = Vector3.Dot(directionToHitPoint, rb.velocity);
+
+        // 와이어 방향 속도 성분을 줄여 자연스러운 스윙 유도
+        rb.velocity -= velocityAlongWire * directionToHitPoint * 0.8f;
 
         isUsingRetractor = false;
     }
 
+     /// <summary>
+    /// 와이어를 감을 때 플레이어에게 힘 적용
+    /// </summary>
+    /// <param name="direction">힘을 적용할 방향 (정규화된 벡터)</param>
+    /// <param name="retractionValue">감기 속도</param>
+    private void ApplyWireShorteningForces(Vector3 directionToHitPoint, float retractionValue)
+    {
+        // 현재 와이어 방향으로의 속도 계산
+        float velocityAlongWire = Vector3.Dot(directionToHitPoint, rb.velocity);
+        
+        // 와이어와 수직인 방향의 속도 성분 계산
+        Vector3 velocityDiffOrthogonal = rb.velocity - directionToHitPoint * velocityAlongWire;
+
+        // 직교 방향 속도를 감소시켜 와이어 방향으로 움직임 유도
+        rb.velocity -= velocityDiffOrthogonal * retractionValue / 10f * Time.fixedDeltaTime;
+
+         // 와이어 방향으로 최소 속도 보장
+        if (velocityAlongWire < 0.5f * retractionValue)
+            rb.velocity += directionToHitPoint * (0.5f * retractionValue - velocityAlongWire);
+
+        // 거리에 따라 적용 값 보간 (가까울수록 천천히, 멀수록 빠르게)
+        // 거리가 1일 때는 0.5*value, 거리가 5 이상일 때는 1*value
+        float adjustedValue = retractionValue * Mathf.Lerp(0.5f, 1f, (Mathf.Clamp(sj.maxDistance, 1, 5) - 1) / 4f);
+
+        // 최소 힘 보장
+        adjustedValue = Mathf.Max(12, adjustedValue);
+
+        // 와이어 방향으로 힘 적용 (목표 속도에 도달하지 않았을 경우)
+        if (velocityAlongWire < adjustedValue)
+            rb.AddForce(directionToHitPoint * shortenForce * adjustedValue / 40f * Time.fixedDeltaTime, ForceMode.Acceleration);
+
+        // 최소 와이어 길이 제한
+        sj.maxDistance = Mathf.Max(2, sj.maxDistance);
+    }
+
+
+
+
+
     public void ExtendWire()
     {
+        // 최대 길이에 도달했으면 더 이상 풀지 않음
         if (sj.maxDistance > grabDistance) 
             return;
 
-        sj.maxDistance = sj.maxDistance + retractorSpeed * Time.fixedDeltaTime;
+        // 와이어 최대 길이를 증가시킴
+        sj.maxDistance += retractorSpeed * Time.fixedDeltaTime;
+
+        // 와이어 최소 길이를 현재 거리보다 약간 크게 설정하여 탄성에 의해 거리를 벌리도록 함
         sj.minDistance = (hitPoint.transform.position - transform.position).magnitude + 0.1f;
 
         isUsingRetractor = true;
@@ -144,61 +188,32 @@ public class BallWireController : MonoBehaviour, IWire
 
     public void ExtendWireEnd()
     {
-        sj.maxDistance = (hitPoint.transform.position - transform.position).magnitude;
+        // 와이어 최대 길이를 현재 거리로 고정
+        sj.maxDistance = Mathf.Max(2, (hitPoint.transform.position - transform.position).magnitude);
 
         isUsingRetractor = false;
     }
 
-
-    private bool prevIsGround = false;
-    private bool waitUntilFall = false; 
     public void WireUpdate()
     {
+        // 연결 지점 업데이트
         sj.connectedAnchor = hitPoint.position;
 
-        if (!GroundCheck.isGround)
+        // 공중에 있을 때 와이어 방향으로 플레이어 회전
+        if (!PlayerManager.instance.isGround)
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(hitPoint.position - transform.position), 3 * Time.deltaTime);
 
-        minY = Mathf.Min(minY, hitPoint.position.y - transform.position.y);
-
-        // 리트랙터를 쓰고 있지 않을 때 와이어의 최소길이를 설정 (리트랙터일 때는 별도 설정)
-        if (!isUsingRetractor) {
-            if (GroundCheck.isGround) {
-                sj.minDistance = 2;
-            }
-            else {
-                sj.minDistance = Mathf.Max(Mathf.Max(2, sj.maxDistance - 1.5f), sj.maxDistance * 0.9f);
-
-                // 처음 지면에서 벗어났다면
-                if (prevIsGround) {
-                    waitUntilFall = false;
-                    // 점프중이 아니라면 바로 와이어 길이 고정 
-                    if (!PlayerManager.instance.isJumping) {
-                        sj.maxDistance = (hitPoint.transform.position - rb.transform.position).magnitude;
-                        sj.minDistance = Mathf.Max(Mathf.Max(2, sj.maxDistance - 1.5f), sj.maxDistance * 0.9f);
-                    }
-                    else
-                        waitUntilFall = true;
-                }
-                // 점프로 지면에서 벗어났으며 아래로 떨어지는 것을 기다리는 중
-                else if (waitUntilFall) {
-                    // 아래로 떨어지기 시작했으면 와이어 길이 고정
-                    if (rb.velocity.y < 0) {
-                        sj.maxDistance = (hitPoint.transform.position - rb.transform.position).magnitude;
-                        sj.minDistance = Mathf.Max(Mathf.Max(2, sj.maxDistance - 1.5f), sj.maxDistance * 0.9f);
-                        waitUntilFall = false;
-                    }
-                    // 아니라면 점프가 정상적으로 되도록 와이어 최소 길이 설정
-                    else {
-                        sj.minDistance = 2;
-                    }
-                }
-            }
+        // 리트랙터 미사용 시 와이어 길이 자동 조정
+        if (!isUsingRetractor)
+        {
+            UpdateWireLengthNonRetractor();
         }
 
-        sj.maxDistance = Mathf.Max(2, sj.maxDistance);
+        // 와이어 최소 길이 제한
+        sj.maxDistance = Mathf.Max(2f, sj.maxDistance);
 
-        prevIsGround = GroundCheck.isGround;
+        // 이전 지면 상태 저장
+        prevIsGround = PlayerManager.instance.isGround;
 
         // 디버그
         if (debugMax != sj.maxDistance || debugMin != sj.minDistance) {
@@ -207,5 +222,81 @@ public class BallWireController : MonoBehaviour, IWire
             debugMin = sj.minDistance;
         }
     }
-    float debugMax = -2, debugMin = -2;
+
+    /// <summary>
+    /// 리트랙터 미사용 시 와이어 길이 자동 조정
+    /// </summary>
+    private void UpdateWireLengthNonRetractor()
+    {
+        if (PlayerManager.instance.isGround)
+        {
+            // 지면에 있을 때는 최소 길이만 설정
+            sj.minDistance = 2f;
+        }
+        else
+        {
+            // 공중에 있을 때는 최소/최대 길이 사이의 범위 설정
+            // 최소 길이는 최대 길이보다 약간 작게 설정하여 탄성 효과
+            sj.minDistance = Mathf.Max(Mathf.Max(2, sj.maxDistance - 1.5f), sj.maxDistance * 0.9f);
+
+            // 처음 지면에서 벗어났을 때 (이전 프레임에는 지면에 있었음)
+            if (prevIsGround)
+            {
+                HandleInitialAirborne();
+            }
+            // 점프 후 낙하를 기다리는 중
+            else if (waitUntilFall)
+            {
+                HandleWaitingForFall();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 처음 지면에서 벗어났을 때 와이어 길이 처리
+    /// </summary>
+    private void HandleInitialAirborne()
+    {
+        waitUntilFall = false;
+        
+        // 점프 중이 아니라면 바로 와이어 길이 고정
+        if (!PlayerManager.instance.isJumping)
+        {
+            FixWireLengthToCurrentDistance();
+        }
+        else
+        {
+            // 점프 중이면 낙하할 때까지 대기
+            waitUntilFall = true;
+        }
+    }
+
+    /// <summary>
+    /// 점프 후 낙하를 기다리는 상태 처리
+    /// </summary>
+    private void HandleWaitingForFall()
+    {
+        // 아래로 떨어지기 시작했으면 와이어 길이 고정
+        if (rb.velocity.y < 0)
+        {
+            FixWireLengthToCurrentDistance();
+            waitUntilFall = false;
+        }
+        // 아직 상승 중이면 자유로운 점프를 위해 최소 길이만 설정
+        else
+        {
+            sj.minDistance = 2f;
+        }
+    }
+
+    /// <summary>
+    /// 현재 거리로 와이어 길이 고정
+    /// </summary>
+    private void FixWireLengthToCurrentDistance()
+    {
+        // 최대 길이를 현재 거리로 설정
+        sj.maxDistance = (hitPoint.transform.position - rb.transform.position).magnitude;
+        // 최소 길이를 최대 길이보다 약간 작게 설정
+        sj.minDistance = Mathf.Max(Mathf.Max(2, sj.maxDistance - 1.5f), sj.maxDistance * 0.9f);
+    }
 }
