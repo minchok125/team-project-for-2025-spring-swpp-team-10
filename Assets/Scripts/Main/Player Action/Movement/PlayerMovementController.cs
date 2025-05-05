@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
@@ -40,6 +39,7 @@ public class PlayerMovementController : MonoBehaviour
     public Vector3 lastVelocity { get; private set; }
     private Rigidbody rb;
     private int jumpCount;
+    private PlayerManager playerMgr;
 
     
     void Start()
@@ -47,11 +47,12 @@ public class PlayerMovementController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         curMovement = GetComponent<HamsterMovementController>();
         ball = GetComponent<BallMovementController>();
+        playerMgr = GetComponent<PlayerManager>();
 
         currentBoostEnergy = 1;
-        PlayerManager.instance.isJumping = false;
-        PlayerManager.instance.isBoosting = false;
-        PlayerManager.instance.isGliding = false;
+        playerMgr.isJumping = false;
+        playerMgr.isBoosting = false;
+        playerMgr.isGliding = false;
     }
 
   
@@ -81,11 +82,11 @@ public class PlayerMovementController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!PlayerManager.instance.isInputLock)
-            PlayerManager.instance.isMoving = curMovement.Move();
+        if (!playerMgr.isInputLock)
+            playerMgr.isMoving = curMovement.Move();
 
-        if (!PlayerManager.instance.isBall) 
-            animator.SetBool("IsWalking", PlayerManager.instance.isMoving);
+        if (!playerMgr.isBall) 
+            animator.SetBool("IsWalking", playerMgr.isMoving);
 
         Gliding();
 
@@ -111,11 +112,11 @@ public class PlayerMovementController : MonoBehaviour
     private bool jumped = false; // 현재 프레임에 점프가 발동됐는지
     void Jump()
     {
-        // if (PlayerManager.instance.onWire) return; // 와이어 액션 중에는 점프 x
+        // if (playerMgr.onWire) return; // 와이어 액션 중에는 점프 x
 
         jumped = false;
         // 땅에 착지했거나 슬라이드벽/접착벽에 붙어있을 떄 점프가 가능
-        if (GroundCheck.isGround || PlayerManager.instance.isOnSlideWall || PlayerManager.instance.isOnStickyWall) {
+        if (playerMgr.isGround || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall) {
             if (Time.time - jumpStartTime > 0.2f) {// 점프한 뒤 착지했으나, 통통 튀겨서 위로 올라가 ground 판정이 안 된 경우를 대비
                 jumpCount = 0;
             }
@@ -126,31 +127,31 @@ public class PlayerMovementController : MonoBehaviour
         }
         // 공중에서 점프
         else if (Input.GetKeyDown(KeyCode.Space)) { 
-            if (PlayerManager.instance.skill.HasDoubleJump() && jumpCount < 2) {
+            if (playerMgr.skill.HasDoubleJump() && jumpCount < 2) {
                 Jump_sub();
                 jumpCount = 2;
             }
         }
 
-        if (PlayerManager.instance.isJumping && GroundCheck.isGround && Time.time - jumpStartTime > 0.2f)
-            PlayerManager.instance.isJumping = false;
+        if (playerMgr.isJumping && playerMgr.isGround && Time.time - jumpStartTime > 0.2f)
+            playerMgr.isJumping = false;
     }
 
     void Jump_sub()
     {
-        rb.AddForce(Vector3.up * jumpPower * PlayerManager.instance.skill.GetJumpForceRate(), ForceMode.Acceleration);
+        rb.AddForce(Vector3.up * jumpPower * playerMgr.skill.GetJumpForceRate(), ForceMode.Acceleration);
         jumpCount++;
         jumped = true;
-        PlayerManager.instance.isJumping = true;
+        playerMgr.isJumping = true;
 
         // 슬라이드벽에 붙어 있다면 전용 점프 로직
-        if (PlayerManager.instance.isOnSlideWall) {
+        if (playerMgr.isOnSlideWall) {
             float power = 7f;
-            Vector3 normal = PlayerManager.instance.slideWallNormal;
+            Vector3 normal = playerMgr.slideWallNormal;
             rb.AddForce(normal * power + Vector3.up * 2, ForceMode.VelocityChange);
             
-            PlayerManager.instance.isInputLock = true;
-            PlayerManager.instance.SetInputLockAfterSeconds(false, 0.3f);
+            playerMgr.isInputLock = true;
+            playerMgr.SetInputLockAfterSeconds(false, 0.3f);
 
             StartCoroutine(SlideWallJumpRotate());
         }
@@ -186,18 +187,18 @@ public class PlayerMovementController : MonoBehaviour
     // 점프 다 하고 스페이스바 다시 누르면 활공
     void GlidingInput()
     {
-        if (!GroundCheck.isGround && Input.GetKeyDown(KeyCode.Space) && !PlayerManager.instance.onWire) {
-            if (!jumped && PlayerManager.instance.skill.HasGliding())
-                PlayerManager.instance.isGliding = !PlayerManager.instance.isGliding;
+        if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !playerMgr.onWire) {
+            if (!jumped && playerMgr.skill.HasGliding())
+                playerMgr.isGliding = !playerMgr.isGliding;
         }
-        if (GroundCheck.isGround) {
-            PlayerManager.instance.isGliding = false;
+        if (playerMgr.isGround) {
+            playerMgr.isGliding = false;
         }
     }
 
     void Gliding()
     {
-        // if (PlayerManager.instance.isGliding) {
+        // if (playerMgr.isGliding) {
         //     Rigidbody rb = GetComponent<Rigidbody>();
         //     Vector3 antiGravity = -0.8f * rb.mass * Physics.gravity;
         //     if (rb.velocity.y > 0)
@@ -206,7 +207,7 @@ public class PlayerMovementController : MonoBehaviour
         //     if (rb.velocity.y < -7)
         //         rb.velocity = new Vector3(rb.velocity.x, -7, rb.velocity.z);
         // }
-        glidingMesh.SetActive(PlayerManager.instance.isGliding);
+        glidingMesh.SetActive(playerMgr.isGliding);
     }
 
 
@@ -214,10 +215,10 @@ public class PlayerMovementController : MonoBehaviour
     void AddExtraForce()
     {
         // 글라이딩 전용 로직
-        if (PlayerManager.instance.isGliding) {
+        if (playerMgr.isGliding) {
             Vector3 antiGravity;
             // 평상시 글라이딩
-            if (!PlayerManager.instance.isInsideFan) {
+            if (!playerMgr.isInsideFan) {
                 antiGravity = -0.8f * rb.mass * Physics.gravity;
                 if (rb.velocity.y > 0) // 속도가 위로 향할 때도 감속
                     antiGravity = 0.4f * rb.mass * Physics.gravity;
@@ -230,7 +231,7 @@ public class PlayerMovementController : MonoBehaviour
             // 선풍기 안에서 글라이딩
             else {
                 antiGravity = -1f * rb.mass * Physics.gravity; // 중력 완전 상쇄
-                if (PlayerManager.instance.fanDirection.y <= 0.1f) // 선풍기 방향이 아랫방향이라면 약간씩은 중력에 의해 떨어지게 하기
+                if (playerMgr.fanDirection.y <= 0.1f) // 선풍기 방향이 아랫방향이라면 약간씩은 중력에 의해 떨어지게 하기
                     antiGravity = -0.95f * rb.mass * Physics.gravity;
                 rb.AddForce(antiGravity);
             }
@@ -240,15 +241,15 @@ public class PlayerMovementController : MonoBehaviour
 
     void BoostInput()
     {
-        if (!PlayerManager.instance.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0 
-                || !PlayerManager.instance.isBall || !PlayerManager.instance.skill.HasBoost()) {
-            PlayerManager.instance.isBoosting = false;
+        if (!playerMgr.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0 
+                              || !playerMgr.isBall                 || !playerMgr.skill.HasBoost()) {
+            playerMgr.isBoosting = false;
             return;
         }
 
         // 즉발성 부스트
         if (Input.GetKeyDown(KeyCode.LeftShift) && currentBoostEnergy >= burstEnergyUsage) { 
-            PlayerManager.instance.isBoosting = true;
+            playerMgr.isBoosting = true;
             ball.BurstBoost();
             currentBoostEnergy -= burstEnergyUsage;
         }
@@ -258,7 +259,7 @@ public class PlayerMovementController : MonoBehaviour
     // 부스터 게이지 조절
     void BoostEnergyControl()
     {
-        if (PlayerManager.instance.isBoosting) { // 부스터 사용중
+        if (playerMgr.isBoosting) { // 부스터 사용중
             if (currentBoostEnergy > 0)
                 currentBoostEnergy -= energyUsageRatePerSeconds * Time.deltaTime;
             else
@@ -278,8 +279,8 @@ public class PlayerMovementController : MonoBehaviour
     private Vector3 prevVec;
     void OnCollisionEnter(Collision collision)
     {
-         // 현재 ground 역할을 하는 collider와 닿았다면
-        if (GroundCheck.isGround && GroundCheck.currentGroundColliders.Contains(collision.collider)) {
+        // 현재 ground 역할을 하는 collider와 닿았다면
+        if (playerMgr.isGround && playerMgr.curGroundCollider == collision.collider) {
             curPlatform = collision.collider;
             prevVec = collision.transform.position;
         }
@@ -304,7 +305,7 @@ public class PlayerMovementController : MonoBehaviour
 
     public void ChangeCurMovement()
     {
-        if (PlayerManager.instance.isBall)
+        if (playerMgr.isBall)
             curMovement = GetComponent<BallMovementController>();
         else
             curMovement = GetComponent<HamsterMovementController>();

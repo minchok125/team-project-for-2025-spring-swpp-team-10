@@ -37,7 +37,7 @@ public class HamsterMovementController : MonoBehaviour, IMovement
         // hamsterGround: 마찰력O, hamsterJump: 마찰력X
         // 마찰력O : 땅, 슬라이드벽에서 움직임 멈춤
         // 마찰력X : 공중, 슬라이드벽에서 움직일 때
-        if (GroundCheck.isGround && !PlayerManager.instance.isOnSlideWall) col.material = hamsterGround;
+        if (PlayerManager.instance.isGround && !PlayerManager.instance.isOnSlideWall) col.material = hamsterGround;
         else if (PlayerManager.instance.isOnSlideWall && !PlayerManager.instance.isMoving) col.material = hamsterGround; // 슬라이드벽에서 안 움직이면 마찰력 높임
         else col.material = hamsterJump;
 

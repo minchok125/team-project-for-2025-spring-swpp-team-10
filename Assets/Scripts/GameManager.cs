@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour
     Application.targetFrameRate = 120;
 
     // 2. 해상도 고정 (전체화면 모드: false -> 창모드, true -> 전체화면)
-    Screen.SetResolution(1920, 1080, false);
+    Screen.SetResolution(1280, 720, false);
     
     // 3. VSync 끄기 (VSync가 켜져 있으면 targetFrameRate가 무시될 수 있음)
     QualitySettings.vSyncCount = 0;

@@ -1,23 +1,52 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// 햄스터 캐릭터용 와이어 컨트롤러 구현
+/// Unity의 SpringJoint를 통한 물리 기반 와이어 메커니즘 사용
+/// IWire 인터페이스를 구현하여 PlayerWireController와 연동
+/// </summary>
 public class HamsterWireController : MonoBehaviour, IWire
 {
-    public static float speedFactor { get; private set; } // HamsterMovement에서 쓰임. 물체와 같이 이동할 때 줄어드는 속도 비율
-    public static Rigidbody grabRb { get; private set; } // HamsterMovement에서 쓰임. 물체의 RigidBody
-    
+    /// <summary>
+    /// 물체 질량 비율에 따른 속도 계수
+    /// 물체를 잡았을 때 HamsterMovement에서 이동 속도 조절에 사용됨
+    /// </summary>
+    public static float speedFactor { get; private set; }
 
+    /// <summary>
+    /// 잡힌 물체의 Rigidbody 참조
+    /// HamsterMovement에서 추가적인 물리 조작을 위해 접근 가능
+    /// </summary>
+    public static Rigidbody grabRb { get; private set; }
+    
+    [Tooltip("와이어 연결의 스프링 강도. 높을수록 더 뻣뻣한 연결이 됨")]
     [SerializeField] private float spring = 1000;
-    [SerializeField] private float damper = 1, mass = 10;
+
+    [Tooltip("스프링 조인트의 감쇠 계수. 스프링 시스템의 진동 감소를 제어")]
+    [SerializeField] private float damper = 1;
+
+    [Tooltip("스프링 조인트에 적용되는 질량 스케일. 질량 차이를 처리하는 방식에 영향")]
+    [SerializeField] private float mass = 10;
+
+    [Tooltip("와이어를 당길 때 적용되는 힘. 물체가 플레이어쪽으로 당겨지는 강도를 제어")]
     [SerializeField] private float retractorForce = 8000;
+
+    [Tooltip("와이어로 물체를 당길 때의 최대 속도. 당길 때 과도한 속도를 방지")]
     [SerializeField] private float retractorMaxSpeed = 5;
 
+    // 와이어가 확장될 수 있는 최대 거리. 초기화 중에 다른 컴포넌트에서 가져옴
     private float grabDistance;
 
+    // 플레이어의 Rigidbody 컴포넌트 참조
     private Rigidbody rb;
+    // 와이어 연결에 사용되는 SpringJoint 컴포넌트
     private SpringJoint sj;
+    // 와이어가 맞춘 대상 지점의 Transform
     private Transform hitPoint;
+    // 잡힌 물체의 Transform
     private Transform grabTransform;
 
 
@@ -30,7 +59,6 @@ public class HamsterWireController : MonoBehaviour, IWire
         grabDistance = GetComponent<PlayerWireController>().grabDistance;
         hitPoint = GetComponent<PlayerWireController>().hitPoint;
     }
-
 
     public void WireShoot(RaycastHit hit)
     {
@@ -112,7 +140,7 @@ public class HamsterWireController : MonoBehaviour, IWire
         sj.connectedAnchor = hitPoint.position;
 
         // 잡은 물체가 떨어지는데 플레이어는 물체에 끌려가지 않고 지면에 가로막혀서 이동을 안 함
-        if ((hitPoint.position - transform.position).magnitude > sj.maxDistance + 5 && GroundCheck.isGround && grabRb.velocity.y < 0) {
+        if ((hitPoint.position - transform.position).magnitude > sj.maxDistance + 5 && PlayerManager.instance.isGround && grabRb.velocity.y < 0) {
             GetComponent<PlayerWireController>().EndShoot();
         }
     }

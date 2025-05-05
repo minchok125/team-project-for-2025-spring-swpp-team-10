@@ -19,7 +19,7 @@ public class PlayerWireController : MonoBehaviour
 
 
     #region Wire Properties Private
-    private Transform playerGroundCheck; // hitPoint의 부모
+    private Transform followPlayerHitParent; // hitPoint의 부모
 
     private GameObject grabObject = null; // 현재 와이어로 잡고 있는 오브젝트
     private IWire currentWire; // 햄스터 or 공 와이어
@@ -99,7 +99,7 @@ public class PlayerWireController : MonoBehaviour
         WhatIsGrappable = LayerMask.GetMask("Default", "Attachable");
         lr = GetComponent<LineRenderer>();
         rb = GetComponent<Rigidbody>();
-        playerGroundCheck = GameObject.Find("PlayerGroundCheck").transform;
+        followPlayerHitParent = GameObject.Find("FollowPlayer").transform;
     }
 
     /// <summary>
@@ -109,8 +109,8 @@ public class PlayerWireController : MonoBehaviour
     {
         hitPoint1 = new GameObject("HitPoint1").transform;
         hitPoint2 = new GameObject("HitPoint2").transform;
-        hitPoint1.SetParent(playerGroundCheck);
-        hitPoint2.SetParent(playerGroundCheck);
+        hitPoint1.SetParent(followPlayerHitParent);
+        hitPoint2.SetParent(followPlayerHitParent);
         hitPoint = hitPoint1;
     }
 
@@ -252,7 +252,7 @@ public class PlayerWireController : MonoBehaviour
         // 조준 중인 오브젝트 외곽선 표시
         if (predictionHit.point != Vector3.zero && predictionHit.collider.gameObject != gameObject) {
             // 햄스터용 오브젝트이고 pull 스킬이 없는 경우는 외곽선 표시하지 않음
-            bool reject = !PlayerManager.instance.isBall && !PlayerManager.instance.skill.HasPullWire();
+            bool reject = !PlayerManager.instance.isBall && !PlayerManager.instance.skill.HasHamsterWire();
             bool isHamsterObj = predictionHit.collider.gameObject.GetComponent<ObjectProperties>()?.canGrabInHamsterMode == true;
             reject = reject && isHamsterObj;
 
@@ -270,6 +270,9 @@ public class PlayerWireController : MonoBehaviour
 
 
     #region Wire Shooting
+    /// <summary>
+    /// 와이어 발사
+    /// </summary>
     private void WireShoot()
     {
         // 유효한 타겟이 없거나 자기 자신이면 리턴
@@ -312,7 +315,7 @@ public class PlayerWireController : MonoBehaviour
         // 햄스터 와이어만 가능한 오브젝트
         else if (objProperty.canGrabInHamsterMode)
         {
-            if (!PlayerManager.instance.skill.HasPullWire())
+            if (!PlayerManager.instance.skill.HasHamsterWire())
             {
                 // 스킬이 없으면 와이어 사용 불가
                 grabObject = null;
@@ -362,7 +365,7 @@ public class PlayerWireController : MonoBehaviour
         GrabbedObjectExit();
 
         grabObject = null;
-        hitPoint.SetParent(playerGroundCheck);
+        hitPoint.SetParent(followPlayerHitParent);
         PlayerManager.instance.onWire = false;
         lr.positionCount = 0;
         currentWire.EndShoot();
@@ -557,7 +560,7 @@ public class PlayerWireController : MonoBehaviour
             canGrab = false;
         }
         // 햄스터 그랩이 가능한 오브젝트이며, 햄스터 와이어는 없을 때
-        else if (obj.canGrabInHamsterMode && !PlayerManager.instance.skill.HasPullWire()) {
+        else if (obj.canGrabInHamsterMode && !PlayerManager.instance.skill.HasHamsterWire()) {
             bool isBall = PlayerManager.instance.isBall;
             // 현재 공 모드라면, 공 모드에서 못 잡는 오브젝트여야 함. 또는 햄스터 모드여야 함.
             if (isBall && !obj.canGrabInBallMode || !isBall) {

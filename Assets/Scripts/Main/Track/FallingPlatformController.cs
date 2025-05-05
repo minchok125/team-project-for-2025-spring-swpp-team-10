@@ -59,10 +59,10 @@ public class FallingPlatformController : MonoBehaviour
 
     void Update()
     {
-        if (onPlayer || onWire && !GroundCheck.isGround) {
+        if (onPlayer || onWire && !PlayerManager.instance.isGround) {
             Down();
         }
-        else if (onWire && GroundCheck.isGround) {
+        else if (onWire && PlayerManager.instance.isGround) {
             rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, drag * Time.deltaTime);
         }
         else {
