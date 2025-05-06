@@ -2,7 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// 햄스터, 공 등 다양한 모드에서 사용되는 와이어 액션 인터페이스
-/// 와이어 기반 이동 및 상호작용에 대한 표준 메서드 세트를 제공합니다
+/// 와이어 기반 상호작용에 대한 표준 메서드 세트를 제공합니다
 /// </summary>
 public interface IWire {
     /// <summary>

@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerMaterialController : MonoBehaviour
 {
     [Tooltip("햄스터가 투명해지기 시작하는 카메라와의 거리")]
-    public float fadeoffDist = 5f;
+    [SerializeField] private float fadeoffDist = 5f;
 
     private Rigidbody rb;
     private Material[] mts;
