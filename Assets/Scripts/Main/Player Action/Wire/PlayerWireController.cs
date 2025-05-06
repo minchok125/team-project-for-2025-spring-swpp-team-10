@@ -3,9 +3,9 @@ using UnityEngine.EventSystems;
 
 public class PlayerWireController : MonoBehaviour
 {
-    [SerializeField] private LayerMask WhatIsGrappable; // 훅을 걸 수 있는 오브젝트의 레이어
+    private LayerMask WhatIsGrappable; // 훅을 걸 수 있는 오브젝트의 레이어
     [Tooltip("와이어를 걸 수 있는 최대 거리")]
-    public float grabDistance { get; private set; } = 50f;
+    public float grabDistance { get; private set; } = 40f;
 
 
     #region Wire Properties Public
@@ -13,8 +13,8 @@ public class PlayerWireController : MonoBehaviour
     public Transform hitPoint { get; private set; }
 
     // ballWireCam을 2개 설정하여 각각 hitPoint1,2를 참조하게 함. hitPoint1,2는 번갈아가면서 hitPoint에 할당됨
-    public Transform hitPoint1, hitPoint2; 
-    public bool isHitPoint1;
+    [HideInInspector] public Transform hitPoint1, hitPoint2; 
+    [HideInInspector] public bool isHitPoint1;
     #endregion
 
 
@@ -36,7 +36,8 @@ public class PlayerWireController : MonoBehaviour
     [Header("Prediction")]
     private RaycastHit predictionHit;
     [SerializeField] private float predictionSphereCastRadius = 10f;
-    [SerializeField, Tooltip("와이어가 설치 위치를 표시하는 점 오브젝트")] private Transform predictionPoint;
+    [Tooltip("와이어가 설치 위치를 표시하는 점 오브젝트")] 
+    [SerializeField] private Transform predictionPoint;
     #endregion
 
 

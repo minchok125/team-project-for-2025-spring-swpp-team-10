@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -37,10 +38,33 @@ public class PlayerManager : MonoBehaviour
     /// </remarks>
     public bool isJumping;
 
+    /// <summary>
+    /// 플레이어가 점프할 수 있는 상태인지 여부를 나타냅니다.
+    /// </summary>
+    /// <remarks>
+    /// 이 변수는 플레이어가 점프가 가능한 지면의 위에 있을 때 true로 설정됩니다.
+    /// 점프가 불가능한 지면의 위에 있다면 점프가 불가능합니다.
+    /// 점프 명령 처리 전에 확인되어 유효한 점프 입력만 처리되도록 합니다.
+    /// </remarks>
+    public bool canJump;
 
+    /// <summary>
+    /// 플레이어가 지면에 닿아있는지 여부를 나타냅니다.
+    /// </summary>
+    /// <remarks>
+    /// 이 변수는 플레이어가 어떤 종류의 지면에든 해당 지면의 위에 있을 때 true로 설정됩니다.
+    /// canJump와 달리 모든 종류의 지면 접촉을 감지합니다.
     public bool isGround;
-    public Collider curGroundCollider;
 
+    /// <summary>
+    /// 플레이어가 현재 접촉 중인 지면의 콜라이더를 참조합니다.
+    /// </summary>
+    /// <remarks>
+    /// 이 변수는 플레이어가 지면에 닿을 때 해당 지면의 콜라이더로 업데이트됩니다.
+    /// 지면 타입 식별, 발소리 효과 적용, 표면 속성에 따른 물리 동작 조정 등에 사용될 수 있습니다.
+    /// 플레이어가 공중에 있을 때는 null 값을 가집니다.
+    /// </remarks>
+    public Collider curGroundCollider;
 
     /// <summary>
     /// 플레이어가 현재 움직이고 있는지 여부를 나타냅니다.
@@ -151,9 +175,10 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
 
-
     private PlayerMovementController playerMovement;
     private ModeConverterController modeConverter;
+
+    private Action modeConvert;
 
 
     private void Awake()
@@ -166,6 +191,9 @@ public class PlayerManager : MonoBehaviour
         skill = GetComponent<PlayerSkillController>();
         playerMovement = GetComponent<PlayerMovementController>();
         modeConverter = GetComponent<ModeConverterController>();
+
+        // 씬 리셋 시 구독자 전부 제거
+        modeConvert = null; 
     }
 
 
@@ -254,13 +282,21 @@ public class PlayerManager : MonoBehaviour
 
     #region Mode Convert
     /// <summary>
-    /// 햄스터 모드와 공 모드 간 전환을 수행합니다. 
+    /// 등록된 모든 콜백을 실행합니다.
+    /// 햄스터 모드와 공 모드 간 전환을 수행합니다.
     /// 현재 상태의 반대 모드로 플레이어를 변환합니다.
     /// </summary>
     public void ModeConvert()
+    { 
+        modeConvert?.Invoke(); 
+    }
+
+    /// <summary>
+    /// ModeConvert에 콜백 액션을 추가합니다.
+    /// </summary>
+    public void ModeConvertAddAction(Action action)
     {
-        modeConverter.Convert();
-        playerMovement.ChangeCurMovement();
+        modeConvert += action;
     }
 
     /// <summary>

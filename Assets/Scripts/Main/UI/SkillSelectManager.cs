@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class SkillSelectManager : MonoBehaviour
 {
-    [SerializeField] private PlayerSkillController skill;
     [SerializeField] private bool isFood;
     [Header("Food")]
     [SerializeField] private Button speed;
@@ -16,9 +15,13 @@ public class SkillSelectManager : MonoBehaviour
     [SerializeField] private Button pull;
     [SerializeField] private Button doubleJump;
 
+    private PlayerSkillController skill;
+
 
     void OnEnable()
     {
+        skill = PlayerManager.instance.skill;
+
         if (isFood) {
             speed.interactable = true;
             jump.interactable = true;

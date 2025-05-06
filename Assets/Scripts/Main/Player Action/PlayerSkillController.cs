@@ -10,6 +10,7 @@ public class PlayerSkillController : MonoBehaviour
     private int skill; // 스킬 상태를 비트 플래그로 저장 (각 비트는 특정 스킬의 활성화 여부를 나타냄)
     private float speedRate; // 기본 이동 속도에 대한 배율 (1.0 = 100% = 기본 속도)
     private float jumpRate; // 기본 점프 높이에 대한 배율 (실제 적용되는 힘은 sqrt(jumpRate)로 계산됨)
+    private float maxBoostEnergy; // 부스터 에너지 최대치 (기본 : 1.0)
 
 
     private const int SKILL_BOOST = 0;
@@ -30,7 +31,7 @@ public class PlayerSkillController : MonoBehaviour
     /// 컴포넌트 초기화 시 호출되는 메서드
     /// 모든 스킬 및 능력치를 기본값으로 설정합니다.
     /// </summary>
-    private void Start()
+    private void Awake()
     {
         ResetSkills();
     }
@@ -40,9 +41,9 @@ public class PlayerSkillController : MonoBehaviour
     /// </summary>
     public void ResetSkills()
     {
-        skill = 0;                      // 모든 스킬 비활성화
-        speedRate = jumpRate = 1.0f;    // 기본 속도 및 점프력으로 재설정
-        skillListText = "";             // 스킬 텍스트 초기화
+        skill = 0;          // 모든 스킬 비활성화
+        speedRate = jumpRate = maxBoostEnergy = 1.0f; // 기본값으로 재설정
+        skillListText = ""; // 스킬 텍스트 초기화
 
         UpdateUI();
     }
@@ -63,9 +64,16 @@ public class PlayerSkillController : MonoBehaviour
     public float GetJumpForceRate() => Mathf.Sqrt(jumpRate);
 
     /// <summary>
-    /// 부스트 스킬 보유 여부를 확인합니다. (비트 0)
+    /// 부스터 에너지의 최대치를 반환합니다.
+    /// 이 값은 플레이어가 사용할 수 있는 부스터 에너지의 총량을 결정합니다.
     /// </summary>
-    /// <returns>부스트 스킬 활성화 여부</returns>
+    /// <returns>부스터 에너지의 최대치 (기본값: 1.0)</returns>
+    public float GetMaxBoostEnergy() => maxBoostEnergy;
+
+    /// <summary>
+    /// 부스터 스킬 보유 여부를 확인합니다. (비트 0)
+    /// </summary>
+    /// <returns>부스터 스킬 활성화 여부</returns>
     public bool HasBoost() => (skill & (1 << SKILL_BOOST)) != 0; 
     
     /// <summary>
@@ -116,7 +124,18 @@ public class PlayerSkillController : MonoBehaviour
     }
 
     /// <summary>
-    /// 부스트 스킬을 해금합니다. (빠른 대쉬 또는 가속)
+    /// 부스터 에너지의 최대치를 증가시킵니다.
+    /// </summary>
+    /// <param name="rate">증가시킬 최대치 배율 (기본값 : 1.0)</param>
+    public void AddMaxBoostEnergy(float rate)
+    {
+        maxBoostEnergy += rate;
+        PlayerManager.instance.GetComponent<PlayerMovementController>().maxBoostEnergy = this.maxBoostEnergy;
+        UpdateUI();
+    }
+
+    /// <summary>
+    /// 부스터 스킬을 해금합니다. (빠른 대쉬 또는 가속)
     /// </summary>
     public void UnlockBoost() 
     {

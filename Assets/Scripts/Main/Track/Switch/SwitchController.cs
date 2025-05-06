@@ -1,7 +1,40 @@
+using System;
 using UnityEngine;
 
 public class SwitchController : MonoBehaviour
 {
+    /// <summary>
+    /// On 상태로 전환될 때 한 번 호출됩니다.
+    /// </summary>
+    public Action OnSwitchOnStart;
+
+    /// <summary>
+    /// On 상태인 동안 매 프레임마다 호출됩니다.
+    /// </summary>
+    public Action OnSwitchOnStay;
+
+    /// <summary>
+    /// On 상태가 끝날 때 한 번 호출됩니다.
+    /// </summary>
+    public Action OnSwitchOnEnd;
+
+    /// <summary>
+    /// Off 상태로 전환될 때 한 번 호출됩니다.
+    /// </summary>
+    public Action OnSwitchOffStart;
+
+    /// <summary>
+    /// Off 상태인 동안 매 프레임마다 호출됩니다.
+    /// </summary>
+    public Action OnSwitchOffStay;
+
+    /// <summary>
+    /// Off 상태가 끝날 때 한 번 호출됩니다.
+    /// </summary>
+    public Action OnSwitchOffEnd;
+
+
+
     [Header("--- 연결 오브젝트 ---")]
     [Tooltip("처음 보이는 '안 눌린' 상태의 시각적 오브젝트")]
     [SerializeField] private GameObject unpressedVisualObject;
@@ -14,9 +47,6 @@ public class SwitchController : MonoBehaviour
 
     [Tooltip("'눌린' 상태를 누르는 영역을 감지하는 트리거 오브젝트")]
     [SerializeField] private GameObject triggerAreaB; // 눌린 상태(B)를 누르는 트리거 (다른 쪽이 높아졌을 때)
-
-    [Tooltip("'눌린' 상태를 누르는 영역을 감지하는 트리거 오브젝트")]
-    [SerializeField] private ISwitchListener switchListener;
 
 
     [Header("--- 설정 ---")]
@@ -38,9 +68,9 @@ public class SwitchController : MonoBehaviour
 
     void Update()
     {
-        // 스위치 이벤트 리스너의 함수 호출
-        if (isPressed) switchListener?.OnStay();
-        else switchListener?.OffStay();
+        // 스위치 이벤트 함수 호출
+        if (isPressed) OnSwitchOnStay?.Invoke();
+        else OnSwitchOffStay?.Invoke();
     }
 
 
@@ -51,7 +81,7 @@ public class SwitchController : MonoBehaviour
     /// <param name="impactSpeed">감지된 충돌 속도</param>
     public void AttemptToggle(GameObject triggerObject, float impactSpeed)
     {
-        Debug.Log($"'{triggerObject.name}' 에서 충돌 감지됨. 속도: {impactSpeed:F2}");
+        Debug.Log($"{gameObject.name}: '{triggerObject.name}' 에서 충돌 감지됨. 속도: {impactSpeed:F2}");
 
         // 힘이 충분한지 먼저 확인
         if (impactSpeed < forceThreshold)
@@ -104,17 +134,17 @@ public class SwitchController : MonoBehaviour
     }
 
     /// <summary>
-    /// 스위치 상태 변화에 따라 적절한 리스너 이벤트를 호출합니다.
+    /// 스위치 상태 변화에 따라 적절한 이벤트를 호출합니다.
     /// </summary>
     void InvokeSwitchStateEvents()
     {
         if (isPressed) {
-            switchListener.OffEnd();
-            switchListener.OnStart();
+            OnSwitchOffEnd?.Invoke();
+            OnSwitchOnStart?.Invoke();
         }
         else {
-            switchListener.OnEnd();
-            switchListener.OffStart();
+            OnSwitchOnEnd?.Invoke();
+            OnSwitchOffStart?.Invoke();
         }
     }
 }
