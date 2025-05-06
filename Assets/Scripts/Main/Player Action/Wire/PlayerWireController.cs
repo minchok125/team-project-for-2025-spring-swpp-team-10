@@ -5,7 +5,7 @@ public class PlayerWireController : MonoBehaviour
 {
     private LayerMask WhatIsGrappable; // 훅을 걸 수 있는 오브젝트의 레이어
     [Tooltip("와이어를 걸 수 있는 최대 거리")]
-    public float grabDistance { get; private set; } = 40f;
+    public float grabDistance { get; private set; } = 30f;
 
 
     #region Wire Properties Public
@@ -69,6 +69,7 @@ public class PlayerWireController : MonoBehaviour
         InitializeComponents();
         InitializeHitPoints();
         InitializeWireControlStates();
+        Debug.Log(grabDistance);
     }
 
     private void Update()
@@ -492,7 +493,7 @@ public class PlayerWireController : MonoBehaviour
     
 
 
-    #region Target Detect Prediction
+    #region Prediction Target Detect
     // https://www.youtube.com/watch?v=HPjuTK91MA8
 
     /// <summary>
