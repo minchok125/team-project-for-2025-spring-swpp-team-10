@@ -17,7 +17,8 @@ public interface IWire {
     public void EndShoot();
     
     /// <summary>
-    /// 와이어 길이를 줄여서 캐릭터를 연결된 물체 쪽으로 당기는 기능
+    /// 와이어 길이를 줄여서 캐릭터를 연결된 물체 쪽으로 당기는 기능.
+    /// 매 FixedUpdate마다 호출
     /// </summary>
     /// <param name="isFast">true일 경우 빠른 속도로 와이어를 당김</param>
     public void ShortenWire(bool isFast);
@@ -30,7 +31,8 @@ public interface IWire {
     public void ShortenWireEnd(bool isFast);
     
     /// <summary>
-    /// 와이어 길이를 늘려서 캐릭터와 연결된 물체 사이의 거리를 증가시키는 기능
+    /// 와이어 길이를 늘려서 캐릭터와 연결된 물체 사이의 거리를 증가시키는 기능.
+    /// 매 FixedUpdate마다 호출
     /// </summary>
     public void ExtendWire();
     

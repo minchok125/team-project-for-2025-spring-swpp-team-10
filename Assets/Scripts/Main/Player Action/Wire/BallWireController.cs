@@ -1,5 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Scripting;
 
 /// <summary>
 /// 공 모드에서 와이어 동작을 제어하는 클래스
@@ -42,6 +44,7 @@ public class BallWireController : MonoBehaviour, IWire
 
     // 디버그 변수
     private float debugMax = -2f, debugMin = -2f;  // 디버그 출력용 이전 min/max 거리 저장
+    private int updateWireLengStatus; // UpdateWireLengthNonRetractor에서 상태 추적
     #endregion
 
 
@@ -57,6 +60,8 @@ public class BallWireController : MonoBehaviour, IWire
 
     public void WireShoot(RaycastHit hit)
     {
+        updateWireLengStatus = 0;
+
         // 현재 와이어 연결 지점 가져오기
         hitPoint = GetComponent<PlayerWireController>().hitPoint;
 
@@ -217,10 +222,26 @@ public class BallWireController : MonoBehaviour, IWire
 
         // 디버그
         if (debugMax != sj.maxDistance || debugMin != sj.minDistance) {
-            Debug.Log($"time: {Time.time:F2} | wire max: {sj.maxDistance:F3}, min: {sj.minDistance:F3}");
+            float dist = (transform.position - hitPoint.position).magnitude;
+            Debug.Log($"time: {Time.time:F2} | wire max: {sj.maxDistance:F3}, min: {sj.minDistance:F3}, dist : {dist}, stat: {updateWireLengStatus}");
             debugMax = sj.maxDistance;
             debugMin = sj.minDistance;
         }
+    }
+    
+
+    /// <summary>
+    /// 바닥과 튕길 때 스프링이 과도하게 당기는 현상을 막기 위한 노력
+    /// </summary>
+    private IEnumerator StabilizeSpringOnBounce()
+    {
+        sj.spring = 0f;
+        sj.damper = 10000f;
+        rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        yield return new WaitForSeconds(0.1f);
+        sj.spring = spring;
+        sj.damper = damper;
+        FixWireLengthToCurrentDistance();
     }
 
     /// <summary>
@@ -230,14 +251,19 @@ public class BallWireController : MonoBehaviour, IWire
     {
         if (PlayerManager.instance.isGround)
         {
+            if (updateWireLengStatus != 0)
+                StartCoroutine(StabilizeSpringOnBounce());
+
             // 지면에 있을 때는 최소 길이만 설정
             sj.minDistance = 2f;
+            waitUntilFall = false;
+            updateWireLengStatus = 0;
         }
         else
         {
             // 공중에 있을 때는 최소/최대 길이 사이의 범위 설정
             // 최소 길이는 최대 길이보다 약간 작게 설정하여 탄성 효과
-            sj.minDistance = Mathf.Max(Mathf.Max(2, sj.maxDistance - 1.5f), sj.maxDistance * 0.9f);
+            // sj.minDistance = Mathf.Max(Mathf.Max(2, sj.maxDistance - 1.5f), sj.maxDistance * 0.9f);
 
             // 처음 지면에서 벗어났을 때 (이전 프레임에는 지면에 있었음)
             if (prevIsGround)
@@ -262,12 +288,15 @@ public class BallWireController : MonoBehaviour, IWire
         // 점프 중이 아니라면 바로 와이어 길이 고정
         if (!PlayerManager.instance.isJumping)
         {
+            updateWireLengStatus = 1;
             FixWireLengthToCurrentDistance();
         }
         else
         {
+            updateWireLengStatus = 2;
             // 점프 중이면 낙하할 때까지 대기
             waitUntilFall = true;
+            sj.minDistance = 2f;
         }
     }
 
@@ -279,12 +308,14 @@ public class BallWireController : MonoBehaviour, IWire
         // 아래로 떨어지기 시작했으면 와이어 길이 고정
         if (rb.velocity.y < 0)
         {
+            updateWireLengStatus = 3;
             FixWireLengthToCurrentDistance();
             waitUntilFall = false;
         }
         // 아직 상승 중이면 자유로운 점프를 위해 최소 길이만 설정
         else
         {
+            updateWireLengStatus = 4;
             sj.minDistance = 2f;
         }
     }
@@ -295,7 +326,7 @@ public class BallWireController : MonoBehaviour, IWire
     private void FixWireLengthToCurrentDistance()
     {
         // 최대 길이를 현재 거리로 설정
-        sj.maxDistance = (hitPoint.transform.position - rb.transform.position).magnitude;
+        sj.maxDistance = (hitPoint.transform.position - transform.position).magnitude;
         // 최소 길이를 최대 길이보다 약간 작게 설정
         sj.minDistance = Mathf.Max(Mathf.Max(2, sj.maxDistance - 1.5f), sj.maxDistance * 0.9f);
     }
