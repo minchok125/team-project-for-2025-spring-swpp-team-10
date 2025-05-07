@@ -132,8 +132,8 @@ public class PlayerMovementController : MonoBehaviour
         curMovement.OnUpdate();
 
         if (velocityTxt != null)
-            velocityTxt.text = 
-                $"Velocity : {rb.velocity.magnitude:F1}\n({rb.velocity.x:F1},{rb.velocity.y:F1},{rb.velocity.z:F1})";
+            velocityTxt.text
+                = $"Velocity : {rb.velocity.magnitude:F1}\n({rb.velocity.x:F1},{rb.velocity.y:F1},{rb.velocity.z:F1})";
     }
 
 
@@ -418,8 +418,8 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleBoostInput()
     {
         // 부스트 불가능 조건 검사
-        if (!playerMgr.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0 ||
-            !playerMgr.isBall || !playerMgr.skill.HasBoost())
+        if (!playerMgr.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0
+            || !playerMgr.isBall || !playerMgr.skill.HasBoost())
         {
             playerMgr.isBoosting = false;
             return;

@@ -190,9 +190,9 @@ public class CinemachineCameraManager : MonoBehaviour
         string s = "";
         if (activeCam is CinemachineFreeLook freeLookCam) 
         {
-            if (!isCamChanged && 
-                (Mathf.Abs(Mathf.DeltaAngle(freeLookCam.m_XAxis.Value, camXAxis)) > 20f || 
-                                  Mathf.Abs(freeLookCam.m_YAxis.Value - camYAxis) > 0.15f)) 
+            if (!isCamChanged 
+                && (Mathf.Abs(Mathf.DeltaAngle(freeLookCam.m_XAxis.Value, camXAxis)) > 20f
+                    || Mathf.Abs(freeLookCam.m_YAxis.Value - camYAxis) > 0.15f)) 
             {
                 Debug.Log($"({freeLookCam.m_XAxis.Value:F2},{freeLookCam.m_YAxis.Value:F2}) => ({camXAxis:F2},{camYAxis:F2})");
                 s = $"({freeLookCam.m_XAxis.Value:F2},{freeLookCam.m_YAxis.Value:F2}) => ({camXAxis:F2},{camYAxis:F2})";
@@ -206,9 +206,9 @@ public class CinemachineCameraManager : MonoBehaviour
 
         if (txt != null) 
         {
-            txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\n" +
-                    $"ball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\n" +
-                    $"ballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
+            txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\n"
+                       + $"ball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\n"
+                       + $"ballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
             txt.text += "\n" + s;
         }
     }
