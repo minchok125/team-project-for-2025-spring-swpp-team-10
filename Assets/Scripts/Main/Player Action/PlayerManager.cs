@@ -223,7 +223,8 @@ public class PlayerManager : MonoBehaviour
         Vector3 moveVec = (forwardVec * ver + rightVec * hor).normalized;
 
         // 접착벽에서는 이동 방향이 제한됨
-        if (isOnSlideWall) {
+        if (isOnSlideWall) 
+        {
             moveVec = GetSlideMoveVec(moveVec);
         }
 

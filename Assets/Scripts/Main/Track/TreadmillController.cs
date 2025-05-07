@@ -27,15 +27,6 @@ public class TreadmillController : MonoBehaviour
         beltRenderer = GetComponent<Renderer>();
     }
 
-    /*
-    void Update()
-    {
-        // 메인 텍스처 오프셋을 바꿔서 스크롤 효과
-        Vector2 offset = beltRenderer.material.mainTextureOffset;
-        offset.x += textureScrollSpeed * Time.deltaTime;
-        beltRenderer.material.mainTextureOffset = offset;
-    }
-    */
 
     void FixedUpdate()
     {
@@ -43,11 +34,9 @@ public class TreadmillController : MonoBehaviour
         Vector3 beltDir = -transform.right; // 벨트 전진 방향: 오브젝트의 로컬 X축
         foreach (var body in bodiesOnBelt)
         {
-            if (body == null) continue;
+            if (body == null) 
+                continue;
             body.MovePosition(body.transform.position + beltDir * beltSpeed * Time.fixedDeltaTime);
-            // Vector3 v = body.velocity;
-            // v += beltDir * beltSpeed;
-            // body.velocity = v;
         }
     }
 

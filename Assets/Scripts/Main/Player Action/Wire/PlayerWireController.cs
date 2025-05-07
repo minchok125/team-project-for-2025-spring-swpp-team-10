@@ -239,7 +239,8 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void DrawWire()
     {
-        if (PlayerManager.instance.onWire) {
+        if (PlayerManager.instance.onWire) 
+        {
             lr.SetPosition(0, transform.position);
             lr.SetPosition(1, hitPoint.position);
             currentWire.WireUpdate();
@@ -252,7 +253,8 @@ public class PlayerWireController : MonoBehaviour
     private void DrawOutline()
     {
         // 조준 중인 오브젝트 외곽선 표시
-        if (predictionHit.point != Vector3.zero && predictionHit.collider.gameObject != gameObject) {
+        if (predictionHit.point != Vector3.zero && predictionHit.collider.gameObject != gameObject) 
+        {
             // 햄스터용 오브젝트이고 pull 스킬이 없는 경우는 외곽선 표시하지 않음
             bool reject = !PlayerManager.instance.isBall && !PlayerManager.instance.skill.HasHamsterWire();
             bool isHamsterObj = predictionHit.collider.gameObject.GetComponent<ObjectProperties>()?.canGrabInHamsterMode == true;
@@ -263,7 +265,8 @@ public class PlayerWireController : MonoBehaviour
         }
 
         // 현재 잡고 있는 오브젝트 외곽선 표시
-        if (grabObject != null) {
+        if (grabObject != null) 
+        {
             GrabbedObjectStay();
         }
     }
@@ -526,12 +529,14 @@ public class PlayerWireController : MonoBehaviour
             realHitPoint = Vector3.zero;
 
         // realHitPoint found
-        if (realHitPoint != Vector3.zero) {
+        if (realHitPoint != Vector3.zero) 
+        {
             predictionPoint.gameObject.SetActive(true);
             predictionPoint.position = realHitPoint;
         }
         // realHitPoint not found
-        else {
+        else 
+        {
             predictionPoint.gameObject.SetActive(false);
         }
 
@@ -550,27 +555,33 @@ public class PlayerWireController : MonoBehaviour
 
         ObjectProperties obj = predictionHit.collider.gameObject.GetComponent<ObjectProperties>();
         // 유효성 검사 조건들
-        if (obj == null) {
+        if (obj == null) 
+        {
             canGrab = false;
         }
         // 이미 잡고 있는 오브젝트일 때
-        else if (predictionHit.collider.gameObject == grabObject) {
+        else if (predictionHit.collider.gameObject == grabObject) 
+        {
             canGrab = false;
         }
         // 공, 햄스터 모드 둘 다 잡을 수 없는 오브젝트일 때
-        else if (!obj.canGrabInBallMode && !obj.canGrabInHamsterMode) {
+        else if (!obj.canGrabInBallMode && !obj.canGrabInHamsterMode)
+         {
             canGrab = false;
         }
         // 햄스터 그랩이 가능한 오브젝트이며, 햄스터 와이어는 없을 때
-        else if (obj.canGrabInHamsterMode && !PlayerManager.instance.skill.HasHamsterWire()) {
+        else if (obj.canGrabInHamsterMode && !PlayerManager.instance.skill.HasHamsterWire()) 
+        {
             bool isBall = PlayerManager.instance.isBall;
             // 현재 공 모드라면, 공 모드에서 못 잡는 오브젝트여야 함. 또는 햄스터 모드여야 함.
-            if (isBall && !obj.canGrabInBallMode || !isBall) {
+            if (isBall && !obj.canGrabInBallMode || !isBall) 
+            {
                 canGrab = false;
             }
         }
 
-        if (!canGrab) {
+        if (!canGrab) 
+        {
             predictionPoint.gameObject.SetActive(false);
             predictionHit.point = Vector3.zero;
         }

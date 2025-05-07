@@ -45,9 +45,11 @@ public class BoostUIController : MonoBehaviour
         image[1].fillAmount = energy / maxEnergy;
 
         // 플레이어가 부스팅 중인 경우
-        if (PlayerManager.instance.isBoosting) {
-            // 부스트를 시작한 직후에만 실행 (처음 한 번)
-            if (boostTime == 0) {
+        if (PlayerManager.instance.isBoosting) 
+        {
+            // 부스트를 시작한 직후에만 실행
+            if (boostTime == 0) 
+            {
                 // 부스트 시작 시점의 에너지 값 저장 (애니메이션 계산에 사용)
                 startEnergy = energy;
             }
@@ -57,28 +59,30 @@ public class BoostUIController : MonoBehaviour
             SetImageAlpha(energy / startEnergy);
             
             // 부스트 시작 애니메이션 (0.2초 동안 크기 변화)
-            if (boostTime < 0.2f) {
-                // 시간에 따라 크기를 120에서 100으로 선형 보간 (약간의 펄스 효과)
+            if (boostTime < 0.2f) 
+            {
+                // 시간에 따라 크기를 120에서 100으로 선형 보간
                 SetImageSize(Mathf.Lerp(120, 100, boostTime / 0.2f));
-                // 부스터 시작 후 경과 시간 누적
                 boostTime += Time.deltaTime;
             }
-            else {
+            else 
+            {
                 // 0.2초 이후에는 일정한 크기 유지
                 SetImageSize(100);
             }
         }
         // 플레이어가 부스팅 중이 아닌 경우
-        else {
+        else 
+        {
             // 부스트 타이머 초기화 (다음 부스트를 위해)
             boostTime = 0;
             // 기본 이미지 크기로 설정
             SetImageSize(100);
 
             // 플레이어가 즉발성 부스트를 사용할 충분한 에너지가 있는 경우
-            if (energy >= player.burstBoostEnergyUsage) { 
+            if (energy >= player.burstBoostEnergyUsage) 
+            { 
                 // 점점 이미지를 불투명하게 만듦 (사용 가능 상태 표시)
-                // 최대 알파값은 1로 제한, 초당 알파값 3 증가
                 SetImageAlpha(Mathf.Min(1, color.a + 3 * Time.deltaTime));
             }
             else {

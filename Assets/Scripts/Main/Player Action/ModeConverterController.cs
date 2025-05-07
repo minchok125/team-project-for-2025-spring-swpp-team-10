@@ -45,7 +45,8 @@ public class ModeConverterController : MonoBehaviour
     /// </summary>
     private void Convert()
     {
-        if (PlayerManager.instance.isBall) {
+        if (PlayerManager.instance.isBall) 
+        {
             // 공 모드에서 햄스터 모드로 전환
             HamsterSetActive(true);          // 햄스터 모델 활성화
             ball.SetActive(false);           // 공 모델 비활성화
@@ -61,7 +62,8 @@ public class ModeConverterController : MonoBehaviour
             rb.constraints |= RigidbodyConstraints.FreezeRotationY;
             rb.constraints |= RigidbodyConstraints.FreezeRotationZ;
         }
-        else {
+        else 
+        {
             // 햄스터 모드에서 공 모드로 전환
             animator.SetTrigger("ChangeToSphere");    // 변환 애니메이션 재생
             Invoke(nameof(ChangeToBall_AfterSeconds), 0.4f); // 애니메이션 후 0.4초 후에 실제 전환 처리

@@ -78,19 +78,23 @@ public class BallMovementController : MonoBehaviour, IMovement
     /// 공의 drag(저항력) 설정
     /// 지면 위, 공중, 최대 속도 초과 시 등 상황별 저항 조절
     /// </summary>
-    void BallDragSetting()
+    private void BallDragSetting()
     {
-        if (PlayerManager.instance.isGround) {
+        if (PlayerManager.instance.isGround) 
+        {
             // 지면 위에서는 높은 저항력
             rb.drag = 1.2f;
         }
-        else {
+        else 
+        {
             float maxVel = maxBallVelocity * PlayerManager.instance.skill.GetSpeedRate();
-            if (rb.velocity.sqrMagnitude > maxVel * maxVel) {
+            if (rb.velocity.sqrMagnitude > maxVel * maxVel) 
+            {
                 // 최대 속도 초과 시 감속을 위한 저항력
                 rb.drag = 1f;
             }
-            else {
+            else 
+            {
                 // 공중에서는 낮은 저항력
                 rb.drag = 0.2f;
             }
@@ -102,20 +106,24 @@ public class BallMovementController : MonoBehaviour, IMovement
     /// 미끄러운 벽 위에서의 각 저항력(angularDrag) 설정
     /// 벽에 붙어있을 때 이동하지 않으면 고정, 이동하면 회전 허용
     /// </summary>
-    void SlideWallAngularDragSetting()
+    private void SlideWallAngularDragSetting()
     {
-        if (PlayerManager.instance.isOnSlideWall) {
-            if (moveDir == Vector3.zero) {
+        if (PlayerManager.instance.isOnSlideWall) 
+        {
+            if (moveDir == Vector3.zero) 
+            {
                 // 이동 입력이 없으면 위치 고정 및 회전 제한
                 transform.position = prevPosition;
                 rb.angularDrag = 200;
             }
-            else {
+            else 
+            {
                 // 이동 입력이 있으면 자유롭게 회전
                 rb.angularDrag = 0;
             }
         }
-        else {
+        else 
+        {
             // 일반 상황에서는 기본 각 저항력
             rb.angularDrag = 1;
         }
@@ -123,10 +131,9 @@ public class BallMovementController : MonoBehaviour, IMovement
 
 
     /// <summary>
-    /// 이동 방향에 기반한 공 회전 처리
     /// 이동 방향과 속도에 따라 자연스러운 회전 구현
     /// </summary>
-    void RotateBasedOnMovement()
+    private void RotateBasedOnMovement()
     {
         // 와이어에 매달린 공중 상태에서는 회전 제어 안함
         if (PlayerManager.instance.onWire && !PlayerManager.instance.isGround) return;
@@ -213,7 +220,8 @@ public class BallMovementController : MonoBehaviour, IMovement
         Vector3 dirOrthogonalMoveDir = Vector3.zero;
         
         // 와이어에 매달린 공중 상태일 때
-        if (PlayerManager.instance.onWire && !PlayerManager.instance.isGround) {
+        if (PlayerManager.instance.onWire && !PlayerManager.instance.isGround) 
+        {
             Transform hitPoint = GetComponent<PlayerWireController>().hitPoint;
             Vector3 dir = (hitPoint.position - rb.transform.position).normalized;
             
@@ -239,17 +247,20 @@ public class BallMovementController : MonoBehaviour, IMovement
             return;
 
         // 방향키 입력 없음 - 현재 속도 방향으로 부스트
-        if (moveDir == Vector3.zero) {
+        if (moveDir == Vector3.zero) 
+        {
             Vector3 dir = rb.velocity.normalized;
             rb.AddForce(dir * sustainedBoostPower * speedRate, ForceMode.Acceleration);
         }
         // 방향키 입력이 있다면 
         // 지면 위 - 입력 방향으로 부스트
-        else if (PlayerManager.instance.isGround) {
+        else if (PlayerManager.instance.isGround) 
+        {
             rb.AddForce(moveDir * sustainedBoostPower * speedRate, ForceMode.Acceleration);
         }
         // 공중 - 와이어와 수직 방향으로 부스트
-        else {
+        else 
+        {
             // 현재 속도를 일부 반영한 방향 계산
             Vector3 dir = (dirOrthogonalMoveDir * 2f + rb.velocity.normalized).normalized;
             rb.AddForce(dir * (sustainedBoostPower - wireMovePower) * speedRate, ForceMode.Acceleration);
@@ -266,16 +277,19 @@ public class BallMovementController : MonoBehaviour, IMovement
         Vector3 boostDir;
 
         // 방향키 입력이 없다면 현재 속도 방향으로 부스트
-        if (moveDir == Vector3.zero) {
+        if (moveDir == Vector3.zero) 
+        {
             boostDir = rb.velocity.normalized;
         }
         // 방향키 입력이 있다면 
         // 지면 위에서는 입력 방향으로 부스트
-        else if (PlayerManager.instance.isGround) {
+        else if (PlayerManager.instance.isGround) 
+        {
             boostDir = moveDir;
         }
         // 공중에서는 와이어와 수직 방향으로 부스트
-        else {
+        else 
+        {
             Transform hitPoint = GetComponent<PlayerWireController>().hitPoint;
             if (hitPoint == null)
                 return;

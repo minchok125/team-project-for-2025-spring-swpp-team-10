@@ -42,52 +42,7 @@ public class SlideWallController : MonoBehaviour
 
         connectedBody = otherRigidbody; // 참조 저장
         PlayerManager.instance.isOnSlideWall = true;
-
-        // Vector3 playerDir;
-        // if (TryGetPlayerDir(out playerDir)) {
-        //     connectedBody.transform.rotation = Quaternion.LookRotation(playerDir);
-        //     Debug.Log(playerDir);
-        // }
     }
-
-    // 플레이어가 이동할 방향 반환. 방향이 존재한다면 true
-    // bool TryGetPlayerDir(out Vector3 playerDir)
-    // {
-    //     playerDir = Vector3.zero;
-
-    //     RaycastHit hit;
-    //     if (!TryGetAttachedslideWall(out hit, connectedBody.transform.right))
-    //         if (!TryGetAttachedslideWall(out hit, connectedBody.transform.forward))
-    //             return false;
-
-    //     // 접착벽의 법선벡터가 (0, y, 0)
-    //     if (Mathf.Abs(hit.normal.x) < 1e-5f && Mathf.Abs(hit.normal.z) < 1e-5f)
-    //         return false;
-
-    //     // hit.normal : 접착벽의 법선벡터
-    //     // hit.normal와 수직이면서 y성분이 0인 벡터 B 구하기
-    //     // playerDir = (Bx, 0, Bz), 조건: Ax * Bx + Az * Bz = 0
-    //     // 임의로 Bz = 1로 두고 Bx 계산
-    //     if (Mathf.Abs(hit.normal.x) < 1e-5f){
-    //         // hit.normal.x가 0일 경우, Bx = 1, Bz = 0으로 고정
-    //         playerDir = new Vector3(1f, 0f, 0f);
-    //     }
-    //     else {
-    //         float Bz = 1f;
-    //         float Bx = -hit.normal.z / hit.normal.x * Bz;
-    //         playerDir = new Vector3(Bx, 0f, Bz).normalized;
-    //     }
-
-    //     float dir = Vector3.Dot(connectedBody.velocity, playerDir);
-    //     // 현재 이동 방향 쪽으로 회전
-    //     if (dir < 0)
-    //         playerDir *= -1;
-
-    //     Debug.Log("normal: " + hit.normal);
-    //     Debug.Log("dir: " + playerDir);
-
-    //     return true;
-    // }
 
     void OnTriggerStay(Collider other) 
     {
@@ -103,11 +58,14 @@ public class SlideWallController : MonoBehaviour
         
 
         RaycastHit hit;
-        if (!TryGetAttachedSlideWall(out hit, connectedBody.transform.right))
-            if (!TryGetAttachedSlideWall(out hit, connectedBody.transform.forward)) { // 좌우에 없다면 앞뒤로 검사
+        if (!TryGetAttachedSlideWall(out hit, connectedBody.transform.right)) 
+        {
+            if (!TryGetAttachedSlideWall(out hit, connectedBody.transform.forward)) 
+            { // 좌우에 없다면 앞뒤로 검사
                 Debug.LogWarning("slideWall : 주변에 접착벽 없음");
                 return;
             }
+        }
         
         PlayerManager.instance.slideWallNormal = hit.normal;
         float force = PlayerManager.instance.isBall ? 200 : 50;
@@ -117,7 +75,6 @@ public class SlideWallController : MonoBehaviour
 
     /// <summary>
     /// 플레이어가 현재 부착되어 있는 SlideWall의 정보를 좌우 Raycast를 통해 탐색하여 반환합니다.
-    /// 가장 가까운 SlideWall을 우선으로 선택하며, 부착된 벽이 없을 경우 false를 반환합니다.
     /// </summary>
     /// <param name="hit">부착된 SlideWall에 대한 RaycastHit 정보</param>
     /// <returns>SlideWall이 감지되면 true, 그렇지 않으면 false</returns>
@@ -138,20 +95,24 @@ public class SlideWallController : MonoBehaviour
             left = leftHit.collider.gameObject.GetComponent<SlideWallController>() != null;
 
         // 양쪽에 접착벽이 있다면 가까운 물체쪽으로 붙음
-        if (right && left) {
+        if (right && left) 
+        {
             float rightDist = Vector3.SqrMagnitude(rightHit.point - connectedTr.position);
             float leftDist = Vector3.SqrMagnitude(leftHit.point - connectedTr.position);
             hit = rightDist < leftDist ? rightHit : leftHit;
         }
         // 오른쪽에 접착벽 존재
-        else if (right) {
+        else if (right) 
+        {
             hit = rightHit;
         }
         // 왼쪽에 접착벽 존재
-        else if (left) {
+        else if (left) 
+        {
             hit = leftHit;
         }
-        else {
+        else 
+        {
             hit = leftHit;
             return false;
         }
@@ -161,7 +122,8 @@ public class SlideWallController : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (other.attachedRigidbody == connectedBody) {
+        if (other.attachedRigidbody == connectedBody) 
+        {
             connectedBody = null;
             PlayerManager.instance.isOnSlideWall = false;
         }

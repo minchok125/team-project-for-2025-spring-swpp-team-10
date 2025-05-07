@@ -84,7 +84,8 @@ public class HamsterWireController : MonoBehaviour, IWire
 
     public void EndShoot()
     {
-        if (sj != null) {
+        if (sj != null) 
+        {
             Destroy(sj);
         }
     }
@@ -140,7 +141,9 @@ public class HamsterWireController : MonoBehaviour, IWire
         sj.connectedAnchor = hitPoint.position;
 
         // 잡은 물체가 떨어지는데 플레이어는 물체에 끌려가지 않고 지면에 가로막혀서 이동을 안 함
-        if ((hitPoint.position - transform.position).magnitude > sj.maxDistance + 5 && PlayerManager.instance.isGround && grabRb.velocity.y < 0) {
+        if ((hitPoint.position - transform.position).magnitude > sj.maxDistance + 5
+             && PlayerManager.instance.isGround && grabRb.velocity.y < 0) 
+        {
             GetComponent<PlayerWireController>().EndShoot();
         }
     }

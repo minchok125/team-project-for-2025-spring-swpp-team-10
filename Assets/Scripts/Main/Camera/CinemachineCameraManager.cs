@@ -39,6 +39,9 @@ public class CinemachineCameraManager : MonoBehaviour
 
     private PlayerWireController player;
 
+    private float camXAxis, camYAxis;
+    private bool isCamChanged;
+
 
     private struct CamRig {
         public Vector2[] rig;
@@ -78,9 +81,6 @@ public class CinemachineCameraManager : MonoBehaviour
     }
 
 
-
-    float x, y;
-    bool changed;
     void Update()
     {
         Zoom();
@@ -123,7 +123,8 @@ public class CinemachineCameraManager : MonoBehaviour
     /// <param name="camRig">초기 height, radius 값을 저장한 CamRig 구조체</param>
     void SetHeightRadius(CinemachineFreeLook cam, CamRig camRig)
     {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) 
+        {
             cam.m_Orbits[i].m_Height = camRig.rig[i].x * actualZoom;
             cam.m_Orbits[i].m_Radius = camRig.rig[i].y * actualZoom;
         }
@@ -146,60 +147,68 @@ public class CinemachineCameraManager : MonoBehaviour
 
 
         // 활성화할 카메라
-        if (PlayerManager.instance.isBall) {
-            if (isBallWireCam && player.isHitPoint1) {
+        if (PlayerManager.instance.isBall) 
+        {
+            if (isBallWireCam && player.isHitPoint1) 
+            {
                 FreeLookCamChange(ballWireCam1);
             }
-            else if (isBallWireCam && !player.isHitPoint1) {
+            else if (isBallWireCam && !player.isHitPoint1) 
+            {
                 FreeLookCamChange(ballWireCam2);
             }
-            else {
+            else 
+            {
                 FreeLookCamChange(ballCam);
             }
         }
-        else {
-            if (PlayerManager.instance.onWire) {
+        else 
+        {
+            if (PlayerManager.instance.onWire) 
+            {
                 FreeLookCamChange(hamsterWireCam);
             }
-            else {
+            else 
+            {
                 FreeLookCamChange(hamsterCam);
             }
         }
 
 
         // 카메라 민감도 설정
-        hamsterCam.m_YAxis.m_MaxSpeed = hamsterWireCam.m_YAxis.m_MaxSpeed = ballCam.m_YAxis.m_MaxSpeed = ballWireCam1.m_YAxis.m_MaxSpeed = ballWireCam2.m_YAxis.m_MaxSpeed
+        hamsterCam.m_YAxis.m_MaxSpeed = hamsterWireCam.m_YAxis.m_MaxSpeed = ballCam.m_YAxis.m_MaxSpeed = 
+        ballWireCam1.m_YAxis.m_MaxSpeed = ballWireCam2.m_YAxis.m_MaxSpeed
             = mouseDefaultVerticalSensitivity * mouseVerticalSensitivity;
 
-        hamsterCam.m_XAxis.m_MaxSpeed = hamsterWireCam.m_XAxis.m_MaxSpeed = ballCam.m_XAxis.m_MaxSpeed = ballWireCam1.m_XAxis.m_MaxSpeed = ballWireCam2.m_XAxis.m_MaxSpeed
+        hamsterCam.m_XAxis.m_MaxSpeed = hamsterWireCam.m_XAxis.m_MaxSpeed = ballCam.m_XAxis.m_MaxSpeed = 
+        ballWireCam1.m_XAxis.m_MaxSpeed = ballWireCam2.m_XAxis.m_MaxSpeed
             = mouseDefaultHorizontalSensitivity * mouseHorizontalSensitivity;
 
         // 카메라가 뚝 끊기니까 그거 해결해 보려고 한 것
         ICinemachineCamera activeCam = brain.ActiveVirtualCamera;
 
         string s = "";
-        if (activeCam is CinemachineFreeLook freeLookCam) {
-            if (!changed && 
-                (Mathf.Abs(Mathf.DeltaAngle(freeLookCam.m_XAxis.Value, x)) > 20f || Mathf.Abs(freeLookCam.m_YAxis.Value - y) > 0.15f)) {
-                Debug.Log($"({freeLookCam.m_XAxis.Value:F2},{freeLookCam.m_YAxis.Value:F2}) => ({x:F2},{y:F2})");
-                s = $"({freeLookCam.m_XAxis.Value:F2},{freeLookCam.m_YAxis.Value:F2}) => ({x:F2},{y:F2})";
-                freeLookCam.m_XAxis.Value = x;
-                freeLookCam.m_YAxis.Value = y;
+        if (activeCam is CinemachineFreeLook freeLookCam) 
+        {
+            if (!isCamChanged && 
+                (Mathf.Abs(Mathf.DeltaAngle(freeLookCam.m_XAxis.Value, camXAxis)) > 20f || 
+                                  Mathf.Abs(freeLookCam.m_YAxis.Value - camYAxis) > 0.15f)) 
+            {
+                Debug.Log($"({freeLookCam.m_XAxis.Value:F2},{freeLookCam.m_YAxis.Value:F2}) => ({camXAxis:F2},{camYAxis:F2})");
+                s = $"({freeLookCam.m_XAxis.Value:F2},{freeLookCam.m_YAxis.Value:F2}) => ({camXAxis:F2},{camYAxis:F2})";
+                freeLookCam.m_XAxis.Value = camXAxis;
+                freeLookCam.m_YAxis.Value = camYAxis;
             }
 
-            // if (activeCam.VirtualCameraGameObject == ballWireCam1.VirtualCameraGameObject) {
-            //     ballWireCam1.m_YAxisRecentering.m_enabled = true;
-            // }
-            // else {
-            //     ballWireCam1.m_YAxisRecentering.m_enabled = false;
-            // }
-
-            x = freeLookCam.m_XAxis.Value;
-            y = freeLookCam.m_YAxis.Value;
+            camXAxis = freeLookCam.m_XAxis.Value;
+            camYAxis = freeLookCam.m_YAxis.Value;
         }
 
-        if (txt != null) {
-            txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\nball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\nballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
+        if (txt != null) 
+        {
+            txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\n" +
+                    $"ball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\n" +
+                    $"ballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
             txt.text += "\n" + s;
         }
     }
@@ -212,10 +221,11 @@ public class CinemachineCameraManager : MonoBehaviour
     /// <param name="curCam">우선순위를 최상위로 설정할 CinemachineFreeLook 카메라</param>
     void FreeLookCamChange(CinemachineFreeLook curCam)
     {
-        changed = true;
+        isCamChanged = true;
         ICinemachineCamera activeCam = brain.ActiveVirtualCamera;
-        if (activeCam.VirtualCameraGameObject == curCam.VirtualCameraGameObject) {
-            changed = false;
+        if (activeCam.VirtualCameraGameObject == curCam.VirtualCameraGameObject) 
+        {
+            isCamChanged = false;
             return;
         }
 

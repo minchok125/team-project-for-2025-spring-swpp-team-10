@@ -19,11 +19,13 @@ public class TrampolineController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(KeyCode.Space)) 
+        {
             isJump = true;
             jumpStartTime = Time.time;
         }
-        if (Input.GetKeyUp(KeyCode.Space)) {
+        if (Input.GetKeyUp(KeyCode.Space)) 
+        {
             isJump = false;
         }
     }
@@ -46,14 +48,14 @@ public class TrampolineController : MonoBehaviour
             float bounceStrength = PlayerManager.instance.isBall ? bounceStrengthBall : bounceStrengthHamster;
             newVel.y = Mathf.Abs(newVel.y) * bounceStrength;
 
-            if (isJump && Time.time - jumpStartTime < superJumpReactionTime) {
+            if (isJump && Time.time - jumpStartTime < superJumpReactionTime) 
+            {
                 Debug.Log("트램펄린 슈퍼 점프 발동");
                 newVel.y = Mathf.Min(newVel.y * jumpBounceRate, maxVelocityY);
             }
 
             rb.velocity = newVel;
             
-
             // 플레이어 애니메이션 설정
             tracker.SetJumpAnimator();
         }

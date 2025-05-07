@@ -28,13 +28,16 @@ public class CameraTargetController : MonoBehaviour
     {
         Vector3 plr = player.position + offset;
 
-        if (state == State.Hamster) {
+        if (state == State.Hamster) 
+        {
             transform.position = plr;
         }
-        else if (state == State.BallNotWire) {
+        else if (state == State.BallNotWire) 
+        {
             transform.position = plr;
         }
-        else if (state == State.BallWire1 || state == State.BallWire2) {
+        else if (state == State.BallWire1 || state == State.BallWire2) 
+        {
             if (state == State.BallWire1) SetBallWirePos(hitPoint1.position);
             else SetBallWirePos(hitPoint2.position);
         }
