@@ -96,7 +96,7 @@ namespace Cinemachine
                             if (m_IgnoreTags.Contains(castHitInfo.collider.tag))
                                 continue;
 
-                            Vector3 castPoint = castHitInfo.point;//Vector3.Project(castHitInfo.point, targetToCameraNormalized);
+                            Vector3 castPoint = castHitInfo.point; // Vector3.Project(castHitInfo.point, targetToCameraNormalized);
                             float dist = Vector3.Distance(lookAtPos, castPoint);
                             if (dist < bestDist)
                             {
@@ -120,7 +120,8 @@ namespace Cinemachine
                     {
                         // Add an extra lerp up to full value to make it buttery
                         extra.currentReturnRate = Mathf.Lerp(extra.currentReturnRate, m_ReturnAfterCollisionRate, 5f * Time.deltaTime);
-                        extra.previousAdjustment = Mathf.Lerp(extra.previousAdjustment, desiredDistToCamera, extra.currentReturnRate * Time.deltaTime);
+                        extra.previousAdjustment = Mathf.Lerp(extra.previousAdjustment, desiredDistToCamera, 
+                                                              extra.currentReturnRate * Time.deltaTime);
                     }
                  
                     displacement = targetToCameraRay.GetPoint(extra.previousAdjustment) - cameraPos;

@@ -309,7 +309,8 @@ public class PlayerWireController : MonoBehaviour
         // 햄스터, 공 와이어 둘 다 가능한 오브젝트
         if (objProperty.canGrabInBallMode && objProperty.canGrabInHamsterMode)
         {
-            currentWire = PlayerManager.instance.isBall ? GetComponent<BallWireController>() : GetComponent<HamsterWireController>();
+            currentWire = PlayerManager.instance.isBall ? GetComponent<BallWireController>() 
+                                                        : GetComponent<HamsterWireController>();
         }
         // 공 와이어만 가능한 오브젝트
         else if (objProperty.canGrabInBallMode)

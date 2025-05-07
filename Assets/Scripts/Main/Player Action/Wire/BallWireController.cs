@@ -206,9 +206,11 @@ public class BallWireController : MonoBehaviour, IWire
         sj.connectedAnchor = hitPoint.position;
 
         // 공중에 있을 때 와이어 방향으로 플레이어 회전
-        if (!PlayerManager.instance.isGround)
+        if (!PlayerManager.instance.isGround) {
             transform.rotation = Quaternion.Slerp(transform.rotation, 
-                            Quaternion.LookRotation(hitPoint.position - transform.position), 3 * Time.deltaTime);
+                                                  Quaternion.LookRotation(hitPoint.position - transform.position), 
+                                                  3 * Time.deltaTime);
+        }
 
         // 리트랙터 미사용 시 와이어 길이 자동 조정
         if (!isUsingRetractor)
@@ -226,8 +228,8 @@ public class BallWireController : MonoBehaviour, IWire
         if (debugMax != sj.maxDistance || debugMin != sj.minDistance) 
         {
             float dist = (transform.position - hitPoint.position).magnitude;
-            Debug.Log($"time: {Time.time:F2} | wire max: {sj.maxDistance:F3}, min: {sj.minDistance:F3}, \n" +
-                      $"dist : {dist}, stat: {updateWireLengStatus}");
+            Debug.Log($"time: {Time.time:F2} | wire max: {sj.maxDistance:F3}, min: {sj.minDistance:F3}, \n"
+                      + $"dist : {dist}, stat: {updateWireLengStatus}");
             debugMax = sj.maxDistance;
             debugMin = sj.minDistance;
         }
