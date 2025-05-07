@@ -21,7 +21,8 @@ public class PlayerMaterialController : MonoBehaviour
         Renderer[] rds = GetComponentsInChildren<Renderer>(true); // true: 비활성화된 자식도 검색
         mts = new Material[rds.Length];
 
-        for(int i = 0; i < rds.Length; i++) {
+        for(int i = 0; i < rds.Length; i++) 
+        {
             mts[i] = rds[i].material;
         }
 
@@ -40,7 +41,8 @@ public class PlayerMaterialController : MonoBehaviour
         prevOpaque = alpha > 0.999f;
 
         // 투명도 조절
-        foreach (Material mt in mts) {
+        foreach (Material mt in mts) 
+        {
             Color color = mt.color;
             color.a = alpha;
             mt.color = color;

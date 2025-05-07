@@ -47,11 +47,13 @@ public class FanController : MonoBehaviour
                 Rigidbody rb = hit.attachedRigidbody;
                 float dot = Vector3.Dot(rb.transform.position - transform.position, direction);
                 // 선풍기의 앞에 있을 때만 영향을 받음
-                if (dot > 0) {
+                if (dot > 0) 
+                {
                     rb.AddForce(direction * pushForce, ForceMode.Acceleration);
                     curIsInPlayer = true;
                     // 플레이어가 선풍기 영역에 들어옴
-                    if (!prevIsInPlayer) {
+                    if (!prevIsInPlayer) 
+                    {
                         prevIsInPlayer = true;
                         PlayerManager.instance.isInsideFan = true;
                         PlayerManager.instance.fanDirection = direction;
@@ -61,7 +63,8 @@ public class FanController : MonoBehaviour
         }
 
         // 플레이어가 선풍기 영역에서 벗어남
-        if (prevIsInPlayer && !curIsInPlayer) {
+        if (prevIsInPlayer && !curIsInPlayer) 
+        {
             prevIsInPlayer = false;
             PlayerManager.instance.isInsideFan = false;
             PlayerManager.instance.fanDirection = Vector3.zero;

@@ -132,7 +132,8 @@ public class PlayerMovementController : MonoBehaviour
         curMovement.OnUpdate();
 
         if (velocityTxt != null)
-            velocityTxt.text = $"Velocity : {rb.velocity.magnitude:F1}\n({rb.velocity.x:F1},{rb.velocity.y:F1},{rb.velocity.z:F1})";
+            velocityTxt.text = 
+                $"Velocity : {rb.velocity.magnitude:F1}\n({rb.velocity.x:F1},{rb.velocity.y:F1},{rb.velocity.z:F1})";
     }
 
 
@@ -226,28 +227,34 @@ public class PlayerMovementController : MonoBehaviour
         jumped = false;
 
         // 점프할 수 있는 지면에 닿아있거나 슬라이드/접착 벽에 있을 때 점프 가능
-        if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall) {
+        if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall) 
+        {
             // 점프 후 충분한 시간이 지났는지 확인 (연속 점프 방지)
-            if (Time.time - jumpStartTime > 0.2f) {
+            if (Time.time - jumpStartTime > 0.2f) 
+            {
                 jumpCount = 0;
             }
             
             // 점프 입력이 있으면 점프 실행
-            if (Input.GetKeyDown(KeyCode.Space)) {
+            if (Input.GetKeyDown(KeyCode.Space)) 
+            {
                 PerformJump();
                 jumpStartTime = Time.time;
             }
         }
         // 공중에서 점프 (더블 점프)
-        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space)) {
-            if (playerMgr.skill.HasDoubleJump() && jumpCount < 2) {
+        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space)) 
+        {
+            if (playerMgr.skill.HasDoubleJump() && jumpCount < 2) 
+            {
                 PerformJump();
                 jumpCount = 2;
             }
         }
 
         // 점프 상태 업데이트 (지면에 닿았을 때)
-        if (playerMgr.isJumping && playerMgr.isGround && Time.time - jumpStartTime > 0.2f) {
+        if (playerMgr.isJumping && playerMgr.isGround && Time.time - jumpStartTime > 0.2f) 
+        {
             playerMgr.isJumping = false;
         }
     }
@@ -264,7 +271,8 @@ public class PlayerMovementController : MonoBehaviour
         playerMgr.isJumping = true;
 
         // 슬라이드 벽에서 점프하는 경우
-        if (playerMgr.isOnSlideWall) {
+        if (playerMgr.isOnSlideWall) 
+        {
             PerformSlideWallJump();
         }
 
@@ -299,7 +307,8 @@ public class PlayerMovementController : MonoBehaviour
         float _rotateSpeed = 15;
         float time = 0f;
 
-        while(time < 0.3f) {
+        while(time < 0.3f) 
+        {
             Vector3 dir = rb.velocity;
             dir = new Vector3(dir.x, 0, dir.z);
 
@@ -331,15 +340,18 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleGlidingInput()
     {
         // 공중에서 스페이스바를 누르면 활공 토글
-        if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !playerMgr.onWire) {
+        if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !playerMgr.onWire) 
+        {
             // jumped : 이번 Update 프레임 때 점프를 했는지
-            if (!jumped && playerMgr.skill.HasGliding()) {
+            if (!jumped && playerMgr.skill.HasGliding()) 
+            {
                 playerMgr.isGliding = !playerMgr.isGliding;
             }
         }
         
         // 지면에 닿으면 활공 종료
-        if (playerMgr.isGround) {
+        if (playerMgr.isGround) 
+        {
             playerMgr.isGliding = false;
         }
         
@@ -357,7 +369,8 @@ public class PlayerMovementController : MonoBehaviour
     private void AddExtraForce()
     {
         // 글라이딩 전용 물리 효과
-        if (playerMgr.isGliding) {
+        if (playerMgr.isGliding) 
+        {
             ApplyGlidingPhysics();
         }
     }
@@ -369,7 +382,8 @@ public class PlayerMovementController : MonoBehaviour
     {
         Vector3 antiGravity;
         // 선풍기 안에 있는지 여부에 따라 다른 물리 효과 적용
-        if (!playerMgr.isInsideFan) {
+        if (!playerMgr.isInsideFan) 
+        {
             // 일반 활공 - 중력 감소
             antiGravity = -0.8f * rb.mass * Physics.gravity;
 
@@ -381,9 +395,10 @@ public class PlayerMovementController : MonoBehaviour
             if (rb.velocity.y > -7)
                 rb.AddForce(antiGravity);
             else 
-                rb.velocity = new Vector3(rb.velocity.x, -7, rb.velocity.z); // y방향으로 등속으로 떨어짐
+                rb.velocity = new Vector3(rb.velocity.x, -7, rb.velocity.z);
         }
-        else {
+        else 
+        {
             // 선풍기 안에서 활공 - 중력 상쇄
             antiGravity = -1f * rb.mass * Physics.gravity;
             // 선풍기가 아래를 향하고 있을 때는 약간의 중력 효과 남김
@@ -411,7 +426,8 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         // 즉발성 부스트 활성화
-        if (Input.GetKeyDown(KeyCode.LeftShift) && currentBoostEnergy >= burstBoostEnergyUsage) {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && currentBoostEnergy >= burstBoostEnergyUsage) 
+        {
             playerMgr.isBoosting = true;
             ball.BurstBoost();
             currentBoostEnergy -= burstBoostEnergyUsage;
@@ -450,7 +466,8 @@ public class PlayerMovementController : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         // 현재 지면 역할을 하는 콜라이더와 닿았다면
-        if (playerMgr.isGround && playerMgr.curGroundCollider == collision.collider) {
+        if (playerMgr.isGround && playerMgr.curGroundCollider == collision.collider) 
+        {
             curPlatform = collision.collider;
             prevPlatformPos = collision.transform.position;
         }
@@ -461,7 +478,8 @@ public class PlayerMovementController : MonoBehaviour
     /// </summary>
     void OnCollisionStay(Collision collision)
     {
-        if (collision.collider == curPlatform) {
+        if (collision.collider == curPlatform) 
+        {
             // 플랫폼 이동 차이만큼 플레이어도 이동
             Vector3 platformMovement = collision.transform.position - prevPlatformPos;
             rb.MovePosition(rb.transform.position + platformMovement);
@@ -479,7 +497,8 @@ public class PlayerMovementController : MonoBehaviour
     /// </summary>
     void OnCollisionExit(Collision collision)
     {
-        if (curPlatform == collision.collider) {
+        if (curPlatform == collision.collider) 
+        {
             curPlatform = null;
             ball.prevPlatformMovement = Vector3.zero;
         }

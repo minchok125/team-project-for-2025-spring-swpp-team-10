@@ -20,7 +20,8 @@ public class MainSceneManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
         }
         // 마우스 잠금
-        else {
+        else 
+        {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }

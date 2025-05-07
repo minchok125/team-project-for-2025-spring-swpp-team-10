@@ -15,18 +15,22 @@ public class ObjectProperties : MonoBehaviour
 
     private void Start()
     {
-        if (canGrabInBallMode || canGrabInHamsterMode) {
+        if (canGrabInBallMode || canGrabInHamsterMode) 
+        {
             gameObject.layer = LayerMask.NameToLayer("Attachable");
             gameObject.AddComponent<DrawOutline>();
 
-            if (canGrabInHamsterMode) {
-                if (!TryGetComponent(out Rigidbody rb)) {
+            if (canGrabInHamsterMode) 
+            {
+                if (!TryGetComponent(out Rigidbody rb)) 
+                {
                     Debug.LogWarning(gameObject.name + ": Rigidbody가 없습니다. Rigidbody를 추가합니다.");
                     AddHamsterObjectRigidbody();
                 }
             }
         }
-        else {
+        else 
+        {
             gameObject.layer = LayerMask.NameToLayer("Default");
         }
     }

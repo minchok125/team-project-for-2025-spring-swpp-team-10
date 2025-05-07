@@ -28,11 +28,13 @@ public class DrawOutline : MonoBehaviour
 
     void Update()
     {
-        if (num < 2) {
+        if (num < 2) 
+        {
             num++;
             rd.materials[1].SetFloat(k_scaleID, 0.3f);
         }
-        else {
+        else 
+        {
             rd.materials[1].SetFloat(k_scaleID, 0f);
         }
     }
@@ -41,7 +43,8 @@ public class DrawOutline : MonoBehaviour
     {
         // 공 모드와 햄스터 모드 둘 다 가능하며
         // 현재 모드와 현재 설정된 외곽선 색깔이 일치하지 않는다면
-        if (obj.canGrabInBallMode && obj.canGrabInHamsterMode && isBallColor != PlayerManager.instance.isBall) {
+        if (obj.canGrabInBallMode && obj.canGrabInHamsterMode && isBallColor != PlayerManager.instance.isBall) 
+        {
             isBallColor = PlayerManager.instance.isBall;
             rd.materials[1].SetColor(k_ColorID, isBallColor ? ballColor : hamsterColor);
         }

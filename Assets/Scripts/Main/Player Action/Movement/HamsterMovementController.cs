@@ -44,7 +44,7 @@ public class HamsterMovementController : MonoBehaviour, IMovement
         // 마찰력O : 땅, 슬라이드벽에서 움직임 멈춤
         // 마찰력X : 공중, 슬라이드벽에서 움직일 때
         if (PlayerManager.instance.isGround && !PlayerManager.instance.isOnSlideWall) col.material = hamsterGround;
-        else if (PlayerManager.instance.isOnSlideWall && !PlayerManager.instance.isMoving) col.material = hamsterGround; // 슬라이드벽에서 안 움직이면 마찰력 높임
+        else if (PlayerManager.instance.isOnSlideWall && !PlayerManager.instance.isMoving) col.material = hamsterGround;
         else col.material = hamsterJump;
 
         UpdatePhysicMaterial();
@@ -55,12 +55,12 @@ public class HamsterMovementController : MonoBehaviour, IMovement
 
     /// <summary>
     /// 현재 상태에 따라 적절한 PhysicMaterial을 적용합니다.
-    /// - 땅에 있을 때: 마찰력 O (hamsterGround)
-    /// - 슬라이드 벽에서 정지 상태: 마찰력 O (hamsterGround)
-    /// - 공중이나 움직이는 중: 마찰력 X (hamsterJump)
     /// </summary>
     private void UpdatePhysicMaterial()
     {
+        /// - 땅에 있을 때: 마찰력 O (hamsterGround)
+        /// - 슬라이드 벽에서 정지 상태: 마찰력 O (hamsterGround)
+        /// - 공중이나 움직이는 중: 마찰력 X (hamsterJump)
         bool useGroundMaterial = (PlayerManager.instance.isGround && !PlayerManager.instance.isOnSlideWall) || 
                                  (PlayerManager.instance.isOnSlideWall && !PlayerManager.instance.isMoving);
         col.material = useGroundMaterial ? hamsterGround : hamsterJump;
@@ -118,7 +118,8 @@ public class HamsterMovementController : MonoBehaviour, IMovement
 
         // 오브젝트 잡고 움직이는 중이라면 잡은 객체의 속도도 조정
         if (PlayerManager.instance.onWire)
-            HamsterWireController.grabRb.velocity = new Vector3(rb.velocity.x, HamsterWireController.grabRb.velocity.y, rb.velocity.z);
+            HamsterWireController.grabRb.velocity = 
+                new Vector3(rb.velocity.x, HamsterWireController.grabRb.velocity.y, rb.velocity.z);
 
         // 움직임 여부 반환 (의미 있는 속도로 이동 중인지)
         return moveDir != Vector3.zero && rb.velocity.sqrMagnitude > 0.1f;

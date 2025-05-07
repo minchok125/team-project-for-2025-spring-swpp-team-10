@@ -10,7 +10,8 @@ public class CMFreeLookSetting : MonoBehaviour
 
     public float ClickControl(string axis)
     {
-        if (!Input.GetKey(KeyCode.LeftAlt)) {
+        if (!Input.GetKey(KeyCode.LeftAlt)) 
+        {
             return UnityEngine.Input.GetAxis(axis);
         }
 

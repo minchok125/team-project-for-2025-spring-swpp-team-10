@@ -22,11 +22,13 @@ public class SkillSelectManager : MonoBehaviour
     {
         skill = PlayerManager.instance.skill;
 
-        if (isFood) {
+        if (isFood) 
+        {
             speed.interactable = true;
             jump.interactable = true;
         }
-        else {
+        else 
+        {
             boost.interactable = !skill.HasBoost();
             retractor.interactable = !skill.HasRetractor();
             gliding.interactable = !skill.HasGliding();

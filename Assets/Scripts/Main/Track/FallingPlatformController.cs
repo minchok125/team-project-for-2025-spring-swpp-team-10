@@ -48,7 +48,8 @@ public class FallingPlatformController : MonoBehaviour
         rb.constraints |= RigidbodyConstraints.FreezeRotationZ;
 
         // 플랫폼이 움직이는 범위 표시
-        if (dotted != null) {
+        if (dotted != null) 
+        {
             cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder).transform;
             cylinder.SetParent(transform);
             cylinder.gameObject.name = "PlatformMovementBoundary"; 
@@ -60,14 +61,17 @@ public class FallingPlatformController : MonoBehaviour
     void Update()
     {
         // 플레이어가 이 오브젝트 위에 있거나 || 공중에서 이 오브젝트에 와이어를 걸어놨다면
-        if (onPlayer || onWire && !PlayerManager.instance.isGround) {
+        if (onPlayer || onWire && !PlayerManager.instance.isGround) 
+        {
             Down();
         }
         // 와이어를 이 오브젝트에 걸었는데, 플레이어가 지면 위에 있다면
-        else if (onWire && PlayerManager.instance.isGround) {
+        else if (onWire && PlayerManager.instance.isGround) 
+        {
             rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, drag * Time.deltaTime);
         }
-        else {
+        else 
+        {
             Up();
         }
     }
@@ -79,7 +83,8 @@ public class FallingPlatformController : MonoBehaviour
 
     private void Down()
     {
-        if (transform.position.y <= initY - maxDownLength) {
+        if (transform.position.y <= initY - maxDownLength) 
+        {
             transform.position = new Vector3(transform.position.x, initY - maxDownLength, transform.position.z);
             rb.velocity = Vector3.zero;
             return;
@@ -90,7 +95,8 @@ public class FallingPlatformController : MonoBehaviour
 
     private void Up()
     {
-        if (transform.position.y >= initY) {
+        if (transform.position.y >= initY) 
+        {
             transform.position = new Vector3(transform.position.x, initY, transform.position.z);
             rb.velocity = Vector3.zero;
             return;
@@ -107,7 +113,8 @@ public class FallingPlatformController : MonoBehaviour
 
         // Transform값 설정
         cylinder.position = new Vector3(transform.position.x, initY - maxDownLength * 0.5f, transform.position.z);
-        cylinder.localScale = new Vector3(0.2f / transform.localScale.x, maxDownLength * 0.5f / transform.localScale.y, 0.2f  / transform.localScale.z);
+        cylinder.localScale = new Vector3(0.2f / transform.localScale.x, 
+                    maxDownLength * 0.5f / transform.localScale.y, 0.2f  / transform.localScale.z);
         cylinder.rotation = Quaternion.identity;
 
         // Dotted 매테리얼의 점선 간격 조정
@@ -121,7 +128,8 @@ public class FallingPlatformController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player")) {
+        if (collision.gameObject.CompareTag("Player")) 
+        {
             onPlayer = true;
             // 충돌할 때 플레이어의 y축 속도 반영
             rb.velocity += Vector3.up * Mathf.Min(0, collision.relativeVelocity.y) * collisionVelocityRatio;
@@ -130,7 +138,8 @@ public class FallingPlatformController : MonoBehaviour
 
     void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player")) {
+        if (collision.gameObject.CompareTag("Player")) 
+        {
             onPlayer = false;
         }
     }

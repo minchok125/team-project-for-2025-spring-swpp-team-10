@@ -138,11 +138,13 @@ public class SwitchController : MonoBehaviour
     /// </summary>
     void InvokeSwitchStateEvents()
     {
-        if (isPressed) {
+        if (isPressed) 
+        {
             OnSwitchOffEnd?.Invoke();
             OnSwitchOnStart?.Invoke();
         }
-        else {
+        else 
+        {
             OnSwitchOnEnd?.Invoke();
             OnSwitchOffStart?.Invoke();
         }

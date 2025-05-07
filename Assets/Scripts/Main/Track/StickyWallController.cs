@@ -67,11 +67,13 @@ public class StickyWallController : MonoBehaviour
         currentJoint.breakTorque = Mathf.Infinity;
 
         // 플레이어일 때
-        if (collision.gameObject.CompareTag("Player")) {
+        if (collision.gameObject.CompareTag("Player")) 
+        {
             PlayerManager.instance.isOnStickyWall = true;
             isPlayer = true;
         }
-        else {
+        else 
+        {
             isPlayer = false;
         }
     }
@@ -80,27 +82,16 @@ public class StickyWallController : MonoBehaviour
     {
         if (currentJoint != null && isPlayer)
         {
-            if (Input.GetKeyDown(KeyCode.Space)) {
+            if (Input.GetKeyDown(KeyCode.Space)) 
+            {
                 Detach();
-                if (connectedBody.CompareTag("Player")) {
+                if (connectedBody.CompareTag("Player")) 
+                {
                     connectedBody.AddForce(contactNormal * 3f, ForceMode.VelocityChange);
                 }
             }
         }
     }
-
-    // // 이 함수는 Joint가 breakForce 또는 breakTorque에 의해 끊어졌을 때 자동으로 호출됩니다.
-    // void OnJointBreak(float breakForceMagnitude)
-    // {
-    //     Debug.Log($"'{connectedBody?.name}' 와(과)의 연결이 힘({breakForceMagnitude:F2})에 의해 끊어졌습니다.");
-    //     currentJoint = null; // 참조 제거
-
-    //     if (connectedBody.CompareTag("Player")) {
-    //         PlayerManager.instance.isOnStickyWall = false;
-    //     }
-    //     connectedBody = null;
-    //     // 필요하다면 여기에 추가적인 정리 로직(효과음 재생 등)을 넣을 수 있습니다.
-    // }
 
     /// <summary>
     /// 외부에서 호출하여 강제로 연결을 끊는 함수.
@@ -115,10 +106,12 @@ public class StickyWallController : MonoBehaviour
             Destroy(currentJoint); // Joint 컴포넌트 제거
             currentJoint = null;
 
-            if (connectedBody.CompareTag("Player")) {
+            if (connectedBody.CompareTag("Player")) 
+            {
                 StartCoroutine(StickyWallJumpRotate());
             }
-            else {
+            else 
+            {
                 connectedBody = null;
             }
         }
@@ -137,16 +130,19 @@ public class StickyWallController : MonoBehaviour
         Transform player = connectedBody.transform;
         Quaternion targetRotation;
 
-        while(time < 0.2f) {
+        while(time < 0.2f) 
+        {
             // 햄스터 이동에 따른 회전
             Vector3 moveDir = PlayerManager.instance.moveDir;
 
-            if (moveDir != Vector3.zero) {
+            if (moveDir != Vector3.zero) 
+            {
                 // 바라볼 방향 (y축 고정)
                 targetRotation = Quaternion.LookRotation(-moveDir.normalized, Vector3.up);
                 player.rotation = Quaternion.Slerp(player.rotation, targetRotation, Time.deltaTime * _rotateSpeed);
             }
-            else {
+            else 
+            {
                 // 이동 입력이 없다면, 햄스터 방향에 따른 회전
                 Vector3 dir = connectedBody.velocity;
                 dir = new Vector3(dir.x, 0, dir.z);

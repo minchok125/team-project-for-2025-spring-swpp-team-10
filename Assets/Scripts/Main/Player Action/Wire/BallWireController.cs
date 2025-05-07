@@ -35,7 +35,7 @@ public class BallWireController : MonoBehaviour, IWire
 
     // 컴포넌트 캐싱
     private SpringJoint sj;     // 와이어 물리 동작을 위한 스프링 조인트
-    private Transform hitPoint;          // 와이어가 붙은 지점의 트랜스폼
+    private Transform hitPoint; // 와이어가 붙은 지점의 트랜스폼
     private Rigidbody rb;   // 플레이어의 리지드바디
 
     // 점프 관련 상태 변수
@@ -44,7 +44,7 @@ public class BallWireController : MonoBehaviour, IWire
 
     // 디버그 변수
     private float debugMax = -2f, debugMin = -2f;  // 디버그 출력용 이전 min/max 거리 저장
-    private int updateWireLengStatus; // UpdateWireLengthNonRetractor에서 상태 추적
+    private int updateWireLengStatus; // UpdateWireLengthNonRetractor()에서 상태 추적
     #endregion
 
 
@@ -92,7 +92,8 @@ public class BallWireController : MonoBehaviour, IWire
 
     public void EndShoot()
     {
-        if (sj != null) {
+        if (sj != null) 
+        {
             Destroy(sj);
         }
     }
@@ -206,7 +207,8 @@ public class BallWireController : MonoBehaviour, IWire
 
         // 공중에 있을 때 와이어 방향으로 플레이어 회전
         if (!PlayerManager.instance.isGround)
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(hitPoint.position - transform.position), 3 * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, 
+                            Quaternion.LookRotation(hitPoint.position - transform.position), 3 * Time.deltaTime);
 
         // 리트랙터 미사용 시 와이어 길이 자동 조정
         if (!isUsingRetractor)
@@ -221,9 +223,11 @@ public class BallWireController : MonoBehaviour, IWire
         prevIsGround = PlayerManager.instance.isGround;
 
         // 디버그
-        if (debugMax != sj.maxDistance || debugMin != sj.minDistance) {
+        if (debugMax != sj.maxDistance || debugMin != sj.minDistance) 
+        {
             float dist = (transform.position - hitPoint.position).magnitude;
-            Debug.Log($"time: {Time.time:F2} | wire max: {sj.maxDistance:F3}, min: {sj.minDistance:F3}, dist : {dist}, stat: {updateWireLengStatus}");
+            Debug.Log($"time: {Time.time:F2} | wire max: {sj.maxDistance:F3}, min: {sj.minDistance:F3}, \n" +
+                      $"dist : {dist}, stat: {updateWireLengStatus}");
             debugMax = sj.maxDistance;
             debugMin = sj.minDistance;
         }

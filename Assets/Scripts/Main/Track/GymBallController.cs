@@ -25,7 +25,8 @@ public class GymBallController : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         // 반발할 오브젝트인지 검사
-        if (bounceTag.Contains(collision.gameObject.tag) && collision.rigidbody != null) {
+        if (bounceTag.Contains(collision.gameObject.tag) && collision.rigidbody != null) 
+        {
             // dir : 짐볼에서 collision으로 향하는 방향
             Vector3 dir = (collision.transform.position - transform.position).normalized;
             // 짐볼과 플레이어에게 힘을 부여
@@ -37,7 +38,8 @@ public class GymBallController : MonoBehaviour
             transform.DOScale(initScale, 0.5f).SetEase(Ease.InBounce);
 
             // 플레이어라면 입력 제한 걸기
-            if (collision.gameObject.CompareTag("Player")) {
+            if (collision.gameObject.CompareTag("Player")) 
+            {
                 PlayerManager.instance.isInputLock = true;
                 PlayerManager.instance.SetInputLockAfterSeconds(false, 0.4f);
             }

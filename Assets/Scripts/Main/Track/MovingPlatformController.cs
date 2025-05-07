@@ -27,7 +27,8 @@ public class MovingPlatformController : MonoBehaviour
     void Init()
     {
         Vector3 value;
-        switch (seqs[0].modifyType) {
+        switch (seqs[0].modifyType) 
+        {
             case Type.Position:
                 value = transform.localPosition;
                 GetValue(ref value, 0);
@@ -54,7 +55,8 @@ public class MovingPlatformController : MonoBehaviour
 
     void GetValue(ref Vector3 value, int idx)
     {
-        if (idx >= seqs.Length) {
+        if (idx >= seqs.Length) 
+        {
             Debug.LogWarning("존재하지 않는 seqs의 " + idx + " 번째 인덱스에 접근하려 합니다.");
             return;
         }
@@ -68,15 +70,13 @@ public class MovingPlatformController : MonoBehaviour
     void SeqStart()
     {
         Sequence seq = DOTween.Sequence();
-        for (int i = 1; i < seqs.Length; i++) {
+        for (int i = 1; i < seqs.Length; i++) 
+        {
             seq.Append(Do(i))
                .AppendInterval(seqs[i].intervalAfterMove);
         }
         
         seq.Append(DoInit());
-        // seq.Append(transform.DOLocalMove(initPos, seqs[0].moveTime))
-        //    .Join(transform.DOLocalRotate(initRot, seqs[0].moveTime))
-        //    .Join(transform.DOScale(initScale, seqs[0].moveTime));
         seq.AppendInterval(seqs[0].intervalAfterMove);
         seq.SetLoops(-1, LoopType.Restart);
     }
@@ -85,7 +85,8 @@ public class MovingPlatformController : MonoBehaviour
     Sequence Do(int i)
     {
         Sequence seq = DOTween.Sequence();
-        switch (seqs[i].modifyType) {
+        switch (seqs[i].modifyType) 
+        {
             case Type.Position:
                 if (seqs[i].xb) seq.Join(CustomSetEase(transform.DOLocalMoveX(seqs[i].x, seqs[i].moveTime), i));
                 if (seqs[i].yb) seq.Join(CustomSetEase(transform.DOLocalMoveY(seqs[i].y, seqs[i].moveTime), i));
@@ -113,8 +114,10 @@ public class MovingPlatformController : MonoBehaviour
         bool rot = false;
         bool[] scale = new bool[3];
 
-        foreach (MoveSequence ms in seqs) {
-            switch (ms.modifyType) {
+        foreach (MoveSequence ms in seqs) 
+        {
+            switch (ms.modifyType) 
+            {
                 case Type.Position:
                     if (ms.xb) move[0] = true;
                     if (ms.yb) move[1] = true;
@@ -154,7 +157,8 @@ public class MovingPlatformController : MonoBehaviour
 }
 
 [System.Serializable]
-public class MoveSequence {
+public class MoveSequence 
+{
     public MovingPlatformController.Type modifyType;
     public bool xb, yb, zb;
     public float x, y, z;
@@ -248,18 +252,21 @@ public class MoveSequenceDrawer : PropertyDrawer
         y += lineHeight + padding;
 
         // 조건부 필드들
-        if (isCustomCurveProp.boolValue) {
+        if (isCustomCurveProp.boolValue) 
+        {
             var buttonRect = new Rect(position.x + position.width - 75f, y, 75f, lineHeight);
 
             // 배경 강조 색상
             EditorGUI.DrawRect(new Rect(position.x, y, position.width, lineHeight), new Color(0.2f, 0.4f, 0.2f, 0.2f));
             EditorGUI.PropertyField(new Rect(position.x, y, position.width - 75f, lineHeight), customEaseProp);
-            if (GUI.Button(buttonRect, "Init")) {
+            if (GUI.Button(buttonRect, "Init")) 
+            {
                 AnimationCurve converted = GetLinearEaseCurve();
                 customEaseProp.animationCurveValue = converted;
             }
         }
-        else {
+        else 
+        {
             // 배경 강조 색상
             EditorGUI.DrawRect(new Rect(position.x, y, position.width, lineHeight), new Color(0.2f, 0.3f, 0.6f, 0.2f));
             EditorGUI.PropertyField(new Rect(position.x, y, position.width, lineHeight), easeProp);
@@ -294,8 +301,9 @@ public class MovingPlatformControllerEditor : Editor
 
 
         // HelpBox로 설명 출력
-        string str = "Transform을 주기적으로 조정하는 스크립트. \nPosition, Scale 등을 동시에 조정하고 싶다면 스크립트를 하나 더 추가해 주세요";
-        str += "\n0th : Init Value\nmoveTime 동안 움직인 뒤 interval 동안 체류";
+        string str = "Transform을 주기적으로 조정하는 스크립트. \n" +
+                     "Position, Scale 등을 동시에 조정하고 싶다면 스크립트를 하나 더 추가해 주세요\n" +
+                     "0th : Init Value\nmoveTime 동안 움직인 뒤 interval 동안 체류";
         EditorGUILayout.HelpBox(str, MessageType.Info);
 
         // Start Delay
