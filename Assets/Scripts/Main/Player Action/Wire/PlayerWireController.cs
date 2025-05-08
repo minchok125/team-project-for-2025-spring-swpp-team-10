@@ -5,7 +5,7 @@ public class PlayerWireController : MonoBehaviour
 {
     private LayerMask WhatIsGrappable; // 훅을 걸 수 있는 오브젝트의 레이어
     [Tooltip("와이어를 걸 수 있는 최대 거리")]
-    public float grabDistance { get; private set; } = 30f;
+    public float grabDistance { get; private set; } = 40f;
 
 
     #region Wire Properties Public
@@ -69,7 +69,7 @@ public class PlayerWireController : MonoBehaviour
         InitializeComponents();
         InitializeHitPoints();
         InitializeWireControlStates();
-        Debug.Log(grabDistance);
+        Debug.Log("grabDistance : " + grabDistance);
     }
 
     private void Update()
@@ -511,11 +511,13 @@ public class PlayerWireController : MonoBehaviour
         RaycastHit sphereCastHit;
         Physics.SphereCast(cam.transform.position + cam.transform.forward * camDist, 
                         predictionSphereCastRadius, cam.transform.forward,
-                        out sphereCastHit, grabDistance + camDist, WhatIsGrappable);
+                        out sphereCastHit, grabDistance + camDist, WhatIsGrappable,
+                        QueryTriggerInteraction.Ignore);
 
         RaycastHit raycastHit;
         Physics.Raycast(cam.transform.position, cam.transform.forward,
-                        out raycastHit, grabDistance + camDist, WhatIsGrappable);
+                        out raycastHit, grabDistance + camDist, WhatIsGrappable,
+                        QueryTriggerInteraction.Ignore);
 
         Vector3 realHitPoint;
 

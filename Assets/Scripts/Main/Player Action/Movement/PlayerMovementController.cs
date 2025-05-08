@@ -465,7 +465,6 @@ public class PlayerMovementController : MonoBehaviour
     /// </summary>
     void OnCollisionEnter(Collision collision)
     {
-        // 현재 지면 역할을 하는 콜라이더와 닿았다면
         if (playerMgr.isGround && playerMgr.curGroundCollider == collision.collider) 
         {
             curPlatform = collision.collider;
