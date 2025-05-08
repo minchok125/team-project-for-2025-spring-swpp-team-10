@@ -75,11 +75,11 @@ public class BallMovementController : MonoBehaviour, IMovement
 
 
     /// <summary>
-    /// 공의 drag(저항력) 설정
-    /// 지면 위, 공중, 최대 속도 초과 시 등 상황별 저항 조절
+    /// 상황에 따른 공의 drag(저항력) 설정
     /// </summary>
     private void BallDragSetting()
     {
+        // 지면 위, 공중, 최대 속도 초과 시 등 상황별 저항 조절
         if (PlayerManager.instance.isGround) 
         {
             // 지면 위에서는 높은 저항력
@@ -103,11 +103,11 @@ public class BallMovementController : MonoBehaviour, IMovement
 
 
     /// <summary>
-    /// 미끄러운 벽 위에서의 각 저항력(angularDrag) 설정
-    /// 벽에 붙어있을 때 이동하지 않으면 고정, 이동하면 회전 허용
+    /// 상황에 따른 공의 각 저항력(angularDrag) 설정
     /// </summary>
     private void SlideWallAngularDragSetting()
     {
+        /// 벽에 붙어있을 때 이동하지 않으면 고정, 이동하면 회전 허용
         if (PlayerManager.instance.isOnSlideWall) 
         {
             if (moveDir == Vector3.zero) 
@@ -163,7 +163,6 @@ public class BallMovementController : MonoBehaviour, IMovement
     // AddForce : https://www.youtube.com/watch?v=8dFDRWCQ3Hs 참고
     /// <summary>
     /// 캐릭터 이동 구현
-    /// 방향키 입력에 따라 힘을 가하고 속도 조절
     /// </summary>
     /// <returns>이동 중인지 여부 (입력 여부 기준)</returns>
     public bool Move()
@@ -238,7 +237,6 @@ public class BallMovementController : MonoBehaviour, IMovement
 
     /// <summary>
     /// 지속성 부스트 처리
-    /// 상황에 따라 다른 방향으로 부스트 힘 적용
     /// </summary>
     /// <param name="dirOrthogonalMoveDir">와이어와 수직인 정규화된 방향 벡터 (와이어 이동 시)</param>
     public void SustainBoost(Vector3 dirOrthogonalMoveDir, float speedRate)
@@ -268,8 +266,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     }
 
     /// <summary>
-    /// 즉발성 부스트 처리
-    /// 즉시 속도를 증가시키는 일회성 부스트
+    /// 즉발성 부스트 처리. 즉시 속도를 증가시키는 일회성 부스트
     /// </summary>
     public void BurstBoost()
     {

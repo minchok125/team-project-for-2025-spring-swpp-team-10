@@ -10,7 +10,7 @@ public class TrampolineController : MonoBehaviour
     [SerializeField] private float bounceStrengthHamster = 1.6f;
 
     [Tooltip("Space로 더 높이 점프할 때 한정으로, y축 속도가 해당 값 이상이 된다면 더 높이 점프하지 않음")]
-    [SerializeField] private float maxVelocityY = 50f;
+    [SerializeField] private float maxSuperJumpVelocityY = 50f;
 
     private bool isJump;
     private bool didSuperJumpFromEarlyInput;
@@ -67,7 +67,7 @@ public class TrampolineController : MonoBehaviour
         if (isJump && Time.time - jumpStartTime < superJumpReactionTime) 
         {
             didSuperJumpFromEarlyInput = true;
-            newVel.y = Mathf.Min(newVel.y * superJumpBounceRate, maxVelocityY);
+            newVel.y = Mathf.Min(newVel.y * superJumpBounceRate, maxSuperJumpVelocityY);
             Debug.Log($"트램펄린 선입력 슈퍼 점프 발동, vel : {newVel}");
         }
         else
@@ -87,6 +87,7 @@ public class TrampolineController : MonoBehaviour
         
         Vector3 newVel = PlayerManager.instance.GetComponent<PlayerMovementController>().lastVelocity;
         newVel.y = Mathf.Abs(newVel.y * superJumpBounceRate); // 충돌하자마자 바로 발동되면 lastVel.y < 0인 경우가 있음
+        newVel.y = Mathf.Min(newVel.y, maxSuperJumpVelocityY);
         PlayerManager.instance.GetComponent<Rigidbody>().velocity = newVel;
 
         Debug.Log($"트램펄린 후입력 슈퍼 점프 발동, vel : {newVel}");
