@@ -14,12 +14,24 @@ public class PingPongMovingPlatformController : MonoBehaviour
     public float startDelay;
     [Tooltip("Start -> End까지 가는 데 걸리는 시간")]
     public float moveTime;
-    
 
-    void Update()
+
+    private Rigidbody rb;
+
+    private void Start()
+    {
+        if (!TryGetComponent(out rb)) {
+            rb = gameObject.AddComponent<Rigidbody>();
+            rb.isKinematic = true;
+        }
+    }
+
+
+    void FixedUpdate()
     {
         Vector3 startPos = inputType == Type.Transform ? start.position : startVec;
         Vector3 endPos = inputType == Type.Transform ? end.position : endVec;
-        transform.position = Vector3.Lerp(startPos, endPos, Mathf.PingPong((-startDelay + Time.time) / moveTime, 1));
+        Vector3 curPos = Vector3.Lerp(startPos, endPos, Mathf.PingPong((-startDelay + Time.time) / moveTime, 1));
+        rb.MovePosition(curPos);
     }
 }

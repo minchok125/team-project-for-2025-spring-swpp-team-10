@@ -31,8 +31,10 @@ public class GroundCheck : MonoBehaviour
         // 땅 위에 있을 때 플레이어와 땅까지의 거리
         float yOffset = PlayerManager.instance.isBall ? 0.85f : 0.05f;
 
-        if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit, distToGround + yOffset, detectionMask)) 
+        if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit, distToGround + yOffset, 
+                            detectionMask, QueryTriggerInteraction.Ignore))
         {
+            //Debug.Log("Dist : " + hit.distance + ", Name :" + hit.collider.gameObject.name);
             PlayerManager.instance.isGround = true;
             PlayerManager.instance.curGroundCollider = hit.collider;
 
