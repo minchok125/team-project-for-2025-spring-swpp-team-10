@@ -13,8 +13,10 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     [SerializeField] private float runVelocity = 16;
 
     [Header("PhysicMaterial")]
-    [Tooltip("땅에 있을 때 PhysicMaterial (마찰력 있음)")]
+    [Tooltip("땅에 있을 때 PhysicMaterial (마찰력 중간)")]
     [SerializeField] private PhysicMaterial hamsterGround;
+    [Tooltip("땅에 있으며 와이어 사용 중일 때 PhysicMaterial (마찰력 큼)")]
+    [SerializeField] private PhysicMaterial hamsterGroundWire;
     [Tooltip("공중에서 PhysicMaterial (마찰력 없음)")]
     [SerializeField] private PhysicMaterial hamsterJump;
 
@@ -40,13 +42,6 @@ public class HamsterMovementController : MonoBehaviour, IMovement
 
     public void OnUpdate()
     {
-        // hamsterGround: 마찰력O, hamsterJump: 마찰력X
-        // 마찰력O : 땅, 슬라이드벽에서 움직임 멈춤
-        // 마찰력X : 공중, 슬라이드벽에서 움직일 때
-        if (PlayerManager.instance.isGround && !PlayerManager.instance.isOnSlideWall) col.material = hamsterGround;
-        else if (PlayerManager.instance.isOnSlideWall && !PlayerManager.instance.isMoving) col.material = hamsterGround;
-        else col.material = hamsterJump;
-
         UpdatePhysicMaterial();
         moveDir = PlayerManager.instance.moveDir;
         Rotate();
@@ -116,17 +111,12 @@ public class HamsterMovementController : MonoBehaviour, IMovement
             rb.velocity = new Vector3(moveDir.x * maxVelocity, rb.velocity.y, moveDir.z * maxVelocity);
         }
 
-        // 오브젝트 잡고 움직이는 중이라면 잡은 객체의 속도도 조정
-        if (PlayerManager.instance.onWire)
-            HamsterWireController.grabRb.velocity 
-                = new Vector3(rb.velocity.x, HamsterWireController.grabRb.velocity.y, rb.velocity.z);
-
         // 움직임 여부 반환 (의미 있는 속도로 이동 중인지)
         return moveDir != Vector3.zero && rb.velocity.sqrMagnitude > 0.1f;
     }
 
     /// <summary>
-    /// 현재 상태에 따른 최대 속도를 계산합니다.
+    /// 현재 상태에 따른 최대 속도를 계산합니다. (와이어 상태, 걷기, 달리기)
     /// </summary>
     /// <returns>적용될 최대 속도</returns>
     private float CalculateMaxVelocity()
@@ -135,7 +125,8 @@ public class HamsterMovementController : MonoBehaviour, IMovement
         maxVelocity *= PlayerManager.instance.skill.GetSpeedRate();
 
         // 오브젝트 잡고 움직이는 중
-        if (PlayerManager.instance.onWire) maxVelocity *= HamsterWireController.speedFactor;
+        if (PlayerManager.instance.onWire && HamsterWireController.grabRb != null) 
+            maxVelocity *= HamsterWireController.speedFactor;
 
         return maxVelocity;
     }
