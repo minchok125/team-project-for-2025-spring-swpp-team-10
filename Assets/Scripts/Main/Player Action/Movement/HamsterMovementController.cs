@@ -13,11 +13,9 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     [SerializeField] private float runVelocity = 16;
 
     [Header("PhysicMaterial")]
-    [Tooltip("땅에 있을 때 PhysicMaterial (마찰력 중간)")]
+    [Tooltip("땅에 있을 때 PhysicMaterial (마찰력 O)")]
     [SerializeField] private PhysicMaterial hamsterGround;
-    [Tooltip("땅에 있으며 와이어 사용 중일 때 PhysicMaterial (마찰력 큼)")]
-    [SerializeField] private PhysicMaterial hamsterGroundWire;
-    [Tooltip("공중에서 PhysicMaterial (마찰력 없음)")]
+    [Tooltip("공중에서 PhysicMaterial (마찰력 X)")]
     [SerializeField] private PhysicMaterial hamsterJump;
 
     private CapsuleCollider col;
