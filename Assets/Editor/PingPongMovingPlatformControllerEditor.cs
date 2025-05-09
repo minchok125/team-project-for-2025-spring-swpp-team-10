@@ -18,11 +18,13 @@ public class PingPongMovingPlatformControllerEditor : Editor
         EditorGUILayout.HelpBox("Start <-> End 왔다갔다 움직이는 스크립트", MessageType.Info);
 
         p.inputType = (PingPongMovingPlatformController.Type)EditorGUILayout.EnumPopup("Input Type", p.inputType);
-        if (p.inputType == PingPongMovingPlatformController.Type.Transform) {
+        if (p.inputType == PingPongMovingPlatformController.Type.Transform) 
+        {
             p.start = (Transform)EditorGUILayout.ObjectField("Start", p.start, typeof(Object), true);
             p.end = (Transform)EditorGUILayout.ObjectField("End", p.end, typeof(Object), true);
         }
-        else {
+        else 
+        {
             p.startVec = EditorGUILayout.Vector3Field("Start Vec", p.startVec);
             p.endVec = EditorGUILayout.Vector3Field("End Vec", p.endVec);
         }
