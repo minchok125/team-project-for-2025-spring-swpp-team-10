@@ -40,6 +40,8 @@ public class ObjectProperties : MonoBehaviour
     {
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
 
+        rb.drag = 1f;
+
         rb.constraints |= RigidbodyConstraints.FreezeRotationX;
         rb.constraints |= RigidbodyConstraints.FreezeRotationY;
         rb.constraints |= RigidbodyConstraints.FreezeRotationZ;
