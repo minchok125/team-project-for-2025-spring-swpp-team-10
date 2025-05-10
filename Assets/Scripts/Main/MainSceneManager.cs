@@ -16,7 +16,7 @@ public class MainSceneManager : MonoBehaviour
 
     void Start()
     {
-        uiManager.InitUIManager();
+        uiManager?.InitUIManager();
     }
 
     void Update()
