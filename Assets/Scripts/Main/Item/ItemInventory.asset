@@ -12,4 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9392d192a33414478b82a9c6f51a57fe, type: 3}
   m_Name: ItemInventory
   m_EditorClassIdentifier: 
-  items: []
+  items:
+  - id: id_apple
+    name: "\uC0AC\uACFC"
+    description: "\uC774\uAC83\uC740 \uC0AC\uACFC"
+    howToUse: "\uC798 \uC4F0\uBA74 \uB428"
+    count: 2
+    type: 0
+  - id: id_coffee
+    name: "\uBC14\uB098"
+    description: "\uC774\uAC83\uC740 \uBC14\uB098\uB098"
+    howToUse: "\uC798 \uC4F0\uBA74 \uB428"
+    count: 2
+    type: 0
