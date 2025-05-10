@@ -19,6 +19,11 @@ public class PausedMenuController : MonoBehaviour
 		
 		bgmVolumeSlider.onValueChanged.AddListener(GameManager.SetBgmVolume);
 		sfxVolumeSlider.onValueChanged.AddListener(GameManager.SetSfxVolume);
+
+		if (uIManager == null)
+		{
+			Debug.LogWarning($"{gameObject.name} : uIManager이 null입니다.");
+		}
 	}
 
 	public void ResumeGame()
