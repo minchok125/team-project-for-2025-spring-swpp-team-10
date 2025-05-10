@@ -533,7 +533,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1971812350}
-  - component: {fileID: 1971812349}
   - component: {fileID: 1971812348}
   - component: {fileID: 1971812347}
   - component: {fileID: 1971812346}
@@ -557,6 +556,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0ebff2d5822d7a4ea3c19c56326ba21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pausedMenuPanel: {fileID: 0}
+  timerText: {fileID: 0}
+  isPaused: 0
 --- !u!114 &1971812347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -579,18 +581,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b7994a94ab503c41a0ba2c0b3465555, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1971812349
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1971812345}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c683722accebc54c9ec7edde93833c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1971812350
@@ -620,6 +610,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 167f5d29c52bf1140965a0e817993721, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiManager: {fileID: 0}
 --- !u!1001 &214280054226234794
 PrefabInstance:
   m_ObjectHideFlags: 0
