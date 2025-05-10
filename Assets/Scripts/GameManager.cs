@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
   [SerializeField] private AudioClip[] bgmClips;
   [SerializeField] private AudioClip[] sfxClips;
   
+  [Header("Values")]
+  public float bgmVolume, sfxVolume;
+  
   /* Scene 간의 이동 시 전달해야 하는 값들은 GameManager를 통해 보내면 됩니다
    * 혼선 방지를 위해 팀별로 해당하는 곳 아래에 public으로 선언 부탁드립니다
    * 프로그램 최초 시작 시 초기화해야 하는 값들은 Init()에서 설정해주시면 됩니다
@@ -48,7 +51,8 @@ public class GameManager : MonoBehaviour
   private void Init()
   {
     // 프로그램 최초 시작 시 초기화
-    
+    bgmVolume = sfxVolume = 1f;
+    PlayBgm(0);
   }
   
   public static void PlayBgm(int index)
@@ -57,8 +61,9 @@ public class GameManager : MonoBehaviour
     Instance.bgmSource.Play();
   }
   public static void StopBgm() { Instance.bgmSource.Stop(); }
-  public static void SetBgmVolume(float volume)  { Instance.bgmSource.volume = volume; }
+  public static void SetBgmVolume(float volume) { Instance.bgmVolume = volume; Instance.bgmSource.volume = volume; }
   public static void PlaySfx(int index) { Instance.sfxSource.PlayOneShot(Instance.sfxClips[index]); }
+  public static void SetSfxVolume(float volume) { Instance.sfxVolume = volume; Instance.sfxSource.volume = volume; }
   
   /*****************************************************/
 }
