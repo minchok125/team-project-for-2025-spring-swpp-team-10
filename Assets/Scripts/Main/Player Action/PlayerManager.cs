@@ -177,8 +177,10 @@ public class PlayerManager : MonoBehaviour
 
     private PlayerMovementController playerMovement;
     private ModeConverterController modeConverter;
+    private Rigidbody rb;
 
     private Action modeConvert;
+    private Vector3 accumulatedMovement;
 
 
     private void Awake()
@@ -191,15 +193,29 @@ public class PlayerManager : MonoBehaviour
         skill = GetComponent<PlayerSkillController>();
         playerMovement = GetComponent<PlayerMovementController>();
         modeConverter = GetComponent<ModeConverterController>();
+        rb = GetComponent<Rigidbody>();
 
         // 씬 리셋 시 구독자 전부 제거
         modeConvert = null; 
     }
 
+    public void AddMovement(Vector3 move)
+    {
+        accumulatedMovement += move;
+    }
 
     private void Update()
     {
         moveDir = GetInputMoveDir();
+    }
+
+    private void FixedUpdate()
+    {
+        if (accumulatedMovement != Vector3.zero)
+        {
+            rb.MovePosition(rb.position + accumulatedMovement);
+            accumulatedMovement = Vector3.zero;
+        }
     }
 
     /// <summary>

@@ -102,6 +102,7 @@ public class PlayerMovementController : MonoBehaviour
     #endregion
 
     
+    #region Unity Lifecycle Methods
     void Start()
     {
         // 컴포넌트 캐싱
@@ -142,12 +143,15 @@ public class PlayerMovementController : MonoBehaviour
         // 이동 처리
         UpdateMovement();
 
+        SynchronizePlatform();
+
         // 추가 물리 효과 적용
         AddExtraForce();
 
         // 마지막 속도 저장
         lastVelocity = rb.velocity;
     }
+    #endregion
 
 
     #region Initialization
@@ -225,6 +229,7 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleJumpInput()
     {
         jumped = false;
+        bool isInputLock = PlayerManager.instance.isInputLock;
 
         // 점프할 수 있는 지면에 닿아있거나 슬라이드/접착 벽에 있을 때 점프 가능
         if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall) 
@@ -236,14 +241,14 @@ public class PlayerMovementController : MonoBehaviour
             }
             
             // 점프 입력이 있으면 점프 실행
-            if (Input.GetKeyDown(KeyCode.Space)) 
+            if (Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
             {
                 PerformJump();
                 jumpStartTime = Time.time;
             }
         }
         // 공중에서 점프 (더블 점프)
-        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space)) 
+        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
         {
             if (playerMgr.skill.HasDoubleJump() && jumpCount < 2) 
             {
@@ -460,47 +465,128 @@ public class PlayerMovementController : MonoBehaviour
 
 
     #region Platform Synchronization
+    void SynchronizePlatform()
+    {
+        if (playerMgr.isGround)
+        {
+            // 새로운 플랫폼에 착지
+            if (curPlatform != playerMgr.curGroundCollider)
+            {
+                Debug.Log($"Detect {playerMgr.curGroundCollider}");
+                curPlatform = playerMgr.curGroundCollider;
+                
+                prevPlatformPos = GetPlatformPos(curPlatform);
+            }
+            // 이전 프레임과 마찬가지의 플랫폼
+            else
+            {
+                
+                // 플랫폼 이동 차이만큼 플레이어도 이동
+                //Vector3 platformMovement = curPlatform.GetComponent<Rigidbody>().transform.position - prevPlatformPos;
+
+                Vector3 platformMovement = GetPlatformPos(curPlatform) - prevPlatformPos;
+
+                //rb.MovePosition(rb.transform.position + platformMovement);
+                playerMgr.AddMovement(platformMovement);
+                //transform.position += platformMovement;
+
+                // 볼 컨트롤러에 플랫폼 이동 정보 전달
+                ball.prevPlatformMovement = platformMovement;
+
+                // 다음에 이동 차이를 계산하기 위해 현재 플랫폼 위치 저장
+                prevPlatformPos = GetPlatformPos(curPlatform);
+            }
+        }
+        else
+        {
+            curPlatform = null;
+        }
+    }
+
+    Vector3 GetPlatformPos(Collider curPlatform)
+    {
+        Rigidbody platformRb = curPlatform.GetComponent<Rigidbody>();
+        Vector3 platformPos = platformRb == null ? curPlatform.transform.position : platformRb.transform.position;
+        return curPlatform.transform.position;
+    }
+
+
+
+
+
+
+
+
     /// <summary>
     /// 플랫폼과 충돌 시작 시 호출
     /// </summary>
     void OnCollisionEnter(Collision collision)
     {
+        // if (playerMgr.isGround && playerMgr.curGroundCollider == collision.collider) 
+        // {
+        //     curPlatform = collision.collider;
+        //     prevPlatformPos = collision.transform.position;
+        // }
+    }
+
+    IEnumerator AAA(Collision collision)
+    {
+        yield return new WaitForFixedUpdate();
         if (playerMgr.isGround && playerMgr.curGroundCollider == collision.collider) 
         {
             curPlatform = collision.collider;
             prevPlatformPos = collision.transform.position;
+            Debug.Log("COllr");
         }
     }
+
+    bool prevCollisionStay = false;
 
     /// <summary>
     /// 플랫폼과 충돌 중일 때 호출 (플랫폼 이동에 맞춰 플레이어도 이동)
     /// </summary>
-    void OnCollisionStay(Collision collision)
-    {
-        if (collision.collider == curPlatform) 
-        {
-            // 플랫폼 이동 차이만큼 플레이어도 이동
-            Vector3 platformMovement = collision.transform.position - prevPlatformPos;
-            rb.MovePosition(rb.transform.position + platformMovement);
+    // void OnCollisionStay(Collision collision)
+    // {
+        
+    //     if (!prevCollisionStay)
+    //     {
+    //         prevCollisionStay = true;
+    //         prevPlatformPos = collision.transform.position;
+    //         Debug.Log($"HI{prevPlatformPos}");
+    //     }
+    //     //else if (collision.collider == curPlatform) 
+    //     else if (playerMgr.curGroundCollider == collision.collider)
+    //     {
+    //         // 플랫폼 이동 차이만큼 플레이어도 이동
+    //         Vector3 platformMovement = collision.transform.position - prevPlatformPos;
+    //         rb.MovePosition(rb.transform.position + platformMovement);
 
-            // 볼 컨트롤러에 플랫폼 이동 정보 전달
-            ball.prevPlatformMovement = collision.transform.position - prevPlatformPos;
+    //         // 볼 컨트롤러에 플랫폼 이동 정보 전달
+    //         ball.prevPlatformMovement = collision.transform.position - prevPlatformPos;
 
-            // 다음에 이동 차이를 계산하기 위해 현재 플랫폼 위치 저장
-            prevPlatformPos = collision.transform.position;
-        }
-    }
+    //         // 다음에 이동 차이를 계산하기 위해 현재 플랫폼 위치 저장
+    //         prevPlatformPos = collision.transform.position;
+
+    //         curPlatform = collision.collider;
+
+    //         if (platformMovement.magnitude > 1)
+    //             Debug.Log(platformMovement);
+    //     }
+    // }
 
     /// <summary>
     /// 플랫폼과 충돌 종료 시 호출
     /// </summary>
-    void OnCollisionExit(Collision collision)
-    {
-        if (curPlatform == collision.collider) 
-        {
-            curPlatform = null;
-            ball.prevPlatformMovement = Vector3.zero;
-        }
-    }
+    // void OnCollisionExit(Collision collision)
+    // {
+    //     if (curPlatform == collision.collider) 
+    //     {
+    //         curPlatform = null;
+    //         ball.prevPlatformMovement = Vector3.zero;
+            
+    //         Debug.Log("ww");
+    //     }
+    //     prevCollisionStay = false;
+    // }
     #endregion
 }

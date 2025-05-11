@@ -36,7 +36,8 @@ public class TreadmillController : MonoBehaviour
         {
             if (body == null) 
                 continue;
-            body.MovePosition(body.transform.position + beltDir * beltSpeed * Time.fixedDeltaTime);
+            //body.MovePosition(body.transform.position + beltDir * beltSpeed * Time.fixedDeltaTime);
+            PlayerManager.instance.AddMovement(beltDir * beltSpeed * Time.fixedDeltaTime);
         }
     }
 
