@@ -7,16 +7,16 @@ public class RotateOnTrigger : MonoBehaviour
     [Tooltip("회전시킬 transform")]
     public Transform planeToRotate;
 
-    [Tooltip("Initial Z angle in degrees")]
+    [Tooltip("초기 Z축 angle")]
     public float initialZAngle = -60f;
 
-    [Tooltip("Target Z angle in degrees")]
+    [Tooltip("목표 Z축 angle")]
     public float targetZAngle = 0f;
 
-    [Tooltip("Duration in seconds to rotate to target angle")]
+    [Tooltip("회전에 소요되는 시간")]
     public float rotationDuration = 1f;
 
-    [Tooltip("Time in seconds to wait at target before rotating back")]
+    [Tooltip("원복되기 전 대기 시간")]
     public float revertDelay = 5f;
 
     private bool hasTriggered = false;
@@ -42,16 +42,12 @@ public class RotateOnTrigger : MonoBehaviour
 
     private IEnumerator RotateSequence()
     {
-        // Ensure plane starts at initial angle
         SetZAngle(initialZAngle);
 
-        // Rotate to target angle
         yield return StartCoroutine(RotateToAngle(initialZAngle, targetZAngle, rotationDuration));
 
-        // Wait at target
         yield return new WaitForSeconds(revertDelay);
 
-        // Rotate back to initial
         yield return StartCoroutine(RotateToAngle(targetZAngle, initialZAngle, rotationDuration));
     }
 
