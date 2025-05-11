@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 
 [CustomEditor(typeof(ObjectProperties))]
+[CanEditMultipleObjects]
 public class ObjectPropertiesEditor : Editor
 {
     public override void OnInspectorGUI()
