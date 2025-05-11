@@ -546,7 +546,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 36783338}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.46982145, y: -0.0000000059610468, z: 0.0000000044695776,
+    w: 0.88276154}
   m_LocalPosition: {x: -7.1054274e-15, y: -1.6270625e-23, z: -1.0462152e-22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -554,6 +555,37 @@ Transform:
   - {fileID: 292049996}
   m_Father: {fileID: 1728392488}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &37775819
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 37775820}
+  m_Layer: 0
+  m_Name: PlatformParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &37775820
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 37775819}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &39881390
 GameObject:
@@ -774,7 +806,7 @@ Transform:
   m_Children:
   - {fileID: 196359938}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &66573014
 Rigidbody:
@@ -843,6 +875,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 1
+  nonDetectable: 0
 --- !u!65 &66816027
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1119,6 +1152,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &80618390
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1982,6 +2016,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &175348208
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2362,7 +2397,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 205101371}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.57431215, y: 0.00000017991727, z: -0.00000015370968, w: 0.8186364}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2475,6 +2510,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &228812265
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2607,6 +2643,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &233931107
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2721,6 +2758,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &238435682
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3210,6 +3248,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 1
 --- !u!65 &271270813
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3576,7 +3615,7 @@ Transform:
   - {fileID: 39881391}
   - {fileID: 1099315776}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &325366188
 GameObject:
@@ -3768,6 +3807,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &358827535
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3897,6 +3937,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &382670192
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4027,7 +4068,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &441949738
 GameObject:
@@ -4618,6 +4659,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &653259682
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4844,6 +4886,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &670418740
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4958,6 +5001,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &674906596
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5206,7 +5250,7 @@ Transform:
   - {fileID: 1728392488}
   - {fileID: 165093906}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &681875238
 GameObject:
@@ -5385,6 +5429,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 1
+  nonDetectable: 0
 --- !u!65 &735132922
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5634,6 +5679,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &787713608
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5885,6 +5931,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &808820457
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5999,6 +6046,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &829893739
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6293,7 +6341,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &846899089
 GameObject:
@@ -6345,6 +6393,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 1
+  nonDetectable: 0
 --- !u!65 &846899092
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6424,7 +6473,7 @@ PrefabInstance:
     - target: {fileID: 4933370424048242813, guid: f780dd180d025de438c7037d8d62537d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 4933370424048242813, guid: f780dd180d025de438c7037d8d62537d,
         type: 3}
@@ -6538,6 +6587,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &861057503
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6873,7 +6923,7 @@ Transform:
   - {fileID: 1160907775}
   - {fileID: 2060171678}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &911953227
 GameObject:
@@ -7216,7 +7266,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &966991450
 GameObject:
@@ -7570,7 +7620,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 993620118}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.7019944, y: 0.000000063847665, z: 0.000000048608356, w: 0.7121825}
   m_LocalPosition: {x: 0, y: 0.000000060626896, z: 0.0000004729673}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -7632,6 +7682,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &1001177939
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7842,6 +7893,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &1024095898
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8240,6 +8292,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &1124362061
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8354,6 +8407,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &1148431631
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8703,6 +8757,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &1204561034
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8737,7 +8792,6 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 06058408d3e9309428ecc5cec18ff386, type: 2}
-  - {fileID: 2100000, guid: 6ef8572e60022874999c8c2f1b458cc3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8832,6 +8886,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &1206910319
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9698,6 +9753,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &1265155205
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10530,6 +10586,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &1442980336
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10924,7 +10981,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1484551512}
-  m_LocalRotation: {x: -0.032758888, y: 0, z: 0, w: 0.9994633}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -11091,6 +11148,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!1 &1543727810
 GameObject:
   m_ObjectHideFlags: 0
@@ -11198,7 +11256,7 @@ RectTransform:
   - {fileID: 1883744597}
   - {fileID: 112498808}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -11319,6 +11377,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!1 &1562379931
 GameObject:
   m_ObjectHideFlags: 0
@@ -11944,8 +12003,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1649960566}
-  m_LocalRotation: {x: -0.034946248, y: 0.0000000135844065, z: -0.000000026526264,
-    w: 0.99938923}
+  m_LocalRotation: {x: -0.03494628, y: 0.000000013584407, z: -0.000000026526262, w: 0.99938923}
   m_LocalPosition: {x: -7.1054274e-15, y: -1.6270625e-23, z: -1.0462152e-22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -12451,7 +12509,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initPos: {x: 0, y: 3, z: 0}
   animator: {fileID: 550892407}
-  platformParent: {fileID: 66573012}
+  platformParent: {fileID: 37775820}
   jumpPower: 1000
   maxBoostEnergy: 1
   currentBoostEnergy: 0
@@ -12811,7 +12869,7 @@ Transform:
   - {fileID: 735132920}
   - {fileID: 846899090}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1691029149
 GameObject:
@@ -13590,6 +13648,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &1755779569
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13738,7 +13797,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1758763436}
-  m_LocalRotation: {x: 0.59752315, y: 0.00000017544104, z: -0.00000015879965, w: 0.8018517}
+  m_LocalRotation: {x: 0.5975231, y: 0.00000007260198, z: -0.00000006571534, w: 0.80185175}
   m_LocalPosition: {x: -3.5527137e-15, y: 3.5598926e-24, z: 3.7264275e-23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -13816,7 +13875,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1763177394}
-  m_LocalRotation: {x: 0.4386852, y: -0.0000000061136007, z: 0.000000004258531, w: 0.8986408}
+  m_LocalRotation: {x: 0.4386852, y: -0.00000006612869, z: 0.00000004606304, w: 0.8986409}
   m_LocalPosition: {x: -7.1054274e-15, y: -1.6270625e-23, z: -1.0462152e-22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -13996,6 +14055,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &1808917048
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14099,7 +14159,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1835550862}
-  m_LocalRotation: {x: -0.06951224, y: 0.000000014494292, z: -0.000000026040242, w: 0.9975812}
+  m_LocalRotation: {x: -0.069512315, y: 0.000000014494293, z: -0.000000026040242,
+    w: 0.9975811}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -15264,7 +15325,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1966977905}
-  m_LocalRotation: {x: 0.62039334, y: 0.00000017078969, z: -0.00000016379187, w: 0.78429085}
+  m_LocalRotation: {x: 0.6203933, y: 0.00000009660575, z: -0.00000009264748, w: 0.7842909}
   m_LocalPosition: {x: -3.5527137e-15, y: 3.5598926e-24, z: 3.7264275e-23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -16018,6 +16079,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  nonDetectable: 0
 --- !u!65 &2099822745
 BoxCollider:
   m_ObjectHideFlags: 0

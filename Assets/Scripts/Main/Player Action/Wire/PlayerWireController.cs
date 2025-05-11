@@ -509,7 +509,7 @@ public class PlayerWireController : MonoBehaviour
         Camera cam = Camera.main;
 
         RaycastHit sphereCastHit;
-        Physics.SphereCast(cam.transform.position + cam.transform.forward * camDist, 
+        Physics.SphereCast(cam.transform.position,// + cam.transform.forward * camDist, 
                         predictionSphereCastRadius, cam.transform.forward,
                         out sphereCastHit, grabDistance + camDist, WhatIsGrappable,
                         QueryTriggerInteraction.Ignore);

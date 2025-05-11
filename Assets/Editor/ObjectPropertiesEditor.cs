@@ -11,7 +11,13 @@ public class ObjectPropertiesEditor : Editor
 
 
         ObjectProperties prop = (ObjectProperties)target;
-        if (prop.canGrabInBallMode || prop.canGrabInHamsterMode) 
+        if (prop.nonDetectable)
+        {
+            EditorGUILayout.HelpBox("게임 시작 시 Layer가 NonDetectable로 변경됩니다.", MessageType.Info);
+            if (prop.canGrabInBallMode || prop.canGrabInHamsterMode)
+                EditorGUILayout.HelpBox("canGrab 속성이 무시됩니다.", MessageType.Info);
+        }
+        else if (prop.canGrabInBallMode || prop.canGrabInHamsterMode) 
         {
             EditorGUILayout.HelpBox("게임 시작 시 Layer가 Attachable로 변경됩니다.", MessageType.Info);
             EditorGUILayout.HelpBox("Renderer/Materials에 2번째 머티리얼로 Outline 머티리얼을 할당해 주세요.\n"
