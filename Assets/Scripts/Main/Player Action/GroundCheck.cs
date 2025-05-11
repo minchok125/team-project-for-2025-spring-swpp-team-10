@@ -17,32 +17,44 @@ public class GroundCheck : MonoBehaviour
         detectionMask = ~LayerMask.GetMask("Player");
     }
 
+    
     void Update()
     {
-        PlayerManager.instance.isGround = false;
-        PlayerManager.instance.canJump = false;
-        PlayerManager.instance.curGroundCollider = null;
 
-        // if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hits, 100, detectionMask)) 
+        // if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hits, 100, detectionMask, QueryTriggerInteraction.Ignore)) 
         // {
         //     Debug.Log("Dist : " + hits.distance + ", Name :" + hits.collider.gameObject.name);
         // }
 
-        // 땅 위에 있을 때 플레이어와 땅까지의 거리
-        float yOffset = PlayerManager.instance.isBall ? 0.85f : 0.05f;
+        // 지면 위에 있을 때 지면과 플레이어 바닥 사이의 거리 오프셋
+        float groundDist = PlayerManager.instance.isBall ? 0.85f : 0.05f;
+        
+        // 플레이어의 Position에서 플레이어 꼭대기 위치까지의 y축 거리
+        float yOffset = PlayerManager.instance.isBall ? 1f : 1.8f;
 
-        if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit, distToGround + yOffset, 
-                            detectionMask, QueryTriggerInteraction.Ignore))
+        // 플레이어 꼭대기로 가기 위한 위치 offset
+        Vector3 posOffset = Vector3.up * yOffset;
+
+        // 플레이어 꼭대기에서 아래 방향으로 검사. 
+        // 플레이어 바닥 부분에서 distToGround 거리 내에 충돌이 있으면 지면에 닿은 것으로 판단
+        if (Physics.Raycast(transform.position + posOffset, 
+                            -Vector3.up, 
+                            out RaycastHit hit, 
+                            distToGround + groundDist + yOffset, 
+                            detectionMask, 
+                            QueryTriggerInteraction.Ignore))
         {
-            //Debug.Log("Dist : " + hit.distance + ", Name :" + hit.collider.gameObject.name);
             PlayerManager.instance.isGround = true;
             PlayerManager.instance.curGroundCollider = hit.collider;
 
-            // 플레이어가 위에서 점프 가능한 오브젝트
-            if (hit.collider.gameObject.TryGetComponent(out ObjectProperties obj) && obj.canPlayerJump) 
-            {
-                PlayerManager.instance.canJump = true;
-            }
+            bool canJumpObj = hit.collider.gameObject.TryGetComponent(out ObjectProperties obj) && obj.canPlayerJump;
+            PlayerManager.instance.canJump = canJumpObj;
+        }
+        else
+        {
+            PlayerManager.instance.isGround = false;
+            PlayerManager.instance.canJump = false;
+            PlayerManager.instance.curGroundCollider = null;
         }
     }
 }

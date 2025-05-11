@@ -2,13 +2,21 @@ using UnityEngine;
 
 public class MainSceneManager : MonoBehaviour
 {
-    void Start()
+    [Header("References")]
+    [SerializeField] private UIManager uiManager;
+    
+    private void Awake()
     {
         // 마우스 커서 숨기기
         Cursor.visible = false;
         
         // 마우스 커서를 화면 중앙에 고정 (게임 창 내에서만 적용)
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    void Start()
+    {
+        uiManager?.InitUIManager();
     }
 
     void Update()
