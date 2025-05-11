@@ -13,7 +13,7 @@ public class DrawOutline : MonoBehaviour
 
     [Tooltip("이 오브젝트의 외곽선이 표시될 때, 함께 외곽선이 표시될 렌더러 리스트\n"
             +"함께 표시될 오브젝트에는 DrawOutline을 제외해 주세요")]
-    [SerializeField] private List<Renderer> rds = new List<Renderer>();
+    [SerializeField] private List<Renderer> linkedOutlineRenderers = new List<Renderer>();
     
 
     private static readonly Color ballColor = new Color(0.3981f, 0.7492f, 1f, 1f);
@@ -26,13 +26,13 @@ public class DrawOutline : MonoBehaviour
     void Start()
     {
         Renderer rd = GetComponent<Renderer>();
-        if (rd != null) rds.Add(rd);
+        if (rd != null) linkedOutlineRenderers.Add(rd);
         
         obj = GetComponent<ObjectProperties>();
 
         isBallColor = obj.canGrabInBallMode;
 
-        foreach (Renderer rnd in rds)
+        foreach (Renderer rnd in linkedOutlineRenderers)
         {
             if (rnd.materials.Length <= 1 || rnd.materials[1] == null)
                 HLogger.General.Warning("Outline 매테리얼이 없습니다.", this);
@@ -69,7 +69,7 @@ public class DrawOutline : MonoBehaviour
 
     private void SetScale(float scale)
     {
-        foreach (Renderer rd in rds)
+        foreach (Renderer rd in linkedOutlineRenderers)
         {
             if (rd.materials.Length > 1 && rd.materials[1] != null)
                 rd.materials[1].SetFloat(k_scaleID, scale);
@@ -78,7 +78,7 @@ public class DrawOutline : MonoBehaviour
 
     private void SetColor(Color color)
     {
-        foreach (Renderer rd in rds)
+        foreach (Renderer rd in linkedOutlineRenderers)
         {
             if (rd.materials.Length > 1 && rd.materials[1] != null)
                 rd.materials[1].SetColor(k_ColorID, color);
