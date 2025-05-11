@@ -18,7 +18,7 @@ public class GroundCheck : MonoBehaviour
     }
 
     
-    void FixedUpdate()
+    void Update()
     {
 
         // if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hits, 100, detectionMask, QueryTriggerInteraction.Ignore)) 
@@ -29,7 +29,7 @@ public class GroundCheck : MonoBehaviour
         // 땅 위에 있을 때 플레이어와 땅까지의 거리
         float groundDist = PlayerManager.instance.isBall ? 0.85f : 0.05f;
         // 플레이어의 Position과 플레이어 꼭대기 Position의 y축 거리
-        float yOffset = PlayerManager.instance.isBall ? 0.9f : 1.7f;
+        float yOffset = PlayerManager.instance.isBall ? 1f : 1.8f;
         // 플레이어 꼭대기로 가기 위한 위치 offset
         Vector3 posOffset = Vector3.up * yOffset;
 
