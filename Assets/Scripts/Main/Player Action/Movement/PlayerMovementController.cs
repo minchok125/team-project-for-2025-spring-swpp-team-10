@@ -16,6 +16,8 @@ public class PlayerMovementController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Animator animator;
+    [Tooltip("빈 오브젝트 생성 후 연결해 주세요. 플랫폼 이동 동기화에 쓰입니다.")]
+    [SerializeField] private Transform platformParent;
 
     // 현재 이동 방식을 결정하는 컴포넌트 (공 또는 햄스터)
     private IMovement curMovement;
@@ -95,10 +97,6 @@ public class PlayerMovementController : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI velocityTxt;
-
-
-
-    [SerializeField] private Transform platformParent;
 
     // 플레이어 매니저 참조
     private PlayerManager playerMgr;
