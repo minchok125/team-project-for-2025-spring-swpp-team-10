@@ -19,7 +19,7 @@ public class PlayerSkillController : MonoBehaviour
     private const int SKILL_HamsterWire = 3;
     private const int SKILL_DOUBLEJUMP = 4;
 
-    
+
     [Header("디버그 UI")]
     [Tooltip("플레이어 스킬 및 스탯 정보를 표시할 텍스트 컴포넌트")]
     [SerializeField] private TextMeshProUGUI txt;
@@ -74,8 +74,8 @@ public class PlayerSkillController : MonoBehaviour
     /// 부스터 스킬 보유 여부를 확인합니다. (비트 0)
     /// </summary>
     /// <returns>부스터 스킬 활성화 여부</returns>
-    public bool HasBoost() => (skill & (1 << SKILL_BOOST)) != 0; 
-    
+    public bool HasBoost() => (skill & (1 << SKILL_BOOST)) != 0;
+
     /// <summary>
     /// 리트랙터 스킬 보유 여부를 확인합니다. (비트 1)
     /// </summary>
@@ -118,7 +118,7 @@ public class PlayerSkillController : MonoBehaviour
     /// </summary>
     /// <param name="rate">증가시킬 점프 높이 배율</param>
     public void AddJumpHeightRate(float rate)
-    {   
+    {
         jumpRate += rate;
         UpdateUI();
     }
@@ -137,10 +137,11 @@ public class PlayerSkillController : MonoBehaviour
     /// <summary>
     /// 부스터 스킬을 해금합니다. (빠른 대쉬 또는 가속)
     /// </summary>
-    public void UnlockBoost() 
+    public void UnlockBoost()
     {
         skill |= 1 << SKILL_BOOST;
         AddSkillText("Boost");
+        Hampossible.Utils.HLogger.Skill.Info("부스터 스킬 해금됨", this);
     }
 
     /// <summary>
@@ -150,15 +151,17 @@ public class PlayerSkillController : MonoBehaviour
     {
         skill |= 1 << SKILL_RETRACTOR;
         AddSkillText("Retractor");
+        Hampossible.Utils.HLogger.Skill.Info("리트랙터 스킬 해금됨", this);
     }
 
     /// <summary>
     /// 글라이딩 스킬을 해금합니다. (플라스틱 백으로 공중에서 천천히 낙하)
     /// </summary>
-    public void UnlockGliding() 
+    public void UnlockGliding()
     {
         skill |= 1 << SKILL_GLIDING;
         AddSkillText("Plastic Bag");
+        Hampossible.Utils.HLogger.Skill.Info("글라이딩 스킬 해금됨", this);
     }
 
     /// <summary>
@@ -168,6 +171,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         skill |= 1 << SKILL_HamsterWire;
         AddSkillText("Pull Wire");
+        Hampossible.Utils.HLogger.Skill.Info("햄스터 와이어 스킬 해금됨", this);
     }
 
     /// <summary>
@@ -177,6 +181,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         skill |= 1 << SKILL_DOUBLEJUMP;
         AddSkillText("Double Jump");
+        Hampossible.Utils.HLogger.Skill.Info("이중 점프 스킬 해금됨", this);
     }
     #endregion
 

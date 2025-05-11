@@ -24,7 +24,17 @@ public class CameraTargetController : MonoBehaviour
     }
 
 
-    void Update()
+    void LateUpdate()
+    {
+        SetPos();
+    }
+
+    void FixedUpdate()
+    {
+        SetPos();
+    }
+
+    void SetPos()
     {
         Vector3 plr = player.position + offset;
 

@@ -50,7 +50,7 @@ public class SlideWallController : MonoBehaviour
         if (other.attachedRigidbody != connectedBody)
             return;
 
-        // 접착벽에서 점프를 해서 입력에 락 걸림
+        // 슬라이드벽에서 점프를 해서 입력에 락 걸림
         if (PlayerManager.instance.isInputLock)
             return;
 

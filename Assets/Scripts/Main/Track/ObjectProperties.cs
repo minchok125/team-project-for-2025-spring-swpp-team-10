@@ -6,11 +6,20 @@ using UnityEngine;
 
 public class ObjectProperties : MonoBehaviour
 {
-    [Tooltip("플레이어가 오브젝트 위에서 점프 가능")]
+    [Tooltip("플레이어가 해당 지면 위에 있을 때 점프 가능")]
+    /// <summary>
+    /// 플레이어가 해당 지면 위에 있을 때 점프 가능 여부
+    /// </summary>
     public bool canPlayerJump = false;
     [Tooltip("공 모드에서 그랩 가능한 오브젝트")]
+    /// <summary>
+    /// 공 모드에서 그랩 가능한 오브젝트
+    /// </summary>
     public bool canGrabInBallMode = false;
     [Tooltip("햄스터 모드에서 그랩 가능한 오브젝트")]
+    /// <summary>
+    /// 햄스터 모드에서 그랩 가능한 오브젝트
+    /// </summary>
     public bool canGrabInHamsterMode = false;
 
     private void Start()
@@ -39,6 +48,8 @@ public class ObjectProperties : MonoBehaviour
     private void AddHamsterObjectRigidbody()
     {
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+
+        rb.drag = 1f;
 
         rb.constraints |= RigidbodyConstraints.FreezeRotationX;
         rb.constraints |= RigidbodyConstraints.FreezeRotationY;
