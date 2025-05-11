@@ -27,7 +27,7 @@ public class PingPongMovingPlatformController : MonoBehaviour
     }
 
 
-    void FixedUpdate()
+    void Update()
     {
         Vector3 startPos = inputType == Type.Transform ? start.position : startVec;
         Vector3 endPos = inputType == Type.Transform ? end.position : endVec;
