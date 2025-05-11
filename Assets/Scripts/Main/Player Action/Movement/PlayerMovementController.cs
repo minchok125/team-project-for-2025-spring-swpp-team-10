@@ -96,6 +96,10 @@ public class PlayerMovementController : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI velocityTxt;
 
+
+
+    [SerializeField] private Transform platformParent;
+
     // 플레이어 매니저 참조
     private PlayerManager playerMgr;
 
@@ -138,12 +142,19 @@ public class PlayerMovementController : MonoBehaviour
     }
 
 
+    void LateUpdate()
+    {
+        // 이동하는 플랫폼과 플레이어의 위치를 동기화
+        SynchronizePlatform();
+    }
+
+
     void FixedUpdate()
     {
         // 이동 처리
         UpdateMovement();
 
-        SynchronizePlatform();
+        
 
         // 추가 물리 효과 적용
         AddExtraForce();
@@ -465,128 +476,32 @@ public class PlayerMovementController : MonoBehaviour
 
 
     #region Platform Synchronization
-    void SynchronizePlatform()
+    /// <summary>
+    /// 이동하는 플랫폼과 플레이어의 위치를 동기화
+    /// </summary>
+    private void SynchronizePlatform()
     {
         if (playerMgr.isGround)
         {
             // 새로운 플랫폼에 착지
             if (curPlatform != playerMgr.curGroundCollider)
             {
-                Debug.Log($"Detect {playerMgr.curGroundCollider}");
                 curPlatform = playerMgr.curGroundCollider;
-                
-                prevPlatformPos = GetPlatformPos(curPlatform);
+                platformParent.position = curPlatform.transform.position;
+                transform.parent = platformParent;
             }
             // 이전 프레임과 마찬가지의 플랫폼
             else
             {
-                
-                // 플랫폼 이동 차이만큼 플레이어도 이동
-                //Vector3 platformMovement = curPlatform.GetComponent<Rigidbody>().transform.position - prevPlatformPos;
-
-                Vector3 platformMovement = GetPlatformPos(curPlatform) - prevPlatformPos;
-
-                //rb.MovePosition(rb.transform.position + platformMovement);
-                playerMgr.AddMovement(platformMovement);
-                //transform.position += platformMovement;
-
-                // 볼 컨트롤러에 플랫폼 이동 정보 전달
-                ball.prevPlatformMovement = platformMovement;
-
-                // 다음에 이동 차이를 계산하기 위해 현재 플랫폼 위치 저장
-                prevPlatformPos = GetPlatformPos(curPlatform);
+                platformParent.position = curPlatform.transform.position;
             }
         }
-        else
+        // 지상 -> 공중 전환될 때
+        else if (curPlatform != null)
         {
             curPlatform = null;
+            transform.parent = null;
         }
     }
-
-    Vector3 GetPlatformPos(Collider curPlatform)
-    {
-        Rigidbody platformRb = curPlatform.GetComponent<Rigidbody>();
-        Vector3 platformPos = platformRb == null ? curPlatform.transform.position : platformRb.transform.position;
-        return curPlatform.transform.position;
-    }
-
-
-
-
-
-
-
-
-    /// <summary>
-    /// 플랫폼과 충돌 시작 시 호출
-    /// </summary>
-    void OnCollisionEnter(Collision collision)
-    {
-        // if (playerMgr.isGround && playerMgr.curGroundCollider == collision.collider) 
-        // {
-        //     curPlatform = collision.collider;
-        //     prevPlatformPos = collision.transform.position;
-        // }
-    }
-
-    IEnumerator AAA(Collision collision)
-    {
-        yield return new WaitForFixedUpdate();
-        if (playerMgr.isGround && playerMgr.curGroundCollider == collision.collider) 
-        {
-            curPlatform = collision.collider;
-            prevPlatformPos = collision.transform.position;
-            Debug.Log("COllr");
-        }
-    }
-
-    bool prevCollisionStay = false;
-
-    /// <summary>
-    /// 플랫폼과 충돌 중일 때 호출 (플랫폼 이동에 맞춰 플레이어도 이동)
-    /// </summary>
-    // void OnCollisionStay(Collision collision)
-    // {
-        
-    //     if (!prevCollisionStay)
-    //     {
-    //         prevCollisionStay = true;
-    //         prevPlatformPos = collision.transform.position;
-    //         Debug.Log($"HI{prevPlatformPos}");
-    //     }
-    //     //else if (collision.collider == curPlatform) 
-    //     else if (playerMgr.curGroundCollider == collision.collider)
-    //     {
-    //         // 플랫폼 이동 차이만큼 플레이어도 이동
-    //         Vector3 platformMovement = collision.transform.position - prevPlatformPos;
-    //         rb.MovePosition(rb.transform.position + platformMovement);
-
-    //         // 볼 컨트롤러에 플랫폼 이동 정보 전달
-    //         ball.prevPlatformMovement = collision.transform.position - prevPlatformPos;
-
-    //         // 다음에 이동 차이를 계산하기 위해 현재 플랫폼 위치 저장
-    //         prevPlatformPos = collision.transform.position;
-
-    //         curPlatform = collision.collider;
-
-    //         if (platformMovement.magnitude > 1)
-    //             Debug.Log(platformMovement);
-    //     }
-    // }
-
-    /// <summary>
-    /// 플랫폼과 충돌 종료 시 호출
-    /// </summary>
-    // void OnCollisionExit(Collision collision)
-    // {
-    //     if (curPlatform == collision.collider) 
-    //     {
-    //         curPlatform = null;
-    //         ball.prevPlatformMovement = Vector3.zero;
-            
-    //         Debug.Log("ww");
-    //     }
-    //     prevCollisionStay = false;
-    // }
     #endregion
 }
