@@ -35,7 +35,6 @@ public class BallMovementController : MonoBehaviour, IMovement
     #region Private Variables
     private Vector3 moveDir;             // 현재 이동 방향
     private Vector3 prevPosition;        // 이전 프레임 위치 (Update 기준)
-    private Vector3 prevFixedPosition;   // 이전 물리 프레임 위치 (FixedUpdate 기준)
     private Rigidbody rb;                // 물리 컴포넌트 참조
     
     // 캐싱용 벡터 - 메모리 할당 최적화
@@ -48,7 +47,6 @@ public class BallMovementController : MonoBehaviour, IMovement
     {
         rb = GetComponent<Rigidbody>();
         prevPosition = transform.position;
-        prevFixedPosition = transform.position;
     }
 
     public void OnUpdate()
@@ -140,7 +138,7 @@ public class BallMovementController : MonoBehaviour, IMovement
 
         Vector3 currentPosition = rb.transform.position;
         // 플랫폼 이동을 제외한 순수 이동량 계산
-        Vector3 delta = (currentPosition - prevFixedPosition) - prevPlatformMovement;
+        Vector3 delta = rb.velocity * Time.fixedDeltaTime;
 
         // 미세한 움직임은 무시 (정밀도 이슈 방지)
         if (delta.magnitude > 0.001f)
@@ -154,9 +152,6 @@ public class BallMovementController : MonoBehaviour, IMovement
             // 실제 회전 적용
             transform.Rotate(rotationAxis, rotationSpeed * rotateFactor, Space.World);
         }
-
-        // 현재 위치 저장
-        prevFixedPosition = currentPosition;
     }
     
 
