@@ -49,6 +49,7 @@ public class HamsterWireController : MonoBehaviour, IWire
     private Transform hitPoint;
     // 잡힌 물체의 Transform
     private Transform grabTransform;
+    private CapsuleCollider hamsterCol;
 
 
     #region New
@@ -58,6 +59,7 @@ public class HamsterWireController : MonoBehaviour, IWire
 
         grabDistance = GetComponent<PlayerWireController>().grabDistance;
         hitPoint = GetComponent<PlayerWireController>().hitPoint;
+        hamsterCol = transform.Find("Hamster Normal").GetComponent<CapsuleCollider>();
     }
 
     /// <summary>
@@ -84,13 +86,16 @@ public class HamsterWireController : MonoBehaviour, IWire
         sj.damper = damper;
         sj.spring = spring;
         sj.massScale = mass;
-    }
 
+        // Joint가 두 Rigidbody를 연결하면서 Unity가 내부적으로 충돌을 끄는데, 충돌을 킴
+        sj.enableCollision = true;
+    }
 
     public void EndShoot()
     {
         if (sj != null) 
             Destroy(sj);
+        PlayerManager.instance.isInputLock = false;
     }
 
     public void ShortenWire(bool isFast)
@@ -118,6 +123,7 @@ public class HamsterWireController : MonoBehaviour, IWire
         PlayerManager.instance.isInputLock = false;
         Invoke(nameof(SetIsInputLockFalse), 0.05f);
         Invoke(nameof(SetIsInputLockFalse), 0.1f);
+        Debug.Log("ShortenWireEnd");
     }
 
     public void ExtendWire()
@@ -142,6 +148,7 @@ public class HamsterWireController : MonoBehaviour, IWire
         PlayerManager.instance.isInputLock = false;
         Invoke(nameof(SetIsInputLockFalse), 0.05f);
         Invoke(nameof(SetIsInputLockFalse), 0.1f);
+        Debug.Log("ExtendWireEnd");
     }
 
     /// <summary>

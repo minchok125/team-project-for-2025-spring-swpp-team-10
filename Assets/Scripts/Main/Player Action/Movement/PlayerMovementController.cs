@@ -96,12 +96,17 @@ public class PlayerMovementController : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI velocityTxt;
 
+
+
+    [SerializeField] private Transform platformParent;
+
     // 플레이어 매니저 참조
     private PlayerManager playerMgr;
 
     #endregion
 
     
+    #region Unity Lifecycle Methods
     void Start()
     {
         // 컴포넌트 캐싱
@@ -137,10 +142,19 @@ public class PlayerMovementController : MonoBehaviour
     }
 
 
+    void LateUpdate()
+    {
+        // 이동하는 플랫폼과 플레이어의 위치를 동기화
+        SynchronizePlatform();
+    }
+
+
     void FixedUpdate()
     {
         // 이동 처리
         UpdateMovement();
+
+        
 
         // 추가 물리 효과 적용
         AddExtraForce();
@@ -148,6 +162,7 @@ public class PlayerMovementController : MonoBehaviour
         // 마지막 속도 저장
         lastVelocity = rb.velocity;
     }
+    #endregion
 
 
     #region Initialization
@@ -225,6 +240,7 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleJumpInput()
     {
         jumped = false;
+        bool isInputLock = PlayerManager.instance.isInputLock;
 
         // 점프할 수 있는 지면에 닿아있거나 슬라이드/접착 벽에 있을 때 점프 가능
         if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall) 
@@ -236,14 +252,14 @@ public class PlayerMovementController : MonoBehaviour
             }
             
             // 점프 입력이 있으면 점프 실행
-            if (Input.GetKeyDown(KeyCode.Space)) 
+            if (Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
             {
                 PerformJump();
                 jumpStartTime = Time.time;
             }
         }
         // 공중에서 점프 (더블 점프)
-        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space)) 
+        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
         {
             if (playerMgr.skill.HasDoubleJump() && jumpCount < 2) 
             {
@@ -461,45 +477,30 @@ public class PlayerMovementController : MonoBehaviour
 
     #region Platform Synchronization
     /// <summary>
-    /// 플랫폼과 충돌 시작 시 호출
+    /// 이동하는 플랫폼과 플레이어의 위치를 동기화
     /// </summary>
-    void OnCollisionEnter(Collision collision)
+    private void SynchronizePlatform()
     {
-        if (playerMgr.isGround && playerMgr.curGroundCollider == collision.collider) 
+        if (playerMgr.isGround)
         {
-            curPlatform = collision.collider;
-            prevPlatformPos = collision.transform.position;
+            // 새로운 플랫폼에 착지
+            if (curPlatform != playerMgr.curGroundCollider)
+            {
+                curPlatform = playerMgr.curGroundCollider;
+                platformParent.position = curPlatform.transform.position;
+                transform.parent = platformParent;
+            }
+            // 이전 프레임과 마찬가지의 플랫폼
+            else
+            {
+                platformParent.position = curPlatform.transform.position;
+            }
         }
-    }
-
-    /// <summary>
-    /// 플랫폼과 충돌 중일 때 호출 (플랫폼 이동에 맞춰 플레이어도 이동)
-    /// </summary>
-    void OnCollisionStay(Collision collision)
-    {
-        if (collision.collider == curPlatform) 
-        {
-            // 플랫폼 이동 차이만큼 플레이어도 이동
-            Vector3 platformMovement = collision.transform.position - prevPlatformPos;
-            rb.MovePosition(rb.transform.position + platformMovement);
-
-            // 볼 컨트롤러에 플랫폼 이동 정보 전달
-            ball.prevPlatformMovement = collision.transform.position - prevPlatformPos;
-
-            // 다음에 이동 차이를 계산하기 위해 현재 플랫폼 위치 저장
-            prevPlatformPos = collision.transform.position;
-        }
-    }
-
-    /// <summary>
-    /// 플랫폼과 충돌 종료 시 호출
-    /// </summary>
-    void OnCollisionExit(Collision collision)
-    {
-        if (curPlatform == collision.collider) 
+        // 지상 -> 공중 전환될 때
+        else if (curPlatform != null)
         {
             curPlatform = null;
-            ball.prevPlatformMovement = Vector3.zero;
+            transform.parent = null;
         }
     }
     #endregion
