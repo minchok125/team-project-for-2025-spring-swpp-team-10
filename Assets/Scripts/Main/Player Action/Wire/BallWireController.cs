@@ -245,9 +245,13 @@ public class BallWireController : MonoBehaviour, IWire
         sj.damper = 10000f;
         rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         yield return new WaitForSeconds(0.1f);
-        sj.spring = spring;
-        sj.damper = damper;
-        FixWireLengthToCurrentDistance();
+        
+        if (sj != null)
+        {
+            sj.spring = spring;
+            sj.damper = damper;
+            FixWireLengthToCurrentDistance();
+        }
     }
 
     /// <summary>
