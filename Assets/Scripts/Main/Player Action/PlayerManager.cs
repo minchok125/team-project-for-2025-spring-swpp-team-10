@@ -422,6 +422,7 @@ public class PlayerManager : MonoBehaviour
         if (isBall) ballLightningShockParticle.SetActive(true);
         else hamsterLightningShockParticle.SetActive(true);
         // **********Electric-buzz-sound-effect 효과음 재생***********
+        
         Invoke(nameof(LightningShockEndAfterFewSeconds), 3f);
     }
     private void LightningShockEndAfterFewSeconds()

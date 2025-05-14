@@ -153,6 +153,7 @@ public class LaserController : MonoBehaviour
     // 레이저 중심지점과 플레이어 사이의 거리가 일정 거리 이하인지 확인
     private bool IsPlayerNearLaserOrigin()
     {
+        // 레이저가 움직인다면, 레이저의 중심점 계산
         if (isLaserMoving)
             laserCenter = transform.position + transform.forward * laserMaxDist * 0.5f;
 
@@ -179,6 +180,7 @@ public class LaserController : MonoBehaviour
     {
         playerPosition = player.position;
 
+        // 레이저가 움직인다면, 레이저의 시작점과 끝점 계산
         if (isLaserMoving)
         {
             laserOrigin = transform.position;
@@ -207,7 +209,7 @@ public class LaserController : MonoBehaviour
 
 
     /// <summary>
-    /// 레이저의 투명도를 설정합니다.
+    /// 레이저의 투명도를 a로 설정합니다.
     /// </summary>
     /// <param name="a">레이저의 투명도 (0~1)</param>
     public void SetLaserAlpha(float a)

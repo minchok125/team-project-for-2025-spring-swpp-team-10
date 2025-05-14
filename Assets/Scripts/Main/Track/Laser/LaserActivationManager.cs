@@ -86,6 +86,7 @@ public class LaserActivationManager : MonoBehaviour
             {
                 float value = time / fadeInOutTime;
                 laser.SetLaserAlpha(active ? value : 1 - value);
+                // 레이저 alpha가 0.5일 때 레이저 검출 기능 활성화/비활성화
                 if (prevTime <= fadeInOutTime / 2 && time > fadeInOutTime / 2)
                     laser.isLaserActive = active;
             }

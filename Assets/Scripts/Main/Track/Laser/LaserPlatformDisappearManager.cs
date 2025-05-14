@@ -10,13 +10,18 @@ public class LaserPlatformDisappearManager : MonoBehaviour
           + "Outline 스크립트를 부착해 주세요 (Not DrawOutline)")]
     [SerializeField] private GameObject[] disappearObjects;
 
-    private List<Material> ditheringMts;
-    private List<Material> outlineFillMts;
-    private List<Collider> disappearCols;
-    private bool isDisappearStart;
+    private List<Material> ditheringMts; // 디더링 효과를 내는 머티리얼 모음
+    private List<Material> outlineFillMts; // 외곽선 머티리얼 모음
+    private List<Collider> disappearCols; // 사라질 콜라이더 모음
+    private bool isDisappearStart; // Disappear가 시작될 때는 true, 시작된 후는 false
+
+    private Sequence disappearSequence; // Disappear된 후 appear되는 애니메이션
+    private float fadeDuration = 1f; // FadeIn/Out에 걸리는 시간
+    private float stayTransparentDuration = 2f; // 투명한 상태에서 appear 시작될 때까지 대기하는 시간
 
     static readonly int k_BaseColorID = Shader.PropertyToID("_BaseColor");
     static readonly int k_OutlineColorID = Shader.PropertyToID("_OutlineColor");
+
 
     private void Start()
     {
@@ -41,11 +46,6 @@ public class LaserPlatformDisappearManager : MonoBehaviour
         SetAlpha(1);
     }
 
-
-    private Sequence disappearSequence;
-    private float fadeDuration = 1f;
-    private float stayTransparentDuration = 2f;
-
     public void PlatformDisappear()
     {
         if (isDisappearStart)
@@ -65,14 +65,11 @@ public class LaserPlatformDisappearManager : MonoBehaviour
 
         FadeOut();
         disappearSequence.AppendInterval(stayTransparentDuration);
-        disappearSequence.AppendCallback(() =>
-        {
-            FadeIn();
-        });
+        disappearSequence.AppendCallback(() => FadeIn());
         disappearSequence.Play();
     }
 
-
+    // 오브젝트가 사라지고 외곽선만 남는 시퀀스
     private void FadeOut()
     {
         Color current = ditheringMts[0].GetColor(k_BaseColorID);
@@ -82,12 +79,14 @@ public class LaserPlatformDisappearManager : MonoBehaviour
             DOVirtual.Float(current.a, 0f, fadeDuration, a =>
             {
                 SetAlpha(a);
+                // 알파값이 0.5일 때 콜라이더 비활성화
                 if (prevAlpha >= 0.5f && a < 0.5f)
                     SetCollider(false);
                 prevAlpha = a;
             })).SetEase(Ease.OutSine);
     }
 
+    // 오브젝트가 나타나고 외곽선이 사라지는 시퀀스
     private void FadeIn()
     {
         Color current = ditheringMts[0].GetColor(k_BaseColorID);
@@ -97,6 +96,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
             DOVirtual.Float(current.a, 1f, fadeDuration, a =>
             {
                 SetAlpha(a);
+                // 알파값이 0.5일 때 콜라이더 활성화
                 if (prevAlpha <= 0.5f && a > 0.5f)
                     SetCollider(true);
                 prevAlpha = a;
