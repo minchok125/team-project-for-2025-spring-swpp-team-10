@@ -66,7 +66,8 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     private void Rotate()
     {
         // 입력이 없거나 접착벽에 붙었다면 회전하지 않음
-        if (PlayerManager.instance.moveDir == Vector3.zero || PlayerManager.instance.isOnStickyWall)
+        if (PlayerManager.instance.moveDir == Vector3.zero || PlayerManager.instance.isOnStickyWall
+            || PlayerManager.instance.isInputLock)
             return;
 
         Vector3 moveDir = PlayerManager.instance.moveDir;
