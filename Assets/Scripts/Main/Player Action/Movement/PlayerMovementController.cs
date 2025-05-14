@@ -129,6 +129,9 @@ public class PlayerMovementController : MonoBehaviour
         HandleBoostInput();
         HandleResetPositionInput();
 
+        if(Input.GetKeyDown(KeyCode.G) || Input.GetKeyDown(KeyCode.F))
+            GameManager.PlaySfx(0);
+
         // 부스터 에너지 관리
         UpdateBoostEnergy();
 
@@ -485,12 +488,22 @@ public class PlayerMovementController : MonoBehaviour
             if (curPlatform != playerMgr.curGroundCollider)
             {
                 curPlatform = playerMgr.curGroundCollider;
-                platformParent.position = curPlatform.transform.position;
-                transform.parent = platformParent;
+                if (transform.parent == platformParent)
+                {
+                    curPlatform = null;
+                    transform.parent = null;
+                }
+                else
+                {
+                    platformParent.position = curPlatform.transform.position;
+                    transform.parent = platformParent;
+                }
             }
             // 이전 프레임과 마찬가지의 플랫폼
             else
             {
+                if (transform.parent == null)
+                    transform.parent = platformParent;
                 platformParent.position = curPlatform.transform.position;
             }
         }
