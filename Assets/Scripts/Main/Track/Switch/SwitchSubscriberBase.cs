@@ -1,19 +1,21 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public abstract class SwitchSubscriberBase : MonoBehaviour
 {
+    [Header("스위치를 등록하는 것으로 스위치 이벤트가 연동됩니다.")]
     [Tooltip("오브젝트와 연동될 스위치\n스위치 상태 변경 이벤트를 전달받는 데 사용됩니다.")]
     [SerializeField] protected SwitchController mySwitch;
 
     protected virtual void Start()
     {
-        mySwitch.OnSwitchOnStart += OnSwitchOnStart;
-        mySwitch.OnSwitchOnStay += OnSwitchOnStay;
-        mySwitch.OnSwitchOnEnd += OnSwitchOnEnd;
+        mySwitch.OnSwitchOnStart.AddListener(OnSwitchOnStart);
+        mySwitch.OnSwitchOnStay.AddListener(OnSwitchOnStay);
+        mySwitch.OnSwitchOnEnd.AddListener(OnSwitchOnEnd);
 
-        mySwitch.OnSwitchOffStart += OnSwitchOffStart;
-        mySwitch.OnSwitchOffStay += OnSwitchOffStay;
-        mySwitch.OnSwitchOffEnd += OnSwitchOffEnd;
+        mySwitch.OnSwitchOffStart.AddListener(OnSwitchOffStart);
+        mySwitch.OnSwitchOffStay.AddListener(OnSwitchOffStay);
+        mySwitch.OnSwitchOffEnd.AddListener(OnSwitchOffEnd);
     }
 
     /// <summary>
