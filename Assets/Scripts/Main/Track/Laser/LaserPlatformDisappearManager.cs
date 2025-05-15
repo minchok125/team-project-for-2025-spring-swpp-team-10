@@ -9,6 +9,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     [Header("오브젝트의 머티리얼은 Dithering Material로 해주시고,\n"
           + "Outline 스크립트를 부착해 주세요 (Not DrawOutline)")]
     [SerializeField] private GameObject[] disappearObjects;
+    [SerializeField] private AudioClip disappearSound;
 
     private List<Material> ditheringMts; // 디더링 효과를 내는 머티리얼 모음
     private List<Material> outlineFillMts; // 외곽선 머티리얼 모음
@@ -16,8 +17,9 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     private bool isDisappearStart; // Disappear가 시작될 때는 true, 시작된 후는 false
 
     private Sequence disappearSequence; // Disappear된 후 appear되는 애니메이션
-    private float fadeDuration = 1f; // FadeIn/Out에 걸리는 시간
-    private float stayTransparentDuration = 2f; // 투명한 상태에서 appear 시작될 때까지 대기하는 시간
+    private const float fadeOutDuration = 2f; // FadeOut에 걸리는 시간
+    private const float fadeInDuration = 1f;  // FadeIn에 걸리는 시간
+    private const float stayTransparentDuration = 3f; // 투명한 상태에서 appear 시작될 때까지 대기하는 시간
 
     static readonly int k_BaseColorID = Shader.PropertyToID("_BaseColor");
     static readonly int k_OutlineColorID = Shader.PropertyToID("_OutlineColor");
@@ -51,7 +53,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
         if (isDisappearStart)
         {
             EndShoot();
-            // **********효과음 재생***********
+            GameManager.PlaySfx(disappearSound);
             isDisappearStart = false;
         }
 
@@ -76,7 +78,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
         float prevAlpha = 1f;
 
         disappearSequence.Join(
-            DOVirtual.Float(current.a, 0f, fadeDuration, a =>
+            DOVirtual.Float(current.a, 0f, fadeOutDuration, a =>
             {
                 SetAlpha(a);
                 // 알파값이 0.5일 때 콜라이더 비활성화
@@ -93,7 +95,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
         float prevAlpha = 0f;
 
         disappearSequence.Join(
-            DOVirtual.Float(current.a, 1f, fadeDuration, a =>
+            DOVirtual.Float(current.a, 1f, fadeInDuration, a =>
             {
                 SetAlpha(a);
                 // 알파값이 0.5일 때 콜라이더 활성화
