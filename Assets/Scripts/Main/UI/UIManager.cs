@@ -35,12 +35,10 @@ public class UIManager : MonoBehaviour
 			if (isPaused)
 			{
 				ResumeGame();
-				pausedMenuPanel.SetActive(false);
 			}
 			else
 			{
 				PauseGame();
-				pausedMenuPanel.SetActive(true);
 			}
 		}
 	}
@@ -50,6 +48,9 @@ public class UIManager : MonoBehaviour
 		// timeScale 1로 설정
 		isPaused = false;
 		Time.timeScale = 1f;
+
+		// pausedMenuPanel 비활성화
+		pausedMenuPanel.SetActive(false);
 		
 		// 마우스 커서 잠금
 		Cursor.visible = false;
@@ -61,6 +62,9 @@ public class UIManager : MonoBehaviour
 		// timeScale 0으로 설정
 		isPaused = true;
 		Time.timeScale = 0f;
+
+		// pausedMenuPanel 활성화
+		pausedMenuPanel.SetActive(true);
 		
 		// 마우스 커서 잠금 해제
 		Cursor.visible = true;
