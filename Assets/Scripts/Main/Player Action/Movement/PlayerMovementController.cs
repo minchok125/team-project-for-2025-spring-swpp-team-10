@@ -60,7 +60,9 @@ public class PlayerMovementController : MonoBehaviour
     #region Checkpoint Variables
     private bool isRKeyPressedForCheckpoint = false; // R키가 체크포인트 이동을 위해 눌렸는지 여부
     private float rKeyHoldStartTime = 0f;         // R키를 누르기 시작한 시간
-    private const float R_KEY_HOLD_DURATION_FOR_CHECKPOINT = 5.0f; // 체크포인트 이동까지 R키를 누르고 있어야 하는 시간(초)
+    private float RKeyHoldDurationForCheckpoint = 5.0f; // 체크포인트 이동까지 R키를 누르고 있어야 하는 시간(초)
+    private float checkpointResetPositionY = -100f; // 체크포인트 이동 시 Y좌표 기준
+    private float checkpointMovementThreshold = 0.01f; // 체크포인트 이동 시 위치 오차 허용 범위
     #endregion
 
 
@@ -215,12 +217,12 @@ public class PlayerMovementController : MonoBehaviour
 
     #region Checkpoint
     /// <summary>
-    /// R키를 눌러 플레이어의 위치와 속도를 조정하는 기능
+    /// 맵 바깥으로 떨어졌을 때 체크포인트로 돌아가도록 처리
     /// </summary>
     private void HandleResetPositionInput()
     {
         // R키를 눌렀거나 플레이어가 맵 밖으로 떨어졌을 때
-        if (transform.position.y < -100)
+        if (transform.position.y < checkpointResetPositionY)
         {
             MoveToLastCheckpoint(); // 마지막 체크포인트로 이동하도록 수정
         }
@@ -243,7 +245,7 @@ public class PlayerMovementController : MonoBehaviour
         if (isRKeyPressedForCheckpoint)
         {
             // 이동 입력 감지 (PlayerManager의 moveDir 사용)
-            if (PlayerManager.instance.moveDir.sqrMagnitude > 0.01f || !playerMgr.isGround) // 약간의 오차 허용
+            if (PlayerManager.instance.moveDir.sqrMagnitude > checkpointMovementThreshold || !playerMgr.isGround) // 약간의 오차 허용
             {
                 // 이동 입력이 있으면 타이머 및 상태 해제
                 isRKeyPressedForCheckpoint = false;
@@ -252,7 +254,7 @@ public class PlayerMovementController : MonoBehaviour
             }
 
             // 5초가 경과했는지 확인 (이동 입력이 없었을 경우)
-            if (Time.time - rKeyHoldStartTime >= R_KEY_HOLD_DURATION_FOR_CHECKPOINT)
+            if (Time.time - rKeyHoldStartTime >= RKeyHoldDurationForCheckpoint)
             {
                 MoveToLastCheckpoint();
                 isRKeyPressedForCheckpoint = false; // 체크포인트 이동 후 상태 초기화
