@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     
     [Header("AudioClips")]
     [SerializeField] private AudioClip[] bgmClips;
-    [SerializeField] private AudioClip[] sfxClips;
+    // [SerializeField] private AudioClip[] sfxClips;
     
     [Header("Values")]
     public float bgmVolume, sfxVolume;
@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
     }
     public static void StopBgm() { Instance.bgmSource.Stop(); }
     public static void SetBgmVolume(float volume) { Instance.bgmVolume = volume; Instance.bgmSource.volume = volume; }
-    public static void PlaySfx(int index) { Instance.sfxSource.PlayOneShot(Instance.sfxClips[index]); }
+    public static void PlaySfx(AudioClip sfxClip) { Instance.sfxSource.PlayOneShot(sfxClip); }
     public static void SetSfxVolume(float volume) { Instance.sfxVolume = volume; Instance.sfxSource.volume = volume; }
     
     /*****************************************************/
