@@ -52,7 +52,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: f4108e00cdd989a4ea0c5c680eff24ec, type: 3}
   - {fileID: 8300000, guid: d39dd671e75a19c4b8bcd56982658646, type: 3}
   sfxClips:
-  - {fileID: 8300000, guid: 9b0d5fe335c62884db6ff758e669d618, type: 3}
+  - sfxType: 0
+    clip: {fileID: 8300000, guid: 9b0d5fe335c62884db6ff758e669d618, type: 3}
+  - sfxType: 1
+    clip: {fileID: 8300000, guid: 9b0d5fe335c62884db6ff758e669d618, type: 3}
+  bgmVolume: 0
+  sfxVolume: 0
 --- !u!82 &214280053394726521
 AudioSource:
   m_ObjectHideFlags: 0

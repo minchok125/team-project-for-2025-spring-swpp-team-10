@@ -1,34 +1,48 @@
+using System.Collections.Generic;
+using System.Linq;
 using Hampossible.Utils;
 using UnityEngine;
+
+[System.Serializable]
+public class SfxAudioClip
+{
+    public SfxType sfxType;
+    public AudioClip clip;
+}
+
+public enum SfxType { TestSfx, LightningShock, LaserPlatformDisappear }
+
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    
+
     [Header("References")]
     [SerializeField] private AudioSource bgmSource;
     [SerializeField] private AudioSource sfxSource;
-    
+
     [Header("AudioClips")]
     [SerializeField] private AudioClip[] bgmClips;
     // [SerializeField] private AudioClip[] sfxClips;
-    
+    [SerializeField] private SfxAudioClip[] sfxClips;
+    private Dictionary<SfxType, AudioClip> sfxDict;
+
     [Header("Values")]
     public float bgmVolume, sfxVolume;
-    
+
     private PlayerData playerData;
-    
+
     /* Scene 간의 이동 시 전달해야 하는 값들은 GameManager를 통해 보내면 됩니다
      * 혼선 방지를 위해 팀별로 해당하는 곳 아래에 public으로 선언 부탁드립니다
      * 프로그램 최초 시작 시 초기화해야 하는 값들은 Init()에서 설정해주시면 됩니다
      *    (Scene 최초 시작이 아닌 프로그램 최초 시작인 점 주의!!)
      * 추가할 method가 있다면 PlaySfx() 밑에 작성해주시면 됩니다
      */
-    
+
     // Player Action
-    
+
     // Track
-    
+
     // UI
 
     private void Awake()
@@ -54,8 +68,23 @@ public class GameManager : MonoBehaviour
 
         // 3. VSync 끄기 (VSync가 켜져 있으면 targetFrameRate가 무시될 수 있음)
         QualitySettings.vSyncCount = 0;
+
+        InitSfxDict();
     }
-  
+
+    // sfxdict 초기화
+    private void InitSfxDict()
+    {
+        sfxDict = new Dictionary<SfxType, AudioClip>();
+        foreach (SfxAudioClip sfx in sfxClips)
+        {
+            if (!sfxDict.ContainsKey(sfx.sfxType))
+                sfxDict.Add(sfx.sfxType, sfx.clip);
+            else
+                HLogger.General.Warning($"GameManager.sfxClips의 sfxType({sfx.sfxType})이 중복됩니다.", this);
+        }
+    }
+
     public static void PlayBgm(int index)
     {
         Instance.bgmSource.clip = Instance.bgmClips[index];
@@ -63,6 +92,13 @@ public class GameManager : MonoBehaviour
     }
     public static void StopBgm() { Instance.bgmSource.Stop(); }
     public static void SetBgmVolume(float volume) { Instance.bgmVolume = volume; Instance.bgmSource.volume = volume; }
+    public static void PlaySfx(SfxType sfxType)
+    {
+        if (Instance.sfxDict.TryGetValue(sfxType, out AudioClip sfxClip))
+            Instance.sfxSource.PlayOneShot(sfxClip);
+        else
+            HLogger.General.Warning($"SFX {sfxType}이 딕셔너리에 존재하지 않습니다.", Instance);
+    }
     public static void PlaySfx(AudioClip sfxClip, UnityEngine.Object caller = null)
     {
         if (sfxClip == null)
@@ -73,6 +109,6 @@ public class GameManager : MonoBehaviour
         Instance.sfxSource.PlayOneShot(sfxClip);
     }
     public static void SetSfxVolume(float volume) { Instance.sfxVolume = volume; Instance.sfxSource.volume = volume; }
-    
+
     /*****************************************************/
 }
