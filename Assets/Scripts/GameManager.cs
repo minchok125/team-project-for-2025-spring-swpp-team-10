@@ -1,3 +1,4 @@
+using Hampossible.Utils;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -62,7 +63,15 @@ public class GameManager : MonoBehaviour
     }
     public static void StopBgm() { Instance.bgmSource.Stop(); }
     public static void SetBgmVolume(float volume) { Instance.bgmVolume = volume; Instance.bgmSource.volume = volume; }
-    public static void PlaySfx(AudioClip sfxClip) { Instance.sfxSource.PlayOneShot(sfxClip); }
+    public static void PlaySfx(AudioClip sfxClip, UnityEngine.Object caller = null)
+    {
+        if (sfxClip == null)
+        {
+            HLogger.General.Warning($"GameManager.PlaySfx : 효과음 클립이 null입니다. Caller = {caller?.name ?? "Unknown"}", caller);
+            return;
+        }
+        Instance.sfxSource.PlayOneShot(sfxClip);
+    }
     public static void SetSfxVolume(float volume) { Instance.sfxVolume = volume; Instance.sfxSource.volume = volume; }
     
     /*****************************************************/
