@@ -45,13 +45,14 @@ public class LaserController : MonoBehaviour
     [SerializeField] private bool isLaserMoving;
 
 
-    private float offsetFromHit = 1.2f;
+    private const float OFFSET_FROM_HIT = 1.2f;
     private Vector3 playerPosition;
     private Vector3 laserOrigin; // 레이저 시작 지점 월드좌표
     private Vector3 laserMaxPoint; // 레이저 길이가 laserMaxDist일 때의 끝 지점 월드좌표
     private Vector3 laserCenter; // 레이저 길이가 laserMaxDist일 때의 중심 지점 월드좌표
     
 
+    private ParticleSystem laserHitParticle;
     private VolumetricLineBehavior laserLineBehavior;
     private Renderer myRenderer;
     private Color laserColor;
@@ -64,6 +65,9 @@ public class LaserController : MonoBehaviour
     private void Start()
     {
         ValidateCheck();
+
+        laserHitParticle = GetComponentInChildren<ParticleSystem>();
+        ParticleStop();
 
         laserLineBehavior = GetComponent<VolumetricLineBehavior>();
         laserLineBehavior.StartPos = Vector3.zero;
@@ -88,22 +92,18 @@ public class LaserController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!isLaserActive)
-            return;
-
-        // 가벼운 Point-Point 검사
-        if (!IsPlayerNearLaserOrigin())
-            return;
-
-        // 끝점이 지속적으로 바뀌는 환경이라면, 최적화 불가능
-        if (isEndPointDynamic)
+        // 레이이저 비활성화 || 가벼운 Point-Point 검사
+        if (!isLaserActive || !IsPlayerNearLaserOrigin())
         {
-            ShootLaser();
+            ParticleStop();
+            return;
         }
-        // 정적인 레이저라면, Line-Point 검사로 최적화
-        else if (IsPlayerNearLaserLine())
+
+        // 1. 끝점이 지속적으로 바뀌는 환경이라면, 최적화 불가능
+        // 2. 정적인 레이저라면, Line-Point 검사로 최적화
+        //    플레이어와 충분히 가까울 때만 RayCast 실행
+        if (isEndPointDynamic || IsPlayerNearLaserLine())
         {
-            // 플레이어와 충분히 가까울 때만 RayCast 실행
             ShootLaser();
         }
     } 
@@ -136,7 +136,14 @@ public class LaserController : MonoBehaviour
         if (Physics.Raycast(transform.position, transform.forward, out hit, laserMaxDist))
         {
             laserLineBehavior.EndPos 
-                = Vector3.forward * ((hit.point - transform.position).magnitude - offsetFromHit);
+                = Vector3.forward * ((hit.point - transform.position).magnitude - OFFSET_FROM_HIT);
+            
+            if (laserHitParticle != null)
+            {
+                laserHitParticle.transform.position = hit.point - transform.forward * 0.7f;
+                ParticlePlay();
+            }
+
             // 플레이어와 레이저가 닿음
             if (hit.collider.CompareTag("Player"))
             {
@@ -145,6 +152,7 @@ public class LaserController : MonoBehaviour
         }
         else
         {
+            ParticleStop();
             laserLineBehavior.EndPos = Vector3.forward * laserMaxDist;
         }
     }
@@ -205,6 +213,24 @@ public class LaserController : MonoBehaviour
             PlayerManager.instance.LightningShock();
         else if (laserType == LaserType.PlatformDisappear)
             platformDisappearMgr.PlatformDisappear();
+    }
+
+    private void ParticlePlay()
+    {
+        if (laserHitParticle?.isPlaying == false)
+        {
+            laserHitParticle.gameObject.SetActive(true);
+            laserHitParticle.Play();
+        }
+    }
+
+    private void ParticleStop()
+    {
+        if (laserHitParticle?.isPlaying == true)
+        {
+            laserHitParticle.Stop();
+            laserHitParticle.gameObject.SetActive(false);
+        }
     }
 
 
