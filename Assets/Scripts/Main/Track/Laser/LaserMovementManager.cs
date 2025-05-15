@@ -20,6 +20,7 @@ public class LaserMovementManager : MonoBehaviour
     [SerializeField] private GameObject[] laserObjs;
 
 
+    #region SinWave
     [Header("localPosition 기준으로 움직입니다.\n"
           + "y축으로 [minY, minY + 2amplitude] 사이 왕복")]
     [Tooltip("y축 사인파 움직임의 왕복 주기")]
@@ -32,7 +33,19 @@ public class LaserMovementManager : MonoBehaviour
     [SerializeField] private float minY = 1;
     [Tooltip("레이저 간 사인파의 진행 방향을 반대로 조절")]
     [SerializeField] private bool reverseDir;
+    #endregion
 
+
+    #region Rotate1
+    [Header("초록선(transform.forward) 방향을 기준으로\n"
+          + "레이저가 회전합니다.")]
+    [Tooltip("초당 회전 속도 (도 단위). 음수면 반대로 회전")]
+    [SerializeField] private float rotationSpeed = 60f;
+    [Tooltip("인접한 두 레이저 간의 각도 차이 (도 단위)")]
+    [SerializeField] private float neighborLaserAngleOffset = 30f;
+
+    private float angle = 0f;
+    #endregion
 
     private Transform player;
 
@@ -82,7 +95,42 @@ public class LaserMovementManager : MonoBehaviour
 
     private void Rotate1()
     {
-        
+        angle += rotationSpeed * Time.deltaTime;
+        angle %= 360;
+
+        for (int i = 0; i < laserObjs.Length; i++)
+        {
+            float laserAngle = angle - neighborLaserAngleOffset * i;
+            Vector3 lookVec = GetRotatedPerpendicularVector(transform.forward, laserAngle);
+            laserObjs[i].transform.rotation = Quaternion.LookRotation(lookVec);
+        }
+    }
+
+
+    // 벡터 v와 수직인 벡터 중 하나를 v를 축으로 angle도 만큼 회전한 벡터를 반환
+    private static Vector3 GetRotatedPerpendicularVector(Vector3 v, float angle)
+    {
+        if (v == Vector3.zero)
+            return Vector3.zero;
+
+        // v와 수직인 임의의 벡터 구함
+        Vector3 perpendicular = GetPerpendicularVector(v);
+
+        // v를 축으로 angle도 만큼 회전
+        Quaternion rotation = Quaternion.AngleAxis(angle, v.normalized);
+        return rotation * perpendicular;
+    }
+
+    // 주어진 벡터와 수직인 특정한 단위 벡터를 반환
+    private static Vector3 GetPerpendicularVector(Vector3 v)
+    {
+        // v가 0이면 처리 불가
+        if (v == Vector3.zero)
+            return Vector3.zero;
+
+        // v와 수직인 벡터를 구하기 위해 v와 특정 축과 외적
+        Vector3 axis = (Mathf.Abs(v.x) < 0.99f) ? Vector3.right : Vector3.up;
+        return Vector3.Cross(v, axis).normalized;
     }
 
     private void Move3()
@@ -116,6 +164,9 @@ class LaserMovementManagerEditor : Editor
     SerializedProperty reverseDirProp;
     SerializedProperty minYProp;
 
+    SerializedProperty rotationSpeedProp;
+    SerializedProperty neighborLaserAngleOffsetProp;
+
     private void OnEnable()
     {
         moveTypeProp = serializedObject.FindProperty("moveType");
@@ -127,6 +178,9 @@ class LaserMovementManagerEditor : Editor
         amplitudeProp = serializedObject.FindProperty("amplitude");
         reverseDirProp = serializedObject.FindProperty("reverseDir");
         minYProp = serializedObject.FindProperty("minY");
+
+        rotationSpeedProp = serializedObject.FindProperty("rotationSpeed");
+        neighborLaserAngleOffsetProp = serializedObject.FindProperty("neighborLaserAngleOffset");
     }
 
     public override void OnInspectorGUI()
@@ -145,6 +199,11 @@ class LaserMovementManagerEditor : Editor
             EditorGUILayout.PropertyField(minYProp);
             EditorGUILayout.PropertyField(reverseDirProp);
         }
+        else if (moveTypeProp.enumValueIndex == (int)LaserMovementManager.MovementType.Rotate1)
+        {
+            EditorGUILayout.PropertyField(rotationSpeedProp);
+            EditorGUILayout.PropertyField(neighborLaserAngleOffsetProp);
+        }
 
         serializedObject.ApplyModifiedProperties();
     }
@@ -153,10 +212,13 @@ class LaserMovementManagerEditor : Editor
 
     public void OnSceneGUI()
     {
-        _target = target as LaserMovementManager;    
+        _target = target as LaserMovementManager;
 
         // Scene 뷰에서 조절 가능한 구형 영역 표시
         HandleDetectPointDist();
+
+        if (moveTypeProp.enumValueIndex == (int)LaserMovementManager.MovementType.Rotate1)
+            DrawLineTowardsTransformForward();
 
         // 값이 바뀌었다면 객체를 Undo에 기록하고 dirty 상태로 만들어 저장되도록 함
         if (GUI.changed)
@@ -180,6 +242,15 @@ class LaserMovementManagerEditor : Editor
         {
             _target.activationDist = newRadius;
         }
+    }
+
+    private void DrawLineTowardsTransformForward()
+    {
+        Transform t = _target.transform;
+        Vector3 start = t.position - t.forward * 50f;
+        Vector3 end = t.position + t.forward * 50f;
+        Handles.color = Color.green;
+        Handles.DrawLine(start, end);
     }
 }
 #endif
