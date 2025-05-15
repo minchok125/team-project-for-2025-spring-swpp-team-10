@@ -11,7 +11,7 @@ using UnityEditor;
 public class LaserMovementManager : MonoBehaviour
 {
     
-    public enum MovementType { SinWave, Move2, Move3, Move4 }
+    public enum MovementType { SinWave, Rotate1, Move3, Move4 }
     [Header("여러 레이저의 움직임을 총괄하는 스크립트.\nmoveType별로 다른 움직임 애니메이션")]
     [SerializeField] private MovementType moveType;
     [Tooltip("해당 오브젝트와 플레이어 사이의 거리가 일정 거리 이하일 때 움직임 애니메이션 시작")]
@@ -49,7 +49,7 @@ public class LaserMovementManager : MonoBehaviour
             return;
 
         if (moveType == MovementType.SinWave) SinWave();
-        else if (moveType == MovementType.Move2) Move2();
+        else if (moveType == MovementType.Rotate1) Rotate1();
         else if (moveType == MovementType.Move3) Move3();
         else if (moveType == MovementType.Move4) Move4();
     }
@@ -80,9 +80,9 @@ public class LaserMovementManager : MonoBehaviour
         }
     }
 
-    private void Move2()
+    private void Rotate1()
     {
-
+        
     }
 
     private void Move3()
