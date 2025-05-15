@@ -213,7 +213,6 @@ public class PlayerManager : MonoBehaviour
 
 
     #region Private Variables
-    private ModeConverterController modeConverter;
     private Rigidbody rb;
     private GameObject hamsterLightningShockParticle;
     private GameObject ballLightningShockParticle;
@@ -255,11 +254,11 @@ public class PlayerManager : MonoBehaviour
         skill = GetComponent<PlayerSkillController>();
         playerMovement = GetComponent<PlayerMovementController>();
         playerWire = GetComponent<PlayerWireController>();
-        modeConverter = GetComponent<ModeConverterController>();
         rb = GetComponent<Rigidbody>();
+
         hamsterLightningShockParticle
             = transform.Find("Hamster Normal")
-                    .Find("Lightning Particle")?.gameObject;
+                       .Find("Lightning Particle")?.gameObject;
         ballLightningShockParticle 
             = transform.Find("Hamster Ball")
                        .Find("Lightning Particle")?.gameObject;
@@ -408,8 +407,11 @@ public class PlayerManager : MonoBehaviour
     #endregion
 
 
-    
+
     #region Object Reaction
+    /// <summary>
+    /// 파란 전기 레이저에 플레이어가 맞았을 때 호출
+    /// </summary>
     public void LightningShock()
     {
         if (!canLightningShock)
@@ -421,10 +423,12 @@ public class PlayerManager : MonoBehaviour
 
         if (isBall) ballLightningShockParticle.SetActive(true);
         else hamsterLightningShockParticle.SetActive(true);
-        // **********Electric-buzz-sound-effect 효과음 재생***********
-        
+
+        GameManager.PlaySfx(lightningShockAudio);
+
         Invoke(nameof(LightningShockEndAfterFewSeconds), 3f);
     }
+    // inputLock 풀림, 전기효과 풀림
     private void LightningShockEndAfterFewSeconds()
     {
         isInputLock = false;
@@ -433,6 +437,7 @@ public class PlayerManager : MonoBehaviour
 
         Invoke(nameof(CanLightningShockAfterFewSeconds), 0.4f);
     }
+    // 다시 전기에 맞을 수 있음
     private void CanLightningShockAfterFewSeconds()
     {
         canLightningShock = true;

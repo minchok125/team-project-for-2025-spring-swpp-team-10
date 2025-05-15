@@ -139,9 +139,6 @@ public class PlayerMovementController : MonoBehaviour
         HandleResetPositionInput();
         HandleCheckpointInput();
 
-        if(Input.GetKeyDown(KeyCode.G) || Input.GetKeyDown(KeyCode.F))
-            GameManager.PlaySfx(0);
-
         // 부스터 에너지 관리
         UpdateBoostEnergy();
 
