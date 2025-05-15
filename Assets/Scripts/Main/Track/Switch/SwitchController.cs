@@ -17,32 +17,32 @@ public class SwitchController : MonoBehaviour
     [SerializeField] private bool useInspectorEvents;
 
     [Space]
-    [Tooltip("On 상태로 전환될 때 한 번 호출됩니다.")]
+    [Header("On 상태로 전환될 때 한 번 호출됩니다.")]
     /// <summary>
     /// On 상태로 전환될 때 한 번 호출됩니다.
     /// </summary>
     public UnityEvent OnSwitchOnStart;
-    [Tooltip("On 상태인 동안 매 프레임마다 호출됩니다.")]
+    [Header("On 상태인 동안 매 프레임마다 호출됩니다.")]
     /// <summary>
     /// On 상태인 동안 매 프레임마다 호출됩니다.
     /// </summary>
     public UnityEvent OnSwitchOnStay;
-    [Tooltip("On 상태가 끝날 때 한 번 호출됩니다.")]
+    [Header("On 상태가 끝날 때 한 번 호출됩니다.")]
     /// <summary>
     /// On 상태가 끝날 때 한 번 호출됩니다.
     /// </summary>
     public UnityEvent OnSwitchOnEnd;
-    [Tooltip("Off 상태로 전환될 때 한 번 호출됩니다.")]
+    [Header("Off 상태로 전환될 때 한 번 호출됩니다.")]
     /// <summary>
     /// Off 상태로 전환될 때 한 번 호출됩니다.
     /// </summary>
     public UnityEvent OnSwitchOffStart;
-    [Tooltip("Off 상태인 동안 매 프레임마다 호출됩니다.")]
+    [Header("Off 상태인 동안 매 프레임마다 호출됩니다.")]
     /// <summary>
     /// Off 상태인 동안 매 프레임마다 호출됩니다.
     /// </summary>
     public UnityEvent OnSwitchOffStay;
-    [Tooltip("Off 상태가 끝날 때 한 번 호출됩니다.")]
+    [Header("Off 상태가 끝날 때 한 번 호출됩니다.")]
     /// <summary>
     /// Off 상태가 끝날 때 한 번 호출됩니다.
     /// </summary>
