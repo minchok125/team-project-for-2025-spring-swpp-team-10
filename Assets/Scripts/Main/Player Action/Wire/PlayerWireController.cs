@@ -135,6 +135,8 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void HandlePlayerInput()
     {
+        if (PlayerManager.instance.isInputLock)
+            return;
         HandleMouseInput();
         HandleKeyboardInput();
     }
