@@ -215,14 +215,14 @@ public class PlayerMovementController : MonoBehaviour
 
     #region Checkpoint
     /// <summary>
-    /// R키를 눌러 플레이어의 위치와 속도를 조정정하는 기능
+    /// R키를 눌러 플레이어의 위치와 속도를 조정하는 기능
     /// </summary>
     private void HandleResetPositionInput()
     {
         // R키를 눌렀거나 플레이어가 맵 밖으로 떨어졌을 때
         if (transform.position.y < -100)
         {
-            MoveToLastCheckpoint(); // 마지막 체크포인트로 이동하도록 수정정
+            MoveToLastCheckpoint(); // 마지막 체크포인트로 이동하도록 수정
         }
     }
 
