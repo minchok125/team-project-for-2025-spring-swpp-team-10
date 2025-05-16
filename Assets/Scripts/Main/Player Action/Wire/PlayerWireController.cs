@@ -69,7 +69,6 @@ public class PlayerWireController : MonoBehaviour
         InitializeComponents();
         InitializeHitPoints();
         InitializeWireControlStates();
-        Debug.Log("grabDistance : " + grabDistance);
     }
 
     private void Update()
@@ -136,6 +135,8 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void HandlePlayerInput()
     {
+        if (PlayerManager.instance.isInputLock)
+            return;
         HandleMouseInput();
         HandleKeyboardInput();
     }
@@ -342,6 +343,7 @@ public class PlayerWireController : MonoBehaviour
     {
         PlayerManager.instance.isGliding = false;
         PlayerManager.instance.onWire = true;
+        PlayerManager.instance.onWireCollider = predictionHit.collider;
 
         // hitPoint 설정
         hitPoint = isHitPoint1 ? hitPoint1 : hitPoint2;
@@ -373,6 +375,7 @@ public class PlayerWireController : MonoBehaviour
         grabObject = null;
         hitPoint.SetParent(followPlayerHitParent);
         PlayerManager.instance.onWire = false;
+        PlayerManager.instance.onWireCollider = null;
         lr.positionCount = 0;
         currentWire.EndShoot();
 

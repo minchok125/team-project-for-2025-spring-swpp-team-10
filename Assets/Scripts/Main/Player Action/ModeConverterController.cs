@@ -10,8 +10,8 @@ public class ModeConverterController : MonoBehaviour
     private GameObject hamster;
     private GameObject ball;
 
-    private CapsuleCollider hamCol; // 햄스터 모델의 콜라이더
-    private Renderer[] hamRds;      // 햄스터 모델의 모든 렌더러 컴포넌트
+    private Collider[] hamCols; // 햄스터 모델의 모든 콜라이더
+    private Renderer[] hamRds;  // 햄스터 모델의 모든 렌더러 컴포넌트
     private Rigidbody rb;
     
 
@@ -20,7 +20,7 @@ public class ModeConverterController : MonoBehaviour
         hamster = transform.Find("Hamster Normal").gameObject;
         ball = transform.Find("Hamster Ball").gameObject;
 
-        hamCol = hamster.GetComponent<CapsuleCollider>();
+        hamCols = hamster.GetComponentsInChildren<Collider>();
         hamRds = hamster.GetComponentsInChildren<Renderer>();
         rb = GetComponent<Rigidbody>();
 
@@ -102,8 +102,9 @@ public class ModeConverterController : MonoBehaviour
     /// <param name="value">활성화 여부 (true: 활성화, false: 비활성화)</param>
     private void HamsterSetActive(bool value)
     {
-        // 콜라이더 활성화/비활성화
-        hamCol.enabled = value;
+        // 모든 콜라이더 활성화/비활성화
+        foreach (Collider col in hamCols)
+            col.enabled = value;
 
         // 모든 렌더러 컴포넌트 활성화/비활성화
         foreach (Renderer rd in hamRds)

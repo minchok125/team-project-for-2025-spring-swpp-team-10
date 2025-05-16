@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using Hampossible.Utils;
 
 /// <summary>
 /// 플레이어의 움직임을 관리하는 컴포넌트
@@ -54,6 +55,14 @@ public class PlayerMovementController : MonoBehaviour
     
     // 현재 프레임에 점프가 발동됐는지 여부
     private bool jumped = false;
+    #endregion
+
+    #region Checkpoint Variables
+    private bool isRKeyPressedForCheckpoint = false; // R키가 체크포인트 이동을 위해 눌렸는지 여부
+    private float rKeyHoldStartTime = 0f;         // R키를 누르기 시작한 시간
+    private float RKeyHoldDurationForCheckpoint = 5.0f; // 체크포인트 이동까지 R키를 누르고 있어야 하는 시간(초)
+    private float checkpointResetPositionY = -100f; // 체크포인트 이동 시 Y좌표 기준
+    private float checkpointMovementThreshold = 0.01f; // 체크포인트 이동 시 위치 오차 허용 범위
     #endregion
 
 
@@ -128,6 +137,7 @@ public class PlayerMovementController : MonoBehaviour
         HandleGlidingInput();
         HandleBoostInput();
         HandleResetPositionInput();
+        HandleCheckpointInput();
 
         // 부스터 에너지 관리
         UpdateBoostEnergy();
@@ -205,27 +215,76 @@ public class PlayerMovementController : MonoBehaviour
 
 
 
-    #region Position Reset
+    #region Checkpoint
     /// <summary>
-    /// R키를 눌러 플레이어의 위치와 속도를 조정정하는 기능
+    /// 맵 바깥으로 떨어졌을 때 체크포인트로 돌아가도록 처리
     /// </summary>
     private void HandleResetPositionInput()
     {
         // R키를 눌렀거나 플레이어가 맵 밖으로 떨어졌을 때
-        if (Input.GetKeyDown(KeyCode.R) || transform.position.y < -100)
+        if (transform.position.y < checkpointResetPositionY)
         {
-            ResetPosition();
+            MoveToLastCheckpoint(); // 마지막 체크포인트로 이동하도록 수정
         }
     }
 
     /// <summary>
-    /// 플레이어의 위치와 속도를 초기화합니다
+    /// R키를 길게 눌러 체크포인트로 돌아가는 입력 처리
     /// </summary>
-    private void ResetPosition()
+    private void HandleCheckpointInput()
     {
-        transform.position = initPos;
-        rb.velocity = Vector3.zero;
-        GetComponent<PlayerWireController>().EndShoot();
+        // R키를 누르기 시작했을 때
+        if (Input.GetKeyDown(KeyCode.R) && !isRKeyPressedForCheckpoint)
+        {
+            isRKeyPressedForCheckpoint = true;
+            rKeyHoldStartTime = Time.time;
+            HLogger.General.Info("R키 눌림. 5초 카운트다운 시작. 이동 시 취소됩니다.");
+        }
+
+        // R키가 한 번 눌려서 타이머가 활성화된 상태일 때
+        if (isRKeyPressedForCheckpoint)
+        {
+            // 이동 입력 감지 (PlayerManager의 moveDir 사용)
+            if (PlayerManager.instance.moveDir.sqrMagnitude > checkpointMovementThreshold || !playerMgr.isGround) // 약간의 오차 허용
+            {
+                // 이동 입력이 있으면 타이머 및 상태 해제
+                isRKeyPressedForCheckpoint = false;
+                HLogger.General.Info("이동 입력 감지됨. 체크포인트 이동 타이머 취소.");
+                return; 
+            }
+
+            // 5초가 경과했는지 확인 (이동 입력이 없었을 경우)
+            if (Time.time - rKeyHoldStartTime >= RKeyHoldDurationForCheckpoint)
+            {
+                MoveToLastCheckpoint();
+                isRKeyPressedForCheckpoint = false; // 체크포인트 이동 후 상태 초기화
+            }
+        }
+    }
+
+    /// <summary>
+    /// 저장된 마지막 체크포인트로 플레이어를 이동시킵니다.
+    /// </summary>
+    private void MoveToLastCheckpoint()
+    {
+        if (CheckpointManager.Instance != null && CheckpointManager.Instance.HasCheckpointBeenSet())
+        {
+            Vector3 checkpointPosition = CheckpointManager.Instance.GetLastCheckpointPosition();
+            transform.position = checkpointPosition;
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero; // 회전 속도도 초기화
+            GetComponent<PlayerWireController>().EndShoot(); // 와이어 사용 중이었다면 취소
+            playerMgr.isJumping = false;
+            playerMgr.isGliding = false;
+            glidingMesh.SetActive(false); // 글라이딩 메시 비활성화
+            playerMgr.isBoosting = false; // 부스트 상태 해제
+
+            HLogger.General.Info($"마지막 체크포인트 ({checkpointPosition})로 이동했습니다.");
+        }
+        else
+        {
+            HLogger.General.Warning("체크포인트가 설정되지 않았습니다. 이동할 수 없습니다.");
+        }
     }
     #endregion
 
@@ -485,12 +544,22 @@ public class PlayerMovementController : MonoBehaviour
             if (curPlatform != playerMgr.curGroundCollider)
             {
                 curPlatform = playerMgr.curGroundCollider;
-                platformParent.position = curPlatform.transform.position;
-                transform.parent = platformParent;
+                if (transform.parent == platformParent)
+                {
+                    curPlatform = null;
+                    transform.parent = null;
+                }
+                else
+                {
+                    platformParent.position = curPlatform.transform.position;
+                    transform.parent = platformParent;
+                }
             }
             // 이전 프레임과 마찬가지의 플랫폼
             else
             {
+                if (transform.parent == null)
+                    transform.parent = platformParent;
                 platformParent.position = curPlatform.transform.position;
             }
         }
