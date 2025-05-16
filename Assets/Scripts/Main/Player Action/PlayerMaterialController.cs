@@ -26,8 +26,6 @@ public class PlayerMaterialController : MonoBehaviour
             mts[i] = rds[i].material;
         }
 
-        Debug.Log(mts.Length);
-
         prevOpaque = true;
     }
 
@@ -43,14 +41,19 @@ public class PlayerMaterialController : MonoBehaviour
         // 투명도 조절
         foreach (Material mt in mts) 
         {
-            Color color = mt.color;
-            color.a = alpha;
-            mt.color = color;
+            if (mt.HasProperty("_Color"))
+            {
+                Color color = mt.color;
+                color.a = alpha;
+                mt.color = color;
+            }
 
             // Z버퍼 쓰기가 켜지면(1) 이 물체가 다른 물체를 가릴 수 있음. 
-            // Z버퍼 쓰기가 꺼지면(0) 이 물체가 다른 물체를 가리지 않음(투명 객체에 적합).    
-            if (alpha > 0.9f) mt.SetInt(k_ZWriteID, 1);
-            else mt.SetInt(k_ZWriteID, 0);
+            // Z버퍼 쓰기가 꺼지면(0) 이 물체가 다른 물체를 가리지 않음(투명 객체에 적합).
+            if (mt.HasProperty(k_ZWriteID))
+            {
+                mt.SetInt(k_ZWriteID, alpha > 0.9f ? 1 : 0);
+            }
         }
     }
 }
