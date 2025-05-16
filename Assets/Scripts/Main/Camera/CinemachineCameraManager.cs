@@ -187,30 +187,30 @@ public class CinemachineCameraManager : MonoBehaviour
         // 카메라가 뚝 끊기니까 그거 해결해 보려고 한 것
         ICinemachineCamera activeCam = brain.ActiveVirtualCamera;
 
-        string s = "";
-        if (activeCam is CinemachineFreeLook freeLookCam) 
-        {
-            if (!isCamChanged 
-                && (Mathf.Abs(Mathf.DeltaAngle(freeLookCam.m_XAxis.Value, camXAxis)) > 20f
-                    || Mathf.Abs(freeLookCam.m_YAxis.Value - camYAxis) > 0.15f)) 
-            {
-                Debug.Log($"({freeLookCam.m_XAxis.Value:F2},{freeLookCam.m_YAxis.Value:F2}) => ({camXAxis:F2},{camYAxis:F2})");
-                s = $"({freeLookCam.m_XAxis.Value:F2},{freeLookCam.m_YAxis.Value:F2}) => ({camXAxis:F2},{camYAxis:F2})";
-                freeLookCam.m_XAxis.Value = camXAxis;
-                freeLookCam.m_YAxis.Value = camYAxis;
-            }
+        // string s = "";
+        // if (activeCam is CinemachineFreeLook freeLookCam) 
+        // {
+        //     if (!isCamChanged 
+        //         && (Mathf.Abs(Mathf.DeltaAngle(freeLookCam.m_XAxis.Value, camXAxis)) > 20f
+        //             || Mathf.Abs(freeLookCam.m_YAxis.Value - camYAxis) > 0.15f)) 
+        //     {
+        //         Debug.Log($"({freeLookCam.m_XAxis.Value:F2},{freeLookCam.m_YAxis.Value:F2}) => ({camXAxis:F2},{camYAxis:F2})");
+        //         s = $"({freeLookCam.m_XAxis.Value:F2},{freeLookCam.m_YAxis.Value:F2}) => ({camXAxis:F2},{camYAxis:F2})";
+        //         freeLookCam.m_XAxis.Value = camXAxis;
+        //         freeLookCam.m_YAxis.Value = camYAxis;
+        //     }
 
-            camXAxis = freeLookCam.m_XAxis.Value;
-            camYAxis = freeLookCam.m_YAxis.Value;
-        }
+        //     camXAxis = freeLookCam.m_XAxis.Value;
+        //     camYAxis = freeLookCam.m_YAxis.Value;
+        // }
 
-        if (txt != null) 
-        {
-            txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\n"
-                       + $"ball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\n"
-                       + $"ballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
-            txt.text += "\n" + s;
-        }
+        // if (txt != null) 
+        // {
+        //     txt.text = $"ham:({hamsterCam.m_XAxis.Value:F2},{hamsterCam.m_YAxis.Value:F2})\n"
+        //                + $"ball:({ballCam.m_XAxis.Value:F2},{ballCam.m_YAxis.Value:F2})\n"
+        //                + $"ballWire:({ballWireCam1.m_XAxis.Value:F2},{ballWireCam1.m_YAxis.Value:F2})";
+        //     txt.text += "\n" + s;
+        // }
     }
 
 
