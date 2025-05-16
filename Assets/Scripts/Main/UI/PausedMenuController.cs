@@ -26,12 +26,6 @@ public class PausedMenuController : MonoBehaviour
 		}
 	}
 
-	public void ResumeGame()
-	{
-		settingsPanel.SetActive(false);
-		uIManager.ResumeGame();
-	}
-
 	public void OpenSettings()
 	{
 		settingsPanel.SetActive(true);
