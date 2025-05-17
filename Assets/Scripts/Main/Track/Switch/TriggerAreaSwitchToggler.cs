@@ -10,13 +10,16 @@ public class TriggerAreaSwitchToggler : SwitchStateTogglerBase
     [Header("--- 설정 ---")]
     [Tooltip("해당 트리거 영역에 접근했을 때 스위치 켤지 끌지 정합니다.\n"
            + "스위치가 켜진다면 true입니다.")]
-    [SerializeField] private bool isTriggerChangeToSwitchOn;
+    [SerializeField] private bool _isTriggerChangeToSwitchOn;
     [Tooltip("스위치를 작동시키는 데 필요한 최소 충돌 속도")]
-    [SerializeField] private float speedThreshold = 5f;
+    [SerializeField] private float _speedThreshold = 5f;
     [Tooltip("이 방향을 기준으로 속도 성분을 측정합니다.\n"
            + "충돌 속도가 이 방향으로 충분할 경우에만 스위치가 작동합니다.\n"
            + "Vector3.zero면 항상 스위치가 작동됩니다.")]
-    [SerializeField] private Vector3 speedDirection = Vector3.down;
+    [SerializeField] private Vector3 _speedDirection = Vector3.down;
+    [Tooltip("기준이 되는 방향이 양방향 속도를 나타낼지 여부입니다.\n"
+           + "speedDirection이 아래 방향이라면, 위 방향으로 충돌하더라도 스위치가 작동합니다.")]
+    [SerializeField] private bool _isAbsoluteDirection = false;
 
 
     private Collider triggerCollider;
@@ -31,7 +34,7 @@ public class TriggerAreaSwitchToggler : SwitchStateTogglerBase
             triggerCollider.isTrigger = true;
         }
 
-        speedDirection = speedDirection.normalized;
+        _speedDirection = _speedDirection.normalized;
     }
 
     void OnTriggerEnter(Collider other)
@@ -42,14 +45,16 @@ public class TriggerAreaSwitchToggler : SwitchStateTogglerBase
         if (interactingRb != null)
         {
             // 충돌 속도 계산 (여기서는 들어온 오브젝트의 속도 사용)
-            float speed = Vector3.Dot(interactingRb.velocity, speedDirection);
-            Debug.Log(speed);
+            float speed = Vector3.Dot(interactingRb.velocity, _speedDirection);
+
+            if (_isAbsoluteDirection && speed < 0)
+                speed *= -1;
 
             // switchController에게 상태 전환 요청
             // SwitchStateTogglerBase의 스위치 상태 전환 함수 호출
-            if (speed >= speedThreshold)
+            if (speed >= _speedThreshold)
             {
-                if (isTriggerChangeToSwitchOn) base.TurnSwitchOn();
+                if (_isTriggerChangeToSwitchOn) base.TurnSwitchOn();
                 else base.TurnSwitchOff();
             }
         }
@@ -62,7 +67,7 @@ public class TriggerAreaSwitchToggler : SwitchStateTogglerBase
 
     private void OnValidate()
     {
-        if (speedThreshold < 0)
-            speedThreshold = 0;
+        if (_speedThreshold < 0)
+            _speedThreshold = 0;
     }
 }
