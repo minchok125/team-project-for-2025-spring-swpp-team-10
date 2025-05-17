@@ -260,6 +260,7 @@ public class BallMovementController : MonoBehaviour, IMovement
         }
     }
 
+
     /// <summary>
     /// 즉발성 부스트 처리. 즉시 속도를 증가시키는 일회성 부스트
     /// </summary>
@@ -269,18 +270,18 @@ public class BallMovementController : MonoBehaviour, IMovement
         Vector3 boostDir;
 
         // 방향키 입력이 없다면 현재 속도 방향으로 부스트
-        if (moveDir == Vector3.zero) 
+        if (moveDir == Vector3.zero)
         {
             boostDir = rb.velocity.normalized;
         }
         // 방향키 입력이 있다면 
         // 지면 위에서는 입력 방향으로 부스트
-        else if (PlayerManager.instance.isGround) 
+        else if (PlayerManager.instance.isGround)
         {
             boostDir = moveDir;
         }
         // 공중에서는 와이어와 수직 방향으로 부스트
-        else 
+        else
         {
             Transform hitPoint = GetComponent<PlayerWireController>().hitPoint;
             if (hitPoint == null)
@@ -290,7 +291,7 @@ public class BallMovementController : MonoBehaviour, IMovement
 
             // moveDir의 dir과 수직인 성분 계산
             Vector3 dirOrthogonalMoveDir = (moveDir - dir * Vector3.Dot(dir, moveDir)).normalized;
-            
+
             // 수직 방향과 현재 속도를 합성한 방향 계산
             boostDir = (dirOrthogonalMoveDir * 2f + rb.velocity.normalized).normalized;
         }
