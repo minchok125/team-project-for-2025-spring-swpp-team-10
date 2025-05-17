@@ -43,6 +43,7 @@ public class DrawerConfiner : MonoBehaviour
             else
                 drawersRigid[i] = drawers[i].AddComponent<Rigidbody>();
 
+            drawersRigid[i].mass = 0.8f;
             drawersRigid[i].isKinematic = true;
             drawersRigid[i].constraints = RigidbodyConstraints.FreezeRotationX
                 | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
@@ -53,8 +54,6 @@ public class DrawerConfiner : MonoBehaviour
     {
         if (PlayerManager.instance.isBall || !PlayerManager.instance.onWire)
         {
-            // if (hasSetKinematic)
-            //     SetNotKinematic();
             return;
         }
 
