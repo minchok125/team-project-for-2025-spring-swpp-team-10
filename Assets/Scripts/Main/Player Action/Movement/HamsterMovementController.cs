@@ -15,6 +15,8 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     [Header("PhysicMaterial")]
     [Tooltip("땅에 있을 때 PhysicMaterial (마찰력 O)")]
     [SerializeField] private PhysicMaterial hamsterGround;
+    [Tooltip("땅에 있으며 와이어 조작할 때 PhysicMaterial (마찰력 거의X)")]
+    [SerializeField] private PhysicMaterial hamsterGroundWire;
     [Tooltip("공중에서 PhysicMaterial (마찰력 X)")]
     [SerializeField] private PhysicMaterial hamsterJump;
 
@@ -41,6 +43,7 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     public void OnUpdate()
     {
         UpdatePhysicMaterial();
+        BallDragSetting();
         moveDir = PlayerManager.instance.moveDir;
         Rotate();
     }
@@ -56,7 +59,24 @@ public class HamsterMovementController : MonoBehaviour, IMovement
         /// - 공중이나 움직이는 중: 마찰력 X (hamsterJump)
         bool useGroundMaterial = (PlayerManager.instance.isGround && !PlayerManager.instance.isOnSlideWall)
                                  || (PlayerManager.instance.isOnSlideWall && !PlayerManager.instance.isMoving);
-        col.material = useGroundMaterial ? hamsterGround : hamsterJump;
+
+        if (PlayerManager.instance.isGround && PlayerManager.instance.onWire)
+            col.material = hamsterGroundWire;
+        else if (useGroundMaterial)
+            col.material = hamsterGround;
+        else
+            col.material = hamsterJump;
+    }
+
+    /// <summary>
+    /// 공중에서 빠르게 감속하도록 합니다.
+    /// </summary>
+    private void BallDragSetting()
+    {
+        if (PlayerManager.instance.isGround)
+            rb.drag = 1f;
+        else
+            rb.drag = 2.5f;
     }
 
 
