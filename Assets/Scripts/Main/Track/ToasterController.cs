@@ -8,7 +8,9 @@ public class ToasterController : MonoBehaviour
     public float launchDelay = 5f;
 
     [Tooltip("발사 시 y축 속도")]
-    public float launchVelocity = 30f;
+    public float launchXVelocity = 30f;
+    public float launchYVelocity = 30f;
+    public float launchZVelocity = 30f;
 
     private bool hasLaunched = false;
 
@@ -29,7 +31,9 @@ public class ToasterController : MonoBehaviour
         if (playerRb != null)
         {
             Vector3 newVelocity = playerRb.velocity;
-            newVelocity.y = launchVelocity;
+            newVelocity.x = launchXVelocity;
+            newVelocity.y = launchYVelocity;
+            newVelocity.z = launchZVelocity;
             playerRb.velocity = newVelocity;
         }
     }
