@@ -19,7 +19,6 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private Animator animator;
     [Tooltip("빈 오브젝트 생성 후 연결해 주세요. 플랫폼 이동 동기화에 쓰입니다.")]
     [SerializeField] private Transform platformParent;
-
     // 현재 이동 방식을 결정하는 컴포넌트 (공 또는 햄스터)
     private IMovement curMovement;
 
@@ -38,6 +37,10 @@ public class PlayerMovementController : MonoBehaviour
     
     // 이전 플랫폼의 위치 (플랫폼 이동 시 플레이어도 같이 이동하기 위함)
     private Vector3 prevPlatformPos;
+
+    [Tooltip("햄스터 와이어를 사용 중에 땅에 붙어있게 하기 위한 로직에서,\n"
+           + "햄스터 아래에 땅이 있다고 판단하는 거리")]
+    [SerializeField] private float hamsterWireCheckGroundDistance = 5f;
     #endregion
 
 
@@ -107,12 +110,14 @@ public class PlayerMovementController : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI velocityTxt;
 
-    // 플레이어 매니저 참조
+
+    // 플레이어 스크립트 참조
     private PlayerManager playerMgr;
+    private GroundCheck groundCheck;
 
     #endregion
 
-    
+
     #region Unity Lifecycle Methods
     void Start()
     {
@@ -121,6 +126,7 @@ public class PlayerMovementController : MonoBehaviour
         curMovement = GetComponent<HamsterMovementController>();
         ball = GetComponent<BallMovementController>();
         playerMgr = GetComponent<PlayerManager>();
+        groundCheck = GetComponent<GroundCheck>();
 
         // 초기 상태 설정
         InitializeState();
@@ -490,9 +496,15 @@ public class PlayerMovementController : MonoBehaviour
 
     private void HamsterWireEnhanceGravity()
     {
+        if (!groundCheck.CustomGroundCheck(hamsterWireCheckGroundDistance))
+            return;
+
         rb.AddForce(Physics.gravity * enhanceGravityRate);
         if (rb.velocity.y > 0)
+        {
             rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            rb.MovePosition(rb.transform.position - Vector3.up * rb.velocity.y * Time.fixedDeltaTime);
+        }
     }
     #endregion
 
