@@ -14,7 +14,7 @@ public class SwitchController : MonoBehaviour
     [Tooltip("시작 시 스위치가 눌린 상태인지 여부")]
     [SerializeField] private bool startsPressed = false;
     [Tooltip("스위치 상태 이벤트를 직접 등록합니다.")]
-    [SerializeField] private bool useInspectorEvents;
+    [SerializeField] private bool useInspectorEvents = true;
 
     [Space]
     [Header("On 상태로 전환될 때 한 번 호출됩니다.")]
