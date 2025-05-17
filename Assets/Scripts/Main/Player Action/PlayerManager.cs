@@ -22,7 +22,20 @@ using UnityEngine;
 [RequireComponent(typeof(GroundCheck))]
 public class PlayerManager : MonoBehaviour
 {
+    #region Inspector Properties
+    [Header("Audio Clips")]
+    [SerializeField] private AudioClip jumpAudio;
+    [SerializeField] private AudioClip landAudio;
+    [SerializeField] private AudioClip wireShootAudio;
+    [SerializeField] private AudioClip boostAudio;
+    [SerializeField] private AudioClip retractorAudio;
+    [SerializeField] private AudioClip balloonAudio;
+    [SerializeField] private AudioClip lightningShockAudio;
+    #endregion
+
+
     #region Public Variables
+    [Header("Public Variables")]
     /// <summary>
     /// 싱글톤 인스턴스로, 다른 스크립트에서 PlayerManager에 쉽게 접근할 수 있게 합니다.
     /// </summary>
@@ -67,6 +80,11 @@ public class PlayerManager : MonoBehaviour
     public Collider curGroundCollider;
 
     /// <summary>
+    /// 플레이어가 움직이는 지면에 닿아있는지 여부를 나타냅니다.
+    /// </summary>
+    public bool isGroundMoving;
+
+    /// <summary>
     /// 플레이어가 현재 움직이고 있는지 여부를 나타냅니다.
     /// </summary>
     /// <remarks>
@@ -97,6 +115,12 @@ public class PlayerManager : MonoBehaviour
     /// 플레이어가 와이어를 발사하여 사용 중인지 여부를 나타냅니다.
     /// </summary>
     public bool onWire;
+
+    /// <summary>
+    /// 플레이어가 와이어를 발사하여 연결된 대상의 콜라이더입니다.
+    /// 와이어를 발사하지 않은 경우 null입니다.
+    /// </summary>
+    public Collider onWireCollider;
 
     /// <summary>
     /// 플레이어가 글라이딩(공중 부양) 중인지 여부를 나타냅니다.
@@ -172,36 +196,72 @@ public class PlayerManager : MonoBehaviour
     /// 스킬 해금 상태 확인과 스킬 관련 기능에 접근하는 데 사용됩니다.
     /// </remarks>
     [HideInInspector] public PlayerSkillController skill;
+
+    /// <summary>
+    /// 플레이어의 와이어 컨트롤러 참조입니다.
+    /// </summary>
+    /// <remarks>
+    /// EndShoot() 등을 호출합니다.
+    /// </remarks>
+    [HideInInspector] public PlayerWireController playerWire;
+
+    /// <summary>
+    /// 플레이어의 움직임 컨트롤러 참조입니다.
+    /// </summary>
+    [HideInInspector] private PlayerMovementController playerMovement;
     #endregion
 
 
-    private PlayerMovementController playerMovement;
-    private ModeConverterController modeConverter;
+    #region Private Variables
     private Rigidbody rb;
+    private GameObject hamsterLightningShockParticle;
+    private GameObject ballLightningShockParticle;
 
-    private Action modeConvert;
+
+
+    private Action modeConvert; // 
     private Vector3 accumulatedMovement;
+    private float lightningShockCooltime = 3f;
+    private bool canLightningShock;
 
 
+
+    #endregion
+
+
+
+    #region Unity Lifecycle Methods
     private void Awake()
     {
         // 싱글톤 패턴 구현
         if (instance == null) instance = this;
         else Destroy(gameObject);  
 
+        InitializeComponents();
+
+        // 변수 초기화
+        hamsterLightningShockParticle?.SetActive(false);
+        ballLightningShockParticle?.SetActive(false);
+        canLightningShock = true;
+
+        // 씬 리셋 시 구독자 전부 제거
+        modeConvert = null;
+    }
+
+    private void InitializeComponents()
+    {
         // 필요한 컴포넌트 참조 가져오기
         skill = GetComponent<PlayerSkillController>();
         playerMovement = GetComponent<PlayerMovementController>();
-        modeConverter = GetComponent<ModeConverterController>();
+        playerWire = GetComponent<PlayerWireController>();
         rb = GetComponent<Rigidbody>();
 
-        // 씬 리셋 시 구독자 전부 제거
-        modeConvert = null; 
-    }
-
-    public void AddMovement(Vector3 move)
-    {
-        accumulatedMovement += move;
+        hamsterLightningShockParticle
+            = transform.Find("Hamster Normal")
+                       .Find("Lightning Particle")?.gameObject;
+        ballLightningShockParticle 
+            = transform.Find("Hamster Ball")
+                       .Find("Lightning Particle")?.gameObject;
     }
 
     private void Update()
@@ -216,6 +276,17 @@ public class PlayerManager : MonoBehaviour
             rb.MovePosition(rb.position + accumulatedMovement);
             accumulatedMovement = Vector3.zero;
         }
+    }
+    #endregion
+
+
+    /// <summary>
+    /// rb.MovePosition에서 플레이어를 이동시킬 벡터에 move 벡터를 더합니다.
+    /// </summary>
+    /// <param name="move">이동시킬 벡터</param>
+    public void AddMovement(Vector3 move)
+    {
+        accumulatedMovement += move;
     }
 
     /// <summary>
@@ -333,5 +404,45 @@ public class PlayerManager : MonoBehaviour
     {
         if (isBall) ModeConvert();
     }
+    #endregion
+
+
+
+    #region Object Reaction
+    /// <summary>
+    /// 파란 전기 레이저에 플레이어가 맞았을 때 호출
+    /// </summary>
+    public void LightningShock()
+    {
+        if (!canLightningShock)
+            return;
+
+        isInputLock = true;
+        canLightningShock = false;
+        playerWire.EndShoot();
+
+        if (isBall) ballLightningShockParticle.SetActive(true);
+        else hamsterLightningShockParticle.SetActive(true);
+
+        GameManager.PlaySfx(lightningShockAudio);
+
+        Invoke(nameof(LightningShockEndAfterFewSeconds), 3f);
+    }
+    // inputLock 풀림, 전기효과 풀림
+    private void LightningShockEndAfterFewSeconds()
+    {
+        isInputLock = false;
+        if (isBall) ballLightningShockParticle.SetActive(false);
+        else hamsterLightningShockParticle.SetActive(false);
+
+        Invoke(nameof(CanLightningShockAfterFewSeconds), 0.4f);
+    }
+    // 다시 전기에 맞을 수 있음
+    private void CanLightningShockAfterFewSeconds()
+    {
+        canLightningShock = true;
+    }
+
+
     #endregion
 }

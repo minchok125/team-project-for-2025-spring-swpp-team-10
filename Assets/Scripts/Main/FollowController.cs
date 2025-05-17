@@ -27,6 +27,7 @@ public class FollowController : MonoBehaviour
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(FollowController))]
+[CanEditMultipleObjects]
 public class FollowControllerEditor : Editor
 {
     public override void OnInspectorGUI()

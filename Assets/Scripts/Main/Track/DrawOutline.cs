@@ -25,6 +25,9 @@ public class DrawOutline : MonoBehaviour
 
     void Start()
     {
+        if (GetComponent<Outline>() != null)
+            return;
+
         // 이 오브젝트의 렌더러가 켜져있다면 리스트에 넣음
         Renderer rd = GetComponent<Renderer>();
         if (rd != null && rd.enabled) linkedOutlineRenderers.Add(rd);
@@ -46,6 +49,9 @@ public class DrawOutline : MonoBehaviour
 
     void Update()
     {
+        if (GetComponent<Outline>() != null)
+            return;
+            
         if (num < 2) 
         {
             num++;
