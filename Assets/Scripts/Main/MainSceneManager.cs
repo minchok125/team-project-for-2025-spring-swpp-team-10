@@ -5,8 +5,7 @@ public class MainSceneManager : MonoBehaviour
 {
     public static MainSceneManager Instance { get; private set; }
     
-    [Header("References")]
-    [SerializeField] private UIManager uiManager;
+    private UIManager uiManager;
     
     private enum GameStates { Playing, Paused, BadEnding, GoodEnding };
     private GameStates _gameState;
@@ -19,6 +18,7 @@ public class MainSceneManager : MonoBehaviour
             Instance = this;
             InitMainSceneManager();
         }
+        uiManager = GetComponent<UIManager>();
     }
 
     private void InitMainSceneManager() // 게임 처음 시작 or 게임 재시작 시 초기화 되어야 하는 내용
@@ -44,16 +44,24 @@ public class MainSceneManager : MonoBehaviour
         
         // Playing일 때만 타이머 업데이트
         if (_gameState == GameStates.Playing) UpdateTimer();
-        
+
         // ALT 키로 마우스 잠금 해제
-        if (Input.GetKey(KeyCode.LeftAlt))
+        if (_gameState == GameStates.Playing)
         {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+            if (Input.GetKeyDown(KeyCode.LeftAlt))
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
+            if (Input.GetKeyUp(KeyCode.LeftAlt))
+            {
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
         }
         
         // Ending 잘 되는지 Debugging 용
-        if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
+            if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
     }
 
     public void PauseGame()

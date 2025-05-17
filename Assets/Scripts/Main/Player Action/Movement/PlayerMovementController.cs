@@ -162,8 +162,6 @@ public class PlayerMovementController : MonoBehaviour
         // 이동 처리
         UpdateMovement();
 
-        
-
         // 추가 물리 효과 적용
         AddExtraForce();
 
@@ -299,31 +297,34 @@ public class PlayerMovementController : MonoBehaviour
         jumped = false;
         bool isInputLock = PlayerManager.instance.isInputLock;
 
+        if (!playerMgr.isBall && playerMgr.onWire)
+            return;
+
         // 점프할 수 있는 지면에 닿아있거나 슬라이드/접착 벽에 있을 때 점프 가능
-        if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall) 
-        {
-            // 점프 후 충분한 시간이 지났는지 확인 (연속 점프 방지)
-            if (Time.time - jumpStartTime > 0.2f) 
+            if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall)
             {
-                jumpCount = 0;
+                // 점프 후 충분한 시간이 지났는지 확인 (연속 점프 방지)
+                if (Time.time - jumpStartTime > 0.2f)
+                {
+                    jumpCount = 0;
+                }
+
+                // 점프 입력이 있으면 점프 실행
+                if (Input.GetKeyDown(KeyCode.Space) && !isInputLock)
+                {
+                    PerformJump();
+                    jumpStartTime = Time.time;
+                }
             }
-            
-            // 점프 입력이 있으면 점프 실행
-            if (Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
+            // 공중에서 점프 (더블 점프)
+            else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !isInputLock)
             {
-                PerformJump();
-                jumpStartTime = Time.time;
+                if (playerMgr.skill.HasDoubleJump() && jumpCount < 2)
+                {
+                    PerformJump();
+                    jumpCount = 2;
+                }
             }
-        }
-        // 공중에서 점프 (더블 점프)
-        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
-        {
-            if (playerMgr.skill.HasDoubleJump() && jumpCount < 2) 
-            {
-                PerformJump();
-                jumpCount = 2;
-            }
-        }
 
         // 점프 상태 업데이트 (지면에 닿았을 때)
         if (playerMgr.isJumping && playerMgr.isGround && Time.time - jumpStartTime > 0.2f) 
@@ -442,11 +443,16 @@ public class PlayerMovementController : MonoBehaviour
     private void AddExtraForce()
     {
         // 글라이딩 전용 물리 효과
-        if (playerMgr.isGliding) 
+        if (playerMgr.isGliding)
         {
             ApplyGlidingPhysics();
         }
+        if (!playerMgr.isBall && playerMgr.onWire)
+        {
+            HamsterWireEnhanceGravity();
+        }
     }
+    private float enhanceGravityRate = 20;
 
     /// <summary>
     /// 활공 물리 적용
@@ -455,7 +461,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         Vector3 antiGravity;
         // 선풍기 안에 있는지 여부에 따라 다른 물리 효과 적용
-        if (!playerMgr.isInsideFan) 
+        if (!playerMgr.isInsideFan)
         {
             // 일반 활공 - 중력 감소
             antiGravity = -0.8f * rb.mass * Physics.gravity;
@@ -463,14 +469,14 @@ public class PlayerMovementController : MonoBehaviour
             // 상승 중일 때는 중력 감소 효과 줄임
             if (rb.velocity.y > 0)
                 antiGravity = 0.4f * rb.mass * Physics.gravity;
-            
+
             // 최대 하강 속도 제한
             if (rb.velocity.y > -7)
                 rb.AddForce(antiGravity);
-            else 
+            else
                 rb.velocity = new Vector3(rb.velocity.x, -7, rb.velocity.z);
         }
-        else 
+        else
         {
             // 선풍기 안에서 활공 - 중력 상쇄
             antiGravity = -1f * rb.mass * Physics.gravity;
@@ -481,8 +487,15 @@ public class PlayerMovementController : MonoBehaviour
             rb.AddForce(antiGravity);
         }
     }
+
+    private void HamsterWireEnhanceGravity()
+    {
+        rb.AddForce(Physics.gravity * enhanceGravityRate);
+        if (rb.velocity.y > 0)
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+    }
     #endregion
-    
+
 
     #region Boost
     /// <summary>
@@ -499,7 +512,7 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         // 즉발성 부스트 활성화
-        if (Input.GetKeyDown(KeyCode.LeftShift) && currentBoostEnergy >= burstBoostEnergyUsage) 
+        if (Input.GetKeyDown(KeyCode.LeftShift) && currentBoostEnergy >= burstBoostEnergyUsage)
         {
             playerMgr.isBoosting = true;
             ball.BurstBoost();
