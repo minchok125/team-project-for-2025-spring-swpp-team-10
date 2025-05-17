@@ -1,136 +1,97 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
+using Hampossible.Utils;
+
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class SwitchController : MonoBehaviour
 {
+    [Header("--- 설정 ---")]
+    [Tooltip("시작 시 스위치가 눌린 상태인지 여부")]
+    [SerializeField] private bool startsPressed = false;
+    [Tooltip("스위치 상태 이벤트를 직접 등록합니다.")]
+    [SerializeField] private bool useInspectorEvents = true;
+
+    [Space]
+    [Header("On 상태로 전환될 때 한 번 호출됩니다.")]
     /// <summary>
     /// On 상태로 전환될 때 한 번 호출됩니다.
     /// </summary>
-    public Action OnSwitchOnStart;
-
+    public UnityEvent OnSwitchOnStart;
+    [Header("On 상태인 동안 매 프레임마다 호출됩니다.")]
     /// <summary>
     /// On 상태인 동안 매 프레임마다 호출됩니다.
     /// </summary>
-    public Action OnSwitchOnStay;
-
+    public UnityEvent OnSwitchOnStay;
+    [Header("On 상태가 끝날 때 한 번 호출됩니다.")]
     /// <summary>
     /// On 상태가 끝날 때 한 번 호출됩니다.
     /// </summary>
-    public Action OnSwitchOnEnd;
-
+    public UnityEvent OnSwitchOnEnd;
+    [Header("Off 상태로 전환될 때 한 번 호출됩니다.")]
     /// <summary>
     /// Off 상태로 전환될 때 한 번 호출됩니다.
     /// </summary>
-    public Action OnSwitchOffStart;
-
+    public UnityEvent OnSwitchOffStart;
+    [Header("Off 상태인 동안 매 프레임마다 호출됩니다.")]
     /// <summary>
     /// Off 상태인 동안 매 프레임마다 호출됩니다.
     /// </summary>
-    public Action OnSwitchOffStay;
-
+    public UnityEvent OnSwitchOffStay;
+    [Header("Off 상태가 끝날 때 한 번 호출됩니다.")]
     /// <summary>
     /// Off 상태가 끝날 때 한 번 호출됩니다.
     /// </summary>
-    public Action OnSwitchOffEnd;
+    public UnityEvent OnSwitchOffEnd;
 
 
-
-    [Header("--- 연결 오브젝트 ---")]
-    [Tooltip("처음 보이는 '안 눌린' 상태의 시각적 오브젝트")]
-    [SerializeField] private GameObject unpressedVisualObject;
-
-    [Tooltip("눌렸을 때 보일 '눌린' 상태의 시각적 오브젝트")]
-    [SerializeField] private GameObject pressedVisualObject;
-
-    [Tooltip("'안 눌린' 상태를 누르는 영역을 감지하는 트리거 오브젝트")]
-    [SerializeField] private GameObject triggerAreaA; // 안 눌린 상태(A)를 누르는 트리거
-
-    [Tooltip("'눌린' 상태를 누르는 영역을 감지하는 트리거 오브젝트")]
-    [SerializeField] private GameObject triggerAreaB; // 눌린 상태(B)를 누르는 트리거 (다른 쪽이 높아졌을 때)
-
-
-    [Header("--- 설정 ---")]
-    [Tooltip("스위치를 작동시키는 데 필요한 최소 충돌 속도(충격량)")]
-    public float forceThreshold = 5f;
-
-    [Tooltip("시작 시 스위치가 눌린 상태인지 여부")]
-    public bool startsPressed = false;
-
-    // --- 내부 상태 변수 ---
-    private bool isPressed; // 현재 스위치가 눌린 상태인지 (true = pressedVisual 활성)
+    // --- 내부 상태 변수 --- 
+    private bool isSwitchOn; // 현재 스위치가 눌린 상태인지
 
     void Start()
     {
-        isPressed = startsPressed;
-        UpdateVisuals(); // 초기 시각적 상태 설정
+        isSwitchOn = startsPressed;
     }
-
 
     void Update()
     {
         // 스위치 이벤트 함수 호출
-        if (isPressed) OnSwitchOnStay?.Invoke();
+        if (isSwitchOn) OnSwitchOnStay?.Invoke();
         else OnSwitchOffStay?.Invoke();
     }
 
-
     /// <summary>
-    /// 트리거 영역으로부터 호출되어 스위치 상태 전환을 시도하는 함수.
+    /// 스위치를 On으로 전환합니다.
     /// </summary>
-    /// <param name="triggerObject">호출한 트리거 게임 오브젝트</param>
-    /// <param name="impactSpeed">감지된 충돌 속도</param>
-    public void AttemptToggle(GameObject triggerObject, float impactSpeed)
+    public void TurnSwitchOn()
     {
-        Debug.Log($"{gameObject.name}: '{triggerObject.name}' 에서 충돌 감지됨. 속도: {impactSpeed:F2}");
-
-        // 힘이 충분한지 먼저 확인
-        if (impactSpeed < forceThreshold)
+        if (!isSwitchOn)
         {
-            Debug.Log("힘이 부족하여 스위치 작동 안 함.");
-            return;
-        }
-
-        // 현재 상태에 따라 올바른 트리거가 눌렸는지 확인
-        bool shouldToggle = false;
-        if (!isPressed && triggerObject == triggerAreaA) // 현재 '안 눌린' 상태이고, A 트리거가 눌림 (높은 쪽)
-        {
-            Debug.Log("안 눌린 상태에서 올바른 트리거(A) 눌림 확인.");
-            shouldToggle = true;
-        }
-        else if (isPressed && triggerObject == triggerAreaB) // 현재 '눌린' 상태이고, B 트리거가 눌림 (반대쪽 높은 쪽)
-        {
-            Debug.Log("눌린 상태에서 올바른 트리거(B) 눌림 확인.");
-            shouldToggle = true;
-        }
-        else
-        {
-             Debug.Log("잘못된 트리거 또는 상태 불일치.");
-        }
-
-
-        // 상태 전환 조건이 충족되면 상태 변경 및 시각 업데이트
-        if (shouldToggle)
-        {
-            isPressed = !isPressed; // 상태 반전
-            UpdateVisuals();
-            InvokeSwitchStateEvents();
-            Debug.Log($"스위치 상태 변경! 현재 상태: {(isPressed ? "눌림" : "안 눌림")}");
+            ToggleSwitch();
         }
     }
 
     /// <summary>
-    /// 현재 isPressed 상태에 맞춰 시각적 오브젝트의 활성화/비활성화를 업데이트합니다.
+    /// 스위치를 Off로 전환합니다.
     /// </summary>
-    void UpdateVisuals()
+    public void TurnSwitchOff()
     {
-        if (unpressedVisualObject != null)
+        if (isSwitchOn)
         {
-            unpressedVisualObject.SetActive(!isPressed);
+            ToggleSwitch();
         }
-        if (pressedVisualObject != null)
-        {
-            pressedVisualObject.SetActive(isPressed);
-        }
+    }
+
+    // 스위치의 상태를 토글합니다.
+    public void ToggleSwitch()
+    {
+        isSwitchOn = !isSwitchOn;
+        InvokeSwitchStateEvents();
+        HLogger.General.Info($"Switch Toggled to {(isSwitchOn ? "On" : "Off")}", this);
     }
 
     /// <summary>
@@ -138,15 +99,69 @@ public class SwitchController : MonoBehaviour
     /// </summary>
     void InvokeSwitchStateEvents()
     {
-        if (isPressed) 
+        if (isSwitchOn)
         {
             OnSwitchOffEnd?.Invoke();
             OnSwitchOnStart?.Invoke();
         }
-        else 
+        else
         {
             OnSwitchOnEnd?.Invoke();
             OnSwitchOffStart?.Invoke();
         }
     }
 }
+
+
+#region Editor
+#if UNITY_EDITOR
+[CustomEditor(typeof(SwitchController))]
+[CanEditMultipleObjects]
+class SwitchControllerEditor : Editor
+{
+    SwitchController _target;
+
+    SerializedProperty startsPressedProp;
+    SerializedProperty useInspectorEventsProp;
+    SerializedProperty OnSwitchOnStartProp;
+    SerializedProperty OnSwitchOnStayProp;
+    SerializedProperty OnSwitchOnEndProp;
+    SerializedProperty OnSwitchOffStartProp;
+    SerializedProperty OnSwitchOffStayProp;
+    SerializedProperty OnSwitchOffEndProp;
+
+    private void OnEnable()
+    {
+        startsPressedProp = serializedObject.FindProperty("startsPressed");
+        useInspectorEventsProp = serializedObject.FindProperty("useInspectorEvents");
+        OnSwitchOnStartProp = serializedObject.FindProperty("OnSwitchOnStart");
+        OnSwitchOnStayProp = serializedObject.FindProperty("OnSwitchOnStay");
+        OnSwitchOnEndProp = serializedObject.FindProperty("OnSwitchOnEnd");
+        OnSwitchOffStartProp = serializedObject.FindProperty("OnSwitchOffStart");
+        OnSwitchOffStayProp = serializedObject.FindProperty("OnSwitchOffStay");
+        OnSwitchOffEndProp = serializedObject.FindProperty("OnSwitchOffEnd");
+    }
+
+    public override void OnInspectorGUI()
+    {
+        serializedObject.Update();
+
+        EditorGUILayout.PropertyField(startsPressedProp);
+        EditorGUILayout.PropertyField(useInspectorEventsProp);
+
+        if (useInspectorEventsProp.boolValue)
+        {
+            EditorGUILayout.PropertyField(OnSwitchOnStartProp);
+            EditorGUILayout.PropertyField(OnSwitchOnStayProp);
+            EditorGUILayout.PropertyField(OnSwitchOnEndProp);
+            EditorGUILayout.PropertyField(OnSwitchOffStartProp);
+            EditorGUILayout.PropertyField(OnSwitchOffStayProp);
+            EditorGUILayout.PropertyField(OnSwitchOffEndProp);
+        }
+
+        serializedObject.ApplyModifiedProperties();
+    }
+
+}
+#endif
+#endregion
