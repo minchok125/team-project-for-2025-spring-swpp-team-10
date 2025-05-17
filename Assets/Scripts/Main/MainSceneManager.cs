@@ -48,12 +48,12 @@ public class MainSceneManager : MonoBehaviour
         // ALT 키로 마우스 잠금 해제
         if (_gameState == GameStates.Playing)
         {
-            if (Input.GetKeyDown(KeyCode.LeftAlt))
+            if (Input.GetKey(KeyCode.LeftAlt))
             {
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
             }
-            if (Input.GetKeyUp(KeyCode.LeftAlt))
+            else
             {
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
