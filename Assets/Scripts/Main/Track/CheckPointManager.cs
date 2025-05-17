@@ -46,7 +46,7 @@ public class CheckpointManager : MonoBehaviour
         _hasCheckpointBeenSet = true;
         HLogger.General.Info($"새로운 체크포인트 위치가 ({newPosition})로 설정되었습니다.");
     }
-
+    
     public Vector3 GetLastCheckpointPosition()
     {
         if (!_hasCheckpointBeenSet)
