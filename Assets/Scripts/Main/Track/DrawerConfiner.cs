@@ -45,8 +45,10 @@ public class DrawerConfiner : MonoBehaviour
 
             drawersRigid[i].mass = 0.8f;
             drawersRigid[i].isKinematic = true;
-            drawersRigid[i].constraints = RigidbodyConstraints.FreezeRotationX
-                | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+            drawersRigid[i].constraints = RigidbodyConstraints.FreezePositionY
+                                        | RigidbodyConstraints.FreezeRotationX
+                                        | RigidbodyConstraints.FreezeRotationY
+                                        | RigidbodyConstraints.FreezeRotationZ;
         }
     }
 
