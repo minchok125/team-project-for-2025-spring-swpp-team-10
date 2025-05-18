@@ -17,7 +17,7 @@ public class GroundCheck : MonoBehaviour
         detectionMask = ~LayerMask.GetMask("Player");
     }
 
-    
+
     void Update()
     {
 
@@ -28,7 +28,7 @@ public class GroundCheck : MonoBehaviour
 
         // 지면 위에 있을 때 지면과 플레이어 바닥 사이의 거리 오프셋
         float groundDist = PlayerManager.instance.isBall ? 0.85f : 0.05f;
-        
+
         // 플레이어의 Position에서 플레이어 꼭대기 위치까지의 y축 거리
         float yOffset = PlayerManager.instance.isBall ? 1f : 1.8f;
 
@@ -37,11 +37,11 @@ public class GroundCheck : MonoBehaviour
 
         // 플레이어 꼭대기에서 아래 방향으로 검사. 
         // 플레이어 바닥 부분에서 distToGround 거리 내에 충돌이 있으면 지면에 닿은 것으로 판단
-        if (Physics.Raycast(transform.position + posOffset, 
-                            -Vector3.up, 
-                            out RaycastHit hit, 
-                            distToGround + groundDist + yOffset, 
-                            detectionMask, 
+        if (Physics.Raycast(transform.position + posOffset,
+                            -Vector3.up,
+                            out RaycastHit hit,
+                            distToGround + groundDist + yOffset,
+                            detectionMask,
                             QueryTriggerInteraction.Ignore))
         {
             PlayerManager.instance.isGround = true;
@@ -56,5 +56,22 @@ public class GroundCheck : MonoBehaviour
             PlayerManager.instance.canJump = false;
             PlayerManager.instance.curGroundCollider = null;
         }
+    }
+
+    /// <summary>
+    /// 지정된 거리 안에 지면이 있는지 검사합니다.
+    /// </summary>
+    /// <param name="rayDist">해당 거리 안에 지면이 있는지 검사합니다.</param>
+    /// <returns>아래로 rayDist 거리 안에 지면이 있다면 true</returns>
+    public bool CustomGroundCheck(float rayDist)
+    {
+        float groundDist = PlayerManager.instance.isBall ? 0.85f : 0.05f;
+        float yOffset = PlayerManager.instance.isBall ? 1f : 1.8f;
+        Vector3 posOffset = Vector3.up * yOffset;
+        return Physics.Raycast(transform.position + posOffset,
+                               -Vector3.up,
+                               rayDist + groundDist + yOffset,
+                               detectionMask,
+                               QueryTriggerInteraction.Ignore);
     }
 }
