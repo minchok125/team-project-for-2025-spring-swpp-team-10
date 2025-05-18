@@ -545,12 +545,12 @@ public class PlayerWireController : MonoBehaviour
 
         predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
 
-        if (raycastHit.point == Vector3.zero && sphereCastHit.point == Vector3.zero)
-            Debug.Log("NOT FOUND");
-        else if (raycastHit.point == Vector3.zero && sphereCastHit.point != Vector3.zero)
-            Debug.Log("SPHERE FOUND");
-        if (raycastHit.point != Vector3.zero)
-            Debug.Log("RAY FOUND");
+        // if (raycastHit.point == Vector3.zero && sphereCastHit.point == Vector3.zero)
+        //     Debug.Log("NOT FOUND");
+        // else if (raycastHit.point == Vector3.zero && sphereCastHit.point != Vector3.zero)
+        //     Debug.Log("SPHERE FOUND");
+        // if (raycastHit.point != Vector3.zero)
+        //     Debug.Log("RAY FOUND");
 
         // if (realHitPoint != Vector3.zero)
         //     ValidatePredictionTarget(predictionHit);
@@ -596,7 +596,6 @@ public class PlayerWireController : MonoBehaviour
         if (!canGrab)
         {
             predictionPoint.gameObject.SetActive(false);
-            Debug.Log("22");
             hit.point = Vector3.zero;
         }
 
