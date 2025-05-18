@@ -26,6 +26,7 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     private Vector3 moveDir;
     private Vector3 prevFixedPosition;
     private const float ROTATE_SPEED = 15f;
+    private const float DRAG_SPEED = 4f;
     
 
     private void Start()
@@ -44,7 +45,6 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     public void OnUpdate()
     {
         UpdatePhysicMaterial();
-        BallDragSetting();
         moveDir = PlayerManager.instance.moveDir;
         Rotate();
     }
@@ -67,17 +67,6 @@ public class HamsterMovementController : MonoBehaviour, IMovement
             col.material = hamsterGround;
         else
             col.material = hamsterJump;
-    }
-
-    /// <summary>
-    /// 공중에서 빠르게 감속하도록 합니다.
-    /// </summary>
-    private void BallDragSetting()
-    {
-        if (PlayerManager.instance.isGround)
-            rb.drag = 1f;
-        else
-            rb.drag = 2.5f;
     }
 
 
@@ -133,8 +122,16 @@ public class HamsterMovementController : MonoBehaviour, IMovement
             rb.velocity = new Vector3(moveDir.x * maxVelocity, rb.velocity.y, moveDir.z * maxVelocity);
         }
 
+        // 공중에서 입력이 없는 경우 빠르게 감속
+        if (moveDir == Vector3.zero && !PlayerManager.instance.isGround)
+        {
+            float velX = rb.velocity.x * (1 - DRAG_SPEED * Time.fixedDeltaTime);
+            float velZ = rb.velocity.z * (1 - DRAG_SPEED * Time.fixedDeltaTime);
+            rb.velocity = new Vector3(velX, rb.velocity.y, velZ);
+        }
+
         // 움직임 여부 반환 (의미 있는 속도로 이동 중인지)
-        return moveDir != Vector3.zero && rb.velocity.sqrMagnitude > 0.1f;
+            return moveDir != Vector3.zero && rb.velocity.sqrMagnitude > 0.1f;
     }
 
     /// <summary>

@@ -255,6 +255,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &151154555
 GameObject:
@@ -894,6 +895,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &368999980
 GameObject:
@@ -1008,6 +1010,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &401157489
 GameObject:
@@ -1158,6 +1161,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!65 &401157494
 BoxCollider:
@@ -1290,6 +1294,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 1
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!54 &405960293
 Rigidbody:
@@ -1541,6 +1546,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!65 &458790421
 BoxCollider:
@@ -1806,42 +1812,42 @@ PrefabInstance:
     - target: {fileID: 755814633127866190, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 755814633127866190, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 755814633127866190, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 325
       objectReference: {fileID: 0}
     - target: {fileID: 755814633127866190, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -310
       objectReference: {fileID: 0}
     - target: {fileID: 755814633214515185, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 755814633214515185, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 755814633214515185, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 325
       objectReference: {fileID: 0}
     - target: {fileID: 755814633214515185, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -410
       objectReference: {fileID: 0}
     - target: {fileID: 755814633782560131, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
@@ -1873,25 +1879,30 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 755814633979935817, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 755814634194327493, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 755814634194327493, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 755814634194327493, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 325
       objectReference: {fileID: 0}
     - target: {fileID: 755814634194327493, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -510
       objectReference: {fileID: 0}
     - target: {fileID: 755814634509938599, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
@@ -1902,6 +1913,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 755814634663763407, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
+        type: 3}
+      propertyPath: distToGround
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 755814634816106587, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
@@ -1936,22 +1952,22 @@ PrefabInstance:
     - target: {fileID: 755814634903968991, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 755814634903968991, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 755814634903968991, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 325
       objectReference: {fileID: 0}
     - target: {fileID: 755814634903968991, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -610
       objectReference: {fileID: 0}
     - target: {fileID: 755814634927732177, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
@@ -2051,22 +2067,22 @@ PrefabInstance:
     - target: {fileID: 755814635145451422, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 755814635145451422, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 755814635145451422, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 325
       objectReference: {fileID: 0}
     - target: {fileID: 755814635145451422, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -150
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9952f8cd79e2ef048bd546e6bd0cba5b, type: 3}
@@ -2279,6 +2295,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &1135531455
 GameObject:
@@ -2467,6 +2484,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 1
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!54 &1146450377
 Rigidbody:
@@ -2600,6 +2618,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 1
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!54 &1314152334
 Rigidbody:
@@ -2830,6 +2849,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 1
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!54 &1385723386
 Rigidbody:
@@ -3120,6 +3140,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &1498222682
 GameObject:
@@ -3173,6 +3194,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 1
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!54 &1498222685
 Rigidbody:
@@ -3443,6 +3465,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!65 &1569802073
 BoxCollider:
@@ -3724,6 +3747,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!65 &1674434671
 BoxCollider:
@@ -4159,6 +4183,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!65 &1969395254
 BoxCollider:

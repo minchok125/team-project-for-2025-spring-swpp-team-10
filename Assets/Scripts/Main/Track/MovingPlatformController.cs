@@ -67,8 +67,6 @@ public class MovingPlatformController : MonoBehaviour
         _fromValue = GetCurrentValue(seq.modifyType);
         _toValue = _fromValue;
         SetSeqTarget(ref _toValue, seq); // _fromValue에서 필요한 값만 조정
-
-        Debug.Log($"from:{_fromValue}, to:{_toValue}");
     }
 
     Vector3 GetCurrentValue(Type type)
