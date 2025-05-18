@@ -135,8 +135,6 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void HandlePlayerInput()
     {
-        if (PlayerManager.instance.isInputLock)
-            return;
         HandleMouseInput();
         HandleKeyboardInput();
     }
@@ -150,7 +148,7 @@ public class PlayerWireController : MonoBehaviour
         if (!EventSystem.current.IsPointerOverGameObject())
         {
             // 와이어 발사
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !PlayerManager.instance.isInputLock)
             {
                 WireShoot();
             }
@@ -163,7 +161,7 @@ public class PlayerWireController : MonoBehaviour
             // 빠르게 와이어 감기
             if (PlayerManager.instance.skill.HasRetractor())
             {
-                if (Input.GetMouseButtonDown(1))
+                if (Input.GetMouseButtonDown(1) && !PlayerManager.instance.isInputLock)
                 {
                     shortenStartTime = Time.time;
                     isShortenWireFast = true;
@@ -184,7 +182,7 @@ public class PlayerWireController : MonoBehaviour
         if (PlayerManager.instance.skill.HasRetractor())
         {
             // 와이어 감기
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.Q) && !PlayerManager.instance.isInputLock)
             {
                 shortenStartTime = Time.time;
                 isShortenWireSlow = true;
@@ -195,7 +193,7 @@ public class PlayerWireController : MonoBehaviour
             }
 
             //와이어 풀기
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E) && !PlayerManager.instance.isInputLock)
             {
                 extendStartTime = Time.time;
                 isExtendWire = true;
