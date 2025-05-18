@@ -18,14 +18,8 @@ public class GroundCheck : MonoBehaviour
     }
 
 
-    void Update()
+    void FixedUpdate()
     {
-
-        // if (Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hits, 100, detectionMask, QueryTriggerInteraction.Ignore)) 
-        // {
-        //     Debug.Log("Dist : " + hits.distance + ", Name :" + hits.collider.gameObject.name);
-        // }
-
         // 지면 위에 있을 때 지면과 플레이어 바닥 사이의 거리 오프셋
         float groundDist = PlayerManager.instance.isBall ? 0.85f : 0.05f;
 
