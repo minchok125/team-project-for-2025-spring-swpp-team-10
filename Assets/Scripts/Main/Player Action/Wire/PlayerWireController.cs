@@ -35,7 +35,7 @@ public class PlayerWireController : MonoBehaviour
     #region Prediction
     [Header("Prediction")]
     private RaycastHit predictionHit;
-    [SerializeField] private float predictionSphereCastRadius = 10f;
+    [SerializeField] private float predictionSphereCastRadius = 5f;
     [Tooltip("와이어가 설치 위치를 표시하는 점 오브젝트")] 
     [SerializeField] private Transform predictionPoint;
     #endregion
@@ -497,7 +497,7 @@ public class PlayerWireController : MonoBehaviour
         currentWire.ExtendWireEnd();
     }
     #endregion
-    
+
 
 
     #region Prediction Target Detect
@@ -522,75 +522,87 @@ public class PlayerWireController : MonoBehaviour
                         out raycastHit, grabDistance + camDist, WhatIsGrappable,
                         QueryTriggerInteraction.Ignore);
 
-        Vector3 realHitPoint;
+        Vector3 realHitPoint = Vector3.zero;
 
         // Option 1 - Direct Hit
-        if (raycastHit.point != Vector3.zero)
+        if (raycastHit.point != Vector3.zero && ValidatePredictionTarget(ref raycastHit))
             realHitPoint = raycastHit.point;
+
         // Option 2 - Indirect (predicted) Hit
-        else if (sphereCastHit.point != Vector3.zero)
+        if (realHitPoint == Vector3.zero && sphereCastHit.point != Vector3.zero && ValidatePredictionTarget(ref sphereCastHit))
             realHitPoint = sphereCastHit.point;
-        // Option 3 - Miss
-        else
-            realHitPoint = Vector3.zero;
+        // Option 3 - Miss : realHitPoint = Vector3.zero;
 
         // realHitPoint found
-        if (realHitPoint != Vector3.zero) 
+        if (realHitPoint != Vector3.zero)
         {
             predictionPoint.gameObject.SetActive(true);
             predictionPoint.position = realHitPoint;
         }
         // realHitPoint not found
-        else 
+        else
         {
             predictionPoint.gameObject.SetActive(false);
         }
 
         predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
 
-        if (realHitPoint != Vector3.zero)
-            ValidatePredictionTarget();
+        if (raycastHit.point == Vector3.zero && sphereCastHit.point == Vector3.zero)
+            Debug.Log("NOT FOUND");
+        else if (raycastHit.point == Vector3.zero && sphereCastHit.point != Vector3.zero)
+            Debug.Log("SPHERE FOUND");
+        if (raycastHit.point != Vector3.zero)
+            Debug.Log("RAY FOUND");
+
+        // if (realHitPoint != Vector3.zero)
+        //     ValidatePredictionTarget(predictionHit);
     }
 
     /// <summary>
     /// 타겟 유효성 검사 - 잡을 수 있는 오브젝트인지 확인. 잡을 수 없다면 not found 판정
     /// </summary>
-    private void ValidatePredictionTarget()
+    private bool ValidatePredictionTarget(ref RaycastHit hit)
     {
         bool canGrab = true;
 
-        ObjectProperties obj = predictionHit.collider.gameObject.GetComponent<ObjectProperties>();
+        if (hit.point == Vector3.zero)
+            canGrab = false;
+
+        ObjectProperties obj = hit.collider.gameObject.GetComponent<ObjectProperties>();
         // 유효성 검사 조건들
-        if (obj == null) 
+        if (obj == null)
         {
             canGrab = false;
         }
         // 이미 잡고 있는 오브젝트일 때
-        else if (predictionHit.collider.gameObject == grabObject) 
+        else if (hit.collider.gameObject == grabObject)
         {
             canGrab = false;
         }
         // 공, 햄스터 모드 둘 다 잡을 수 없는 오브젝트일 때
         else if (!obj.canGrabInBallMode && !obj.canGrabInHamsterMode)
-         {
+        {
             canGrab = false;
         }
         // 햄스터 그랩이 가능한 오브젝트이며, 햄스터 와이어는 없을 때
-        else if (obj.canGrabInHamsterMode && !PlayerManager.instance.skill.HasHamsterWire()) 
+        else if (obj.canGrabInHamsterMode && !PlayerManager.instance.skill.HasHamsterWire())
         {
             bool isBall = PlayerManager.instance.isBall;
             // 현재 공 모드라면, 공 모드에서 못 잡는 오브젝트여야 함. 또는 햄스터 모드여야 함.
-            if (isBall && !obj.canGrabInBallMode || !isBall) 
+            if (isBall && !obj.canGrabInBallMode || !isBall)
             {
                 canGrab = false;
             }
         }
 
-        if (!canGrab) 
+        if (!canGrab)
         {
             predictionPoint.gameObject.SetActive(false);
-            predictionHit.point = Vector3.zero;
+            Debug.Log("22");
+            hit.point = Vector3.zero;
         }
+
+        return canGrab;
     }
     #endregion
 
