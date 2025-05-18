@@ -248,22 +248,6 @@ public class PlayerManager : MonoBehaviour
         modeConvert = null;
     }
 
-    private void InitializeComponents()
-    {
-        // 필요한 컴포넌트 참조 가져오기
-        skill = GetComponent<PlayerSkillController>();
-        playerMovement = GetComponent<PlayerMovementController>();
-        playerWire = GetComponent<PlayerWireController>();
-        rb = GetComponent<Rigidbody>();
-
-        hamsterLightningShockParticle
-            = transform.Find("Hamster Normal")
-                       .Find("Lightning Particle")?.gameObject;
-        ballLightningShockParticle 
-            = transform.Find("Hamster Ball")
-                       .Find("Lightning Particle")?.gameObject;
-    }
-
     private void Update()
     {
         if (isInputLock) moveDir = Vector3.zero;
@@ -279,6 +263,23 @@ public class PlayerManager : MonoBehaviour
         }
     }
     #endregion
+
+
+    private void InitializeComponents()
+    {
+        // 필요한 컴포넌트 참조 가져오기
+        skill = GetComponent<PlayerSkillController>();
+        playerMovement = GetComponent<PlayerMovementController>();
+        playerWire = GetComponent<PlayerWireController>();
+        rb = GetComponent<Rigidbody>();
+
+        hamsterLightningShockParticle
+            = transform.Find("Hamster Normal")
+                       .Find("Lightning Particle")?.gameObject;
+        ballLightningShockParticle 
+            = transform.Find("Hamster Ball")
+                       .Find("Lightning Particle")?.gameObject;
+    }
 
 
     /// <summary>

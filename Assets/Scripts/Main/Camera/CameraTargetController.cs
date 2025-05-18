@@ -26,15 +26,15 @@ public class CameraTargetController : MonoBehaviour
 
     void LateUpdate()
     {
-        if (PlayerManager.instance.isGroundMoving)
+        //if (PlayerManager.instance.isGroundMoving)
             SetPos();
     }
 
-    void FixedUpdate()
-    {
-        if (!PlayerManager.instance.isGroundMoving)
-            SetPos();
-    }
+    // void FixedUpdate()
+    // {
+    //     if (!PlayerManager.instance.isGroundMoving)
+    //         SetPos();
+    // }
 
     void SetPos()
     {
