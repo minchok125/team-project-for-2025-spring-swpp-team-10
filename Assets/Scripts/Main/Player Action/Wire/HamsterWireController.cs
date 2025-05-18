@@ -27,7 +27,7 @@ public class HamsterWireController : MonoBehaviour, IWire
     [SerializeField] private float spring = 1000;
 
     [Tooltip("스프링 조인트의 감쇠 계수. 스프링 시스템의 진동 감소를 제어")]
-    [SerializeField] private float damper = 1;
+    [SerializeField] private float damper = 2;
 
     [Tooltip("스프링 조인트에 적용되는 질량 스케일. 질량 차이를 처리하는 방식에 영향")]
     [SerializeField] private float mass = 10;
@@ -73,10 +73,13 @@ public class HamsterWireController : MonoBehaviour, IWire
 
         grabRb = hit.collider.gameObject.GetComponent<Rigidbody>();
         grabTransform = hit.collider.transform;
-        speedFactor = 1f / (1f + grabRb.mass / 10f);
+        if (grabRb != null)
+            speedFactor = 1f / (1f + grabRb.mass / 10f);
+        else
+            speedFactor = 1f;
 
         // SpringJoint 세팅
-        sj = hit.collider.gameObject.AddComponent<SpringJoint>();
+            sj = hit.collider.gameObject.AddComponent<SpringJoint>();
         sj.connectedBody = GetComponent<Rigidbody>();
         sj.anchor = grabTransform.InverseTransformPoint(hit.point);
         sj.autoConfigureConnectedAnchor = false;
@@ -167,7 +170,11 @@ public class HamsterWireController : MonoBehaviour, IWire
         float distanceDelta = Vector3.Distance(transform.position, hitPoint.position) - (sj.maxDistance - 1f);
         distanceDelta = Mathf.Clamp(distanceDelta, 0, 1f);
 
-        float massSpeedScale = 1f / (1f + grabRb.mass / 10f);
+        float massSpeedScale;
+        if (grabRb != null)
+            massSpeedScale = 1f / (1f + grabRb.mass / 10f);
+        else
+            massSpeedScale = 1f;
 
         speedFactor = Mathf.Lerp(1f, massSpeedScale, distanceDelta);
     }
