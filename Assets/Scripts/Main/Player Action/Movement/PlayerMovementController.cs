@@ -19,7 +19,6 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private Animator animator;
     [Tooltip("빈 오브젝트 생성 후 연결해 주세요. 플랫폼 이동 동기화에 쓰입니다.")]
     [SerializeField] private Transform platformParent;
-
     // 현재 이동 방식을 결정하는 컴포넌트 (공 또는 햄스터)
     private IMovement curMovement;
 
@@ -38,6 +37,10 @@ public class PlayerMovementController : MonoBehaviour
 
     // 이전 플랫폼의 위치 (플랫폼 이동 시 플레이어도 같이 이동하기 위함)
     private Vector3 prevPlatformPos;
+
+    [Tooltip("햄스터 와이어를 사용 중에 땅에 붙어있게 하기 위한 로직에서,\n"
+           + "햄스터 아래에 땅이 있다고 판단하는 거리")]
+    [SerializeField] private float hamsterWireCheckGroundDistance = 5f;
     #endregion
 
 
@@ -107,8 +110,10 @@ public class PlayerMovementController : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI velocityTxt;
 
-    // 플레이어 매니저 참조
+
+    // 플레이어 스크립트 참조
     private PlayerManager playerMgr;
+    private GroundCheck groundCheck;
 
     #endregion
 
@@ -121,6 +126,7 @@ public class PlayerMovementController : MonoBehaviour
         curMovement = GetComponent<HamsterMovementController>();
         ball = GetComponent<BallMovementController>();
         playerMgr = GetComponent<PlayerManager>();
+        groundCheck = GetComponent<GroundCheck>();
 
         // 초기 상태 설정
         InitializeState();
@@ -154,7 +160,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         // 이동 처리
         UpdateMovement();
-
+        
         // 이동하는 플랫폼과 플레이어의 위치를 동기화
         SynchronizePlatform();
 
@@ -296,26 +302,29 @@ public class PlayerMovementController : MonoBehaviour
         jumped = false;
         bool isInputLock = PlayerManager.instance.isInputLock;
 
+        if (!playerMgr.isBall && playerMgr.onWire)
+            return;
+
         // 점프할 수 있는 지면에 닿아있거나 슬라이드/접착 벽에 있을 때 점프 가능
-        if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall)
+        if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall) 
         {
             // 점프 후 충분한 시간이 지났는지 확인 (연속 점프 방지)
-            if (Time.time - jumpStartTime > 0.2f)
+            if (Time.time - jumpStartTime > 0.2f) 
             {
                 jumpCount = 0;
             }
-
+            
             // 점프 입력이 있으면 점프 실행
-            if (Input.GetKeyDown(KeyCode.Space) && !isInputLock)
+            if (Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
             {
                 PerformJump();
                 jumpStartTime = Time.time;
             }
         }
         // 공중에서 점프 (더블 점프)
-        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !isInputLock)
+        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
         {
-            if (playerMgr.skill.HasDoubleJump() && jumpCount < 2)
+            if (playerMgr.skill.HasDoubleJump() && jumpCount < 2) 
             {
                 PerformJump();
                 jumpCount = 2;
@@ -443,7 +452,12 @@ public class PlayerMovementController : MonoBehaviour
         {
             ApplyGlidingPhysics();
         }
+        if (!playerMgr.isBall && playerMgr.onWire)
+        {
+            HamsterWireEnhanceGravity();
+        }
     }
+    private float enhanceGravityRate = 20;
 
     /// <summary>
     /// 활공 물리 적용
@@ -476,6 +490,19 @@ public class PlayerMovementController : MonoBehaviour
                 antiGravity = -0.95f * rb.mass * Physics.gravity;
 
             rb.AddForce(antiGravity);
+        }
+    }
+
+    private void HamsterWireEnhanceGravity()
+    {
+        if (!groundCheck.CustomGroundCheck(hamsterWireCheckGroundDistance))
+            return;
+
+        rb.AddForce(Physics.gravity * enhanceGravityRate);
+        if (rb.velocity.y > 0)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+            rb.MovePosition(rb.transform.position - Vector3.up * rb.velocity.y * Time.fixedDeltaTime);
         }
     }
     #endregion

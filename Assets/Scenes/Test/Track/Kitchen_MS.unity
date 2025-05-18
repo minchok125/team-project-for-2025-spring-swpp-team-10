@@ -143,6 +143,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &3703004
 MeshCollider:
@@ -829,7 +830,7 @@ PrefabInstance:
     - target: {fileID: 2015934406930253867, guid: 458271fb06e38ef4abfe60d080c61a94,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2015934406930253867, guid: 458271fb06e38ef4abfe60d080c61a94,
         type: 3}
@@ -1735,7 +1736,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 117065240}
-  m_LocalRotation: {x: 0.003568206, y: 0, z: 0, w: 0.9999937}
+  m_LocalRotation: {x: 0.0035681736, y: 0, z: 0, w: 0.9999936}
   m_LocalPosition: {x: 0, y: 0.00000086351304, z: 0.00000040477158}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2629,7 +2630,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 172334514}
-  m_LocalRotation: {x: -0.7019944, y: 0.0000000059281065, z: 0.0000000045131725, w: 0.7121825}
+  m_LocalRotation: {x: -0.7019945, y: 0.000000005928106, z: 0.000000004513173, w: 0.71218246}
   m_LocalPosition: {x: 0, y: 0.000000060626896, z: 0.0000004729673}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2995,6 +2996,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &201778006
 GameObject:
@@ -3120,6 +3122,7 @@ MonoBehaviour:
   canPlayerJump: 0
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!136 &203720050
 CapsuleCollider:
@@ -8009,6 +8012,7 @@ MonoBehaviour:
   canPlayerJump: 0
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 1
 --- !u!54 &211091700
 Rigidbody:
@@ -8182,6 +8186,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &218979911
 MeshCollider:
@@ -8576,6 +8581,22 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!54 &227345121
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 227345113}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 1
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &228999766
 GameObject:
   m_ObjectHideFlags: 0
@@ -9830,7 +9851,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 291368239}
-  m_LocalRotation: {x: -0.7019944, y: 0.0000000059281065, z: 0.0000000045131725, w: 0.7121825}
+  m_LocalRotation: {x: -0.7019944, y: 0.00000018979199, z: 0.00000014449199, w: 0.7121825}
   m_LocalPosition: {x: 0, y: 0.000000060626896, z: 0.0000004729673}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -10145,7 +10166,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 300195540}
-  m_LocalRotation: {x: 0.62039334, y: 0.00000017078969, z: -0.00000016379187, w: 0.78429085}
+  m_LocalRotation: {x: 0.62039334, y: 0.00000004824672, z: -0.00000004626989, w: 0.78429085}
   m_LocalPosition: {x: -3.5527137e-15, y: 3.5598926e-24, z: 3.7264275e-23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -11320,6 +11341,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &362963414
 MeshCollider:
@@ -11837,7 +11859,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 367918686}
-  m_LocalRotation: {x: -0.7343376, y: 0.0000000057119283, z: 0.0000000047838298, w: 0.6787844}
+  m_LocalRotation: {x: -0.7343376, y: 0, z: 0, w: 0.6787844}
   m_LocalPosition: {x: 0, y: 0.000000060626896, z: 0.0000004729673}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -12034,6 +12056,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &418361554
 GameObject:
@@ -12331,6 +12354,7 @@ MonoBehaviour:
   canPlayerJump: 0
   canGrabInBallMode: 0
   canGrabInHamsterMode: 1
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!54 &432155421
 Rigidbody:
@@ -12531,8 +12555,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 448984915}
-  m_LocalRotation: {x: -0.034946248, y: 0.0000000135844065, z: -0.000000026526264,
-    w: 0.99938923}
+  m_LocalRotation: {x: -0.03494628, y: 0, z: 0, w: 0.99938923}
   m_LocalPosition: {x: -7.1054274e-15, y: -1.6270625e-23, z: -1.0462152e-22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -20365,6 +20388,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &467138196
 GameObject:
@@ -21054,6 +21078,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &500308206
 MeshCollider:
@@ -21430,7 +21455,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 509347509}
-  m_LocalRotation: {x: 0.59752315, y: 0.00000017544104, z: -0.00000015879965, w: 0.8018517}
+  m_LocalRotation: {x: 0.59752315, y: 0.00000019188812, z: -0.00000017368666, w: 0.8018517}
   m_LocalPosition: {x: -3.5527137e-15, y: 3.5598926e-24, z: 3.7264275e-23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -21802,7 +21827,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 539479799}
-  m_LocalRotation: {x: -0.032758888, y: 0.00000004923653, z: -0.00000009666503, w: 0.9994633}
+  m_LocalRotation: {x: -0.032758787, y: 0.00000002705263, z: -0.00000005311186, w: 0.9994633}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -22569,7 +22594,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 574208478}
-  m_LocalRotation: {x: -0.014621776, y: 0, z: 0, w: 0.9998931}
+  m_LocalRotation: {x: -0.014621725, y: 0.000000018444634, z: -0.0000000378966, w: 0.9998932}
   m_LocalPosition: {x: 0, y: 0.00000086351304, z: 0.00000040477158}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -22797,6 +22822,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!65 &603218737
 BoxCollider:
@@ -25204,6 +25230,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!4 &734584796 stripped
 Transform:
@@ -25400,6 +25427,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!65 &743309141
 BoxCollider:
@@ -26668,7 +26696,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 831994094}
-  m_LocalRotation: {x: -0.034946248, y: 0.0000000135844065, z: -0.000000026526264,
+  m_LocalRotation: {x: -0.03494628, y: 0.0000000067922037, z: -0.000000013263131,
     w: 0.99938923}
   m_LocalPosition: {x: -7.1054274e-15, y: -1.6270625e-23, z: -1.0462152e-22}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -29124,7 +29152,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 929637536}
-  m_LocalRotation: {x: 0.57431215, y: 0.00000017991727, z: -0.00000015370968, w: 0.8186364}
+  m_LocalRotation: {x: 0.57431215, y: 0.000000039855074, z: -0.000000034049602, w: 0.8186364}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -29719,7 +29747,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 984374239}
-  m_LocalRotation: {x: 0.57431215, y: 0.00000017991727, z: -0.00000015370968, w: 0.8186364}
+  m_LocalRotation: {x: 0.57431227, y: 0.000000053964023, z: -0.000000046103388, w: 0.81863636}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -30231,7 +30259,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1044399823}
-  m_LocalRotation: {x: 0.4073222, y: -0.000000006257318, z: 0.0000000040444004, w: 0.9132846}
+  m_LocalRotation: {x: 0.4073222, y: -0.000000031906175, z: 0.000000020622469, w: 0.9132846}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -30583,6 +30611,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &1076029033 stripped
 GameObject:
@@ -30605,6 +30634,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &1076029038
 MeshCollider:
@@ -32258,6 +32288,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &1138312200
 MeshCollider:
@@ -33799,7 +33830,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1233514081}
-  m_LocalRotation: {x: 0.4386852, y: -0.0000000061136007, z: 0.000000004258531, w: 0.8986408}
+  m_LocalRotation: {x: 0.4386852, y: -0.000000049289408, z: 0.00000003433336, w: 0.8986409}
   m_LocalPosition: {x: -7.1054274e-15, y: -1.6270625e-23, z: -1.0462152e-22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -33877,7 +33908,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1237607618}
-  m_LocalRotation: {x: 0.62039334, y: 0.00000017078969, z: -0.00000016379187, w: 0.78429085}
+  m_LocalRotation: {x: 0.62039334, y: 0.000000091375725, z: -0.00000008763176, w: 0.78429085}
   m_LocalPosition: {x: -3.5527137e-15, y: 3.5598926e-24, z: 3.7264275e-23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -34118,7 +34149,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1262280076}
-  m_LocalRotation: {x: 0.59752315, y: 0.00000017544104, z: -0.00000015879965, w: 0.8018517}
+  m_LocalRotation: {x: 0.59752315, y: 0.00000006364389, z: -0.00000005760697, w: 0.8018517}
   m_LocalPosition: {x: -3.5527137e-15, y: 3.5598926e-24, z: 3.7264275e-23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -34196,7 +34227,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1262776062}
-  m_LocalRotation: {x: 0.003568206, y: 0, z: 0, w: 0.9999937}
+  m_LocalRotation: {x: 0.0035681736, y: 0.00000003765824, z: -0.00000008108923, w: 0.9999936}
   m_LocalPosition: {x: 0, y: 0.00000086351304, z: 0.00000040477158}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -34405,6 +34436,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!23 &1267830146
 MeshRenderer:
@@ -34471,6 +34503,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1001 &1271393952
 PrefabInstance:
@@ -34628,6 +34661,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &1299273521
 GameObject:
@@ -35045,6 +35079,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1001 &1321630563
 PrefabInstance:
@@ -36093,6 +36128,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!23 &1352342717
 MeshRenderer:
@@ -37022,8 +37058,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1411537332}
-  m_LocalRotation: {x: -0.71839523, y: 0.0000000058213567, z: 0.0000000046500515,
-    w: 0.69563526}
+  m_LocalRotation: {x: -0.71839523, y: 0.0000001338912, z: 0.00000010695118, w: 0.69563526}
   m_LocalPosition: {x: 0, y: 0.000000060626896, z: 0.0000004729673}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -37692,6 +37727,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &1426739934
 GameObject:
@@ -38104,6 +38140,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!23 &1446411682
 MeshRenderer:
@@ -38179,7 +38216,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1446552335}
-  m_LocalRotation: {x: -0.7343376, y: 0.0000000057119283, z: 0.0000000047838298, w: 0.6787844}
+  m_LocalRotation: {x: -0.7343376, y: 0.00000009420354, z: 0.000000078896946, w: 0.6787844}
   m_LocalPosition: {x: 0, y: 0.000000060626896, z: 0.0000004729673}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -38388,6 +38425,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!1 &1456215382
 GameObject:
@@ -38507,6 +38545,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &1460356729
 MeshCollider:
@@ -38876,6 +38915,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &1480899006
 MeshCollider:
@@ -40887,6 +40927,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &1549902957
 MeshCollider:
@@ -41609,7 +41650,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1597888883}
-  m_LocalRotation: {x: -0.06820253, y: -0.00008417402, z: 0.00015075973, w: 0.99767154}
+  m_LocalRotation: {x: -0.068202496, y: -0.000084174004, z: 0.00015075972, w: 0.9976715}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -41884,9 +41925,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0ebff2d5822d7a4ea3c19c56326ba21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pausedMenuPanel: {fileID: 977256253}
   timerText: {fileID: 1419171324}
-  isPaused: 0
+  pausedMenuPanel: {fileID: 977256253}
+  settingsPanel: {fileID: 0}
+  endingTextObj: {fileID: 0}
 --- !u!114 &1646605239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41947,7 +41989,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 167f5d29c52bf1140965a0e817993721, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiManager: {fileID: 1646605238}
 --- !u!114 &1646605243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -41960,6 +42001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b7994a94ab503c41a0ba2c0b3465555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialSpawnPoint: {fileID: 0}
 --- !u!4 &1646605244
 Transform:
   m_ObjectHideFlags: 0
@@ -41973,7 +42015,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1648291189
 GameObject:
@@ -42649,6 +42691,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &1656139144
 MeshCollider:
@@ -43032,8 +43075,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1680708425}
-  m_LocalRotation: {x: -0.069512315, y: 0.0000000072471464, z: -0.000000013020121,
-    w: 0.9975811}
+  m_LocalRotation: {x: -0.069512315, y: 0.000000021741437, z: -0.00000003906036, w: 0.9975811}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -45557,7 +45599,7 @@ Transform:
   - {fileID: 1446411678}
   - {fileID: 2040403577}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1794348371
 GameObject:
@@ -47403,7 +47445,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1939750735}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10, y: 0.5, z: -274.7}
+  m_LocalPosition: {x: 15.2, y: 1.68, z: -273.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -47549,6 +47591,7 @@ MonoBehaviour:
   walkVelocity: 8
   runVelocity: 16
   hamsterGround: {fileID: 13400000, guid: e05b397de4d099444a2ccd11f5f27195, type: 2}
+  hamsterGroundWire: {fileID: 0}
   hamsterJump: {fileID: 13400000, guid: 27859fd26c96fd84f867f66f7f9dab80, type: 2}
 --- !u!114 &1939750746
 MonoBehaviour:
@@ -47565,6 +47608,7 @@ MonoBehaviour:
   initPos: {x: 0, y: 3, z: 0}
   animator: {fileID: 1636426570}
   platformParent: {fileID: 0}
+  hamsterWireCheckGroundDistance: 5
   jumpPower: 1000
   maxBoostEnergy: 1
   currentBoostEnergy: 0
@@ -49119,6 +49163,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!23 &2040403580
 MeshRenderer:
@@ -50204,7 +50249,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2098112610}
-  m_LocalRotation: {x: -0.014621776, y: 0, z: 0, w: 0.9998931}
+  m_LocalRotation: {x: -0.014621776, y: 0.000000035117537, z: -0.00000007215298, w: 0.9998931}
   m_LocalPosition: {x: 0, y: 0.00000086351304, z: 0.00000040477158}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -50423,8 +50468,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2130243303}
-  m_LocalRotation: {x: -0.71839523, y: 0.0000000058213567, z: 0.0000000046500515,
-    w: 0.69563526}
+  m_LocalRotation: {x: -0.71839523, y: 0.000000046933273, z: 0.000000037489908, w: 0.69563526}
   m_LocalPosition: {x: 0, y: 0.000000060626896, z: 0.0000004729673}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -50499,6 +50543,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &2130905881
 MeshCollider:
@@ -50710,6 +50755,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &2134576252
 MeshCollider:
@@ -50894,9 +50940,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0ebff2d5822d7a4ea3c19c56326ba21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pausedMenuPanel: {fileID: 2133600611}
   timerText: {fileID: 844357573}
-  isPaused: 0
+  pausedMenuPanel: {fileID: 2133600611}
+  settingsPanel: {fileID: 0}
+  endingTextObj: {fileID: 0}
 --- !u!114 &2136716059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50957,7 +51004,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 167f5d29c52bf1140965a0e817993721, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiManager: {fileID: 2136716058}
 --- !u!114 &2136716063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50970,6 +51016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b7994a94ab503c41a0ba2c0b3465555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialSpawnPoint: {fileID: 0}
 --- !u!4 &2136716064
 Transform:
   m_ObjectHideFlags: 0
@@ -51009,7 +51056,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138373417}
-  m_LocalRotation: {x: -0.069512315, y: 0.000000014494294, z: -0.00000002604024, w: 0.9975811}
+  m_LocalRotation: {x: -0.06951224, y: 0.000000026129955, z: -0.000000046944713, w: 0.9975812}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -52310,6 +52357,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -1550514412580984892, guid: 31728bd54e3ed6d48a6c84e50e66210a,
         type: 3}
+    - target: {fileID: 7247117202026376523, guid: c640cc34b105b8942bcf66ed4d1f8fb0,
+        type: 3}
+      propertyPath: generateRigidbody
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8382083749655515787, guid: c640cc34b105b8942bcf66ed4d1f8fb0,
         type: 3}
       propertyPath: m_Mesh
@@ -53079,6 +53131,7 @@ MonoBehaviour:
   canPlayerJump: 0
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &5862275631021777782
 MeshCollider:
@@ -53145,6 +53198,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &5937341796417182943
 MeshCollider:
@@ -53265,6 +53319,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!54 &6039750454357784893
 Rigidbody:
@@ -53758,6 +53813,7 @@ MonoBehaviour:
   canPlayerJump: 0
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &7854530513939636245
 MeshCollider:
@@ -53808,6 +53864,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &7947851769359571234
 MeshCollider:
@@ -53859,6 +53916,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &8016846966126460607
 MeshCollider:
@@ -53920,6 +53978,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &8052029186160594239
 MeshCollider:
@@ -54042,6 +54101,7 @@ MonoBehaviour:
   canPlayerJump: 0
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!64 &8185745478394526612
 MeshCollider:
@@ -54135,6 +54195,7 @@ MonoBehaviour:
   canPlayerJump: 0
   canGrabInBallMode: 1
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!33 &8446664973745746486
 MeshFilter:
@@ -54359,6 +54420,7 @@ MonoBehaviour:
   canPlayerJump: 1
   canGrabInBallMode: 0
   canGrabInHamsterMode: 0
+  generateRigidbody: 1
   nonDetectable: 0
 --- !u!4 &9036472400770720307
 Transform:

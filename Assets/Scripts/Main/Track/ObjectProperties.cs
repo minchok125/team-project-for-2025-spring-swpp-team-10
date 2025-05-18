@@ -26,6 +26,7 @@ public class ObjectProperties : MonoBehaviour
     /// 햄스터 모드에서 그랩 가능한 오브젝트
     /// </summary>
     public bool canGrabInHamsterMode = false;
+    public bool generateRigidbody = true;
 
     [Tooltip("그랩 오브젝트 검사하는 레이저에서, 해당 오브젝트를 통과하고 뒤의 오브젝트를 검사")]
     /// <summary>
@@ -33,7 +34,7 @@ public class ObjectProperties : MonoBehaviour
     /// </summary>
     public bool nonDetectable = false;
 
-    private void Start()
+    private void Awake()
     {
         if (nonDetectable)
         {
@@ -50,9 +51,9 @@ public class ObjectProperties : MonoBehaviour
 
             if (canGrabInHamsterMode) 
             {
-                if (!TryGetComponent(out Rigidbody rb)) 
+                if (generateRigidbody && !TryGetComponent(out Rigidbody rb)) 
                 {
-                    HLogger.General.Warning(gameObject.name + ": Rigidbody가 없습니다. Rigidbody를 추가합니다.", this);
+                    HLogger.General.Info(gameObject.name + ": Rigidbody가 없습니다. Rigidbody를 추가합니다.", this);
                     AddHamsterObjectRigidbody();
                 }
             }
