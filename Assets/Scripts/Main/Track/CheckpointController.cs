@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 using Hampossible.Utils;
 
@@ -7,14 +8,18 @@ public class CheckpointController : MonoBehaviour
     [Tooltip("체크포인트가 활성화될 때 한 번만 작동하도록 합니다.")]
     [SerializeField] private bool activateOnce = true;
 
-    [Tooltip("체크포인트가 활성화된 후 이 게임 오브젝트를 파괴할지, 아니면 비활성화할지 결정합니다. 비활성화 시 재활성화 가능성이 있습니다.")]
-    [SerializeField] private bool destroyOnActivation = false;
+    [Tooltip("체크포인트 비활성화 상태일 때 사용할 머티리얼입니다.")]
+    [SerializeField] private Material inactiveMaterial;
+
+    [Tooltip("체크포인트 활성화 상태일 때 사용할 머티리얼입니다.")]
+    [SerializeField] private Material activeMaterial;
 
     [Tooltip("체크포인트 활성화 시 재생할 파티클 효과 등의 프리팹입니다. (선택 사항)")]
     [SerializeField] private GameObject activationEffectPrefab;
 
     private bool _isActivated = false;
     private Collider _collider;
+    private Renderer _renderer;
 
     void Awake()
     {
@@ -32,54 +37,114 @@ public class CheckpointController : MonoBehaviour
             HLogger.General.Warning($"Checkpoint '{gameObject.name}'의 Collider가 IsTrigger가 아니므로 강제로 설정합니다. 직접 설정해주세요.", gameObject);
             _collider.isTrigger = true;
         }
+
+        _renderer = GetComponent<Renderer>();
+        if (_renderer == null)
+        {
+            HLogger.General.Warning("머티리얼 변경을 위해 Renderer 컴포넌트가 필요합니다. 없다면 이 기능은 작동하지 않습니다.", gameObject);
+        }
+        else
+        {
+            // 시작 시 비활성화 머티리얼로 설정
+            if (inactiveMaterial != null)
+            {
+                _renderer.material = inactiveMaterial;
+            }
+            else
+            {
+                HLogger.General.Warning($"'{gameObject.name}'에 Inactive Material이 할당되지 않았습니다. 현재 머티리얼이 유지됩니다.", gameObject);
+            }
+        }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        // 이미 활성화되었고, 한 번만 활성화되도록 설정되었다면 더 이상 진행하지 않음
-        if (activateOnce && _isActivated)
-        {
-            return;
-        }
-
         // 충돌한 오브젝트가 "Player" 태그를 가지고 있는지 확인
         if (other.CompareTag("Player"))
         {
-            if (CheckpointManager.Instance != null)
+            ProcessActivation();
+        }
+    }
+
+    /// <summary>
+    /// 체크포인트를 활성화합니다.
+    /// CheckpointManager에 알리고, 머티리얼을 변경하며, 필요시 효과를 재생합니다.
+    /// </summary>
+    public void ProcessActivation()
+    {
+        // 이미 활성화되었고, 한 번만 활성화되도록 설정되었다면 더 이상 진행하지 않음
+        if (activateOnce && _isActivated)
+        {
+            HLogger.General.Debug($"Checkpoint '{gameObject.name}'는 이미 활성화되었으며, activateOnce가 true입니다.", gameObject);
+            return;
+        }
+
+        if (CheckpointManager.Instance != null)
+        {
+            CheckpointManager.Instance.CheckpointActivated(this);
+            _isActivated = true;
+
+            // 활성화 효과 재생 (선택 사항)
+            if (activationEffectPrefab != null)
             {
-                // CheckpointManager에 현재 체크포인트의 위치를 전달
-                CheckpointManager.Instance.SetLastCheckpoint(transform.position);
-                _isActivated = true;
+                Instantiate(activationEffectPrefab, transform.position, Quaternion.identity);
+            }
 
+            // 머티리얼 변경
+            SetMaterial(activeMaterial, "Active Material");
 
-                // 활성화 효과 재생 (선택 사항)
-                if (activationEffectPrefab != null)
-                {
-                    Instantiate(activationEffectPrefab, transform.position, Quaternion.identity);
-                }
-
-                // 체크포인트 오브젝트 처리
-                if (destroyOnActivation)
-                {
-                    Destroy(gameObject); // 오브젝트 파괴
-                }
-                else
-                {
-                    // gameObject.SetActive(false); // 오브젝트 비활성화
-                    // 또는 Collider만 비활성화하거나, Renderer를 끄는 등 다양하게 처리 가능
-                    _collider.enabled = false; // 다시 트리거되지 않도록 콜라이더 비활성화
-                    Renderer rend = GetComponent<Renderer>(); // 렌더러가 있다면 끄기
-                    if (rend != null) rend.enabled = false;
-                    // 필요하다면 자식 오브젝트의 렌더러나 콜라이더도 비활성화
-                    foreach(Renderer r in GetComponentsInChildren<Renderer>()) r.enabled = false;
-                    foreach(Collider c in GetComponentsInChildren<Collider>()) c.enabled = false;
-
-                }
+            // 한 번 활성화된 후에는 다시 발동하지 않도록 트리거 비활성화
+            if (activateOnce)
+            {
+                _collider.enabled = false;
+                HLogger.General.Debug($"Checkpoint '{gameObject.name}' 활성화됨 (일회성, 콜라이더 비활성화).", gameObject);
             }
             else
             {
-                HLogger.General.Error("CheckpointManager의 인스턴스를 찾을 수 없습니다! 씬에 CheckpointManager 오브젝트가 있는지 확인하세요.");
+                HLogger.General.Debug($"Checkpoint '{gameObject.name}' 활성화됨 (반복 가능).", gameObject);
+            }
+        }
+        else
+        {
+            HLogger.General.Error("CheckpointManager의 인스턴스를 찾을 수 없습니다! 씬에 CheckpointManager 오브젝트가 있는지 확인하세요.");
+        }
+    }
+
+    /// <summary>
+    /// 체크포인트를 비활성화 상태로 되돌립니다.
+    /// 머티리얼을 inactiveMaterial로 변경하고, 콜라이더를 다시 활성화합니다.
+    /// </summary>
+    public void ProcessDeactivation()
+    {
+        _isActivated = false;
+
+        // 머티리얼을 비활성화 상태로 변경
+        SetMaterial(inactiveMaterial, "Inactive Material (Deactivate)");
+
+        // 콜라이더를 다시 활성화하여 재작동 가능하게 함
+        if (!_collider.enabled)
+        {
+            _collider.enabled = true;
+        }
+        HLogger.General.Debug($"Checkpoint '{gameObject.name}' 비활성화됨. 콜라이더 활성화.", gameObject);
+    }
+
+    /// <summary>
+    /// 지정된 머티리얼로 변경합합니다.
+    /// </summary>
+    private void SetMaterial(Material materialToSet, string materialNameForLog)
+    {
+        if (_renderer != null)
+        {
+            if (materialToSet != null)
+            {
+                _renderer.material = materialToSet;
+            }
+            else
+            {
+                HLogger.General.Warning($"'{gameObject.name}'에 '{materialNameForLog}'이(가) 할당되지 않아 머티리얼을 변경할 수 없습니다.", gameObject);
             }
         }
     }
+
 }
