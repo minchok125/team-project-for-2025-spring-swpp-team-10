@@ -1557,7 +1557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canPlayerJump: 1
-  canGrabInBallMode: 0
+  canGrabInBallMode: 1
   canGrabInHamsterMode: 0
   nonDetectable: 0
 --- !u!65 &401157494
@@ -2765,6 +2765,16 @@ PrefabInstance:
     - target: {fileID: 755814634903968991, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 755814634927732177, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
+        type: 3}
+      propertyPath: m_UpdateMethod
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 755814634927732177, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
+        type: 3}
+      propertyPath: m_BlendUpdateMethod
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 755814634927732179, guid: 9952f8cd79e2ef048bd546e6bd0cba5b,
@@ -4072,10 +4082,10 @@ MonoBehaviour:
   inputType: 1
   start: {fileID: 0}
   end: {fileID: 0}
-  startVec: {x: -40, y: -2, z: -36}
+  startVec: {x: -40, y: -2, z: -100}
   endVec: {x: -30, y: -2, z: -3}
   startDelay: 0.6
-  moveTime: 4
+  moveTime: 2
 --- !u!65 &1436454909
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4167,7 +4177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canPlayerJump: 1
-  canGrabInBallMode: 0
+  canGrabInBallMode: 1
   canGrabInHamsterMode: 0
   nonDetectable: 0
 --- !u!1 &1498222682
@@ -4566,7 +4576,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canPlayerJump: 1
-  canGrabInBallMode: 0
+  canGrabInBallMode: 1
   canGrabInHamsterMode: 0
   nonDetectable: 0
 --- !u!65 &1569802073

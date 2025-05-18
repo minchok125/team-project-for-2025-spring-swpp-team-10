@@ -150,19 +150,13 @@ public class PlayerMovementController : MonoBehaviour
     }
 
 
-    void LateUpdate()
-    {
-        // 이동하는 플랫폼과 플레이어의 위치를 동기화
-        SynchronizePlatform();
-    }
-
-
     void FixedUpdate()
     {
         // 이동 처리
         UpdateMovement();
 
-
+        // 이동하는 플랫폼과 플레이어의 위치를 동기화
+        SynchronizePlatform();
 
         // 추가 물리 효과 적용
         AddExtraForce();
@@ -574,6 +568,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             curPlatform = null;
             transform.parent = null;
+            playerMgr.isGroundMoving = false;
         }
     }
 
@@ -583,7 +578,7 @@ public class PlayerMovementController : MonoBehaviour
     private void SetIsGroundMoving()
     {
         Vector3 diff = curPlatform.transform.position - platformParent.position;
-        float sqrDistOneSecond = (diff / Time.deltaTime).sqrMagnitude;
+        float sqrDistOneSecond = (diff / Time.fixedDeltaTime).sqrMagnitude;
         playerMgr.isGroundMoving = sqrDistOneSecond > 0.1f;
     }
     #endregion
