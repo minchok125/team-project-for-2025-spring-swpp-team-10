@@ -278,7 +278,7 @@ PrefabInstance:
     - target: {fileID: 528535498975744754, guid: ff8bf27806498b14db60a3c20a21eec2,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.5
+      value: 5.4
       objectReference: {fileID: 0}
     - target: {fileID: 528535498975744754, guid: ff8bf27806498b14db60a3c20a21eec2,
         type: 3}
@@ -2853,12 +2853,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 273306034}
   m_CullTransparentMesh: 1
---- !u!1 &310429882 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3962899205002032433, guid: aaf11a042e9932a40bb90b9b171a128e,
-    type: 3}
-  m_PrefabInstance: {fileID: 1751169455}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &317951918
 GameObject:
   m_ObjectHideFlags: 0
@@ -4017,22 +4011,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1809968754749036702, guid: 48e52d8d352ce0548a5574c7e827370e,
         type: 3}
-      propertyPath: m_LightProbeUsage
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1809968754749036702, guid: 48e52d8d352ce0548a5574c7e827370e,
-        type: 3}
-      propertyPath: m_Materials.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1809968754749036702, guid: 48e52d8d352ce0548a5574c7e827370e,
-        type: 3}
       propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 86b9460a9415e6746990f17338b0983a, type: 2}
-    - target: {fileID: 1809968754749036702, guid: 48e52d8d352ce0548a5574c7e827370e,
-        type: 3}
-      propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 2100000, guid: 359b85a38dbde3444841199a7a09a0d5, type: 2}
     - target: {fileID: 8709728448931378519, guid: 48e52d8d352ce0548a5574c7e827370e,
@@ -7601,8 +7580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activateOnce: 1
-  inactiveMaterial: {fileID: 2100000, guid: 86b9460a9415e6746990f17338b0983a, type: 2}
-  activeMaterial: {fileID: 2100000, guid: 359b85a38dbde3444841199a7a09a0d5, type: 2}
+  destroyOnActivation: 1
   activationEffectPrefab: {fileID: 0}
 --- !u!1 &885086940
 GameObject:
@@ -10989,7 +10967,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1299037108}
-  m_LocalRotation: {x: 0.06370128, y: 0, z: 0, w: 0.99796903}
+  m_LocalRotation: {x: 0.5364542, y: 0, z: 0, w: 0.84392947}
   m_LocalPosition: {x: -533.875, y: -297.68896, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -11097,7 +11075,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 50
+  field of view: 70
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
@@ -12864,9 +12842,9 @@ GameObject:
   - component: {fileID: 1670191634}
   - component: {fileID: 1670191637}
   - component: {fileID: 1670191633}
+  - component: {fileID: 1670191638}
   - component: {fileID: 1670191630}
   - component: {fileID: 1670191632}
-  - component: {fileID: 1670191638}
   - component: {fileID: 1670191631}
   m_Layer: 0
   m_Name: Manager
@@ -12887,10 +12865,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0ebff2d5822d7a4ea3c19c56326ba21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timerText: {fileID: 422456477}
   pausedMenuPanel: {fileID: 1467903711}
-  settingsPanel: {fileID: 0}
-  endingTextObj: {fileID: 0}
+  timerText: {fileID: 422456477}
+  isPaused: 0
 --- !u!114 &1670191631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14083,11 +14060,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1948090930}
     m_Modifications:
-    - target: {fileID: -349497575753484734, guid: aaf11a042e9932a40bb90b9b171a128e,
-        type: 3}
-      propertyPath: m_Convex
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3962899205002032433, guid: aaf11a042e9932a40bb90b9b171a128e,
         type: 3}
       propertyPath: m_Name
@@ -15163,23 +15135,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c683722accebc54c9ec7edde93833c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpAudio: {fileID: 0}
-  landAudio: {fileID: 0}
-  wireShootAudio: {fileID: 0}
-  boostAudio: {fileID: 0}
-  retractorAudio: {fileID: 0}
-  balloonAudio: {fileID: 0}
-  lightningShockAudio: {fileID: 0}
   isJumping: 0
   canJump: 0
   isGround: 0
   curGroundCollider: {fileID: 0}
-  isGroundMoving: 0
   isMoving: 0
   moveDir: {x: 0, y: 0, z: 0}
   isBall: 0
   onWire: 0
-  onWireCollider: {fileID: 0}
   isGliding: 0
   isBoosting: 0
   isInsideFan: 0
@@ -15189,7 +15152,6 @@ MonoBehaviour:
   slideWallNormal: {x: 0, y: 0, z: 0}
   isInputLock: 0
   skill: {fileID: 0}
-  playerWire: {fileID: 0}
 --- !u!120 &1870053639
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -15311,22 +15273,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1751169455}
   m_PrefabAsset: {fileID: 0}
---- !u!54 &1871961482
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 310429882}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1 &1872642644
 GameObject:
   m_ObjectHideFlags: 0
