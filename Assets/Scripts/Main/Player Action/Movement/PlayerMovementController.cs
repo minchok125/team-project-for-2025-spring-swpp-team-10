@@ -267,7 +267,7 @@ public class PlayerMovementController : MonoBehaviour
     /// </summary>
     private void MoveToLastCheckpoint()
     {
-        if (CheckpointManager.Instance != null)
+        if (CheckpointManager.Instance != null && CheckpointManager.Instance.HasCheckpointBeenSet())
         {
             Vector3 checkpointPosition = CheckpointManager.Instance.GetLastCheckpointPosition();
             transform.position = checkpointPosition;
