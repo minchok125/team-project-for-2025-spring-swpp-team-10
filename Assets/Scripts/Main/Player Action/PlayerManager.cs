@@ -266,7 +266,8 @@ public class PlayerManager : MonoBehaviour
 
     private void Update()
     {
-        moveDir = GetInputMoveDir();
+        if (isInputLock) moveDir = Vector3.zero;
+        else moveDir = GetInputMoveDir();
     }
 
     private void FixedUpdate()
