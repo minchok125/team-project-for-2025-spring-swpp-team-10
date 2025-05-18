@@ -14,7 +14,6 @@ public class DrawerConfiner : MonoBehaviour
     private Collider[] drawersCol;
     private Rigidbody[] drawersRigid;
     private Vector3[] drawersOrigin;
-    private bool hasSetKinematic = false;
 
     private void Start()
     {
@@ -24,8 +23,7 @@ public class DrawerConfiner : MonoBehaviour
             return;
         }
 
-        // 물리효과로 서랍이 제 위치로 돌아갈 때까지 대기
-        Invoke("Init", 0f);
+        Init();
     }
 
     private void Init()
@@ -70,19 +68,11 @@ public class DrawerConfiner : MonoBehaviour
             {
                 drawersRigid[i].MovePosition(drawersOrigin[i] + transform.forward * drawersOpenMaxDist[i]);
                 drawersRigid[i].isKinematic = true;
-                hasSetKinematic = true;
             }
             else
             {
                 drawersRigid[i].isKinematic = false;
             }
         }
-    }
-
-    private void SetNotKinematic()
-    {
-        for (int i = 0; i < drawersRigid.Length; i++)
-                drawersRigid[i].isKinematic = false;
-        hasSetKinematic = false;
     }
 }
