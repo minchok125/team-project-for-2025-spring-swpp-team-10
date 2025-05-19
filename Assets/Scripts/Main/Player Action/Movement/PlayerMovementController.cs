@@ -498,11 +498,11 @@ public class PlayerMovementController : MonoBehaviour
         if (!groundCheck.CustomGroundCheck(hamsterWireCheckGroundDistance))
             return;
 
-        rb.AddForce(Physics.gravity * enhanceGravityRate);
+        // rb.AddForce(Physics.gravity * enhanceGravityRate);
         if (rb.velocity.y > 0)
         {
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.MovePosition(rb.transform.position - Vector3.up * rb.velocity.y * Time.fixedDeltaTime);
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         }
     }
     #endregion
