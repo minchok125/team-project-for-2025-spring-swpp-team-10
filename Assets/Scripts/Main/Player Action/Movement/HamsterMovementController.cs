@@ -61,9 +61,9 @@ public class HamsterMovementController : MonoBehaviour, IMovement
         bool useGroundMaterial = (PlayerManager.instance.isGround && !PlayerManager.instance.isOnSlideWall)
                                  || (PlayerManager.instance.isOnSlideWall && !PlayerManager.instance.isMoving);
 
-        if (PlayerManager.instance.isGround && PlayerManager.instance.onWire)
-            col.material = hamsterGroundWire;
-        else if (useGroundMaterial)
+        // if (PlayerManager.instance.isGround && PlayerManager.instance.onWire)
+        //     col.material = hamsterGroundWire;
+        if (useGroundMaterial)
             col.material = hamsterGround;
         else
             col.material = hamsterJump;
