@@ -132,7 +132,7 @@ public class PlayerMovementController : MonoBehaviour
         InitializeState();
 
         // 모드 전환 시 해당 메서드가 함께 실행됨
-        PlayerManager.instance.ModeConvertAddAction(ChangeCurMovement);
+        PlayerManager.Instance.ModeConvertAddAction(ChangeCurMovement);
     }
 
   
@@ -249,7 +249,7 @@ public class PlayerMovementController : MonoBehaviour
         if (isRKeyPressedForCheckpoint)
         {
             // 이동 입력 감지 (PlayerManager의 moveDir 사용)
-            if (PlayerManager.instance.moveDir.sqrMagnitude > checkpointMovementThreshold || !playerMgr.isGround) // 약간의 오차 허용
+            if (PlayerManager.Instance.moveDir.sqrMagnitude > checkpointMovementThreshold || !playerMgr.isGround) // 약간의 오차 허용
             {
                 // 이동 입력이 있으면 타이머 및 상태 해제
                 isRKeyPressedForCheckpoint = false;
@@ -301,7 +301,7 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleJumpInput()
     {
         jumped = false;
-        bool isInputLock = PlayerManager.instance.isInputLock;
+        bool isInputLock = PlayerManager.Instance.isInputLock;
 
         if (!playerMgr.isBall && playerMgr.onWire)
             return;

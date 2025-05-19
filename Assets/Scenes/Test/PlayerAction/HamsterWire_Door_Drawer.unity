@@ -929,6 +929,7 @@ MonoBehaviour:
   initPos: {x: 0, y: 3, z: 0}
   animator: {fileID: 1169466866}
   platformParent: {fileID: 1943873224}
+  hamsterWireCheckGroundDistance: 5
   jumpPower: 1000
   maxBoostEnergy: 1
   currentBoostEnergy: 0
@@ -4849,6 +4850,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b7994a94ab503c41a0ba2c0b3465555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orderedCheckpoints: []
+  initialSpawnPoint: {fileID: 0}
 --- !u!114 &589384443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9261,19 +9264,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 624578152}
-        m_TargetAssemblyTypeName: PausedMenuController, Assembly-CSharp
-        m_MethodName: ResumeGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!222 &1177288355
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -13050,8 +13041,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 624578152}
-        m_TargetAssemblyTypeName: PausedMenuController, Assembly-CSharp
+      - m_Target: {fileID: 589384441}
+        m_TargetAssemblyTypeName: MainSceneManager, Assembly-CSharp
         m_MethodName: ResumeGame
         m_Mode: 1
         m_Arguments:

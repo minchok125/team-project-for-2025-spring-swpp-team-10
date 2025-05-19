@@ -52,7 +52,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     public void OnUpdate()
     {
         // PlayerManager에서 이동 방향 받아옴
-        moveDir = PlayerManager.instance.moveDir;
+        moveDir = PlayerManager.Instance.moveDir;
 
         // 물리 속성 업데이트
         UpdatePhysicsProperties();
@@ -78,14 +78,14 @@ public class BallMovementController : MonoBehaviour, IMovement
     private void BallDragSetting()
     {
         // 지면 위, 공중, 최대 속도 초과 시 등 상황별 저항 조절
-        if (PlayerManager.instance.isGround) 
+        if (PlayerManager.Instance.isGround) 
         {
             // 지면 위에서는 높은 저항력
             rb.drag = 1.2f;
         }
         else 
         {
-            float maxVel = maxBallVelocity * PlayerManager.instance.skill.GetSpeedRate();
+            float maxVel = maxBallVelocity * PlayerManager.Instance.skill.GetSpeedRate();
             if (rb.velocity.sqrMagnitude > maxVel * maxVel) 
             {
                 // 최대 속도 초과 시 감속을 위한 저항력
@@ -106,7 +106,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     private void SlideWallAngularDragSetting()
     {
         /// 벽에 붙어있을 때 이동하지 않으면 고정, 이동하면 회전 허용
-        if (PlayerManager.instance.isOnSlideWall) 
+        if (PlayerManager.Instance.isOnSlideWall) 
         {
             if (moveDir == Vector3.zero) 
             {
@@ -134,7 +134,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     private void RotateBasedOnMovement()
     {
         // 와이어에 매달린 공중 상태에서는 회전 제어 안함
-        if (PlayerManager.instance.onWire && !PlayerManager.instance.isGround) return;
+        if (PlayerManager.Instance.onWire && !PlayerManager.Instance.isGround) return;
 
         Vector3 currentPosition = rb.transform.position;
         // 플랫폼 이동을 제외한 순수 이동량 계산
@@ -163,7 +163,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     public bool Move()
     {
         float addSpeed, accelSpeed, currentSpeed;
-        float speedRate = PlayerManager.instance.skill.GetSpeedRate();
+        float speedRate = PlayerManager.Instance.skill.GetSpeedRate();
 
         // 현재 속도와 입력 방향 사이의 각도에 따른 계수 계산
         // velocityXZ와 moveDirXZ를 재사용하여 가비지 컬렉션 최적화
@@ -185,7 +185,7 @@ public class BallMovementController : MonoBehaviour, IMovement
         accelSpeed = magnitude * Mathf.Min(addSpeed, movePower * Time.fixedDeltaTime);
 
         // 공중에서는 이동력 감소 (마찰력 차이)
-        if (!PlayerManager.instance.isGround)
+        if (!PlayerManager.Instance.isGround)
             accelSpeed *= 0.4f;
 
         // 이동 힘 적용
@@ -214,7 +214,7 @@ public class BallMovementController : MonoBehaviour, IMovement
         Vector3 dirOrthogonalMoveDir = Vector3.zero;
         
         // 와이어에 매달린 공중 상태일 때
-        if (PlayerManager.instance.onWire && !PlayerManager.instance.isGround) 
+        if (PlayerManager.Instance.onWire && !PlayerManager.Instance.isGround) 
         {
             Transform hitPoint = GetComponent<PlayerWireController>().hitPoint;
             Vector3 dir = (hitPoint.position - rb.transform.position).normalized;
@@ -236,7 +236,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     /// <param name="dirOrthogonalMoveDir">와이어와 수직인 정규화된 방향 벡터 (와이어 이동 시)</param>
     public void SustainBoost(Vector3 dirOrthogonalMoveDir, float speedRate)
     {
-        if (!PlayerManager.instance.isBoosting)
+        if (!PlayerManager.Instance.isBoosting)
             return;
 
         // 방향키 입력 없음 - 현재 속도 방향으로 부스트
@@ -247,7 +247,7 @@ public class BallMovementController : MonoBehaviour, IMovement
         }
         // 방향키 입력이 있다면 
         // 지면 위 - 입력 방향으로 부스트
-        else if (PlayerManager.instance.isGround) 
+        else if (PlayerManager.Instance.isGround) 
         {
             rb.AddForce(moveDir * sustainedBoostPower * speedRate, ForceMode.Acceleration);
         }
@@ -266,7 +266,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     /// </summary>
     public void BurstBoost()
     {
-        float speedRate = PlayerManager.instance.skill.GetSpeedRate();
+        float speedRate = PlayerManager.Instance.skill.GetSpeedRate();
         Vector3 boostDir;
 
         // 방향키 입력이 없다면 현재 속도 방향으로 부스트
@@ -276,7 +276,7 @@ public class BallMovementController : MonoBehaviour, IMovement
         }
         // 방향키 입력이 있다면 
         // 지면 위에서는 입력 방향으로 부스트
-        else if (PlayerManager.instance.isGround)
+        else if (PlayerManager.Instance.isGround)
         {
             boostDir = moveDir;
         }
