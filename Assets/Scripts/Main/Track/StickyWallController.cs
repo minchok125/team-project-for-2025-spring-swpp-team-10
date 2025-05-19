@@ -69,7 +69,7 @@ public class StickyWallController : MonoBehaviour
         // 플레이어일 때
         if (collision.gameObject.CompareTag("Player")) 
         {
-            PlayerManager.instance.isOnStickyWall = true;
+            PlayerManager.Instance.isOnStickyWall = true;
             isPlayer = true;
         }
         else 
@@ -133,7 +133,7 @@ public class StickyWallController : MonoBehaviour
         while(time < 0.2f) 
         {
             // 햄스터 이동에 따른 회전
-            Vector3 moveDir = PlayerManager.instance.moveDir;
+            Vector3 moveDir = PlayerManager.Instance.moveDir;
 
             if (moveDir != Vector3.zero) 
             {
@@ -156,6 +156,6 @@ public class StickyWallController : MonoBehaviour
             time += Time.deltaTime;
         }
 
-        PlayerManager.instance.isOnStickyWall = false;
+        PlayerManager.Instance.isOnStickyWall = false;
     }
 }

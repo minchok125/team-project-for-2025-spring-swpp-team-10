@@ -98,7 +98,7 @@ public class HamsterWireController : MonoBehaviour, IWire
     {
         if (sj != null) 
             Destroy(sj);
-        PlayerManager.instance.isInputLock = false;
+        PlayerManager.Instance.isInputLock = false;
     }
 
     public void ShortenWire(bool isFast)
@@ -118,12 +118,12 @@ public class HamsterWireController : MonoBehaviour, IWire
         
         SetSpringWireLengthLimits(Vector3.Distance(transform.position, hitPoint.position));
 
-        PlayerManager.instance.isInputLock = true;
+        PlayerManager.Instance.isInputLock = true;
     }
 
     public void ShortenWireEnd(bool isFast)
     {
-        PlayerManager.instance.isInputLock = false;
+        PlayerManager.Instance.isInputLock = false;
         Invoke(nameof(SetIsInputLockFalse), 0.05f);
         Invoke(nameof(SetIsInputLockFalse), 0.1f);
         Debug.Log("ShortenWireEnd");
@@ -143,12 +143,12 @@ public class HamsterWireController : MonoBehaviour, IWire
         
         SetSpringWireLengthLimits(Vector3.Distance(transform.position, hitPoint.position));
 
-        PlayerManager.instance.isInputLock = true;
+        PlayerManager.Instance.isInputLock = true;
     }
 
     public void ExtendWireEnd()
     {
-        PlayerManager.instance.isInputLock = false;
+        PlayerManager.Instance.isInputLock = false;
         Invoke(nameof(SetIsInputLockFalse), 0.05f);
         Invoke(nameof(SetIsInputLockFalse), 0.1f);
         Debug.Log("ExtendWireEnd");
@@ -206,7 +206,7 @@ public class HamsterWireController : MonoBehaviour, IWire
     /// </summary>
     private void SetIsInputLockFalse()
     {
-        PlayerManager.instance.isInputLock = false;
+        PlayerManager.Instance.isInputLock = false;
     }
     #endregion
 
@@ -341,7 +341,7 @@ public class HamsterWireController : MonoBehaviour, IWire
 
     //     // 잡은 물체가 떨어지는데 플레이어는 물체에 끌려가지 않고 지면에 가로막혀서 이동을 안 함
     //     if ((hitPoint.position - transform.position).magnitude > sj.maxDistance + 5
-    //          && PlayerManager.instance.isGround && grabRb.velocity.y < 0) 
+    //          && PlayerManager.Instance.isGround && grabRb.velocity.y < 0) 
     //     {
     //         GetComponent<PlayerWireController>().EndShoot();
     //     }

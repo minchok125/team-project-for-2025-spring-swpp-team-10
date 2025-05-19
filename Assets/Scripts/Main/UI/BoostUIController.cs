@@ -45,7 +45,7 @@ public class BoostUIController : MonoBehaviour
         image[1].fillAmount = energy / maxEnergy;
 
         // 플레이어가 부스팅 중인 경우
-        if (PlayerManager.instance.isBoosting) 
+        if (PlayerManager.Instance.isBoosting) 
         {
             // 부스트를 시작한 직후에만 실행
             if (boostTime == 0) 
@@ -103,7 +103,7 @@ public class BoostUIController : MonoBehaviour
 
     void TextControl()
     {
-        if (PlayerManager.instance.isBoosting) {
+        if (PlayerManager.Instance.isBoosting) {
             txt.rectTransform.anchoredPosition = new Vector3(-3, -55, 0);
             txt.color = boostTextColor;
         }

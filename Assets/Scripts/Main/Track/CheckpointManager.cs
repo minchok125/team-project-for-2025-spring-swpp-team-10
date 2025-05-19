@@ -2,9 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using Hampossible.Utils;
 
-public class CheckpointManager : MonoBehaviour
+public class CheckpointManager : PersistentSingleton<CheckpointManager>
 {
-    public static CheckpointManager Instance { get; private set; }
+    //public static CheckpointManager Instance { get; private set; }
 
     [Tooltip("여기에 모든 체크포인트 게임 오브젝트를 원하는 활성화 순서대로 할당해주세요.")]
     [SerializeField] private List<CheckpointController> orderedCheckpoints = new List<CheckpointController>();
@@ -21,19 +21,9 @@ public class CheckpointManager : MonoBehaviour
     // Vector3?는 다음 체크포인트가 없을 경우 null을 전달할 수 있게 합니다.
     public System.Action<Vector3?> OnNextCheckpointUpdated;
 
-    void Awake()
+    protected override void Awake()
     {
-
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
+        base.Awake();
 
         // 초기 스폰 포인트 설정
         if (initialSpawnPoint != null)

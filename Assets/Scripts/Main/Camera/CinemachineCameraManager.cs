@@ -3,7 +3,7 @@ using Cinemachine;
 using TMPro;
 
 [RequireComponent(typeof(CMFreeLookSetting))]
-public class CinemachineCameraManager : MonoBehaviour
+public class CinemachineCameraManager : RuntimeSingleton<CinemachineCameraManager>
 {
     [Header("CM")]
     [SerializeField] private CinemachineFreeLook hamsterCam;
@@ -55,6 +55,12 @@ public class CinemachineCameraManager : MonoBehaviour
 
     private CamRig hamsterRig, hamsterWireRig, ballRig, ballWireRig;
 
+
+
+    protected override void Awake()
+    {
+        base.Awake();
+    }
 
     void Start()
     {
@@ -139,15 +145,15 @@ public class CinemachineCameraManager : MonoBehaviour
     void FreeLookCamSetting()
     {
         // 공중 와이어 액션 때 BallWireCam 활성화
-        if (PlayerManager.instance.onWire && !PlayerManager.instance.isGround)
+        if (PlayerManager.Instance.onWire && !PlayerManager.Instance.isGround)
             isBallWireCam = true;
         // 와이어를 아예 놓아야 BallNotWireCam 활성화
-        else if (!PlayerManager.instance.onWire)
+        else if (!PlayerManager.Instance.onWire)
             isBallWireCam = false;
 
 
         // 활성화할 카메라
-        if (PlayerManager.instance.isBall) 
+        if (PlayerManager.Instance.isBall) 
         {
             if (isBallWireCam && player.isHitPoint1) 
             {
@@ -164,7 +170,7 @@ public class CinemachineCameraManager : MonoBehaviour
         }
         else 
         {
-            if (PlayerManager.instance.onWire) 
+            if (PlayerManager.Instance.onWire) 
             {
                 FreeLookCamChange(hamsterWireCam);
             }

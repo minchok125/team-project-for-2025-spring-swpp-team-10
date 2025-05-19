@@ -52,14 +52,14 @@ public class DrawerConfiner : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (PlayerManager.instance.isBall || !PlayerManager.instance.onWire)
+        if (PlayerManager.Instance.isBall || !PlayerManager.Instance.onWire)
         {
             return;
         }
 
         for (int i = 0; i < drawersRigid.Length; i++)
         {
-            if (PlayerManager.instance.onWireCollider != drawersCol[i])
+            if (PlayerManager.Instance.onWireCollider != drawersCol[i])
                 continue;
 
             // transform.forward 방향으로 서랍이 열린 거리

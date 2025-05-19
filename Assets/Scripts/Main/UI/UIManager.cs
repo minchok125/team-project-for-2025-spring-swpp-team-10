@@ -1,19 +1,24 @@
 using TMPro;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class UIManager : PersistentSingleton<UIManager>
 {
 	[Header("References")]
 	[SerializeField] private TextMeshProUGUI timerText;
 	[SerializeField] private GameObject pausedMenuPanel, settingsPanel;
 	[SerializeField] private GameObject endingTextObj;
 
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
 	public void InitUIManager()
 	{
 		pausedMenuPanel.SetActive(false);
 		settingsPanel.SetActive(false);
 		endingTextObj.SetActive(false);
-		
+
 		// 아래는 추후에 저장 기능이 구현되면 PlayerData를 받아서 값을 설정하도록 수정되어야 함
 		timerText.text = "Timer [00:00.00 s]";
 	}
