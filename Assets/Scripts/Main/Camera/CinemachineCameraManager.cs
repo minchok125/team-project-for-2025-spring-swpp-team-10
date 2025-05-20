@@ -228,8 +228,8 @@ public class CinemachineCameraManager : RuntimeSingleton<CinemachineCameraManage
     void FreeLookCamChange(CinemachineFreeLook curCam)
     {
         isCamChanged = true;
-        ICinemachineCamera activeCam = brain.ActiveVirtualCamera;
-        if (activeCam.VirtualCameraGameObject == curCam.VirtualCameraGameObject) 
+        ICinemachineCamera activeCam = brain?.ActiveVirtualCamera;
+        if (activeCam?.VirtualCameraGameObject == curCam.VirtualCameraGameObject) 
         {
             isCamChanged = false;
             return;
