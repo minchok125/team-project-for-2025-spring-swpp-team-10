@@ -2,8 +2,8 @@
 using UnityEditor;
 #endif
 using UnityEngine;
-using DG.Tweening;
 using DG.Tweening.Core.Easing;
+using DG.Tweening;
 
 // ith 애니메이션 각각에서 Position, Rotation, Scale 중 하나를 선택하고,
 // Vector3값 자체가 아닌 x, y, z 중 1~3가지만 골라서 그 값만 바꾼다.
@@ -11,149 +11,131 @@ using DG.Tweening.Core.Easing;
 public class MovingPlatformController : MonoBehaviour
 {
     public enum Type { Position, Rotation, Scale }
-    //[Header("moveTime 동안 움직인 뒤 interval 동안 체류 \n0th -> 1th -> ... -> nth -> 0th -> ...")]
-    [Tooltip("해당 시간만큼 대기하다가 이동 시작")]
+
     public float startWaitTime;
     public MoveSequence[] seqs;
 
-    private Vector3 initPos, initRot, initScale;
+    private int _curIndex = 0;
+    private float _timer = 0f;
+    private float _waitTimer = 0f;
+    private bool _isWaiting = true;
+    private Vector3 _fromValue, _toValue;
+    private Vector3 _lastRotationValue;
 
     void Start()
     {
-        Init();
-        Invoke("SeqStart", startWaitTime);
+        ApplySeqValue(0); // 시작값 적용
+        _lastRotationValue = transform.localEulerAngles;
+        _waitTimer = startWaitTime;
     }
 
-    void Init()
+    void FixedUpdate()
     {
-        Vector3 value;
-        switch (seqs[0].modifyType) 
+        if (_isWaiting)
         {
-            case Type.Position:
-                value = transform.localPosition;
-                GetValue(ref value, 0);
-                transform.localPosition = value;
-                break;
-
-            case Type.Rotation:
-                value = transform.localEulerAngles;
-                GetValue(ref value, 0);
-                transform.localRotation = Quaternion.Euler(value);
-                break;
-                
-            case Type.Scale:  
-                value = transform.localScale;
-                GetValue(ref value, 0);
-                transform.localScale = value;
-                break;
-        }
-
-        initPos = transform.localPosition;
-        initRot = transform.localEulerAngles;
-        initScale = transform.localScale;
-    }
-
-    void GetValue(ref Vector3 value, int idx)
-    {
-        if (idx >= seqs.Length) 
-        {
-            Debug.LogWarning("존재하지 않는 seqs의 " + idx + " 번째 인덱스에 접근하려 합니다.");
+            _waitTimer -= Time.fixedDeltaTime;
+            if (_waitTimer <= 0f)
+            {
+                BeginMove();
+            }
             return;
         }
 
-        if (seqs[idx].xb) value.x = seqs[idx].x;
-        if (seqs[idx].yb) value.y = seqs[idx].y;
-        if (seqs[idx].zb) value.z = seqs[idx].z;
-        return;
-    }
+        MoveSequence seq = seqs[_curIndex];
+        _timer += Time.fixedDeltaTime;
+        float t = Mathf.Clamp01(_timer / seq.moveTime);
+        float easedT = ApplyEase(seq, t);
 
-    void SeqStart()
-    {
-        Sequence seq = DOTween.Sequence();
-        for (int i = 1; i < seqs.Length; i++) 
+        ApplyTransform(seq, easedT);
+
+        if (t >= 1f)
         {
-            seq.Append(Do(i))
-               .AppendInterval(seqs[i].intervalAfterMove);
+            _isWaiting = true;
+            _waitTimer = seq.intervalAfterMove;
+            ApplyTransform(seq, 1);
+
+            _curIndex = (_curIndex + 1) % seqs.Length;
         }
-        
-        seq.Append(DoInit());
-        seq.AppendInterval(seqs[0].intervalAfterMove);
-        seq.SetLoops(-1, LoopType.Restart);
     }
 
-    // modifyType에 맞는 행동 반환
-    Sequence Do(int i)
+    void BeginMove()
     {
-        Sequence seq = DOTween.Sequence();
-        switch (seqs[i].modifyType) 
+        MoveSequence seq = seqs[_curIndex];
+        _timer = 0f;
+        _isWaiting = false;
+
+        _fromValue = GetCurrentValue(seq.modifyType);
+        _toValue = _fromValue;
+        SetSeqTarget(ref _toValue, seq); // _fromValue에서 필요한 값만 조정
+    }
+
+    Vector3 GetCurrentValue(Type type)
+    {
+        return type switch
+        {
+            Type.Position => transform.localPosition,
+            Type.Rotation => _lastRotationValue,
+            Type.Scale => transform.localScale,
+            _ => Vector3.zero
+        };
+    }
+
+    void ApplyTransform(MoveSequence seq, float t)
+    {
+        switch (seq.modifyType)
         {
             case Type.Position:
-                if (seqs[i].xb) seq.Join(CustomSetEase(transform.DOLocalMoveX(seqs[i].x, seqs[i].moveTime), i));
-                if (seqs[i].yb) seq.Join(CustomSetEase(transform.DOLocalMoveY(seqs[i].y, seqs[i].moveTime), i));
-                if (seqs[i].zb) seq.Join(CustomSetEase(transform.DOLocalMoveZ(seqs[i].z, seqs[i].moveTime), i));
+                transform.localPosition = Vector3.LerpUnclamped(_fromValue, _toValue, t);
                 break;
-
             case Type.Rotation:
-                Vector3 value = transform.localEulerAngles;
-                GetValue(ref value, i);
-                seq.Join(CustomSetEase(transform.DOLocalRotate(value, seqs[i].moveTime, RotateMode.FastBeyond360), i));
+                Quaternion fromRotation = Quaternion.Euler(_fromValue);
+                Quaternion toRotation = Quaternion.Euler(_toValue);
+                transform.rotation = Quaternion.Slerp(fromRotation, toRotation, t);
                 break;
-
             case Type.Scale:
-                if (seqs[i].xb) seq.Join(CustomSetEase(transform.DOScaleX(seqs[i].x, seqs[i].moveTime), i));
-                if (seqs[i].yb) seq.Join(CustomSetEase(transform.DOScaleY(seqs[i].y, seqs[i].moveTime), i));
-                if (seqs[i].zb) seq.Join(CustomSetEase(transform.DOScaleZ(seqs[i].z, seqs[i].moveTime), i));
+                transform.localScale = Vector3.LerpUnclamped(_fromValue, _toValue, t);
                 break;
         }
-        return seq;
     }
 
-    Sequence DoInit()
+    float ApplyEase(MoveSequence seq, float t)
     {
-        bool[] move = new bool[3];
-        bool rot = false;
-        bool[] scale = new bool[3];
-
-        foreach (MoveSequence ms in seqs) 
+        if (seq.isCustomCurve && seq.customEase != null)
+            return seq.customEase.Evaluate(t);
+        else
         {
-            switch (ms.modifyType) 
-            {
-                case Type.Position:
-                    if (ms.xb) move[0] = true;
-                    if (ms.yb) move[1] = true;
-                    if (ms.zb) move[2] = true;
-                    break;
-                case Type.Rotation:
-                    rot = true;
-                    break;
-                case Type.Scale:
-                    if (ms.xb) scale[0] = true;
-                    if (ms.yb) scale[1] = true;
-                    if (ms.zb) scale[2] = true;
-                    break;
-            }
+            EaseFunction easeFunc = EaseManager.ToEaseFunction(seq.ease);
+            return easeFunc(t, 1f, 1f, 1f);
         }
-
-        Sequence seq = DOTween.Sequence();
-        if (move[0]) seq.Join(CustomSetEase(transform.DOLocalMoveX(initPos.x, seqs[0].moveTime), 0));
-        if (move[1]) seq.Join(CustomSetEase(transform.DOLocalMoveY(initPos.y, seqs[0].moveTime), 0));
-        if (move[2]) seq.Join(CustomSetEase(transform.DOLocalMoveZ(initPos.z, seqs[0].moveTime), 0));
-
-        if (rot) seq.Join(CustomSetEase(transform.DOLocalRotate(initRot, seqs[0].moveTime), 0));
-
-        if (scale[0]) seq.Join(CustomSetEase(transform.DOScaleX(initScale.x, seqs[0].moveTime), 0));
-        if (scale[1]) seq.Join(CustomSetEase(transform.DOScaleY(initScale.y, seqs[0].moveTime), 0));
-        if (scale[2]) seq.Join(CustomSetEase(transform.DOScaleZ(initScale.z, seqs[0].moveTime), 0));
-        return seq;
     }
 
-    // Tween에 customEase또는 ease를 입힘
-    Tween CustomSetEase(Tween tw, int i)
+    void SetSeqTarget(ref Vector3 vec, MoveSequence seq)
     {
-        if (seqs[i].isCustomCurve) return tw.SetEase(seqs[i].customEase);
-        else return tw.SetEase(seqs[i].ease);
+        if (seq.xb) vec.x = seq.x;
+        if (seq.yb) vec.y = seq.y;
+        if (seq.zb) vec.z = seq.z;
+        if (seq.modifyType == Type.Rotation) _lastRotationValue = vec;
     }
-    
+
+    void ApplySeqValue(int idx)
+    {
+        MoveSequence seq = seqs[idx];
+        Vector3 vec = GetCurrentValue(seq.modifyType);
+        SetSeqTarget(ref vec, seq);
+
+        switch (seq.modifyType)
+        {
+            case Type.Position:
+                transform.localPosition = vec;
+                break;
+            case Type.Rotation:
+                transform.localEulerAngles = vec;
+                break;
+            case Type.Scale:
+                transform.localScale = vec;
+                break;
+        }
+    }
 }
 
 [System.Serializable]
@@ -221,24 +203,39 @@ public class MoveSequenceDrawer : PropertyDrawer
         float toggleWidth = position.width / 3f;
 
         EditorGUI.BeginChangeCheck();
-        xbProp.boolValue = EditorGUI.ToggleLeft(new Rect(position.x, y, toggleWidth, lineHeight), "X", xbProp.boolValue);
-        ybProp.boolValue = EditorGUI.ToggleLeft(new Rect(position.x + toggleWidth, y, toggleWidth, lineHeight), "Y", ybProp.boolValue);
-        zbProp.boolValue = EditorGUI.ToggleLeft(new Rect(position.x + toggleWidth * 2, y, toggleWidth, lineHeight), "Z", zbProp.boolValue);
+        xbProp.boolValue = EditorGUI.ToggleLeft(
+                                new Rect(position.x, y, toggleWidth, lineHeight),
+                                "X",
+                                xbProp.boolValue);
+        ybProp.boolValue = EditorGUI.ToggleLeft(
+                                new Rect(position.x + toggleWidth, y, toggleWidth, lineHeight),
+                                "Y",
+                                ybProp.boolValue);
+        zbProp.boolValue = EditorGUI.ToggleLeft(
+                                new Rect(position.x + toggleWidth * 2, y, toggleWidth, lineHeight),
+                                "Z",
+                                zbProp.boolValue);
         y += lineHeight + padding;
 
         if (xbProp.boolValue)
         {
-            EditorGUI.PropertyField(new Rect(position.x, y, toggleWidth - 10, lineHeight), xProp, new GUIContent(""));
+            EditorGUI.PropertyField(new Rect(position.x, y, toggleWidth - 10, lineHeight),
+                                    xProp,
+                                    new GUIContent(""));
         }
 
         if (ybProp.boolValue)
         {
-            EditorGUI.PropertyField(new Rect(position.x + toggleWidth, y, toggleWidth - 10, lineHeight), yProp_, new GUIContent(""));
+            EditorGUI.PropertyField(new Rect(position.x + toggleWidth, y, toggleWidth - 10, lineHeight),
+                                    yProp_,
+                                    new GUIContent(""));
         }
 
         if (zbProp.boolValue)
         {
-            EditorGUI.PropertyField(new Rect(position.x + toggleWidth * 2, y, toggleWidth - 10, lineHeight), zProp, new GUIContent(""));
+            EditorGUI.PropertyField(new Rect(position.x + toggleWidth * 2, y, toggleWidth - 10, lineHeight),
+                                    zProp,
+                                    new GUIContent(""));
         }
         y += (lineHeight + padding) * 1.5f;
 

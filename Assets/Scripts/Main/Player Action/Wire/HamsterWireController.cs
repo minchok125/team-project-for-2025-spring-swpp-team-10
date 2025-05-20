@@ -103,7 +103,7 @@ public class HamsterWireController : MonoBehaviour, IWire
 
     public void ShortenWire(bool isFast)
     {
-        if (sj.maxDistance <= 1) 
+        if (sj.maxDistance <= 2) 
             return;
 
         float _retractorMaxSpeed = SetRetractorMaxSpeed();
