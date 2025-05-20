@@ -85,12 +85,12 @@ public class HamsterMovementController : MonoBehaviour, IMovement
         Quaternion targetRotation = Quaternion.LookRotation(-moveDir.normalized, Vector3.up);
 
         // 슬라이드 벽에서는 더 빠르게 회전
-        float _rotateSpeed = rotateSpeed;
+        float _rotateSpeed = ROTATE_SPEED;
         if (PlayerManager.Instance.isOnSlideWall)
             _rotateSpeed *= 2.5f;
 
         // 부드럽게 회전
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * ROTATE_SPEED);
     }
 
 
@@ -122,7 +122,7 @@ public class HamsterMovementController : MonoBehaviour, IMovement
         }
 
         // 공중에서 입력이 없는 경우 빠르게 감속
-        if (moveDir == Vector3.zero && !PlayerManager.instance.isGround)
+        if (moveDir == Vector3.zero && !PlayerManager.Instance.isGround)
         {
             float velX = rb.velocity.x * (1 - DRAG_SPEED * Time.fixedDeltaTime);
             float velZ = rb.velocity.z * (1 - DRAG_SPEED * Time.fixedDeltaTime);
