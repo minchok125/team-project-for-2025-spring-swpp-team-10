@@ -28,13 +28,13 @@ public class PlayerMovementController : MonoBehaviour
     /// 마지막 속도 값을 저장 (FixedUpdate, 물리 계산에 사용)
     /// </summary>
     public Vector3 lastVelocity { get; private set; }
-    
+
     // 플레이어의 Rigidbody 컴포넌트
     private Rigidbody rb;
-    
+
     // 현재 플레이어가 밟고 있는 플랫폼 콜라이더
     private Collider curPlatform;
-    
+
     // 이전 플랫폼의 위치 (플랫폼 이동 시 플레이어도 같이 이동하기 위함)
     private Vector3 prevPlatformPos;
 
@@ -49,13 +49,13 @@ public class PlayerMovementController : MonoBehaviour
     [Header("Jump")]
     [Tooltip("점프 시 가해지는 힘")]
     [SerializeField] private float jumpPower = 1000f;
-    
+
     // 점프 카운트 (2단 점프를 위한 변수)
     private int jumpCount;
-    
+
     // 점프 시작 시간 (연속 점프 방지용)
     private float jumpStartTime = -10f;
-    
+
     // 현재 프레임에 점프가 발동됐는지 여부
     private bool jumped = false;
     #endregion
@@ -83,16 +83,16 @@ public class PlayerMovementController : MonoBehaviour
     /// </summary>
     [Tooltip("현재 부스터 에너지")]
     public float currentBoostEnergy;
-    
+
     [Tooltip("1초 당 소모되는 부스터 에너지")]
     [SerializeField] private float energyUsageRatePerSeconds = 0.4f;
-    
+
     [Tooltip("부스터 시작 시 순간적으로 소모되는 에너지 (해당 값 이상이어야 부스터 가능)")]
     public float burstBoostEnergyUsage = 0.1f;
-    
+
     [Tooltip("부스터 상태가 아닐 때 1초 당 회복되는 에너지")]
     [SerializeField] private float energyRecoveryRatePerSeconds = 0.125f;
-    
+
     // 볼 이동 컨트롤러 참조
     private BallMovementController ball;
     #endregion
@@ -135,7 +135,7 @@ public class PlayerMovementController : MonoBehaviour
         PlayerManager.Instance.ModeConvertAddAction(ChangeCurMovement);
     }
 
-  
+
     void Update()
     {
         // 입력 처리
@@ -156,17 +156,13 @@ public class PlayerMovementController : MonoBehaviour
     }
 
 
-    void LateUpdate()
-    {
-        // 이동하는 플랫폼과 플레이어의 위치를 동기화
-        SynchronizePlatform();
-    }
-
-
     void FixedUpdate()
     {
         // 이동 처리
         UpdateMovement();
+        
+        // 이동하는 플랫폼과 플레이어의 위치를 동기화
+        SynchronizePlatform();
 
         // 추가 물리 효과 적용
         AddExtraForce();
@@ -201,8 +197,11 @@ public class PlayerMovementController : MonoBehaviour
             playerMgr.isMoving = curMovement.Move();
 
         // 볼 상태가 아닐 때만 걷기 애니메이션 업데이트
-        if (!playerMgr.isBall) 
-            animator.SetBool("IsWalking", playerMgr.isMoving);
+        if (!playerMgr.isBall)
+        {
+            bool setWalking = playerMgr.isInputLock ? false : playerMgr.isMoving;
+            animator.SetBool("IsWalking", setWalking);
+        }
     }
 
     /// <summary>
@@ -254,7 +253,7 @@ public class PlayerMovementController : MonoBehaviour
                 // 이동 입력이 있으면 타이머 및 상태 해제
                 isRKeyPressedForCheckpoint = false;
                 HLogger.General.Info("이동 입력 감지됨. 체크포인트 이동 타이머 취소.");
-                return; 
+                return;
             }
 
             // 5초가 경과했는지 확인 (이동 입력이 없었을 경우)
@@ -307,33 +306,33 @@ public class PlayerMovementController : MonoBehaviour
             return;
 
         // 점프할 수 있는 지면에 닿아있거나 슬라이드/접착 벽에 있을 때 점프 가능
-            if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall)
+        if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall) 
+        {
+            // 점프 후 충분한 시간이 지났는지 확인 (연속 점프 방지)
+            if (Time.time - jumpStartTime > 0.2f) 
             {
-                // 점프 후 충분한 시간이 지났는지 확인 (연속 점프 방지)
-                if (Time.time - jumpStartTime > 0.2f)
-                {
-                    jumpCount = 0;
-                }
-
-                // 점프 입력이 있으면 점프 실행
-                if (Input.GetKeyDown(KeyCode.Space) && !isInputLock)
-                {
-                    PerformJump();
-                    jumpStartTime = Time.time;
-                }
+                jumpCount = 0;
             }
-            // 공중에서 점프 (더블 점프)
-            else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !isInputLock)
+            
+            // 점프 입력이 있으면 점프 실행
+            if (Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
             {
-                if (playerMgr.skill.HasDoubleJump() && jumpCount < 2)
-                {
-                    PerformJump();
-                    jumpCount = 2;
-                }
+                PerformJump();
+                jumpStartTime = Time.time;
             }
+        }
+        // 공중에서 점프 (더블 점프)
+        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
+        {
+            if (playerMgr.skill.HasDoubleJump() && jumpCount < 2) 
+            {
+                PerformJump();
+                jumpCount = 2;
+            }
+        }
 
         // 점프 상태 업데이트 (지면에 닿았을 때)
-        if (playerMgr.isJumping && playerMgr.isGround && Time.time - jumpStartTime > 0.2f) 
+        if (playerMgr.isJumping && playerMgr.isGround && Time.time - jumpStartTime > 0.2f)
         {
             playerMgr.isJumping = false;
         }
@@ -351,7 +350,7 @@ public class PlayerMovementController : MonoBehaviour
         playerMgr.isJumping = true;
 
         // 슬라이드 벽에서 점프하는 경우
-        if (playerMgr.isOnSlideWall) 
+        if (playerMgr.isOnSlideWall)
         {
             PerformSlideWallJump();
         }
@@ -367,10 +366,10 @@ public class PlayerMovementController : MonoBehaviour
     {
         float power = 7f;
         Vector3 normal = playerMgr.slideWallNormal;
-        
+
         // 벽 반대방향으로 튕겨나감
         rb.AddForce(normal * power + Vector3.up * 2, ForceMode.VelocityChange);
-        
+
         // 일시적으로 입력 잠금
         playerMgr.isInputLock = true;
         playerMgr.SetInputLockAfterSeconds(false, 0.3f);
@@ -387,7 +386,7 @@ public class PlayerMovementController : MonoBehaviour
         float _rotateSpeed = 15;
         float time = 0f;
 
-        while(time < 0.3f) 
+        while (time < 0.3f)
         {
             Vector3 dir = rb.velocity;
             dir = new Vector3(dir.x, 0, dir.z);
@@ -420,21 +419,21 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleGlidingInput()
     {
         // 공중에서 스페이스바를 누르면 활공 토글
-        if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !playerMgr.onWire) 
+        if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !playerMgr.onWire)
         {
             // jumped : 이번 Update 프레임 때 점프를 했는지
-            if (!jumped && playerMgr.skill.HasGliding()) 
+            if (!jumped && playerMgr.skill.HasGliding())
             {
                 playerMgr.isGliding = !playerMgr.isGliding;
             }
         }
-        
+
         // 지면에 닿으면 활공 종료
-        if (playerMgr.isGround) 
+        if (playerMgr.isGround)
         {
             playerMgr.isGliding = false;
         }
-        
+
         // 활공 메시 표시 여부 설정
         glidingMesh.SetActive(playerMgr.isGliding);
     }
@@ -499,11 +498,11 @@ public class PlayerMovementController : MonoBehaviour
         if (!groundCheck.CustomGroundCheck(hamsterWireCheckGroundDistance))
             return;
 
-        rb.AddForce(Physics.gravity * enhanceGravityRate);
+        // rb.AddForce(Physics.gravity * enhanceGravityRate);
         if (rb.velocity.y > 0)
         {
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.MovePosition(rb.transform.position - Vector3.up * rb.velocity.y * Time.fixedDeltaTime);
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
         }
     }
     #endregion
@@ -538,14 +537,16 @@ public class PlayerMovementController : MonoBehaviour
     /// </summary>
     void UpdateBoostEnergy()
     {
-        if (playerMgr.isBoosting) {
+        if (playerMgr.isBoosting)
+        {
             // 부스터 사용중 에너지 감소
             if (currentBoostEnergy > 0)
                 currentBoostEnergy -= energyUsageRatePerSeconds * Time.deltaTime;
             else
                 currentBoostEnergy = 0;
         }
-        else {
+        else
+        {
             // 부스터 미사용 시 에너지 회복
             if (currentBoostEnergy < maxBoostEnergy)
                 currentBoostEnergy += energyRecoveryRatePerSeconds * Time.deltaTime;
@@ -585,6 +586,7 @@ public class PlayerMovementController : MonoBehaviour
             {
                 if (transform.parent == null)
                     transform.parent = platformParent;
+                SetIsGroundMoving();
                 platformParent.position = curPlatform.transform.position;
             }
         }
@@ -593,7 +595,18 @@ public class PlayerMovementController : MonoBehaviour
         {
             curPlatform = null;
             transform.parent = null;
+            playerMgr.isGroundMoving = false;
         }
+    }
+
+    /// <summary>
+    /// PlayerManager의 isGroundMoving 변수 설정
+    /// </summary>
+    private void SetIsGroundMoving()
+    {
+        Vector3 diff = curPlatform.transform.position - platformParent.position;
+        float sqrDistOneSecond = (diff / Time.fixedDeltaTime).sqrMagnitude;
+        playerMgr.isGroundMoving = sqrDistOneSecond > 0.1f;
     }
     #endregion
 }
