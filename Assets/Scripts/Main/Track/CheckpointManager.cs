@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Hampossible.Utils;
 
-public class CheckpointManager : PersistentSingleton<CheckpointManager>
+public class CheckpointManager : RuntimeSingleton<CheckpointManager>
 {
     //public static CheckpointManager Instance { get; private set; }
 

@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class UIManager : PersistentSingleton<UIManager>
+public class UIManager : RuntimeSingleton<UIManager>
 {
 	[Header("References")]
 	[SerializeField] private TextMeshProUGUI timerText;
