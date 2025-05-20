@@ -74,7 +74,7 @@ public class LaserController : MonoBehaviour
 
         myRenderer = GetComponent<Renderer>();
         laserColor = myRenderer.material.color;
-        player = PlayerManager.instance.transform;
+        player = PlayerManager.Instance.transform;
 
         if (!isLaserMoving)
         {
@@ -174,7 +174,7 @@ public class LaserController : MonoBehaviour
     {
         float _detectLineDist;
         // 햄스터 와이어로 물체를 끌어오는 경우를 대비해서 감지 거리를 늘림
-        if (PlayerManager.instance.onWire && !PlayerManager.instance.isBall && detectLineDist < 60)
+        if (PlayerManager.Instance.onWire && !PlayerManager.Instance.isBall && detectLineDist < 60)
             _detectLineDist = 60;
         else
             _detectLineDist = detectLineDist;
@@ -210,7 +210,7 @@ public class LaserController : MonoBehaviour
     private void DetectedPlayer()
     {
         if (laserType == LaserType.LightningShock)
-            PlayerManager.instance.LightningShock();
+            PlayerManager.Instance.LightningShock();
         else if (laserType == LaserType.PlatformDisappear)
             platformDisappearMgr.PlatformDisappear();
     }

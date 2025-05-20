@@ -206,7 +206,7 @@ public class BallWireController : MonoBehaviour, IWire
         sj.connectedAnchor = hitPoint.position;
 
         // 공중에 있을 때 와이어 방향으로 플레이어 회전
-        if (!PlayerManager.instance.isGround) {
+        if (!PlayerManager.Instance.isGround) {
             transform.rotation = Quaternion.Slerp(transform.rotation, 
                                                   Quaternion.LookRotation(hitPoint.position - transform.position), 
                                                   3 * Time.deltaTime);
@@ -222,7 +222,7 @@ public class BallWireController : MonoBehaviour, IWire
         sj.maxDistance = Mathf.Max(2f, sj.maxDistance);
 
         // 이전 지면 상태 저장
-        prevIsGround = PlayerManager.instance.isGround;
+        prevIsGround = PlayerManager.Instance.isGround;
 
         // 디버그
         if (debugMax != sj.maxDistance || debugMin != sj.minDistance) 
@@ -259,7 +259,7 @@ public class BallWireController : MonoBehaviour, IWire
     /// </summary>
     private void UpdateWireLengthNonRetractor()
     {
-        if (PlayerManager.instance.isGround)
+        if (PlayerManager.Instance.isGround)
         {
             if (updateWireLengStatus != 0)
                 StartCoroutine(StabilizeSpringOnBounce());
@@ -296,7 +296,7 @@ public class BallWireController : MonoBehaviour, IWire
         waitUntilFall = false;
         
         // 점프 중이 아니라면 바로 와이어 길이 고정
-        if (!PlayerManager.instance.isJumping)
+        if (!PlayerManager.Instance.isJumping)
         {
             updateWireLengStatus = 1;
             FixWireLengthToCurrentDistance();

@@ -28,7 +28,7 @@ public class TrampolineController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !PlayerManager.instance.isInputLock) 
+        if (Input.GetKeyDown(KeyCode.Space) && !PlayerManager.Instance.isInputLock) 
         {
             isJump = true;
             jumpStartTime = Time.time;
@@ -61,7 +61,7 @@ public class TrampolineController : MonoBehaviour
         // 충돌 직후 플레이어의 y축 속도 변경
         Vector3 newVel = preVelocity;
 
-        float bounceStrength = PlayerManager.instance.isBall ? bounceStrengthBall : bounceStrengthHamster;
+        float bounceStrength = PlayerManager.Instance.isBall ? bounceStrengthBall : bounceStrengthHamster;
         newVel.y = Mathf.Abs(newVel.y) * bounceStrength;
         // 선입력 슈퍼점프 발동
         if (isJump && Time.time - jumpStartTime < superJumpReactionTime) 
@@ -85,10 +85,10 @@ public class TrampolineController : MonoBehaviour
     private void AddSuperJumpForce()
     {
         
-        Vector3 newVel = PlayerManager.instance.GetComponent<PlayerMovementController>().lastVelocity;
+        Vector3 newVel = PlayerManager.Instance.GetComponent<PlayerMovementController>().lastVelocity;
         newVel.y = Mathf.Abs(newVel.y * superJumpBounceRate); // 충돌하자마자 바로 발동되면 lastVel.y < 0인 경우가 있음
         newVel.y = Mathf.Min(newVel.y, maxSuperJumpVelocityY);
-        PlayerManager.instance.GetComponent<Rigidbody>().velocity = newVel;
+        PlayerManager.Instance.GetComponent<Rigidbody>().velocity = newVel;
 
         Debug.Log($"트램펄린 후입력 슈퍼 점프 발동, vel : {newVel}");
     }

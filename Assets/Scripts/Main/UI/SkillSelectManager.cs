@@ -20,7 +20,7 @@ public class SkillSelectManager : MonoBehaviour
 
     void OnEnable()
     {
-        skill = PlayerManager.instance.skill;
+        skill = PlayerManager.Instance.skill;
 
         if (isFood)
         {

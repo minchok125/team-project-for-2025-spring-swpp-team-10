@@ -45,7 +45,9 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     public void OnUpdate()
     {
         UpdatePhysicMaterial();
-        moveDir = PlayerManager.instance.moveDir;
+
+        moveDir = PlayerManager.Instance.moveDir;
+
         Rotate();
     }
 
@@ -58,17 +60,14 @@ public class HamsterMovementController : MonoBehaviour, IMovement
         /// - 땅에 있을 때: 마찰력 O (hamsterGround)
         /// - 슬라이드 벽에서 정지 상태: 마찰력 O (hamsterGround)
         /// - 공중이나 움직이는 중: 마찰력 X (hamsterJump)
-        bool useGroundMaterial = (PlayerManager.instance.isGround && !PlayerManager.instance.isOnSlideWall)
-                                 || (PlayerManager.instance.isOnSlideWall && !PlayerManager.instance.isMoving);
+        bool useGroundMaterial = (PlayerManager.Instance.isGround && !PlayerManager.Instance.isOnSlideWall)
+                                 || (PlayerManager.Instance.isOnSlideWall && !PlayerManager.Instance.isMoving);
 
-        // if (PlayerManager.instance.isGround && PlayerManager.instance.onWire)
-        //     col.material = hamsterGroundWire;
         if (useGroundMaterial)
             col.material = hamsterGround;
         else
             col.material = hamsterJump;
     }
-
 
     /// <summary>
     /// 이동 방향에 따라 캐릭터를 회전시킵니다.
@@ -76,22 +75,22 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     private void Rotate()
     {
         // 입력이 없거나 접착벽에 붙었다면 회전하지 않음
-        if (PlayerManager.instance.moveDir == Vector3.zero || PlayerManager.instance.isOnStickyWall
-            || PlayerManager.instance.isInputLock)
+        if (PlayerManager.Instance.moveDir == Vector3.zero || PlayerManager.Instance.isOnStickyWall
+            || PlayerManager.Instance.isInputLock)
             return;
 
-        Vector3 moveDir = PlayerManager.instance.moveDir;
+        Vector3 moveDir = PlayerManager.Instance.moveDir;
 
         // 바라볼 방향 (y축 고정)
         Quaternion targetRotation = Quaternion.LookRotation(-moveDir.normalized, Vector3.up);
 
         // 슬라이드 벽에서는 더 빠르게 회전
-        float rotateSpeed = ROTATE_SPEED;
-        if (PlayerManager.instance.isOnSlideWall)
-            rotateSpeed *= 2.5f;
+        float _rotateSpeed = ROTATE_SPEED;
+        if (PlayerManager.Instance.isOnSlideWall)
+            _rotateSpeed *= 2.5f;
 
         // 부드럽게 회전
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * ROTATE_SPEED);
     }
 
 
@@ -123,7 +122,7 @@ public class HamsterMovementController : MonoBehaviour, IMovement
         }
 
         // 공중에서 입력이 없는 경우 빠르게 감속
-        if (moveDir == Vector3.zero && !PlayerManager.instance.isGround)
+        if (moveDir == Vector3.zero && !PlayerManager.Instance.isGround)
         {
             float velX = rb.velocity.x * (1 - DRAG_SPEED * Time.fixedDeltaTime);
             float velZ = rb.velocity.z * (1 - DRAG_SPEED * Time.fixedDeltaTime);
@@ -141,10 +140,10 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     private float CalculateMaxVelocity()
     {
         float maxVelocity = Input.GetKey(KeyCode.LeftShift) ? runVelocity : walkVelocity;
-        maxVelocity *= PlayerManager.instance.skill.GetSpeedRate();
+        maxVelocity *= PlayerManager.Instance.skill.GetSpeedRate();
 
         // 오브젝트 잡고 움직이는 중
-        if (PlayerManager.instance.onWire && HamsterWireController.grabRb != null) 
+        if (PlayerManager.Instance.onWire && HamsterWireController.grabRb != null) 
             maxVelocity *= HamsterWireController.speedFactor;
 
         return maxVelocity;
