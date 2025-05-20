@@ -248,6 +248,23 @@ public class PlayerManager : MonoBehaviour
         modeConvert = null;
     }
 
+    private void Update()
+    {
+        if (isInputLock) moveDir = Vector3.zero;
+        else moveDir = GetInputMoveDir();
+    }
+
+    private void FixedUpdate()
+    {
+        if (accumulatedMovement != Vector3.zero)
+        {
+            rb.MovePosition(rb.position + accumulatedMovement);
+            accumulatedMovement = Vector3.zero;
+        }
+    }
+    #endregion
+
+
     private void InitializeComponents()
     {
         // 필요한 컴포넌트 참조 가져오기
@@ -263,21 +280,6 @@ public class PlayerManager : MonoBehaviour
             = transform.Find("Hamster Ball")
                        .Find("Lightning Particle")?.gameObject;
     }
-
-    private void Update()
-    {
-        moveDir = GetInputMoveDir();
-    }
-
-    private void FixedUpdate()
-    {
-        if (accumulatedMovement != Vector3.zero)
-        {
-            rb.MovePosition(rb.position + accumulatedMovement);
-            accumulatedMovement = Vector3.zero;
-        }
-    }
-    #endregion
 
 
     /// <summary>
