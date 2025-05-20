@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using Hampossible.Utils;
-using UnityEditor.EditorTools;
 using UnityEngine;
 
 public class DrawerConfiner : MonoBehaviour

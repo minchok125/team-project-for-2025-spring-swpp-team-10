@@ -135,8 +135,6 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void HandlePlayerInput()
     {
-        if (PlayerManager.Instance.isInputLock)
-            return;
         HandleMouseInput();
         HandleKeyboardInput();
     }
@@ -150,7 +148,7 @@ public class PlayerWireController : MonoBehaviour
         if (!EventSystem.current.IsPointerOverGameObject())
         {
             // 와이어 발사
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !PlayerManager.instance.isInputLock)
             {
                 WireShoot();
             }
@@ -163,7 +161,7 @@ public class PlayerWireController : MonoBehaviour
             // 빠르게 와이어 감기
             if (PlayerManager.Instance.skill.HasRetractor())
             {
-                if (Input.GetMouseButtonDown(1))
+                if (Input.GetMouseButtonDown(1) && !PlayerManager.instance.isInputLock)
                 {
                     shortenStartTime = Time.time;
                     isShortenWireFast = true;
@@ -184,7 +182,7 @@ public class PlayerWireController : MonoBehaviour
         if (PlayerManager.Instance.skill.HasRetractor())
         {
             // 와이어 감기
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.Q) && !PlayerManager.instance.isInputLock)
             {
                 shortenStartTime = Time.time;
                 isShortenWireSlow = true;
@@ -195,7 +193,7 @@ public class PlayerWireController : MonoBehaviour
             }
 
             //와이어 풀기
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E) && !PlayerManager.instance.isInputLock)
             {
                 extendStartTime = Time.time;
                 isExtendWire = true;
@@ -547,12 +545,12 @@ public class PlayerWireController : MonoBehaviour
 
         predictionHit = raycastHit.point == Vector3.zero ? sphereCastHit : raycastHit;
 
-        if (raycastHit.point == Vector3.zero && sphereCastHit.point == Vector3.zero)
-            Debug.Log("NOT FOUND");
-        else if (raycastHit.point == Vector3.zero && sphereCastHit.point != Vector3.zero)
-            Debug.Log("SPHERE FOUND");
-        if (raycastHit.point != Vector3.zero)
-            Debug.Log("RAY FOUND");
+        // if (raycastHit.point == Vector3.zero && sphereCastHit.point == Vector3.zero)
+        //     Debug.Log("NOT FOUND");
+        // else if (raycastHit.point == Vector3.zero && sphereCastHit.point != Vector3.zero)
+        //     Debug.Log("SPHERE FOUND");
+        // if (raycastHit.point != Vector3.zero)
+        //     Debug.Log("RAY FOUND");
 
         // if (realHitPoint != Vector3.zero)
         //     ValidatePredictionTarget(predictionHit);
@@ -598,7 +596,6 @@ public class PlayerWireController : MonoBehaviour
         if (!canGrab)
         {
             predictionPoint.gameObject.SetActive(false);
-            Debug.Log("22");
             hit.point = Vector3.zero;
         }
 
