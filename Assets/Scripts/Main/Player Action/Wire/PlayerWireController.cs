@@ -148,20 +148,20 @@ public class PlayerWireController : MonoBehaviour
         if (!EventSystem.current.IsPointerOverGameObject())
         {
             // 와이어 발사
-            if (Input.GetMouseButtonDown(0) && !PlayerManager.instance.isInputLock)
+            if (Input.GetMouseButtonDown(0) && !PlayerManager.Instance.isInputLock)
             {
                 WireShoot();
             }
             // 와이어 발사 종료
-            if (!Input.GetMouseButton(0) && PlayerManager.instance.onWire)
+            if (!Input.GetMouseButton(0) && PlayerManager.Instance.onWire)
             {
                 EndShoot();
             }
 
             // 빠르게 와이어 감기
-            if (PlayerManager.instance.skill.HasRetractor())
+            if (PlayerManager.Instance.skill.HasRetractor())
             {
-                if (Input.GetMouseButtonDown(1) && !PlayerManager.instance.isInputLock)
+                if (Input.GetMouseButtonDown(1) && !PlayerManager.Instance.isInputLock)
                 {
                     shortenStartTime = Time.time;
                     isShortenWireFast = true;
@@ -179,10 +179,10 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void HandleKeyboardInput()
     {
-        if (PlayerManager.instance.skill.HasRetractor())
+        if (PlayerManager.Instance.skill.HasRetractor())
         {
             // 와이어 감기
-            if (Input.GetKeyDown(KeyCode.Q) && !PlayerManager.instance.isInputLock)
+            if (Input.GetKeyDown(KeyCode.Q) && !PlayerManager.Instance.isInputLock)
             {
                 shortenStartTime = Time.time;
                 isShortenWireSlow = true;
@@ -193,7 +193,7 @@ public class PlayerWireController : MonoBehaviour
             }
 
             //와이어 풀기
-            if (Input.GetKeyDown(KeyCode.E) && !PlayerManager.instance.isInputLock)
+            if (Input.GetKeyDown(KeyCode.E) && !PlayerManager.Instance.isInputLock)
             {
                 extendStartTime = Time.time;
                 isExtendWire = true;
@@ -214,7 +214,7 @@ public class PlayerWireController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab) && Time.time - convertedTime > 0.5f)
         {
-            PlayerManager.instance.ModeConvert();
+            PlayerManager.Instance.ModeConvert();
             EndShoot();
             convertedTime = Time.time;
         }
@@ -238,7 +238,7 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void DrawWire()
     {
-        if (PlayerManager.instance.onWire) 
+        if (PlayerManager.Instance.onWire) 
         {
             lr.SetPosition(0, transform.position);
             lr.SetPosition(1, hitPoint.position);
@@ -255,7 +255,7 @@ public class PlayerWireController : MonoBehaviour
         if (predictionHit.point != Vector3.zero && predictionHit.collider.gameObject != gameObject) 
         {
             // 햄스터용 오브젝트이고 pull 스킬이 없는 경우는 외곽선 표시하지 않음
-            bool reject = !PlayerManager.instance.isBall && !PlayerManager.instance.skill.HasHamsterWire();
+            bool reject = !PlayerManager.Instance.isBall && !PlayerManager.Instance.skill.HasHamsterWire();
             bool isHamsterObj = predictionHit.collider.gameObject.GetComponent<ObjectProperties>()?.canGrabInHamsterMode == true;
             reject = reject && isHamsterObj;
 
@@ -308,26 +308,26 @@ public class PlayerWireController : MonoBehaviour
         // 햄스터, 공 와이어 둘 다 가능한 오브젝트
         if (objProperty.canGrabInBallMode && objProperty.canGrabInHamsterMode)
         {
-            currentWire = PlayerManager.instance.isBall ? GetComponent<BallWireController>() 
+            currentWire = PlayerManager.Instance.isBall ? GetComponent<BallWireController>() 
                                                         : GetComponent<HamsterWireController>();
         }
         // 공 와이어만 가능한 오브젝트
         else if (objProperty.canGrabInBallMode)
         {
             currentWire = GetComponent<BallWireController>();
-            PlayerManager.instance.ConvertToBall();
+            PlayerManager.Instance.ConvertToBall();
         }
         // 햄스터 와이어만 가능한 오브젝트
         else if (objProperty.canGrabInHamsterMode)
         {
-            if (!PlayerManager.instance.skill.HasHamsterWire())
+            if (!PlayerManager.Instance.skill.HasHamsterWire())
             {
                 // 스킬이 없으면 와이어 사용 불가
                 grabObject = null;
                 return false;
             }
             currentWire = GetComponent<HamsterWireController>();
-            PlayerManager.instance.ConvertToHamster();
+            PlayerManager.Instance.ConvertToHamster();
         }
         
         return true;
@@ -339,9 +339,9 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void ConfigureWireShot()
     {
-        PlayerManager.instance.isGliding = false;
-        PlayerManager.instance.onWire = true;
-        PlayerManager.instance.onWireCollider = predictionHit.collider;
+        PlayerManager.Instance.isGliding = false;
+        PlayerManager.Instance.onWire = true;
+        PlayerManager.Instance.onWireCollider = predictionHit.collider;
 
         // hitPoint 설정
         hitPoint = isHitPoint1 ? hitPoint1 : hitPoint2;
@@ -365,15 +365,15 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     public void EndShoot()
     {
-        if (!PlayerManager.instance.onWire)
+        if (!PlayerManager.Instance.onWire)
             return;
 
         GrabbedObjectExit();
 
         grabObject = null;
         hitPoint.SetParent(followPlayerHitParent);
-        PlayerManager.instance.onWire = false;
-        PlayerManager.instance.onWireCollider = null;
+        PlayerManager.Instance.onWire = false;
+        PlayerManager.Instance.onWireCollider = null;
         lr.positionCount = 0;
         currentWire.EndShoot();
 
@@ -455,7 +455,7 @@ public class PlayerWireController : MonoBehaviour
     /// <param name="isFast">빠른 감기 모드 여부</param>
     private void ShortenWire(bool isFast)
     {
-        if (!PlayerManager.instance.onWire)
+        if (!PlayerManager.Instance.onWire)
             return;
         
         currentWire.ShortenWire(isFast);
@@ -467,7 +467,7 @@ public class PlayerWireController : MonoBehaviour
     /// <param name="isFast">빠른 감기 모드 여부</param>
     private void ShortenWireEnd(bool isFast)
     {
-        if (!PlayerManager.instance.onWire)
+        if (!PlayerManager.Instance.onWire)
             return;
         
         currentWire.ShortenWireEnd(isFast);
@@ -478,7 +478,7 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void ExtendWire()
     {
-        if (!PlayerManager.instance.onWire) 
+        if (!PlayerManager.Instance.onWire) 
             return;
 
         currentWire.ExtendWire();
@@ -489,7 +489,7 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void ExtendWireEnd()
     {
-        if (!PlayerManager.instance.onWire) 
+        if (!PlayerManager.Instance.onWire) 
             return;
 
         currentWire.ExtendWireEnd();
@@ -583,9 +583,9 @@ public class PlayerWireController : MonoBehaviour
             canGrab = false;
         }
         // 햄스터 그랩이 가능한 오브젝트이며, 햄스터 와이어는 없을 때
-        else if (obj.canGrabInHamsterMode && !PlayerManager.instance.skill.HasHamsterWire())
+        else if (obj.canGrabInHamsterMode && !PlayerManager.Instance.skill.HasHamsterWire())
         {
-            bool isBall = PlayerManager.instance.isBall;
+            bool isBall = PlayerManager.Instance.isBall;
             // 현재 공 모드라면, 공 모드에서 못 잡는 오브젝트여야 함. 또는 햄스터 모드여야 함.
             if (isBall && !obj.canGrabInBallMode || !isBall)
             {
@@ -617,7 +617,7 @@ public class PlayerWireController : MonoBehaviour
 
         // 공 모드에서, 떨어지는 플랫폼에 와이어를 걸면 떨어트리기
         FallingPlatformController fpc = grabObject.GetComponent<FallingPlatformController>();
-        if (fpc != null && PlayerManager.instance.isBall)
+        if (fpc != null && PlayerManager.Instance.isBall)
             fpc.onWire = true;
     }
 
@@ -639,7 +639,7 @@ public class PlayerWireController : MonoBehaviour
 
         // 공 모드에서 떨어지는 플랫폼에 와이어를 걸면 떨어트리기 종료
         FallingPlatformController fpc = grabObject.GetComponent<FallingPlatformController>();
-        if (fpc != null && PlayerManager.instance.isBall)
+        if (fpc != null && PlayerManager.Instance.isBall)
             fpc.onWire = false;
     }
     #endregion

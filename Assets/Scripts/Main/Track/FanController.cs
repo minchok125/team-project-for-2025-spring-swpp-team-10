@@ -55,8 +55,8 @@ public class FanController : MonoBehaviour
                     if (!prevIsInPlayer) 
                     {
                         prevIsInPlayer = true;
-                        PlayerManager.instance.isInsideFan = true;
-                        PlayerManager.instance.fanDirection = direction;
+                        PlayerManager.Instance.isInsideFan = true;
+                        PlayerManager.Instance.fanDirection = direction;
                     }
                 }
             }
@@ -66,8 +66,8 @@ public class FanController : MonoBehaviour
         if (prevIsInPlayer && !curIsInPlayer) 
         {
             prevIsInPlayer = false;
-            PlayerManager.instance.isInsideFan = false;
-            PlayerManager.instance.fanDirection = Vector3.zero;
+            PlayerManager.Instance.isInsideFan = false;
+            PlayerManager.Instance.fanDirection = Vector3.zero;
         }
     }
 

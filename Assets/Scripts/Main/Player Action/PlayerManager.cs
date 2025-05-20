@@ -20,7 +20,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerSkillController))]
 [RequireComponent(typeof(PlayerMaterialController))]
 [RequireComponent(typeof(GroundCheck))]
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : RuntimeSingleton<PlayerManager>
 {
     #region Inspector Properties
     [Header("Audio Clips")]
@@ -36,11 +36,6 @@ public class PlayerManager : MonoBehaviour
 
     #region Public Variables
     [Header("Public Variables")]
-    /// <summary>
-    /// 싱글톤 인스턴스로, 다른 스크립트에서 PlayerManager에 쉽게 접근할 수 있게 합니다.
-    /// </summary>
-    public static PlayerManager instance;
-
     /// <summary>
     /// 플레이어가 현재 점프 중인지 여부를 나타냅니다.
     /// </summary>
@@ -221,7 +216,7 @@ public class PlayerManager : MonoBehaviour
 
     private Action modeConvert; // 
     private Vector3 accumulatedMovement;
-    private float lightningShockCooltime = 3f;
+    private const float LIGHTNING_SHOCK_COOLTIME = 3f;
     private bool canLightningShock;
 
 
@@ -231,11 +226,9 @@ public class PlayerManager : MonoBehaviour
 
 
     #region Unity Lifecycle Methods
-    private void Awake()
+    protected override void Awake()
     {
-        // 싱글톤 패턴 구현
-        if (instance == null) instance = this;
-        else Destroy(gameObject);  
+        base.Awake();
 
         InitializeComponents();
 
@@ -428,7 +421,7 @@ public class PlayerManager : MonoBehaviour
 
         GameManager.PlaySfx(lightningShockAudio);
 
-        Invoke(nameof(LightningShockEndAfterFewSeconds), 3f);
+        Invoke(nameof(LightningShockEndAfterFewSeconds), LIGHTNING_SHOCK_COOLTIME);
     }
     // inputLock 풀림, 전기효과 풀림
     private void LightningShockEndAfterFewSeconds()

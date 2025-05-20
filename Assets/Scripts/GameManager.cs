@@ -13,10 +13,8 @@ public class SfxAudioClip
 public enum SfxType { TestSfx, LightningShock, LaserPlatformDisappear }
 
 
-public class GameManager : MonoBehaviour
+public class GameManager : PersistentSingleton<GameManager>
 {
-    public static GameManager Instance { get; private set; }
-
     [Header("References")]
     [SerializeField] private AudioSource bgmSource;
     [SerializeField] private AudioSource sfxSource;
@@ -45,15 +43,17 @@ public class GameManager : MonoBehaviour
 
     // UI
 
-    private void Awake()
+    protected override void Awake()
     {
-        if (Instance == null)
+        if (IsInstanceNull())
         {
-            Instance = this;
+            base.Awake();
             Init();
-            DontDestroyOnLoad(gameObject);
         }
-        else Destroy(gameObject);
+        else
+        {
+            base.Awake();
+        }
     }
 
     private void Init()
