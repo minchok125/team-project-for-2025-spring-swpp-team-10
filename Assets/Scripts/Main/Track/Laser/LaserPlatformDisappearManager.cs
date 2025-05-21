@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Rendering;
 
 public class LaserPlatformDisappearManager : MonoBehaviour
 {
@@ -11,79 +12,117 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     [SerializeField] private GameObject[] disappearObjects;
     [SerializeField] private AudioClip disappearSound;
 
-    private List<Material> ditheringMts; // 디더링 효과를 내는 머티리얼 모음
-    private List<Material> outlineFillMts; // 외곽선 머티리얼 모음
-    private List<Collider> disappearCols; // 사라질 콜라이더 모음
-    private bool isDisappearStart; // Disappear가 시작될 때는 true, 시작된 후는 false
+    private List<Renderer> _disappearRenderers; //// 디더링 효과를 내는 오브젝트의 렌더러 모음
+    private List<Color> _ditheringMatColors; // 디더링 효과를 내는 머티리얼의 각 색상
+    private MaterialPropertyBlock _outlineFillMpb; // 외곽선 머티리얼 (같은 머티리얼 공유)
+    private List<Collider> _disappearCols; // 사라질 콜라이더 모음
+    private bool _canDisappearStart; // Disappear가 시작될 때는 true, 시작된 후는 false
 
-    private Sequence disappearSequence; // Disappear된 후 appear되는 애니메이션
-    private const float fadeOutDuration = 2f; // FadeOut에 걸리는 시간
-    private const float fadeInDuration = 1f;  // FadeIn에 걸리는 시간
-    private const float stayTransparentDuration = 3f; // 투명한 상태에서 appear 시작될 때까지 대기하는 시간
+    private Sequence _disappearSequence; // Disappear된 후 appear되는 애니메이션
+    private const float FADE_OUT_DURATION = 2f; // FadeOut에 걸리는 시간
+    private const float FADE_IN_DURATION = 1f;  // FadeIn에 걸리는 시간
+    private const float STAY_TRANSPARENT_DURATION = 3f; // 투명한 상태에서 appear 시작될 때까지 대기하는 시간
 
-    static readonly int k_BaseColorID = Shader.PropertyToID("_BaseColor");
-    static readonly int k_OutlineColorID = Shader.PropertyToID("_OutlineColor");
+    private static readonly int k_BaseColorID = Shader.PropertyToID("_BaseColor");
+    private static readonly int k_OutlineColorID = Shader.PropertyToID("_OutlineColor");
+    private static readonly int k_OutlineWidthID = Shader.PropertyToID("_OutlineWidth");
+    private static readonly int k_StencilCompID = Shader.PropertyToID("_StencilComp");
+    private static readonly int k_OutlineEnabledToggle = Shader.PropertyToID("_OutlineEnabledToggle");
 
 
     private void Start()
     {
-        isDisappearStart = true;
+        _canDisappearStart = true;
         Invoke(nameof(Init), 0.1f);
     }
 
 
     private void Init()
     {
-        ditheringMts = new List<Material>();
-        outlineFillMts = new List<Material>();
-        disappearCols = new List<Collider>();
+        _disappearRenderers = new List<Renderer>();
+        _ditheringMatColors = new List<Color>();
+        _outlineFillMpb = new MaterialPropertyBlock();
+        _outlineFillMpb.SetFloat(k_OutlineWidthID, 4f);
+        _disappearCols = new List<Collider>();
+
         foreach (GameObject obj in disappearObjects)
         {
             Renderer rd = obj.GetComponent<Renderer>();
-            ditheringMts.Add(rd.materials[0]);
-            outlineFillMts.Add(rd.materials[2]);
+            _disappearRenderers.Add(rd);
+
+            Color color = rd.materials[0].GetColor(k_BaseColorID);
+            _ditheringMatColors.Add(color);
+
             foreach (Collider col in obj.GetComponentsInChildren<Collider>())
-                disappearCols.Add(col);
+                _disappearCols.Add(col);
         }
+
         SetAlpha(1);
     }
 
     public void PlatformDisappear()
     {
-        if (isDisappearStart)
+        if (_canDisappearStart)
         {
-            EndShoot();
-            GameManager.PlaySfx(disappearSound);
-            isDisappearStart = false;
+            DisappearStart();
         }
 
         // 기존 시퀀스 제거
-        if (disappearSequence != null && disappearSequence.IsActive())
+        if (_disappearSequence != null && _disappearSequence.IsActive())
         {
-            disappearSequence.Kill();
+            _disappearSequence.Kill();
         }
 
-        disappearSequence = DOTween.Sequence();
+        _disappearSequence = DOTween.Sequence();
 
         FadeOut();
-        disappearSequence.AppendInterval(stayTransparentDuration);
-        disappearSequence.AppendCallback(() => FadeIn());
-        disappearSequence.Play();
+        _disappearSequence.AppendInterval(STAY_TRANSPARENT_DURATION);
+        _disappearSequence.AppendCallback(() => FadeIn());
+        _disappearSequence.Play();
+    }
+
+    private void DisappearStart()
+    {
+        EndShoot();
+        GameManager.PlaySfx(disappearSound);
+        _canDisappearStart = false;
+        _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
+        _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
+        foreach (GameObject obj in disappearObjects)
+        {
+            if (obj.TryGetComponent(out DrawOutline draw))
+                draw.dontDrawHightlightOutline = true;
+        }
+    }
+
+    private void DisappearEnd()
+    {
+        _canDisappearStart = true;
+        _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 0f);
+        _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.Never);
+        foreach (GameObject obj in disappearObjects)
+        {
+            if (obj.TryGetComponent(out DrawOutline draw))
+                draw.dontDrawHightlightOutline = false;
+        }
     }
 
     // 오브젝트가 사라지고 외곽선만 남는 시퀀스
     private void FadeOut()
     {
-        Color current = ditheringMts[0].GetColor(k_BaseColorID);
+        float currentAlpha = _ditheringMatColors[0].a;
         float prevAlpha = 1f;
 
-        disappearSequence.Join(
-            DOVirtual.Float(current.a, 0f, fadeOutDuration, a =>
+        _disappearSequence.Join(
+            DOVirtual.Float(currentAlpha, 0f, FADE_OUT_DURATION, a =>
             {
                 SetAlpha(a);
                 // 알파값이 0.5일 때 콜라이더 비활성화
                 if (prevAlpha >= 0.5f && a < 0.5f)
+                {
                     SetCollider(false);
+                    EndShoot();
+                }
                 prevAlpha = a;
             })).SetEase(Ease.OutSine);
     }
@@ -91,19 +130,18 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     // 오브젝트가 나타나고 외곽선이 사라지는 시퀀스
     private void FadeIn()
     {
-        Color current = ditheringMts[0].GetColor(k_BaseColorID);
+        float currentAlpha = _ditheringMatColors[0].a;
         float prevAlpha = 0f;
 
-        disappearSequence.Join(
-            DOVirtual.Float(current.a, 1f, fadeInDuration, a =>
+        _disappearSequence.Join(
+            DOVirtual.Float(currentAlpha, 1f, FADE_IN_DURATION, a =>
             {
                 SetAlpha(a);
                 // 알파값이 0.5일 때 콜라이더 활성화
                 if (prevAlpha <= 0.5f && a > 0.5f)
                     SetCollider(true);
                 prevAlpha = a;
-            })).SetEase(Ease.OutSine)
-            .OnComplete(() => isDisappearStart = true);
+            }).OnComplete(() => DisappearEnd())).SetEase(Ease.OutSine);
     }
     
 
@@ -111,24 +149,28 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     /// 외곽선의 투명도는 1-a로 설정
     private void SetAlpha(float a)
     {
-        foreach (Material mt in ditheringMts)
+        Color outlineColor = new Color(0, 0, 0, 1 - a);
+        _outlineFillMpb.SetColor(k_OutlineColorID, outlineColor);
+
+        for (int i = 0; i < _disappearRenderers.Count; i++)
         {
-            Color color = mt.GetColor(k_BaseColorID);
+            MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+            _disappearRenderers[i].GetPropertyBlock(mpb, 0);
+
+            Color color = _ditheringMatColors[i];
             color.a = a;
-            mt.SetColor(k_BaseColorID, color);
-        }
-        foreach (Material mt in outlineFillMts)
-        {
-            Color color = mt.GetColor(k_OutlineColorID);
-            color.a = 1 - a;
-            mt.SetColor(k_OutlineColorID, color);
+            _ditheringMatColors[i] = color;
+
+            mpb.SetColor(k_BaseColorID, color);
+            _disappearRenderers[i].SetPropertyBlock(mpb, 0);
+            _disappearRenderers[i].SetPropertyBlock(_outlineFillMpb, 2);
         }
     }
 
     // 콜라이더들의 enabled를 active로 설정
     private void SetCollider(bool active)
     {
-        foreach (Collider col in disappearCols)
+        foreach (Collider col in _disappearCols)
             col.enabled = active;
     }
 
@@ -138,7 +180,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
         if (!PlayerManager.Instance.onWire)
             return;
 
-        foreach (Collider col in disappearCols)
+        foreach (Collider col in _disappearCols)
         {
             if (col == PlayerManager.Instance.onWireCollider)
                 PlayerManager.Instance.playerWire.EndShoot();
