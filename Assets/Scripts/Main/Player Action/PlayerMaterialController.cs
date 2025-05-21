@@ -9,7 +9,7 @@ public class PlayerMaterialController : MonoBehaviour
     [SerializeField] private float _fadeoffDist = 5f;
 
     private Rigidbody _playerRb;
-    private Renderer[] _playerRds;
+    private List<Renderer> _playerRds;
     private bool _prevOpaque;
 
     // 셰이더 프로퍼티 이름을 ID로 캐싱해 성능을 높입니다 (Shader.SetFloat 같은 함수에서 문자열 대신 ID 사용). k : k(c)onstant
@@ -18,7 +18,15 @@ public class PlayerMaterialController : MonoBehaviour
     void Start()
     {
         _playerRb = GetComponent<Rigidbody>();
-        _playerRds = GetComponentsInChildren<Renderer>(true); // true: 비활성화된 자식도 검색
+        Renderer[] rds = GetComponentsInChildren<Renderer>(true); // true: 비활성화된 자식도 검색
+        for (int i = 0; i < rds.Length; i++)
+        {
+            // 디더링 머티리얼만 넣기
+            if (rds[i].material.HasProperty(k_BaseColor))
+            {
+                _playerRds.Add(rds[i]);
+            }
+        }
 
         _prevOpaque = true;
     }
