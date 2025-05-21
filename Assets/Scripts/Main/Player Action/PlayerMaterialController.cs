@@ -6,54 +6,41 @@ using UnityEngine;
 public class PlayerMaterialController : MonoBehaviour
 {
     [Tooltip("햄스터가 투명해지기 시작하는 카메라와의 거리")]
-    [SerializeField] private float fadeoffDist = 5f;
+    [SerializeField] private float _fadeoffDist = 5f;
 
-    private Rigidbody rb;
-    private Material[] mts;
-    private bool prevOpaque;
+    private Rigidbody _playerRb;
+    private Renderer[] _playerRds;
+    private bool _prevOpaque;
 
     // 셰이더 프로퍼티 이름을 ID로 캐싱해 성능을 높입니다 (Shader.SetFloat 같은 함수에서 문자열 대신 ID 사용). k : k(c)onstant
-    static readonly int k_ZWriteID = Shader.PropertyToID("_ZWrite");
+    private static readonly int k_BaseColor = Shader.PropertyToID("_BaseColor");
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        Renderer[] rds = GetComponentsInChildren<Renderer>(true); // true: 비활성화된 자식도 검색
-        mts = new Material[rds.Length];
+        _playerRb = GetComponent<Rigidbody>();
+        _playerRds = GetComponentsInChildren<Renderer>(true); // true: 비활성화된 자식도 검색
 
-        for(int i = 0; i < rds.Length; i++) 
-        {
-            mts[i] = rds[i].material;
-        }
-
-        prevOpaque = true;
+        _prevOpaque = true;
     }
 
     void Update()
     {
-        float camDist = (Camera.main.transform.position - rb.transform.position).magnitude;
-        float alpha = (Mathf.Clamp(camDist, 2, fadeoffDist) - 2) / (fadeoffDist - 2);
-        if (prevOpaque && alpha > 0.999f) // 이전 프레임과 현재 프레임이 불투명 상태라면 처리할 필요 없음
+        float camDist = (Camera.main.transform.position - _playerRb.transform.position).magnitude;
+        float alpha = (Mathf.Clamp(camDist, 2, _fadeoffDist) - 2) / (_fadeoffDist - 2);
+        if (_prevOpaque && alpha > 0.999f) // 이전 프레임과 현재 프레임이 불투명 상태라면 처리할 필요 없음
             return;
 
-        prevOpaque = alpha > 0.999f;
+        _prevOpaque = alpha > 0.999f;
 
         // 투명도 조절
-        foreach (Material mt in mts) 
+        foreach (Renderer rd in _playerRds)
         {
-            if (mt.HasProperty("_Color"))
-            {
-                Color color = mt.color;
-                color.a = alpha;
-                mt.color = color;
-            }
-
-            // Z버퍼 쓰기가 켜지면(1) 이 물체가 다른 물체를 가릴 수 있음. 
-            // Z버퍼 쓰기가 꺼지면(0) 이 물체가 다른 물체를 가리지 않음(투명 객체에 적합).
-            if (mt.HasProperty(k_ZWriteID))
-            {
-                mt.SetInt(k_ZWriteID, alpha > 0.9f ? 1 : 0);
-            }
+            Color color = rd.material.GetColor(k_BaseColor);
+            color.a = alpha;
+            MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+            rd.GetPropertyBlock(mpb);
+            mpb.SetColor(k_BaseColor, color);
+            rd.SetPropertyBlock(mpb);
         }
     }
 }
