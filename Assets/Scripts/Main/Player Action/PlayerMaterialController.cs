@@ -19,6 +19,7 @@ public class PlayerMaterialController : MonoBehaviour
     {
         _playerRb = GetComponent<Rigidbody>();
         Renderer[] rds = GetComponentsInChildren<Renderer>(true); // true: 비활성화된 자식도 검색
+        _playerRds = new List<Renderer>();
         for (int i = 0; i < rds.Length; i++)
         {
             // 디더링 머티리얼만 넣기

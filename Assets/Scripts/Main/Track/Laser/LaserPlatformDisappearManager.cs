@@ -15,6 +15,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     private List<Renderer> _disappearRenderers; //// 디더링 효과를 내는 오브젝트의 렌더러 모음
     private List<Color> _ditheringMatColors; // 디더링 효과를 내는 머티리얼의 각 색상
     private MaterialPropertyBlock _outlineFillMpb; // 외곽선 머티리얼 (같은 머티리얼 공유)
+    private List<int> _outlineFillIdxes; // 렌더러의 머티리얼들 중에서 OutlineFill 머티리얼의 인덱스
     private List<Collider> _disappearCols; // 사라질 콜라이더 모음
     private bool _canDisappearStart; // Disappear가 시작될 때는 true, 시작된 후는 false
 
@@ -43,12 +44,24 @@ public class LaserPlatformDisappearManager : MonoBehaviour
         _ditheringMatColors = new List<Color>();
         _outlineFillMpb = new MaterialPropertyBlock();
         _outlineFillMpb.SetFloat(k_OutlineWidthID, 4f);
+        _outlineFillIdxes = new List<int>();
         _disappearCols = new List<Collider>();
 
         foreach (GameObject obj in disappearObjects)
         {
             Renderer rd = obj.GetComponent<Renderer>();
             _disappearRenderers.Add(rd);
+
+            int outlineFillIdx = FindMaterialIndex(rd, "OutlineFill");
+            if (outlineFillIdx == -1)
+            {
+                _outlineFillIdxes.Add(rd.materials.Length + 1);
+                obj.AddComponent<Outline>();
+            }
+            else
+            {
+                _outlineFillIdxes.Add(outlineFillIdx);
+            }
 
             Color color = rd.materials[0].GetColor(k_BaseColorID);
             _ditheringMatColors.Add(color);
@@ -143,7 +156,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
                 prevAlpha = a;
             }).OnComplete(() => DisappearEnd())).SetEase(Ease.OutSine);
     }
-    
+
 
     /// 오브젝트 본체의 투명도를 a로 설정
     /// 외곽선의 투명도는 1-a로 설정
@@ -163,7 +176,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
 
             mpb.SetColor(k_BaseColorID, color);
             _disappearRenderers[i].SetPropertyBlock(mpb, 0);
-            _disappearRenderers[i].SetPropertyBlock(_outlineFillMpb, 2);
+            _disappearRenderers[i].SetPropertyBlock(_outlineFillMpb, _outlineFillIdxes[i]);
         }
     }
 
@@ -185,5 +198,25 @@ public class LaserPlatformDisappearManager : MonoBehaviour
             if (col == PlayerManager.Instance.onWireCollider)
                 PlayerManager.Instance.playerWire.EndShoot();
         }
+    }
+    
+    private int FindMaterialIndex(Renderer renderer, string materialNamePrefix)
+    {
+        if (renderer == null)
+        {
+            return -1;
+        }
+
+        // sharedMaterials를 사용하여 머티리얼 인스턴스 생성 방지
+        Material[] materials = renderer.sharedMaterials;
+
+        for (int i = 0; i < materials.Length; i++)
+        {
+            if (materials[i] != null && materials[i].name.StartsWith(materialNamePrefix))
+            {
+                return i;
+            }
+        }
+        return -1; // 찾지 못함
     }
 }
