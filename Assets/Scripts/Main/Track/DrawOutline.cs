@@ -1,6 +1,5 @@
+using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
-using Hampossible.Utils;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -25,6 +24,7 @@ public class DrawOutline : MonoBehaviour
     private Color _outlineColor;
     private float _outlineWidth = 10;
     private bool _outlineEnabled = false;
+    private List<int> _outlineFillIndexes;
     
     private static readonly Color BALL_COLOR = new Color(0.3981f, 0.7492f, 1f, 1f);
     private static readonly Color HAMSTER_COLOR = new Color(0.8902f, 0.6196f, 0.2745f, 1f);
@@ -45,12 +45,12 @@ public class DrawOutline : MonoBehaviour
                 gameObject.AddComponent<Outline>();
             _linkedOutlineRenderers.Add(rd);
         }
-        
-        
+
+
         // 등록된 오브젝트들에 Outline 머티리얼이 없다면 Outline 머티리얼 추가
-        for (int i = _linkedOutlineRenderers.Count - 1; i >= 0; i--)
+        for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
         {
-            if (_linkedOutlineRenderers[i].TryGetComponent(out Outline outline))
+            if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline))
             {
                 _linkedOutlineRenderers[i].gameObject.AddComponent<Outline>();
             }
@@ -58,10 +58,14 @@ public class DrawOutline : MonoBehaviour
 
         _outlineFillMpb = new MaterialPropertyBlock();
 
+        FindOutlineFillIndexes();
+
         // 초기 외곽선 색 결정
         _isBallColor = TryGetComponent(out _objProp) && _objProp.canGrabInBallMode;
         SetOutlineColor(_isBallColor ? BALL_COLOR : HAMSTER_COLOR);
+        //StartCoroutine(StartNextFrame());
     }
+
 
     void Update()
     {
@@ -75,12 +79,64 @@ public class DrawOutline : MonoBehaviour
         }
     }
 
+    private IEnumerator StartNextFrame()
+    {
+        yield return null;
+        FindOutlineFillIndexes();
+
+        // 초기 외곽선 색 결정
+        _isBallColor = TryGetComponent(out _objProp) && _objProp.canGrabInBallMode;
+        SetOutlineColor(_isBallColor ? BALL_COLOR : HAMSTER_COLOR);
+    }
+
+    // 이름이 OutlineFill로 시작하는 머티리얼 인덱스 찾기
+    private void FindOutlineFillIndexes()
+    {
+        _outlineFillIndexes = new List<int>();
+        List<int> tempIdxes = new List<int>();
+        for (int i = _linkedOutlineRenderers.Count - 1; i >= 0; i--)
+        {
+            int idx = FindMaterialIndex(_linkedOutlineRenderers[i], "OutlineFill");
+            if (idx == -1)
+            {
+                _linkedOutlineRenderers.RemoveAt(i);
+                continue;
+            }
+            tempIdxes.Add(idx);
+        }
+        for (int i = tempIdxes.Count - 1; i >= 0; i--)
+        {
+            _outlineFillIndexes.Add(tempIdxes[i]);
+            Debug.Log("idx : "+tempIdxes[i]);
+        }
+    }
+
+    private int FindMaterialIndex(Renderer renderer, string materialNamePrefix)
+    {
+        if (renderer == null)
+        {
+            return -1;
+        }
+
+        // sharedMaterials를 사용하여 머티리얼 인스턴스 생성 방지
+        Material[] materials = renderer.sharedMaterials;
+
+        for (int i = 0; i < materials.Length; i++)
+        {
+            if (materials[i] != null && materials[i].name.StartsWith(materialNamePrefix))
+            {
+                return i;
+            }
+        }
+        return -1; // 찾지 못함
+    }
+
     public void Draw()
     {
         // 공 모드와 햄스터 모드 둘 다 가능하며
         // 현재 모드와 현재 설정된 외곽선 색깔이 일치하지 않는다면
-        if (_objProp != null && _objProp.canGrabInBallMode && _objProp.canGrabInHamsterMode 
-            && _isBallColor != PlayerManager.Instance.isBall) 
+        if (_objProp != null && _objProp.canGrabInBallMode && _objProp.canGrabInHamsterMode
+            && _isBallColor != PlayerManager.Instance.isBall)
         {
             _isBallColor = PlayerManager.Instance.isBall;
             SetOutlineColor(_isBallColor ? BALL_COLOR : HAMSTER_COLOR);
@@ -112,14 +168,15 @@ public class DrawOutline : MonoBehaviour
         }
         else
         {
+            Debug.Log("zzz");
             _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 0f);
             _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.Never);
         }
 
-        foreach (Renderer rd in _linkedOutlineRenderers)
+        for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
         {
-            Debug.Log("zz"+rd.gameObject.name+_outlineEnabled);
-            rd.SetPropertyBlock(_outlineFillMpb, 2);
+            Renderer rd = _linkedOutlineRenderers[i];
+            rd.SetPropertyBlock(_outlineFillMpb, _outlineFillIndexes[i]);
         }
     }
 
