@@ -68,9 +68,9 @@ public class DrawOutline : MonoBehaviour
         // 공 모드와 햄스터 모드 둘 다 가능하며
         // 현재 모드와 현재 설정된 외곽선 색깔이 일치하지 않는다면
         if (obj != null && obj.canGrabInBallMode && obj.canGrabInHamsterMode 
-            && isBallColor != PlayerManager.instance.isBall) 
+            && isBallColor != PlayerManager.Instance.isBall) 
         {
-            isBallColor = PlayerManager.instance.isBall;
+            isBallColor = PlayerManager.Instance.isBall;
             SetColor(isBallColor ? ballColor : hamsterColor);
         }
 

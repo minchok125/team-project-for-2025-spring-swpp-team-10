@@ -130,7 +130,7 @@ public class PlayerSkillController : MonoBehaviour
     public void AddMaxBoostEnergy(float rate)
     {
         maxBoostEnergy += rate;
-        PlayerManager.instance.GetComponent<PlayerMovementController>().maxBoostEnergy = this.maxBoostEnergy;
+        PlayerManager.Instance.GetComponent<PlayerMovementController>().maxBoostEnergy = this.maxBoostEnergy;
         UpdateUI();
     }
 

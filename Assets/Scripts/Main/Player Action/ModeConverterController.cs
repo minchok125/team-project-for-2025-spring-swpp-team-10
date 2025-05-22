@@ -25,7 +25,7 @@ public class ModeConverterController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         // 기본 상태를 일반 햄스터 모드로 설정
-        PlayerManager.instance.isBall = false;
+        PlayerManager.Instance.isBall = false;
 
         // 물리 속성 초기화
         rb.drag = 1f; // 공기 저항 설정
@@ -37,7 +37,7 @@ public class ModeConverterController : MonoBehaviour
         rb.constraints |= RigidbodyConstraints.FreezeRotationZ;
 
         // 모드 전환 시 해당 메서드가 함께 실행됨
-        PlayerManager.instance.ModeConvertAddAction(Convert);
+        PlayerManager.Instance.ModeConvertAddAction(Convert);
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ public class ModeConverterController : MonoBehaviour
     /// </summary>
     private void Convert()
     {
-        if (PlayerManager.instance.isBall) 
+        if (PlayerManager.Instance.isBall) 
         {
             // 공 모드에서 햄스터 모드로 전환
             HamsterSetActive(true);          // 햄스터 모델 활성화
@@ -79,7 +79,7 @@ public class ModeConverterController : MonoBehaviour
         }
 
         // 상태 토글
-        PlayerManager.instance.isBall = !PlayerManager.instance.isBall;
+        PlayerManager.Instance.isBall = !PlayerManager.Instance.isBall;
     }
 
     /// <summary>

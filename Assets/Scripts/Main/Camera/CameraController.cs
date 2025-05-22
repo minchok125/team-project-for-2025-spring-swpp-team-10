@@ -75,7 +75,7 @@ public class CameraController : MonoBehaviour
     //     float targetDistance = zoomDist;
     //     float _smoothSpeed = smoothSpeed;
 
-    //     if (PlayerManager.instance.onWire && PlayerManager.instance.isBall) {
+    //     if (PlayerManager.Instance.onWire && PlayerManager.Instance.isBall) {
     //         isBallWire = true;
 
     //         targetDistance = Mathf.Max(16, targetDistance);
