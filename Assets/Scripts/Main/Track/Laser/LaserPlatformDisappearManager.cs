@@ -135,13 +135,13 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     // 없어질 오브젝트 중에 플레이어가 와이어로 잡고 있는 오브젝트가 있으면 EndShoot 호출
     private void EndShoot()
     {
-        if (!PlayerManager.instance.onWire)
+        if (!PlayerManager.Instance.onWire)
             return;
 
         foreach (Collider col in disappearCols)
         {
-            if (col == PlayerManager.instance.onWireCollider)
-                PlayerManager.instance.playerWire.EndShoot();
+            if (col == PlayerManager.Instance.onWireCollider)
+                PlayerManager.Instance.playerWire.EndShoot();
         }
     }
 }

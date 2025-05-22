@@ -61,12 +61,12 @@ public class FallingPlatformController : MonoBehaviour
     void Update()
     {
         // 플레이어가 이 오브젝트 위에 있거나 || 공중에서 이 오브젝트에 와이어를 걸어놨다면
-        if (onPlayer || onWire && !PlayerManager.instance.isGround) 
+        if (onPlayer || onWire && !PlayerManager.Instance.isGround) 
         {
             Down();
         }
         // 와이어를 이 오브젝트에 걸었는데, 플레이어가 지면 위에 있다면
-        else if (onWire && PlayerManager.instance.isGround) 
+        else if (onWire && PlayerManager.Instance.isGround) 
         {
             rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, drag * Time.deltaTime);
         }

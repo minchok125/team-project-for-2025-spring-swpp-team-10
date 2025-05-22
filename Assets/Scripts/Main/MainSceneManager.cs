@@ -1,32 +1,35 @@
-using System;
 using UnityEngine;
 
-public class MainSceneManager : MonoBehaviour
+public class MainSceneManager : RuntimeSingleton<MainSceneManager>
 {
-    public static MainSceneManager Instance { get; private set; }
-    
     private UIManager uiManager;
     
     private enum GameStates { Playing, Paused, BadEnding, GoodEnding };
     private GameStates _gameState;
     private float _timeRecord;
 
-    private void Awake()
+    protected override void Awake()
     {
-        if (Instance == null)
+        if (IsInstanceNull())
         {
-            Instance = this;
+            base.Awake();
             InitMainSceneManager();
         }
+        else
+        {
+            base.Awake();
+        }
+
         uiManager = GetComponent<UIManager>();
     }
+
 
     private void InitMainSceneManager() // 게임 처음 시작 or 게임 재시작 시 초기화 되어야 하는 내용
     {
         uiManager?.InitUIManager();
         _gameState = GameStates.Playing;
         _timeRecord = 0f;
-        
+
         // 마우스 커서 숨기기
         Cursor.visible = false;
         // 마우스 커서를 화면 중앙에 고정 (게임 창 내에서만 적용)

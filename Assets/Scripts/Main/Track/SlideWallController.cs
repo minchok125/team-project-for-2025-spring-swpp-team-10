@@ -41,7 +41,7 @@ public class SlideWallController : MonoBehaviour
         Debug.Log($"'{other.gameObject.name}'이(가) '{gameObject.name}'에 붙었습니다.");
 
         connectedBody = otherRigidbody; // 참조 저장
-        PlayerManager.instance.isOnSlideWall = true;
+        PlayerManager.Instance.isOnSlideWall = true;
     }
 
     void OnTriggerStay(Collider other) 
@@ -51,7 +51,7 @@ public class SlideWallController : MonoBehaviour
             return;
 
         // 슬라이드벽에서 점프를 해서 입력에 락 걸림
-        if (PlayerManager.instance.isInputLock)
+        if (PlayerManager.Instance.isInputLock)
             return;
 
         connectedBody.velocity = new Vector3(connectedBody.velocity.x, 0, connectedBody.velocity.z);
@@ -67,8 +67,8 @@ public class SlideWallController : MonoBehaviour
             }
         }
         
-        PlayerManager.instance.slideWallNormal = hit.normal;
-        float force = PlayerManager.instance.isBall ? 200 : 50;
+        PlayerManager.Instance.slideWallNormal = hit.normal;
+        float force = PlayerManager.Instance.isBall ? 200 : 50;
         connectedBody.AddForce(-hit.normal * force, ForceMode.Acceleration);
     }
 
@@ -125,7 +125,7 @@ public class SlideWallController : MonoBehaviour
         if (other.attachedRigidbody == connectedBody) 
         {
             connectedBody = null;
-            PlayerManager.instance.isOnSlideWall = false;
+            PlayerManager.Instance.isOnSlideWall = false;
         }
     }
 }

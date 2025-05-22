@@ -52,7 +52,7 @@ public class LaserMovementManager : MonoBehaviour
 
     private void Start()
     {
-        player = PlayerManager.instance.transform;
+        player = PlayerManager.Instance.transform;
     }
 
 

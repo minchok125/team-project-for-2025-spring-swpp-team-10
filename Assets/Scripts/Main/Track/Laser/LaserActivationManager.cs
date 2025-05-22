@@ -30,7 +30,7 @@ public class LaserActivationManager : MonoBehaviour
 
     private void Start()
     {
-        player = PlayerManager.instance.transform;
+        player = PlayerManager.Instance.transform;
         lasers = new LaserController[laserObjs.Length];
         for (int i = 0; i < laserObjs.Length; i++)
         {
