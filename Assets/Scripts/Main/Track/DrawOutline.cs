@@ -168,7 +168,6 @@ public class DrawOutline : MonoBehaviour
         }
         else
         {
-            Debug.Log("zzz");
             _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 0f);
             _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.Never);
         }
