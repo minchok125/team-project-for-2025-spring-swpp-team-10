@@ -7,8 +7,7 @@ using UnityEngine.Rendering;
 public class LaserPlatformDisappearManager : MonoBehaviour
 {
     [Header("레이저를 건드리면 특정 오브젝트들이 투명해지는 구역")]
-    [Header("오브젝트의 머티리얼은 Dithering Material로 해주시고,\n"
-          + "Outline 스크립트를 부착해 주세요 (Not DrawOutline)")]
+    [Header("오브젝트의 머티리얼은 Dithering Material로 해주세요")]
     [SerializeField] private GameObject[] disappearObjects;
     [SerializeField] private AudioClip disappearSound;
 
@@ -162,7 +161,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     /// 외곽선의 투명도는 1-a로 설정
     private void SetAlpha(float a)
     {
-        Color outlineColor = new Color(0, 0, 0, 1 - a);
+        Color outlineColor = new Color(1, 1, 1, 1 - a);
         _outlineFillMpb.SetColor(k_OutlineColorID, outlineColor);
 
         for (int i = 0; i < _disappearRenderers.Count; i++)

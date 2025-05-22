@@ -32,6 +32,6 @@ public class PingPongMovingPlatformController : MonoBehaviour
         Vector3 startPos = inputType == Type.Transform ? start.position : startVec;
         Vector3 endPos = inputType == Type.Transform ? end.position : endVec;
         Vector3 curPos = Vector3.Lerp(startPos, endPos, Mathf.PingPong((-startDelay + Time.time) / moveTime, 1));
-        transform.position = curPos;
+        transform.localPosition = curPos;
     }
 }

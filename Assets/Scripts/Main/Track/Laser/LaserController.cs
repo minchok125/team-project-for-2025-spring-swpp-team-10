@@ -340,7 +340,7 @@ class LaserControllerEditor : Editor
         if (!visulaizeLineProp.boolValue)
             return;
 
-        _target = target as LaserController;    
+        _target = target as LaserController; 
 
         // Scene 뷰에서 조절 가능한 구형 영역 표시
         HandleDetectPointDist();

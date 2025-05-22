@@ -10,6 +10,7 @@ public class GymBallController : MonoBehaviour
     [SerializeField] private float bounceForce = 5;
     [Tooltip("튕길 때 순간적으로 오브젝트가 커지는 정도 (0이면 안 커짐)")]
     [SerializeField, Range(0, 2)] private float bounceScale = 0.2f;
+    [SerializeField] private bool isKinematic = false;
 
     private Vector3 initScale;
     private Rigidbody rb;
@@ -18,7 +19,11 @@ public class GymBallController : MonoBehaviour
     {
         initScale = transform.localScale;
         if (!TryGetComponent(out rb))
+        {
             rb = gameObject.AddComponent<Rigidbody>();
+            if (isKinematic)
+                rb.isKinematic = true;
+        }
         Debug.Log(rb);
     }
 
