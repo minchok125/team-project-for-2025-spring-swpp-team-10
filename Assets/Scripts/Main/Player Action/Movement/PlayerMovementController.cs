@@ -64,7 +64,7 @@ public class PlayerMovementController : MonoBehaviour
     private bool isRKeyPressedForCheckpoint = false; // R키가 체크포인트 이동을 위해 눌렸는지 여부
     private float rKeyHoldStartTime = 0f;         // R키를 누르기 시작한 시간
     private float RKeyHoldDurationForCheckpoint = 5.0f; // 체크포인트 이동까지 R키를 누르고 있어야 하는 시간(초)
-    private float checkpointResetPositionY = -100f; // 체크포인트 이동 시 Y좌표 기준
+    private float checkpointResetPositionY = -2000f; // 체크포인트 이동 시 Y좌표 기준
     private float checkpointMovementThreshold = 0.01f; // 체크포인트 이동 시 위치 오차 허용 범위
     #endregion
 
