@@ -415,6 +415,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         isInputLock = true;
         canLightningShock = false;
         playerWire.EndShoot();
+        isGliding = false;
 
         if (isBall) ballLightningShockParticle.SetActive(true);
         else hamsterLightningShockParticle.SetActive(true);
