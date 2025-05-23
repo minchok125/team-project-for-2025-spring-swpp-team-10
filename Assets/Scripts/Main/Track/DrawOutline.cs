@@ -108,7 +108,6 @@ public class DrawOutline : MonoBehaviour
         for (int i = tempIdxes.Count - 1; i >= 0; i--)
         {
             _outlineFillIndexes.Add(tempIdxes[i]);
-            Debug.Log("idx : "+tempIdxes[i]);
         }
     }
 
