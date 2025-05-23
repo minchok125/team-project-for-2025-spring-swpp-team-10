@@ -12,7 +12,7 @@ public class DrawOutline : MonoBehaviour
     /// </summary>
     public bool dontDrawHightlightOutline = false;
 
-    [Header("이 오브젝트의 렌더러는 리스트에 자동으로 추가됩니다.\n(렌더러 체크 해제하면 추가 안 됨)")]
+    [Header("이 오브젝트의 렌더러는 리스트에 자동으로 추가됩니다.")]
     [Tooltip("이 오브젝트의 외곽선을 표시할 때 함께 외곽선을 표시할 렌더러 리스트입니다.\n"
              + "함께 표시될 오브젝트에는 DrawOutline 컴포넌트를 추가하지 않아야 합니다.")]
     [SerializeField] private List<Renderer> _linkedOutlineRenderers = new List<Renderer>();
@@ -64,7 +64,6 @@ public class DrawOutline : MonoBehaviour
         // 초기 외곽선 색 결정
         _isBallColor = TryGetComponent(out _objProp) && _objProp.canGrabInBallMode;
         SetOutlineColor(_isBallColor ? BALL_COLOR : HAMSTER_COLOR);
-        //StartCoroutine(StartNextFrame());
     }
 
 
@@ -78,16 +77,6 @@ public class DrawOutline : MonoBehaviour
                 SetOutlineEnabled(false);
             _frameCountAfterDrawCall++;
         }
-    }
-
-    private IEnumerator StartNextFrame()
-    {
-        yield return null;
-        FindOutlineFillIndexes();
-
-        // 초기 외곽선 색 결정
-        _isBallColor = TryGetComponent(out _objProp) && _objProp.canGrabInBallMode;
-        SetOutlineColor(_isBallColor ? BALL_COLOR : HAMSTER_COLOR);
     }
 
     // 이름이 OutlineFill로 시작하는 머티리얼 인덱스 찾기
