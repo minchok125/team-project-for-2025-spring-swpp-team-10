@@ -46,12 +46,14 @@ public class ObjectProperties : MonoBehaviour
         {
             gameObject.layer = LayerMask.NameToLayer("Attachable");
 
-            if (!TryGetComponent(out DrawOutline draw))
+            if (!TryGetComponent(out Outline outline))
+                gameObject.AddComponent<Outline>();
+            if (!TryGetComponent(out DrawOutline drawOutline))
                 gameObject.AddComponent<DrawOutline>();
 
-            if (canGrabInHamsterMode) 
+            if (canGrabInHamsterMode)
             {
-                if (generateRigidbody && !TryGetComponent(out Rigidbody rb)) 
+                if (generateRigidbody && !TryGetComponent(out Rigidbody rb))
                 {
                     HLogger.General.Info(gameObject.name + ": Rigidbody가 없습니다. Rigidbody를 추가합니다.", this);
                     AddHamsterObjectRigidbody();
