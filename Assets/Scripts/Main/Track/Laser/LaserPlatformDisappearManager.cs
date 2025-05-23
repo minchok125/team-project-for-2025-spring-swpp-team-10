@@ -9,7 +9,6 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     [Header("레이저를 건드리면 특정 오브젝트들이 투명해지는 구역")]
     [Header("오브젝트의 머티리얼은 Dithering Material로 해주세요")]
     [SerializeField] private GameObject[] disappearObjects;
-    [SerializeField] private AudioClip disappearSound;
 
     private List<Renderer> _disappearRenderers; // 디더링 효과를 내는 오브젝트의 렌더러 모음
     private List<Color> _ditheringMatColors; // 디더링 효과를 내는 머티리얼의 각 색상
@@ -101,7 +100,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     private void DisappearStart()
     {
         EndShoot();
-        GameManager.PlaySfx(disappearSound);
+        GameManager.PlaySfx(SfxType.LaserPlatformDisappear);
         _canDisappearStart = false;
         _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
         _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);

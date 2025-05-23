@@ -619,6 +619,12 @@ public class PlayerWireController : MonoBehaviour
         FallingPlatformController fpc = grabObject.GetComponent<FallingPlatformController>();
         if (fpc != null && PlayerManager.Instance.isBall)
             fpc.onWire = true;
+
+        if (grabObject.TryGetComponent(out WireClickButton btnObj))
+        {
+            btnObj.Click();
+            EndShoot();
+        }
     }
 
     /// <summary>

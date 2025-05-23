@@ -30,7 +30,6 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     [SerializeField] private AudioClip boostAudio;
     [SerializeField] private AudioClip retractorAudio;
     [SerializeField] private AudioClip balloonAudio;
-    [SerializeField] private AudioClip lightningShockAudio;
     #endregion
 
 
@@ -420,7 +419,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         if (isBall) ballLightningShockParticle.SetActive(true);
         else hamsterLightningShockParticle.SetActive(true);
 
-        GameManager.PlaySfx(lightningShockAudio);
+        GameManager.PlaySfx(SfxType.LightningShock);
 
         Invoke(nameof(LightningShockEndAfterFewSeconds), LIGHTNING_SHOCK_COOLTIME);
     }
