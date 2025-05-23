@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -37,23 +38,23 @@ public class DrawOutline : MonoBehaviour
 
     void Start()
     {
-        // 이 오브젝트의 렌더러가 켜져있다면 리스트에 넣음
-        Renderer rd = GetComponent<Renderer>();
-        if (rd != null && rd.enabled)
-        {
-            if (!TryGetComponent(out Outline outline))
-                gameObject.AddComponent<Outline>();
-            _linkedOutlineRenderers.Add(rd);
-        }
-
+        // 자기 자신과 자식의 렌더러 목록
+        Renderer[] childRenderers = GetComponentsInChildren<Renderer>(true);
 
         // 등록된 오브젝트들에 Outline 머티리얼이 없다면 Outline 머티리얼 추가
+        // 자식 렌더러는 제외 (부모에 Outline이 있으면 자동으로 추가됨)
         for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
         {
-            if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline))
+            if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline)
+                && !childRenderers.Contains(_linkedOutlineRenderers[i]))
             {
                 _linkedOutlineRenderers[i].gameObject.AddComponent<Outline>();
             }
+        }
+
+        foreach (Renderer childRd in childRenderers)
+        {
+            _linkedOutlineRenderers.Add(childRd);
         }
 
         _outlineFillMpb = new MaterialPropertyBlock();
