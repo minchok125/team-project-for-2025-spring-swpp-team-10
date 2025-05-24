@@ -55,7 +55,6 @@ public class WireClickButton : MonoBehaviour
         {
             _objProp.canGrabInBallMode = false;
             _objProp.canGrabInHamsterMode = false;
-            Debug.Log("ww" + setDisabledButtonColorBlack);
             if (setDisabledButtonColorBlack)
                 SetDisabledButtonColorBlack();
         }
