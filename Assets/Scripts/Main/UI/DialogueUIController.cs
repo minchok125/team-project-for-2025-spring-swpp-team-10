@@ -10,13 +10,13 @@ public class DialogueUIController : MonoBehaviour
     [SerializeField] private GameObject dialoguePrefab;
     
     [Header("Values")]
-    [SerializeField] private float defaultDialogueDuration;
+    [SerializeField] private float defaultDuration;
 
     [Header("Test")]
     [SerializeField] private RectTransform testDialogueObj;
 
-    private void Start()
+    public void StartDialogue(string fileName)
     {
-        testDialogueObj.DOAnchorPos(new Vector2(0, 0), 3);
+        
     }
 }
