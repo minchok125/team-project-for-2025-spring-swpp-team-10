@@ -13,8 +13,6 @@ public class BlinkNewController : MonoBehaviour
     private int[] _outlineFillIdxes; // 렌더러의 머티리얼들 중에서 OutlineFill 머티리얼의 인덱스
     private Collider[] _disappearCols; // 사라질 콜라이더 모음
 
-    private Sequence _disappearSequence; // Disappear된 후 appear되는 애니메이션
-
     private static readonly int k_BaseColorID = Shader.PropertyToID("_BaseColor");
     private static readonly int k_OutlineColorID = Shader.PropertyToID("_OutlineColor");
     private static readonly int k_OutlineWidthID = Shader.PropertyToID("_OutlineWidth");
@@ -68,8 +66,6 @@ public class BlinkNewController : MonoBehaviour
         _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
         _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
 
-        if (_ditheringMatColors.Length < 1)
-            HLogger.General.Info("Sss", this);
         float currentAlpha = _ditheringMatColors[0].a;
         float prevAlpha = 1f;
 
