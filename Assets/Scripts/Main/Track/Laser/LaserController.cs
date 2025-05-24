@@ -63,7 +63,7 @@ public class LaserController : MonoBehaviour
     private RaycastHit _hit;
     private Transform _player;
 
-    
+
 
 
     private void Start()

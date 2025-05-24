@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.Rendering;
+using Hampossible.Utils;
 
 public class BlinkNewController : MonoBehaviour
 {
@@ -18,11 +20,13 @@ public class BlinkNewController : MonoBehaviour
     private static readonly int k_OutlineWidthID = Shader.PropertyToID("_OutlineWidth");
     private static readonly int k_StencilCompID = Shader.PropertyToID("_StencilComp");
     private static readonly int k_OutlineEnabledToggle = Shader.PropertyToID("_OutlineEnabledToggle");
+    private static readonly int k_DitherSize = Shader.PropertyToID("_DitherSize");
 
 
     private void Start()
     {
         _disappearRenderers = GetComponentsInChildren<Renderer>();
+        List<Renderer> disappearRenderers = new List<Renderer>();
         List<Color> ditheringMatColors = new List<Color>();
         _outlineFillMpb = new MaterialPropertyBlock();
         _outlineFillMpb.SetFloat(k_OutlineWidthID, 4f);
@@ -31,6 +35,9 @@ public class BlinkNewController : MonoBehaviour
 
         foreach (Renderer rd in _disappearRenderers)
         {
+            if (!rd.materials[0].HasProperty(k_DitherSize))
+                continue;
+
             int outlineFillIdx = FindMaterialIndex(rd, "OutlineFill");
             if (outlineFillIdx == -1)
             {
@@ -42,10 +49,12 @@ public class BlinkNewController : MonoBehaviour
                 outlineFillIdxes.Add(outlineFillIdx);
             }
 
+            disappearRenderers.Add(rd);
             Color color = rd.materials[0].GetColor(k_BaseColorID);
             ditheringMatColors.Add(color);
         }
 
+        _disappearRenderers = disappearRenderers.ToArray();
         _ditheringMatColors = ditheringMatColors.ToArray();
         _outlineFillIdxes = outlineFillIdxes.ToArray();
 
@@ -56,6 +65,11 @@ public class BlinkNewController : MonoBehaviour
     // 오브젝트가 사라지고 외곽선만 남는 시퀀스
     public void FadeOut(float fadeOutDuration)
     {
+        _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
+        _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
+
+        if (_ditheringMatColors.Length < 1)
+            HLogger.General.Info("Sss", this);
         float currentAlpha = _ditheringMatColors[0].a;
         float prevAlpha = 1f;
 
@@ -85,7 +99,13 @@ public class BlinkNewController : MonoBehaviour
             if (prevAlpha <= 0.5f && a > 0.5f)
                 SetCollider(true);
             prevAlpha = a;
-        }).SetEase(Ease.OutSine);
+        }).OnComplete(() => DisableOutline()).SetEase(Ease.OutSine);
+    }
+
+    private void DisableOutline()
+    {
+        _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 0f);
+        _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.Never);
     }
 
 

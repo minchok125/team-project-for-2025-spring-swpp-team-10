@@ -27,7 +27,7 @@ public class CubeStageManager : MonoBehaviour
 
     public GameObject[] cubeObjs;
 
-    private void Start()
+    private void OnEnable()
     {
         cubeObjs = new GameObject[64];
         for (int i = 0; i < 4; i++)
@@ -71,6 +71,10 @@ public class CubeStageManager : MonoBehaviour
 
         for (int i = 0; i < 12; i++)
             StartCoroutine(Disappear());
+    }
+
+    private void OnDisable() {
+        StopAllCoroutines();
     }
 
     IEnumerator Move()
