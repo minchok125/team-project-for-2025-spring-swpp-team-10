@@ -42,8 +42,10 @@ public class GymBallController : MonoBehaviour
             transform.localScale = initScale * (1 + bounceScale);
             transform.DOScale(initScale, 0.5f).SetEase(Ease.InBounce);
 
+            GameManager.PlaySfx(SfxType.GymBall);
+
             // 플레이어라면 입력 제한 걸기
-            if (collision.gameObject.CompareTag("Player")) 
+            if (collision.gameObject.CompareTag("Player"))
             {
                 PlayerManager.Instance.isInputLock = true;
                 PlayerManager.Instance.SetInputLockAfterSeconds(false, 0.4f);

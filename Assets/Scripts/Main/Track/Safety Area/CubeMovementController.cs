@@ -63,6 +63,8 @@ public class CubeMovementController : MonoBehaviour
 
     public void Disappear(float disappearTime)
     {
+        if (_blink == null)
+            HLogger.General.Info("Aaa", this);
         _blink.FadeOut(FADE_DURATION);
         Invoke(nameof(Appear), disappearTime);
     }

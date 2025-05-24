@@ -13,6 +13,7 @@ public class WireClickButton : MonoBehaviour
     [SerializeField] private Vector3 notClickPos;
     [SerializeField] private bool clickOnce;
     [SerializeField] private float clickCooltime;
+    [SerializeField] private bool setDisabledButtonColorBlack = false;
 
 
     private ObjectProperties _objProp;
@@ -54,6 +55,9 @@ public class WireClickButton : MonoBehaviour
         {
             _objProp.canGrabInBallMode = false;
             _objProp.canGrabInHamsterMode = false;
+            Debug.Log("ww" + setDisabledButtonColorBlack);
+            if (setDisabledButtonColorBlack)
+                SetDisabledButtonColorBlack();
         }
         else if (clickCooltime > 0)
         {
@@ -79,5 +83,21 @@ public class WireClickButton : MonoBehaviour
     {
         _objProp.canGrabInBallMode = true;
         _objProp.canGrabInHamsterMode = true;
+    }
+
+    // 버튼이 더 이상 눌리지 않을 때 버튼의 색을 검정색으로 바꿉니다.
+    private void SetDisabledButtonColorBlack()
+    {
+        MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+        Renderer renderer = GetComponent<Renderer>();
+
+        renderer.GetPropertyBlock(mpb, 0);
+
+        Color color = renderer.materials[0].GetColor("_BaseColor");
+        color = new Color(0.07f, 0.07f, 0.07f, color.a);
+        Debug.Log(color);
+        mpb.SetColor("_BaseColor", color);
+
+        renderer.SetPropertyBlock(mpb, 0);
     }
 }
