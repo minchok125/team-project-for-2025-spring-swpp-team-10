@@ -9,23 +9,11 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI timerText;
 	[SerializeField] private GameObject pausedMenuPanel, settingsPanel;
 	[SerializeField] private NextCheckpointUIController nextCheckpointUI;
-	
-	[Header("Test")]
-	[SerializeField] private Vector3 testNextCheckpointPos;
-	[SerializeField] private GameObject testCpPrefab;
-	[SerializeField] private GameObject currCp;
-
-	private void Awake()
-	{
-		currCp = Instantiate(testCpPrefab, testNextCheckpointPos, Quaternion.identity);
-	}
 
 	public void InitUIManager()
 	{
 		pausedMenuPanel.SetActive(false);
 		settingsPanel.SetActive(false);
-		
-		nextCheckpointUI.UpdateNextCheckpoint(testNextCheckpointPos);
 		
 		// 아래는 추후에 저장 기능이 구현되면 PlayerData를 받아서 값을 설정하도록 수정되어야 함
 		timerText.text = "Timer [00:00.00 s]";
@@ -76,18 +64,6 @@ public class UIManager : MonoBehaviour
 		// endingTextObj.SetActive(true);
 		pausedMenuPanel.SetActive(false);
 		settingsPanel.SetActive(false);
-	}
-
-	public void DebugNextCheckpoint()
-	{
-		float x = Random.Range(-100f, 100f);
-		float y = Random.Range(-100f, 100f);
-		float z = Random.Range(-100f, 100f);
-		
-		Vector3 testPos = new Vector3(x, y, z);
-		Destroy(currCp);
-		currCp = Instantiate(testCpPrefab, testPos, Quaternion.identity);
-		UpdateNextCheckpoint(testPos);
 	}
 
 	public void UpdateNextCheckpoint(Vector3 nextCpPos)
