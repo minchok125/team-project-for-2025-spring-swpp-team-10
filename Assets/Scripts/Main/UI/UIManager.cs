@@ -6,6 +6,7 @@ public class UIManager : RuntimeSingleton<UIManager>
 	[Header("References")]
 	[SerializeField] private TextMeshProUGUI timerText;
 	[SerializeField] private GameObject pausedMenuPanel, settingsPanel;
+	[SerializeField] private NextCheckpointUIController nextCheckpointUI;
 	[SerializeField] private GameObject endingTextObj;
 
     protected override void Awake()
@@ -21,6 +22,14 @@ public class UIManager : RuntimeSingleton<UIManager>
 
 		// 아래는 추후에 저장 기능이 구현되면 PlayerData를 받아서 값을 설정하도록 수정되어야 함
 		timerText.text = "Timer [00:00.00 s]";
+	}
+
+	private void Update()
+	{
+		/* Next Checkpoint UI 표시 여부를 토글할 수 있도록 지정해 둠
+		 * 키 지정은 임의로 해둔 것이므로, 추후 수정 필요
+		 */
+		if (Input.GetKeyDown(KeyCode.C)) nextCheckpointUI.ToggleDisplay();
 	}
 
 	public void ResumeGame()
@@ -61,6 +70,9 @@ public class UIManager : RuntimeSingleton<UIManager>
 		pausedMenuPanel.SetActive(false);
 		settingsPanel.SetActive(false);
 	}
-	
-	
+
+	public void UpdateNextCheckpoint(Vector3 nextCpPos)
+	{
+		nextCheckpointUI.UpdateNextCheckpoint(nextCpPos);
+	}
 }
