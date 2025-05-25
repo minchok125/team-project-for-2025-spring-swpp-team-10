@@ -111,9 +111,9 @@ public class ItemManager : MonoBehaviour
         }
     }
 
-    public void UseItem(string itemId)
+    public void UseItem(int itemId)
     {
-        if (string.IsNullOrEmpty(itemId) || itemInventory == null || itemInventory.items == null)
+        if (itemInventory == null || itemInventory.items == null)
         {
             HLogger.General.Error($"ID가 {itemId}인 아이템을 사용할 수 없습니다.", this);
             return;
@@ -200,5 +200,39 @@ public class ItemManager : MonoBehaviour
             HLogger.Player.Warning($"코인 부족: 현재 {currentCoinCount}, 필요 {amount}", this);
             return false;
         }
+    }
+
+    public List<Item> GetAllItems()
+    {
+        if (itemInventory == null || itemInventory.items == null)
+        {
+            HLogger.General.Error("아이템 목록을 가져올 수 없습니다 - 인벤토리가 초기화되지 않았습니다.", this);
+            return new List<Item>();
+        }
+
+        // TODO: 전체 아이템 목록 작업 필요
+        return itemInventory.items;
+    }
+
+    public List<Item> GetInventory()
+    {
+        if (itemInventory == null || itemInventory.items == null)
+        {
+            HLogger.General.Error("인벤토리 아이템 목록을 가져올 수 없습니다 - 인벤토리가 초기화되지 않았습니다.", this);
+            return new List<Item>();
+        }
+        return itemInventory.items;
+    }
+
+    public bool IsItemEquipped(int itemId)
+    {
+        // TODO: 아이템 장착 여부 확인 로직 필요
+        return true;
+    }
+
+    public bool IsItemLocked(int itemId)
+    {
+        // TODO: 아이템 해금 여부 로직 필요
+        return false;
     }
 }
