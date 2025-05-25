@@ -7,16 +7,15 @@ using UnityEngine.Rendering;
 public class LaserPlatformDisappearManager : MonoBehaviour
 {
     [Header("레이저를 건드리면 특정 오브젝트들이 투명해지는 구역")]
-    [Header("오브젝트의 머티리얼은 Dithering Material로 해주시고,\n"
-          + "Outline 스크립트를 부착해 주세요 (Not DrawOutline)")]
+    [Header("오브젝트의 머티리얼은 Dithering Material로 해주세요")]
     [SerializeField] private GameObject[] disappearObjects;
-    [SerializeField] private AudioClip disappearSound;
 
-    private List<Renderer> _disappearRenderers; //// 디더링 효과를 내는 오브젝트의 렌더러 모음
+    private List<Renderer> _disappearRenderers; // 디더링 효과를 내는 오브젝트의 렌더러 모음
     private List<Color> _ditheringMatColors; // 디더링 효과를 내는 머티리얼의 각 색상
     private MaterialPropertyBlock _outlineFillMpb; // 외곽선 머티리얼 (같은 머티리얼 공유)
     private List<int> _outlineFillIdxes; // 렌더러의 머티리얼들 중에서 OutlineFill 머티리얼의 인덱스
     private List<Collider> _disappearCols; // 사라질 콜라이더 모음
+    private List<LaserPositionReset> _resetPositionObjs; // 사라질 때 위치를 리셋시킬 오브젝트들
     private bool _canDisappearStart; // Disappear가 시작될 때는 true, 시작된 후는 false
 
     private Sequence _disappearSequence; // Disappear된 후 appear되는 애니메이션
@@ -46,6 +45,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
         _outlineFillMpb.SetFloat(k_OutlineWidthID, 4f);
         _outlineFillIdxes = new List<int>();
         _disappearCols = new List<Collider>();
+        _resetPositionObjs = new List<LaserPositionReset>();
 
         foreach (GameObject obj in disappearObjects)
         {
@@ -68,6 +68,9 @@ public class LaserPlatformDisappearManager : MonoBehaviour
 
             foreach (Collider col in obj.GetComponentsInChildren<Collider>())
                 _disappearCols.Add(col);
+
+            if (obj.TryGetComponent(out LaserPositionReset lpr))
+                _resetPositionObjs.Add(lpr);
         }
 
         SetAlpha(1);
@@ -97,7 +100,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     private void DisappearStart()
     {
         EndShoot();
-        GameManager.PlaySfx(disappearSound);
+        GameManager.PlaySfx(SfxType.LaserPlatformDisappear);
         _canDisappearStart = false;
         _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
         _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
@@ -105,6 +108,10 @@ public class LaserPlatformDisappearManager : MonoBehaviour
         {
             if (obj.TryGetComponent(out DrawOutline draw))
                 draw.dontDrawHightlightOutline = true;
+        }
+        foreach (LaserPositionReset lpr in _resetPositionObjs)
+        {
+            lpr.ResetPosition();
         }
     }
 
@@ -162,7 +169,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     /// 외곽선의 투명도는 1-a로 설정
     private void SetAlpha(float a)
     {
-        Color outlineColor = new Color(0, 0, 0, 1 - a);
+        Color outlineColor = new Color(1, 1, 1, 1 - a);
         _outlineFillMpb.SetColor(k_OutlineColorID, outlineColor);
 
         for (int i = 0; i < _disappearRenderers.Count; i++)

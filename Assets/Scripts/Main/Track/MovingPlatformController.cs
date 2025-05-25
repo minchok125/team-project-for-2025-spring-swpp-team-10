@@ -15,7 +15,7 @@ public class MovingPlatformController : MonoBehaviour
     public float startWaitTime;
     public MoveSequence[] seqs;
 
-    private int _curIndex = 0;
+    private int _curIndex = 1;
     private float _timer = 0f;
     private float _waitTimer = 0f;
     private bool _isWaiting = true;
@@ -24,6 +24,7 @@ public class MovingPlatformController : MonoBehaviour
 
     void Start()
     {
+        _curIndex = seqs.Length > 1 ? 1 : 0;
         ApplySeqValue(0); // 시작값 적용
         _lastRotationValue = transform.localEulerAngles;
         _waitTimer = startWaitTime;
