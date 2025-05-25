@@ -85,18 +85,23 @@ public class WireClickButton : MonoBehaviour
     }
 
     // 버튼이 더 이상 눌리지 않을 때 버튼의 색을 검정색으로 바꿉니다.
+    // private void SetDisabledButtonColorBlack()
+    // {
+    //     MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+    //     Renderer renderer = GetComponent<Renderer>();
+
+    //     renderer.GetPropertyBlock(mpb, 0);
+
+    //     Color color = renderer.materials[0].GetColor("_BaseColor");
+    //     color = new Color(0.07f, 0.07f, 0.07f, color.a);
+    //     Debug.Log(color);
+    //     mpb.SetColor("_BaseColor", color);
+
+    //     renderer.SetPropertyBlock(mpb, 0);
+    // }
+
     private void SetDisabledButtonColorBlack()
     {
-        MaterialPropertyBlock mpb = new MaterialPropertyBlock();
-        Renderer renderer = GetComponent<Renderer>();
-
-        renderer.GetPropertyBlock(mpb, 0);
-
-        Color color = renderer.materials[0].GetColor("_BaseColor");
-        color = new Color(0.07f, 0.07f, 0.07f, color.a);
-        Debug.Log(color);
-        mpb.SetColor("_BaseColor", color);
-
-        renderer.SetPropertyBlock(mpb, 0);
+        transform.localScale = Vector3.zero;
     }
 }

@@ -56,6 +56,7 @@ public class CubeStageManager : MonoBehaviour
                                                            j * j_interval);
                     _cubesPos[i, j, k] = cubePos;
                     cubeObjs[idx].transform.position = cubePos;
+                    cubeObjs[idx].transform.rotation = Quaternion.identity;
                 }
 
         _moveWait = new WaitForSeconds(MOVE_TIME + 0.5f);
