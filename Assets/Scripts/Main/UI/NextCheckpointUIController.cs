@@ -34,7 +34,6 @@ public class NextCheckpointUIController : MonoBehaviour
     {
         // Next Checkpoint UI 표시 여부 토글
         isDisplayed = !isDisplayed;
-        //gameObject.SetActive(isDisplayed);
         UpdateActiveState();
     }
 
@@ -59,11 +58,8 @@ public class NextCheckpointUIController : MonoBehaviour
         gameObject.SetActive(isDisplayed && _hasValidTarget);
     }
 
-    //public void UpdateNextCheckpoint(Vector3 newTargetPos) { _targetPos = newTargetPos; }
-
     private void LateUpdate()
     {
-        //if (isDisplayed) AdjustNextCheckpointUI();
         if (gameObject.activeSelf)
         {
             AdjustNextCheckpointUI();
