@@ -10,7 +10,7 @@ using UnityEngine;
 public class Item
 {
     [Tooltip("아이템 고유 ID")]
-    public string id;
+    public int id;
 
     [Tooltip("아이템 이름")]
     public string name;
@@ -18,21 +18,25 @@ public class Item
     [Tooltip("아이템 설명")]
     public string description;
 
-    [Tooltip("사용법 설명")]
-    public string howToUse;
-
     [Tooltip("보유 수량")]
     public int count;
+
+    [Tooltip("아이템 가격 (코인 단위)")]
+    public int price;
+
+    public Sprite image;
 
     [Tooltip("아이템 분류")]
     public ItemType type;
     public static Item Create(
-        string id,
+        int id,
         string name,
         ItemType type,
         string description,
-        string howToUse,
-        int count)
+        int count,
+        int price = 0,
+        Sprite image = null
+        )
     {
         return new Item
         {
@@ -40,8 +44,9 @@ public class Item
             name = name,
             type = type,
             description = description,
-            howToUse = howToUse,
-            count = count
+            count = count,
+            price = price,
+            image = image
         };
     }
 }
