@@ -198,21 +198,11 @@ public class ItemManager : PersistentSingleton<ItemManager>
     /// <summary>
     /// 코인 획득 메서드 - 맵에서 코인 획득 시
     /// </summary>
-    public void AddCoin(CoinGrade grade)
+    public void AddCoin(Coin coin)
     {
-        int amount = 0;
-        switch (grade)
-        {
-            case CoinGrade.Silver:
-                amount = 10;
-                break;
-            case CoinGrade.Gold:
-                amount = 30;
-                break;
-        }
 
-        AddCoin(amount);
-        HLogger.General.Info($"{grade} 코인 획득: +{amount}", this);
+        AddCoin(coin.Value);
+        HLogger.General.Info($"{coin.grade} 코인 획득: +{coin.Value}", this);
     }
 
     /// <summary>

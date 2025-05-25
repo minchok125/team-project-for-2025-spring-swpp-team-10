@@ -18,14 +18,14 @@ public class StoreController : MonoBehaviour
     {
         RenderStand();
         RenderInventory();
-        UpdateCoin();
+        UpdateCoin(ItemManager.Instance.GetCoinCount());
     }
 
     public void RenderStand()
     {
         ClearChildren(storeItemGrid);
 
-        foreach (var item in ItemManager.Instance.GetAllItems())
+        foreach (var item in ItemManager.Instance.GetStandItems())
         {
             var go = Instantiate(storeItemPrefab, storeItemGrid);
             var view = go.GetComponent<UI_StoreStandItem>();
@@ -36,8 +36,8 @@ public class StoreController : MonoBehaviour
                 title = item.name,
                 description = item.description,
                 price = item.price,
-                isEquipped = ItemManager.Instance.IsItemEquipped(item.id),
-                isLocked = !ItemManager.Instance.IsItemLocked(item.id)
+                isEquipped = ItemManager.Instance.IsItemEquipped(item),
+                isLocked = ItemManager.Instance.IsItemLocked(item)
             });
         }
     }
@@ -46,20 +46,17 @@ public class StoreController : MonoBehaviour
     {
         ClearChildren(inventoryItemGrid);
 
-        foreach (var item in ItemManager.Instance.GetInventory())
+        foreach (var userItem in ItemManager.Instance.GetInventoryItems())
         {
             var go = Instantiate(inventoryItemPrefab, inventoryItemGrid);
             var view = go.GetComponent<UI_InventoryItem>();
-            view?.Bind(item.image, false); // isEmpty = false
+            view?.Bind(userItem.item.image, false); // isEmpty = false
         }
     }
 
-    public void UpdateCoin()
+    private void UpdateCoin(int newCount)
     {
-        if (coinText != null)
-        {
-            coinText.text = ItemManager.Instance.GetCoinCount().ToString();
-        }
+        coinText.text = newCount.ToString();
     }
 
     private void ClearChildren(Transform parent)
@@ -72,11 +69,37 @@ public class StoreController : MonoBehaviour
 
     private void OnEnable()
     {
-        // ItemManager.Instance.OnCoinCountChanged.AddListener(UpdateCoin);
+        ItemManager.Instance.OnCoinCountChanged.AddListener(UpdateCoin);
     }
 
     private void OnDisable()
     {
-        // ItemManager.Instance.OnCoinCountChanged.RemoveListener(UpdateCoin);
+        if (ItemManager.Instance != null)
+        {
+            ItemManager.Instance.OnCoinCountChanged.RemoveListener(UpdateCoin);
+        }
+    }
+
+    public void OnClickEquip(Item item)
+    {
+        ItemManager.Instance.EquipItem(item);
+        // TODO: Confirmation 팝업 로직 추가
+        RenderAll();
+    }
+
+    public void OnClickUnequip(Item item)
+    {
+        ItemManager.Instance.UnequipItem(item);
+        // TODO: Confirmation 팝업 로직 추가
+        RenderAll();
+    }
+
+    public void OnClickPurchase(Item item)
+    {
+        if (ItemManager.Instance.TryPurchaseItem(item))
+        {
+            // TODO: Error / Confirmation 팝업 로직 추가
+            RenderAll();
+        }
     }
 }

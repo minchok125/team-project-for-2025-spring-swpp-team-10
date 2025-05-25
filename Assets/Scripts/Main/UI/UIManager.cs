@@ -8,10 +8,10 @@ public class UIManager : RuntimeSingleton<UIManager>
 	[SerializeField] private GameObject pausedMenuPanel, settingsPanel;
 	[SerializeField] private GameObject endingTextObj;
 
-    protected override void Awake()
-    {
-        base.Awake();
-    }
+	protected override void Awake()
+	{
+		base.Awake();
+	}
 
 	public void InitUIManager()
 	{
@@ -61,6 +61,25 @@ public class UIManager : RuntimeSingleton<UIManager>
 		pausedMenuPanel.SetActive(false);
 		settingsPanel.SetActive(false);
 	}
-	
-	
+
+
+	public void OpenSettings()
+	{
+		// TODO: Settings 패널 연결 필요
+	}
+
+	public void CloseSettings()
+	{
+		// TODO: Settings 패널 연결 필요
+	}
+
+	public void OpenStore()
+	{
+		// TODO: Store 패널 연결 필요
+	}
+
+	public void CloseStore()
+	{
+		// TODO: Store 패널 연결 필요
+	}
 }
