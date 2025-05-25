@@ -170,7 +170,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
         {
             HLogger.General.Error("null 아이템을 잠금 해제하려고 시도했습니다.", this);
             return;
-        }
+    }
 
         userItem.isLocked = false;
         HLogger.Player.Info($"아이템 잠금 해제됨: {item.name}", this);
