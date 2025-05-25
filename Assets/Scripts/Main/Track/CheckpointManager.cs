@@ -15,11 +15,11 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
     // 마지막으로 저장된 체크포인트 위치
     private Vector3 _lastCheckpointPosition;
     private bool _hasCheckpointBeenSet = false; // 체크포인트가 한 번이라도 설정되었는지 여부
-    private int _currentCheckpointIndex = 0;
+    private int _currentCheckpointIndex = -1;
 
-    // 다음 체크포인트 정보를 UI나 다른 시스템에 알리기 위한 이벤트입니다.
-    // Vector3?는 다음 체크포인트가 없을 경우 null을 전달할 수 있게 합니다.
-    public System.Action<Vector3?> OnNextCheckpointUpdated;
+    // 옵저버 목록
+    private List<INextCheckpointObserver> _observers = new List<INextCheckpointObserver>();
+
 
     protected override void Awake()
     {
@@ -36,8 +36,25 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
             HLogger.General.Warning("CheckpointManager: 초기 스폰 포인트(Initial Spawn Point)가 설정되지 않았습니다. 첫 번째 체크포인트 활성화 전까지 기본 위치를 사용합니다.");
         }
 
-        UpdateNextCheckpointUI(null);
+        // 게임 시작 시 다음 체크포인트 UI를 초기화합니다. (orderedCheckpoints가 비어있지 않다면 첫 번째를 알림)
+        UpdateNextCheckpointUI(GetNextCheckpointPosition());
     }
+
+    public void RegisterObserver(INextCheckpointObserver observer)
+    {
+        if (!_observers.Contains(observer))
+        {
+            _observers.Add(observer);
+        }
+    }
+
+    public void UnregisterObserver(INextCheckpointObserver observer)
+    {
+        if (_observers.Contains(observer))
+        {
+            _observers.Remove(observer);
+        }
+    }   
 
     public void CheckpointActivated(CheckpointController activatedCheckpoint)
     {
@@ -56,7 +73,7 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
             HLogger.General.Warning($"체크포인트 '{activatedCheckpoint.gameObject.name}'가 순서 목록에 없습니다. 리스폰 지점은 설정되지만, 순서 로직에는 영향을 주지 않습니다.", activatedCheckpoint.gameObject);
             _lastCheckpointPosition = activatedCheckpoint.transform.position;
             _hasCheckpointBeenSet = true;
-            UpdateNextCheckpointUI(null); // 또는 _currentCheckpointIndex 기반으로 복구를 시도할 수 있습니다.
+            // 순서 목록에 없는 체크포인트를 활성화하면 UI 업데이트를 하지 않습니다.
             return;
         }
 
@@ -110,15 +127,17 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
     /// </summary>
     public Vector3 GetLastCheckpointPosition()
     {
-        if (!_hasCheckpointBeenSet && initialSpawnPoint == null && orderedCheckpoints.Count > 0 && orderedCheckpoints[0] != null)
+        if (!_hasCheckpointBeenSet)
         {
-            // 초기 스폰 지점 없고, 어떤 체크포인트도 활성화된 적 없으면 첫 번째 체크포인트를 기본 리스폰 지점으로 사용
-            HLogger.General.Warning("활성화된 체크포인트가 없고 초기 스폰 지점도 없습니다. 리스폰을 위해 리스트의 첫 번째 체크포인트를 사용합니다 (사용 가능한 경우).");
-            return orderedCheckpoints[0].transform.position;
-        }
-        if (!_hasCheckpointBeenSet && initialSpawnPoint == null)
-        {
-            // 어떤 정보도 없으면 Vector3.zero 반환
+            if (initialSpawnPoint != null)
+            {
+                return initialSpawnPoint.position;
+            }
+            if (orderedCheckpoints.Count > 0 && orderedCheckpoints[0] != null)
+            {
+                HLogger.General.Warning("활성화된 체크포인트가 없고 초기 스폰 지점도 없습니다. 리스폰을 위해 리스트의 첫 번째 체크포인트를 사용합니다.");
+                return orderedCheckpoints[0].transform.position;
+            }
             HLogger.General.Warning("활성화된 체크포인트가 없고 초기 스폰 지점도 없습니다. 리스폰을 위해 Vector3.zero를 반환합니다.");
             return Vector3.zero;
         }
@@ -135,7 +154,11 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
     /// </summary>
     private void UpdateNextCheckpointUI(Vector3? nextPosition)
     {
-        OnNextCheckpointUpdated?.Invoke(nextPosition); // 이벤트 호출
+        foreach (var observer in _observers)
+        {
+            observer.OnNextCheckpointChanged(nextPosition);
+        }
+
         if (nextPosition.HasValue)
         {
             HLogger.General.Debug($"UI 알림: 다음 체크포인트 위치는 {nextPosition.Value} 입니다.");
