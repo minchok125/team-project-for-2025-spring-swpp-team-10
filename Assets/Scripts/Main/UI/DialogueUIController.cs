@@ -83,35 +83,39 @@ public class DialogueUIController : MonoBehaviour
                 // dialogueBlock이 이미 꽉 차 있으면 대기
                 if (_blockControllers.Count < maxDialogueNum)
                 {
-                    // 기존의 dialogue들은 위로 한 칸씩 이동
-                    for (int i = 0; i < _blockControllers.Count; i++)
-                        _blockControllers[i].MoveTo(_offset * (_blockControllers.Count - i));
-                    
-                    // 새로운 dialogue 생성
-                    GameObject newDialogue = Instantiate(dialoguePrefab, transform);
-                    DialogueBlockController newController = newDialogue.GetComponent<DialogueBlockController>();
-                    _blockControllers.Add(newController);
-                    newController.InitDialogueBlock(fadeDuration, _currData[_currDataIdx]["text"]);
-                    newController.Show();
-
-                    // lifetime이 끝나면 dialogue를 destroy하도록 설정
-                    float lifetime;
-                    try
-                    {
-                        string tmp = _currData[_currDataIdx]["lifetime"].ToString();
-                        lifetime = Convert.ToSingle(tmp);
-                    }
-                    catch { lifetime = defaultLifetime; }
-                    
-                    DOVirtual.DelayedCall(lifetime, () => RemoveDialogue(newController));
-        
-                    _currDataIdx++;
-                    
+                    yield return GenerateDialogueBlock();
                     break;
                 }
                 yield return null;
             }
         }
+    }
+
+    private IEnumerator GenerateDialogueBlock()
+    {
+        // 기존의 dialogue들은 아래로 한 칸씩 이동
+        for (int i = 0; i < _blockControllers.Count; i++)
+            _blockControllers[i].MoveTo(_offset * (_blockControllers.Count - i) * -1);
+                    
+        // 새로운 dialogue 생성
+        GameObject newDialogue = Instantiate(dialoguePrefab, transform);
+        DialogueBlockController newController = newDialogue.GetComponent<DialogueBlockController>();
+        _blockControllers.Add(newController);
+        newController.InitDialogueBlock(fadeDuration, _currData[_currDataIdx]["text"]);
+        newController.Show();
+
+        // lifetime이 끝나면 dialogue를 destroy하도록 설정
+        float lifetime;
+        try
+        {
+            string tmp = _currData[_currDataIdx]["lifetime"].ToString();
+            lifetime = Convert.ToSingle(tmp);
+        }
+        catch { lifetime = defaultLifetime; }
+        DOVirtual.DelayedCall(lifetime, () => RemoveDialogue(newController));
+        
+        _currDataIdx++;
+        yield return null;
     }
 
     private void RemoveDialogue(DialogueBlockController controller)
