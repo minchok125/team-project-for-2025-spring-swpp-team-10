@@ -18,17 +18,28 @@ public class DialogueUIController : MonoBehaviour
     [SerializeField] private float defaultLifetime, defaultDelay;
     [SerializeField] private float fadeDuration;
     
+    [Header("Colors")]
+    [SerializeField] private Color gray;
+    [SerializeField] private Color red;
+    [SerializeField] private Color orange;
+    [SerializeField] private Color yellow;
+    [SerializeField] private Color green;
+    [SerializeField] private Color blue;
+    [SerializeField] private Color purple;
+    
     private List<DialogueBlockController> _blockControllers = new List<DialogueBlockController>();
     private float _offset;
     private List<Dictionary<string, object>> _currData = new List<Dictionary<string, object>>();
     private int _currDataIdx;
     private ObjectPool _objectPool;
+    private TextProcessor _textProcessor;
 
     private void Awake()
     {
         InitDialogue();
         _objectPool = gameObject.AddComponent<ObjectPool>();
         _objectPool.InitObjectPool(dialoguePrefab, transform, maxDialogueNum * 2);
+        _textProcessor = new TextProcessor(gray, red, orange, yellow, green, blue, purple);
     }
 
     public void InitDialogue()
@@ -108,7 +119,8 @@ public class DialogueUIController : MonoBehaviour
         GameObject newObj = _objectPool.GetObject();
         DialogueBlockController newController = newObj.GetComponent<DialogueBlockController>();
         _blockControllers.Add(newController);
-        newController.InitDialogueBlock(fadeDuration, _currData[_currDataIdx]["text"], _objectPool);
+        string processedText = _textProcessor.Process(_currData[_currDataIdx]["text"].ToString());
+        newController.InitDialogueBlock(fadeDuration, processedText, _objectPool);
         newController.Show();
 
         // lifetime이 끝나면 dialogue를 destroy하도록 설정
