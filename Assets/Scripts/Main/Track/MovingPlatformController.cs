@@ -157,6 +157,7 @@ public class MoveSequence
 }
 
 
+
 #if UNITY_EDITOR
 // ChatGPT 활용
 [CustomPropertyDrawer(typeof(MoveSequence))]
@@ -287,6 +288,7 @@ public class MoveSequenceDrawer : PropertyDrawer
 
 
 [CustomEditor(typeof(MovingPlatformController))]
+[CanEditMultipleObjects]
 public class MovingPlatformControllerEditor : Editor
 {
     public override void OnInspectorGUI()
