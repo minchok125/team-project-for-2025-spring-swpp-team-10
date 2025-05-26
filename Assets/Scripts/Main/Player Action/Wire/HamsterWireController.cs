@@ -98,7 +98,7 @@ public class HamsterWireController : MonoBehaviour, IWire
     {
         if (sj != null) 
             Destroy(sj);
-        PlayerManager.Instance.isInputLock = false;
+        SetIsInputLockFalse();
     }
 
     public void ShortenWire(bool isFast)
@@ -118,12 +118,12 @@ public class HamsterWireController : MonoBehaviour, IWire
         
         SetSpringWireLengthLimits(Vector3.Distance(transform.position, hitPoint.position));
 
-        PlayerManager.Instance.isInputLock = true;
+        PlayerManager.Instance.SetInputLockPermanent(true);
     }
 
     public void ShortenWireEnd(bool isFast)
     {
-        PlayerManager.Instance.isInputLock = false;
+        PlayerManager.Instance.SetInputLockPermanent(false);
         Invoke(nameof(SetIsInputLockFalse), 0.05f);
         Invoke(nameof(SetIsInputLockFalse), 0.1f);
         Debug.Log("ShortenWireEnd");
@@ -143,12 +143,12 @@ public class HamsterWireController : MonoBehaviour, IWire
         
         SetSpringWireLengthLimits(Vector3.Distance(transform.position, hitPoint.position));
 
-        PlayerManager.Instance.isInputLock = true;
+        PlayerManager.Instance.SetInputLockPermanent(true);
     }
 
     public void ExtendWireEnd()
     {
-        PlayerManager.Instance.isInputLock = false;
+        PlayerManager.Instance.SetInputLockPermanent(false);
         Invoke(nameof(SetIsInputLockFalse), 0.05f);
         Invoke(nameof(SetIsInputLockFalse), 0.1f);
         Debug.Log("ExtendWireEnd");
@@ -206,7 +206,8 @@ public class HamsterWireController : MonoBehaviour, IWire
     /// </summary>
     private void SetIsInputLockFalse()
     {
-        PlayerManager.Instance.isInputLock = false;
+        while (PlayerManager.Instance.IsInputLock())
+            PlayerManager.Instance.SetInputLockPermanent(false);
     }
     #endregion
 
