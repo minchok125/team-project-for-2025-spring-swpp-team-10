@@ -8,10 +8,20 @@ public class UIManager : RuntimeSingleton<UIManager>
 	[SerializeField] private GameObject pausedMenuPanel, settingsPanel;
 	[SerializeField] private NextCheckpointUIController nextCheckpointUI;
 	[SerializeField] private GameObject endingTextObj;
+	[SerializeField] private GameObject storePanelPrefab;
+
+	private GameObject _storePanel;
 
 	protected override void Awake()
 	{
 		base.Awake();
+		Canvas canvas = FindObjectOfType<Canvas>();
+		_storePanel = Instantiate(storePanelPrefab, canvas.transform);
+		_storePanel.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+		_storePanel.GetComponent<RectTransform>().anchorMax = Vector2.one;
+		_storePanel.GetComponent<RectTransform>().offsetMin = Vector2.zero;
+		_storePanel.GetComponent<RectTransform>().offsetMax = Vector2.zero;
+		_storePanel.SetActive(false);
 	}
 
 	public void InitUIManager()
@@ -19,6 +29,7 @@ public class UIManager : RuntimeSingleton<UIManager>
 		pausedMenuPanel.SetActive(false);
 		settingsPanel.SetActive(false);
 		endingTextObj.SetActive(false);
+
 
 		// 아래는 추후에 저장 기능이 구현되면 PlayerData를 받아서 값을 설정하도록 수정되어야 함
 		timerText.text = "Timer [00:00.00 s]";
@@ -84,12 +95,12 @@ public class UIManager : RuntimeSingleton<UIManager>
 
 	public void OpenStore()
 	{
-		// TODO: Store 패널 연결 필요
+		_storePanel.SetActive(true);
 	}
 
 	public void CloseStore()
 	{
-		// TODO: Store 패널 연결 필요
+		_storePanel.SetActive(false);
 	}
 
 	public void UpdateNextCheckpoint(Vector3 nextCpPos)
