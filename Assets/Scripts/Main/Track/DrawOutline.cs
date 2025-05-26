@@ -26,7 +26,8 @@ public class DrawOutline : MonoBehaviour
     private float _outlineWidth = 10;
     private bool _outlineEnabled = false;
     private List<int> _outlineFillIndexes;
-    
+    private BlinkNewController _blinkNewController;
+
     private static readonly Color BALL_COLOR = new Color(0.3981f, 0.7492f, 1f, 1f);
     private static readonly Color HAMSTER_COLOR = new Color(0.8902f, 0.6196f, 0.2745f, 1f);
 
@@ -43,6 +44,8 @@ public class DrawOutline : MonoBehaviour
 
     private void Init()
     {
+        _blinkNewController = GetComponent<BlinkNewController>();
+
         // 자기 자신과 자식의 렌더러 목록
         Renderer[] childRenderers = GetComponentsInChildren<Renderer>(true);
 
@@ -169,6 +172,9 @@ public class DrawOutline : MonoBehaviour
             _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.Never);
         }
 
+        if (_blinkNewController != null && !_outlineEnabled)
+            ApplyBlinkControllerCircumstance();
+
         for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
         {
             Renderer rd = _linkedOutlineRenderers[i];
@@ -188,5 +194,19 @@ public class DrawOutline : MonoBehaviour
     {
         _outlineColor = color;
         ApplyOutlineSettings();
+    }
+
+    // BlinkNewController가 있으며 현재 사라지고 있는 상태라면 다시 하얀색 외곽선으로 되돌립니다.
+    private void ApplyBlinkControllerCircumstance()
+    {
+        if (!_blinkNewController.isDisappearing)
+            return;
+
+        Debug.Log("Hello" + _blinkNewController.curAlpha);
+        Color outlineColor = new Color(1, 1, 1, _blinkNewController.curAlpha);
+        _outlineFillMpb.SetColor(k_OutlineColorID, outlineColor);
+        _outlineFillMpb.SetFloat(k_OutlineWidthID, 4f);
+        _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
+        _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
     }
 }

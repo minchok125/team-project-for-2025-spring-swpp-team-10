@@ -3,14 +3,10 @@ using System.Collections;
 
 public class ShotBehavior : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
+	public float speed = 10f;
 	
 	// Update is called once per frame
 	void Update () {
-		transform.position += transform.forward * Time.deltaTime * 1000f;
-	
+		transform.position += transform.forward * Time.deltaTime * speed;
 	}
 }

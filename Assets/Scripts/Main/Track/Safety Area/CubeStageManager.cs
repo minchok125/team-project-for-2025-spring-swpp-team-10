@@ -18,7 +18,7 @@ public class CubeStageManager : MonoBehaviour
 
     private const float MOVE_TIME = 3f;
     private const float ROTATE_TIME = 2f;
-    private const float DISAPPEAR_TIME = 2.5f;
+    private const float DISAPPEAR_TIME = 3.5f;
 
     private WaitForSeconds _moveWait;
     private WaitForSeconds _rotateWait;
@@ -70,7 +70,7 @@ public class CubeStageManager : MonoBehaviour
         for (int i = 0; i < 15; i++)
             StartCoroutine(Rotate());
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 12; i++)
             StartCoroutine(Disappear());
     }
 
