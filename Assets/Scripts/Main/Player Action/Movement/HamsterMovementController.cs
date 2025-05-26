@@ -76,7 +76,7 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     {
         // 입력이 없거나 접착벽에 붙었다면 회전하지 않음
         if (PlayerManager.Instance.moveDir == Vector3.zero || PlayerManager.Instance.isOnStickyWall
-            || PlayerManager.Instance.isInputLock)
+            || PlayerManager.Instance.IsInputLock())
             return;
 
         Vector3 moveDir = PlayerManager.Instance.moveDir;
