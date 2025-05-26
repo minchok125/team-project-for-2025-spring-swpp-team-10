@@ -90,6 +90,8 @@ public class UIManager : RuntimeSingleton<UIManager>
 	public void CloseStore()
 	{
 		// TODO: Store 패널 연결 필요
+	}
+
 	public void UpdateNextCheckpoint(Vector3 nextCpPos)
 	{
 		nextCheckpointUI.UpdateNextCheckpoint(nextCpPos);
