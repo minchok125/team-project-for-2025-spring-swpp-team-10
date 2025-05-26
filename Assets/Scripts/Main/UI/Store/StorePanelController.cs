@@ -122,15 +122,10 @@ public class StorePanelController : MonoBehaviour
     {
         gameObject.SetActive(true);
 
-        // if (_panelRoot != null)
-        // {
-        //     _panelRoot.localScale = Vector3.one * 0.8f;
-        //     _panelRoot.DOScale(1f, 0.35f).SetEase(Ease.OutBack);
-        // }
-        // else
-        // {
-        //     HLogger.Error("StorePanelController의 PanelRoot가 null입니다.");
-        // }
+        transform.localScale = Vector3.one * 0.8f;
+        transform.DOScale(1f, 0.35f)
+         .SetEase(Ease.InOutQuad)
+         .SetUpdate(true);
     }
 
     public void Close()
