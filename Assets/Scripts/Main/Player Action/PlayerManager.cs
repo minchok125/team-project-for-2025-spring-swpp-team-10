@@ -207,11 +207,18 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
     private Action modeConvert;
     private Vector3 accumulatedMovement;
-    private const float LIGHTNING_SHOCK_COOLTIME = 3f;
-    private bool canLightningShock;
 
 
-
+        #region Object Reaction Variables
+        private const float LIGHTNING_SHOCK_COOLTIME = 3f;
+        private bool canLightningShock;
+    
+    
+        private float _yForce = 10f;
+        private float _forceMag = 100f;
+        private float _laserPushTime = 0.2f;
+        private bool _canLaserPush = true;
+        #endregion
     #endregion
 
 
@@ -261,7 +268,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         hamsterLightningShockParticle
             = transform.Find("Hamster Normal")
                        .Find("Lightning Particle")?.gameObject;
-        ballLightningShockParticle 
+        ballLightningShockParticle
             = transform.Find("Hamster Ball")
                        .Find("Lightning Particle")?.gameObject;
     }
@@ -297,7 +304,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         Vector3 moveVec = (forwardVec * ver + rightVec * hor).normalized;
 
         // 접착벽에서는 이동 방향이 제한됨
-        if (isOnSlideWall) 
+        if (isOnSlideWall)
         {
             moveVec = GetSlideMoveVec(moveVec);
         }
@@ -324,7 +331,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         // moveVec에서 SlideWall의 노말벡터와 평행한 성분 제거
         normalMag = Vector3.Dot(moveVec, slideWallNormal);
         moveVec = (moveVec - slideWallNormal * normalMag).normalized;
-        
+
         return moveVec;
     }
 
@@ -353,7 +360,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         if (active) inputLockNumber = Mathf.Max(1, inputLockNumber + 1);
         else inputLockNumber--;
     }
-    
+
     /// <summary>
     /// 입력이 잠금된 상태인지 여부를 반환합니다.
     /// </summary>
@@ -435,8 +442,8 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     // inputLock 풀림, 전기효과 풀림
     private void LightningShockEndAfterFewSeconds()
     {
-        if (isBall) ballLightningShockParticle.SetActive(false);
-        else hamsterLightningShockParticle.SetActive(false);
+        ballLightningShockParticle.SetActive(false);
+        hamsterLightningShockParticle.SetActive(false);
 
         Invoke(nameof(CanLightningShockAfterFewSeconds), 0.4f);
     }
@@ -446,6 +453,30 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         canLightningShock = true;
     }
 
+    /// <summary>
+    /// 맞으면 밀려나가는 레이저에 맞습니다.
+    /// </summary>
+    /// <param name="forceDir">밀려나갈 방향</param>
+    public void LaserPush(Vector3 forceDir)
+    {
+        if (!_canLaserPush)
+            return;
 
+        _canLaserPush = false;
+        playerWire.EndShoot();
+        isGliding = false;
+
+        forceDir = new Vector3(forceDir.x  * _forceMag, _yForce, forceDir.z  * _forceMag);
+        rb.AddForce(forceDir, ForceMode.VelocityChange);
+
+        GameManager.PlaySfx(SfxType.LaserPush);
+
+        SetInputLockDuringSeconds(_laserPushTime);
+        Invoke(nameof(LaserPushEndAfterFewSeconds), _laserPushTime);
+    }
+    private void LaserPushEndAfterFewSeconds()
+    {
+        _canLaserPush = true;
+    }
     #endregion
 }
