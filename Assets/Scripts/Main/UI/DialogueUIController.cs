@@ -22,10 +22,13 @@ public class DialogueUIController : MonoBehaviour
     private float _offset;
     private List<Dictionary<string, object>> _currData = new List<Dictionary<string, object>>();
     private int _currDataIdx;
+    private ObjectPool _objectPool;
 
     private void Awake()
     {
         InitDialogue();
+        _objectPool = gameObject.AddComponent<ObjectPool>();
+        _objectPool.InitObjectPool(dialoguePrefab, transform, maxDialogueNum * 2);
     }
 
     public void InitDialogue()
@@ -67,15 +70,7 @@ public class DialogueUIController : MonoBehaviour
         while (_currDataIdx < _currData.Count)
         {
             // delay만큼 대기
-            float delay;
-            try
-            {
-                string tmp = _currData[_currDataIdx]["delay"].ToString();
-                delay = Convert.ToSingle(tmp);
-            }
-            catch { delay = defaultDelay; }
-            
-            yield return new WaitForSeconds(delay);
+            yield return WaitForDelay();
             
             // 대기 종료 이후 dialogye block 생성 sequence 시작
             while (true)
@@ -91,17 +86,29 @@ public class DialogueUIController : MonoBehaviour
         }
     }
 
+    private IEnumerator WaitForDelay()
+    {
+        float delay;
+        try
+        {
+            string tmp = _currData[_currDataIdx]["delay"].ToString();
+            delay = Convert.ToSingle(tmp);
+        }
+        catch { delay = defaultDelay; }
+        yield return new WaitForSeconds(delay);
+    }
+
     private IEnumerator GenerateDialogueBlock()
     {
         // 기존의 dialogue들은 아래로 한 칸씩 이동
         for (int i = 0; i < _blockControllers.Count; i++)
             _blockControllers[i].MoveTo(_offset * (_blockControllers.Count - i) * -1);
                     
-        // 새로운 dialogue 생성
-        GameObject newDialogue = Instantiate(dialoguePrefab, transform);
-        DialogueBlockController newController = newDialogue.GetComponent<DialogueBlockController>();
+        // Object Pool을 통해 Dialogue Block 받아 온 뒤 Dialogue Block Controller 초기화
+        GameObject newObj = _objectPool.GetObject();
+        DialogueBlockController newController = newObj.GetComponent<DialogueBlockController>();
         _blockControllers.Add(newController);
-        newController.InitDialogueBlock(fadeDuration, _currData[_currDataIdx]["text"]);
+        newController.InitDialogueBlock(fadeDuration, _currData[_currDataIdx]["text"], _objectPool);
         newController.Show();
 
         // lifetime이 끝나면 dialogue를 destroy하도록 설정
