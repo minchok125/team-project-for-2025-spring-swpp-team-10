@@ -202,7 +202,6 @@ public class DrawOutline : MonoBehaviour
         if (!_blinkNewController.isDisappearing)
             return;
 
-        Debug.Log("Hello" + _blinkNewController.curAlpha);
         Color outlineColor = new Color(1, 1, 1, _blinkNewController.curAlpha);
         _outlineFillMpb.SetColor(k_OutlineColorID, outlineColor);
         _outlineFillMpb.SetFloat(k_OutlineWidthID, 4f);

@@ -17,7 +17,10 @@ public enum SfxType
     LaserPlatformDisappear,
     WireClickButtonClicked,
     SecureAreaRoom1DoorOpen,
-    GymBall
+    GymBall,
+    AutomaticDoorOpen,
+    AutomaticDoorClose,
+    LaserPush
 }
 
 

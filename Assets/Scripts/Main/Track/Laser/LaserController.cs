@@ -15,12 +15,12 @@ public class LaserController : MonoBehaviour
     /// </summary>
     public bool isLaserActive = true; 
 
-    public enum LaserType { LightningShock, PlatformDisappear }
+    public enum LaserType { LightningShock, PlatformDisappear, None }
     [Tooltip("플레이어와 레이저가 닿았을 때 이벤트 타입\n"
            + "LightningShock : 3초간 플레이어 움직임 정지\n"
            + "PlatformDisappear : 정해진 플랫폼들이 일정 시간 동안 사라짐")]
-    [SerializeField] private LaserType laserType;
-    [SerializeField] private LaserPlatformDisappearManager platformDisappearMgr;
+    [SerializeField] private LaserType _laserType;
+    [SerializeField] private LaserPlatformDisappearManager _platformDisappearMgr;
 
 
     [Header("Optimization")]
@@ -128,10 +128,10 @@ public class LaserController : MonoBehaviour
             HLogger.General.Warning("레이저에 Moving 스크립트가 부착되어 있으나, isLaserMoving이 false입니다.", this);
         }
 
-        if (laserType == LaserType.PlatformDisappear && platformDisappearMgr == null)
+        if (_laserType == LaserType.PlatformDisappear && _platformDisappearMgr == null)
         {
-            platformDisappearMgr = GetComponentInParent<LaserPlatformDisappearManager>();
-            if (platformDisappearMgr == null)
+            _platformDisappearMgr = GetComponentInParent<LaserPlatformDisappearManager>();
+            if (_platformDisappearMgr == null)
                 HLogger.General.Error("레이저에 platformDisappearMgr를 설정해 주거나\n"
                     + "부모 오브젝트 위치에 LaserPlatformDisappearManager를 추가해 주세요", this);
         }
@@ -140,7 +140,7 @@ public class LaserController : MonoBehaviour
     // 레이저를 발사해 레이저 끝점 검출, 플레이어 검출 이벤트
     private void ShootLaser()
     {
-        if (Physics.Raycast(transform.position, transform.forward, out _hit, laserMaxDist))
+        if (Physics.Raycast(transform.position, transform.forward, out _hit, laserMaxDist, ~0, QueryTriggerInteraction.Ignore))
         {
             _laserLineBehavior.EndPos 
                 = Vector3.forward * ((_hit.point - transform.position).magnitude - OFFSET_FROM_HIT);
@@ -216,10 +216,10 @@ public class LaserController : MonoBehaviour
     /// 레이저가 플레이어를 검출했을 때 이벤트
     private void DetectedPlayer()
     {
-        if (laserType == LaserType.LightningShock)
+        if (_laserType == LaserType.LightningShock)
             PlayerManager.Instance.LightningShock();
-        else if (laserType == LaserType.PlatformDisappear)
-            platformDisappearMgr.PlatformDisappear();
+        else if (_laserType == LaserType.PlatformDisappear)
+            _platformDisappearMgr.PlatformDisappear();
     }
 
     private void ParticlePlay()
@@ -306,8 +306,8 @@ class LaserControllerEditor : Editor
 
     private void OnEnable()
     {
-        laserTypeProp = serializedObject.FindProperty("laserType");
-        platformDisappearMgrProp = serializedObject.FindProperty("platformDisappearMgr");
+        laserTypeProp = serializedObject.FindProperty("_laserType");
+        platformDisappearMgrProp = serializedObject.FindProperty("_platformDisappearMgr");
         visulaizeLineProp = serializedObject.FindProperty("visulaizeLine");
         detectPointDistProp = serializedObject.FindProperty("detectPointDist");
         setDistWhenPlayerFarProp = serializedObject.FindProperty("setDistWhenPlayerFar");
