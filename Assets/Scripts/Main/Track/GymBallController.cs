@@ -47,8 +47,7 @@ public class GymBallController : MonoBehaviour
             // 플레이어라면 입력 제한 걸기
             if (collision.gameObject.CompareTag("Player"))
             {
-                PlayerManager.Instance.isInputLock = true;
-                PlayerManager.Instance.SetInputLockAfterSeconds(false, 0.4f);
+                PlayerManager.Instance.SetInputLockDuringSeconds(0.4f);
             }
         }
     }
