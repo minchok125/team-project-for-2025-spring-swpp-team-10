@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-public class StoreController : MonoBehaviour
+public class StorePanelController : MonoBehaviour
 {
     [Header("Panels")]
     [SerializeField] private Transform storeItemGrid;
@@ -101,5 +101,10 @@ public class StoreController : MonoBehaviour
             // TODO: Error / Confirmation 팝업 로직 추가
             RenderAll();
         }
+    }
+
+    public void Exit()
+    {
+        UIManager.Instance.CloseStore();
     }
 }
