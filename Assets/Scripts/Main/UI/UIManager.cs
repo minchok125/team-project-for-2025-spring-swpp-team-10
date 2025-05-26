@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using Hampossible.Utils;
 
 public class UIManager : RuntimeSingleton<UIManager>
 {
@@ -15,13 +16,25 @@ public class UIManager : RuntimeSingleton<UIManager>
 	protected override void Awake()
 	{
 		base.Awake();
+
 		Canvas canvas = FindObjectOfType<Canvas>();
+		if (canvas == null)
+		{
+			HLogger.Error("캔버스를 찾지 못했습니다.");
+			return;
+		}
+
+		// StorePanel 생성 및 RectTransform 설정
 		_storePanel = Instantiate(storePanelPrefab, canvas.transform);
-		_storePanel.GetComponent<RectTransform>().anchorMin = Vector2.zero;
-		_storePanel.GetComponent<RectTransform>().anchorMax = Vector2.one;
-		_storePanel.GetComponent<RectTransform>().offsetMin = Vector2.zero;
-		_storePanel.GetComponent<RectTransform>().offsetMax = Vector2.zero;
+		RectTransform storeRect = _storePanel.GetComponent<RectTransform>();
+		storeRect.anchorMin = Vector2.zero;
+		storeRect.anchorMax = Vector2.one;
+		storeRect.offsetMin = Vector2.zero;
+		storeRect.offsetMax = Vector2.zero;
+		HLogger.Info("StorePanel 생성 완료");
+
 		_storePanel.SetActive(false);
+		HLogger.Info("StorePanelController 초기화 완료");
 	}
 
 	public void InitUIManager()
@@ -95,12 +108,12 @@ public class UIManager : RuntimeSingleton<UIManager>
 
 	public void OpenStore()
 	{
-		_storePanel.SetActive(true);
+		_storePanel.GetComponent<StorePanelController>().Open();
 	}
 
 	public void CloseStore()
 	{
-		_storePanel.SetActive(false);
+		_storePanel.GetComponent<StorePanelController>().Close();
 	}
 
 	public void UpdateNextCheckpoint(Vector3 nextCpPos)

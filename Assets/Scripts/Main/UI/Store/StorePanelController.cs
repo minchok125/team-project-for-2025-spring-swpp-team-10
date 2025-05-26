@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using DG.Tweening;
+using Hampossible.Utils;
 
 public class StorePanelController : MonoBehaviour
 {
@@ -13,6 +15,18 @@ public class StorePanelController : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI coinText;
+
+    private RectTransform _panelRoot;
+
+    void Awake()
+    {
+        _panelRoot = GetComponent<RectTransform>();
+        if (_panelRoot == null)
+        {
+            HLogger.Error("StorePanelController의 PanelRoot가 null입니다.");
+            return;
+        }
+    }
 
     public void RenderAll()
     {
@@ -103,8 +117,32 @@ public class StorePanelController : MonoBehaviour
         }
     }
 
-    public void Exit()
+
+    public void Open()
     {
-        UIManager.Instance.CloseStore();
+        gameObject.SetActive(true);
+
+        // if (_panelRoot != null)
+        // {
+        //     _panelRoot.localScale = Vector3.one * 0.8f;
+        //     _panelRoot.DOScale(1f, 0.35f).SetEase(Ease.OutBack);
+        // }
+        // else
+        // {
+        //     HLogger.Error("StorePanelController의 PanelRoot가 null입니다.");
+        // }
+    }
+
+    public void Close()
+    {
+        // if (_panelRoot != null)
+        // {
+        //     _panelRoot.DOScale(0.8f, 0.25f).SetEase(Ease.InBack).OnComplete(() =>
+        //     {
+        //         gameObject.SetActive(false);
+        //     });
+        // }
+
+        gameObject.SetActive(false);
     }
 }
