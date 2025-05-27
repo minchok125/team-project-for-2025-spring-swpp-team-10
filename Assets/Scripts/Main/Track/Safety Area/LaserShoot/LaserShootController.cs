@@ -8,7 +8,7 @@ using UnityEditor;
 
 public enum LaserShootType { Push, LightningShock }
 public class LaserShootController : MonoBehaviour
-{   
+{
     public LaserShootType laserShootType;
 
     [Tooltip("레이저 중심점과 플레이어 사이의 거리가 일정 거리 이하일 때 감지 시작")]
@@ -86,13 +86,8 @@ public class LaserShootController : MonoBehaviour
         else
             obj = LaserShootBluePool.Instance.GetObject();
 
-
-        if (obj == null)
-            Debug.Log("NULL");
-        else
-            Debug.Log("ACC:" + obj.activeSelf);
-
         obj.transform.position = _rayCastPoint.position;
+        Debug.Log(obj.transform.position);
         obj.transform.rotation = Quaternion.LookRotation(playerDir);
         LaserShootObjectController laser = obj.GetComponent<LaserShootObjectController>();
         obj.GetComponent<ShotBehavior>().speed = laserSpeed;

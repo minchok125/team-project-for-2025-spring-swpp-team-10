@@ -7,13 +7,16 @@ public class LaserShootObjectTriggerEntire : MonoBehaviour
 {
     private LaserShootObjectController _laser;
 
-    private void Start()
+    private void Awake()
     {
         _laser = GetComponentInParent<LaserShootObjectController>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (other.isTrigger)
+            return;
+
         if (other.CompareTag("Player"))
         {
             if (_laser.laserShootType == LaserShootType.Push)
@@ -31,6 +34,9 @@ public class LaserShootObjectTriggerEntire : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        if (other.isTrigger)
+            return;
+
         _laser.SetLaserDistance();
     }
 }
