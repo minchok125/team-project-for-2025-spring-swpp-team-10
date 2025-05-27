@@ -38,6 +38,11 @@ public class DrawOutline : MonoBehaviour
 
     void Start()
     {
+        Invoke(nameof(Init), 0.1f);
+    }
+
+    private void Init()
+    {
         // 자기 자신과 자식의 렌더러 목록
         Renderer[] childRenderers = GetComponentsInChildren<Renderer>(true);
 
@@ -147,6 +152,9 @@ public class DrawOutline : MonoBehaviour
     // 오브젝트의 외곽선에 현재 정보를 반영합니다.
     private void ApplyOutlineSettings()
     {
+        if (_outlineFillMpb == null)
+            return;
+
         _outlineFillMpb.SetColor(k_OutlineColorID, _outlineColor);
         _outlineFillMpb.SetFloat(k_OutlineWidthID, _outlineWidth);
 

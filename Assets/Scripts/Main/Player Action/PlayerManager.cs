@@ -30,7 +30,6 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     [SerializeField] private AudioClip boostAudio;
     [SerializeField] private AudioClip retractorAudio;
     [SerializeField] private AudioClip balloonAudio;
-    [SerializeField] private AudioClip lightningShockAudio;
     #endregion
 
 
@@ -176,15 +175,6 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     public Vector3 slideWallNormal;
 
     /// <summary>
-    /// 플레이어 입력이 현재 잠겨있는지 여부를 나타냅니다.
-    /// </summary>
-    /// <remarks>
-    /// 컷신, 대화, 특수 애니메이션 등 특정 상황에서 
-    /// 플레이어 입력을 일시적으로 비활성화할 때 사용됩니다.
-    /// </remarks>
-    public bool isInputLock;
-
-    /// <summary>
     /// 플레이어의 스킬 컨트롤러 참조입니다.
     /// </summary>
     /// <remarks>
@@ -208,13 +198,14 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
 
     #region Private Variables
+    private int inputLockNumber;
     private Rigidbody rb;
     private GameObject hamsterLightningShockParticle;
     private GameObject ballLightningShockParticle;
 
 
 
-    private Action modeConvert; // 
+    private Action modeConvert;
     private Vector3 accumulatedMovement;
     private const float LIGHTNING_SHOCK_COOLTIME = 3f;
     private bool canLightningShock;
@@ -236,6 +227,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         hamsterLightningShockParticle?.SetActive(false);
         ballLightningShockParticle?.SetActive(false);
         canLightningShock = true;
+        inputLockNumber = 0;
 
         // 씬 리셋 시 구독자 전부 제거
         modeConvert = null;
@@ -243,7 +235,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
     private void Update()
     {
-        if (isInputLock) moveDir = Vector3.zero;
+        if (IsInputLock()) moveDir = Vector3.zero;
         else moveDir = GetInputMoveDir();
     }
 
@@ -339,25 +331,41 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
     #region Set Input Lock
     /// <summary>
-    /// 지정된 시간 후에 입력 잠금 상태를 설정합니다.
+    /// 지정된 시간 동안 입력을 잠금합니다.
     /// </summary>
-    /// <param name="isLock">잠금 상태 (true: 잠금, false: 해제)</param>
-    /// <param name="time">지연 시간 (초)</param>
+    /// <param name="time">입력을 잠금하는 시간(초)</param>
+    public void SetInputLockDuringSeconds(float lockedTime)
+    {
+        inputLockNumber++;
+        Invoke(nameof(DownInputLockNumber), lockedTime);
+    }
+
+    /// <summary>
+    /// 단순히 입력을 잠금하거나, 입력 잠금을 해제합니다.
+    /// </summary>
+    /// <param name="active">입력 잠금을 한다면 true</param>
     /// <remarks>
-    /// 특정 이벤트 후 일정 시간이 지난 뒤 입력 상태를 변경할 때 사용됩니다.
+    /// 입력이 잠금되는 시간을 직접 지정하기 어려울 때 사용합니다.
+    /// 반드시 SetInputLockPermanent(true/false) 쌍이 함께 있어야 합니다.
     /// </remarks>
-    public void SetInputLockAfterSeconds(bool isLock, float time)
+    public void SetInputLockPermanent(bool active)
     {
-        if (isLock) Invoke(nameof(SetInputLockTrue), time);
-        else Invoke(nameof(SetInputLockFalse), time);
+        if (active) inputLockNumber = Mathf.Max(1, inputLockNumber + 1);
+        else inputLockNumber--;
     }
-    private void SetInputLockTrue()
+    
+    /// <summary>
+    /// 입력이 잠금된 상태인지 여부를 반환합니다.
+    /// </summary>
+    /// <returns>입력이 잠금된 상태라면 True를 반환합니다.</returns>
+    public bool IsInputLock()
     {
-        isInputLock = true;
+        return inputLockNumber > 0;
     }
-    private void SetInputLockFalse()
+
+    private void DownInputLockNumber()
     {
-        isInputLock = false;
+        inputLockNumber--;
     }
     #endregion
 
@@ -370,8 +378,8 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// 현재 상태의 반대 모드로 플레이어를 변환합니다.
     /// </summary>
     public void ModeConvert()
-    { 
-        modeConvert?.Invoke(); 
+    {
+        modeConvert?.Invoke();
     }
 
     /// <summary>
@@ -412,7 +420,6 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         if (!canLightningShock)
             return;
 
-        isInputLock = true;
         canLightningShock = false;
         playerWire.EndShoot();
         isGliding = false;
@@ -420,14 +427,14 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         if (isBall) ballLightningShockParticle.SetActive(true);
         else hamsterLightningShockParticle.SetActive(true);
 
-        GameManager.PlaySfx(lightningShockAudio);
+        GameManager.PlaySfx(SfxType.LightningShock);
 
+        SetInputLockDuringSeconds(LIGHTNING_SHOCK_COOLTIME);
         Invoke(nameof(LightningShockEndAfterFewSeconds), LIGHTNING_SHOCK_COOLTIME);
     }
     // inputLock 풀림, 전기효과 풀림
     private void LightningShockEndAfterFewSeconds()
     {
-        isInputLock = false;
         if (isBall) ballLightningShockParticle.SetActive(false);
         else hamsterLightningShockParticle.SetActive(false);
 

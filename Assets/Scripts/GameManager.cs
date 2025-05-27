@@ -10,7 +10,15 @@ public class SfxAudioClip
     public AudioClip clip;
 }
 
-public enum SfxType { TestSfx, LightningShock, LaserPlatformDisappear }
+public enum SfxType
+{
+    TestSfx,
+    LightningShock,
+    LaserPlatformDisappear,
+    WireClickButtonClicked,
+    SecureAreaRoom1DoorOpen,
+    GymBall
+}
 
 
 public class GameManager : PersistentSingleton<GameManager>
