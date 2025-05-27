@@ -15,15 +15,16 @@ public class LaserShootController : MonoBehaviour
     public float detectPointDist = 300;
     [Tooltip("레이저 포가 최대로 갈 수 있는 거리. 이 거리를 넘어서면 포는 사라짐")]
     public float maxLaserShootMoveDist = 300;
-    [SerializeField] private float rotationSpeed = 5f;
+    public float rotationSpeed = 5f;
     [SerializeField] private GameObject shootLaserPrefab;
-    [SerializeField] private float laserShootCooltime = 0.2f;
-    [SerializeField] private float laserSpeed = 1f;
+    public float laserShootCooltime = 0.2f;
+    public float laserSpeed = 1f;
 
     private Transform _player;
     private Transform _rayCastPoint;
     private LineRenderer _lineRenderer;
     private float _lastLaserShootTime = -1f;
+    private LayerMask _layerMask;
 
     private void Start()
     {
@@ -33,6 +34,9 @@ public class LaserShootController : MonoBehaviour
         if (!TryGetComponent(out _lineRenderer))
             _lineRenderer = gameObject.AddComponent<LineRenderer>();
         _lineRenderer.positionCount = 2;
+
+        int laserDetectLayer = 1 << LayerMask.NameToLayer("LaserDetect");
+        _layerMask = ~laserDetectLayer;
     }
 
     private void FixedUpdate()
@@ -48,7 +52,8 @@ public class LaserShootController : MonoBehaviour
         if (Physics.Raycast(transform.position + playerDir * 19f,
                     playerDir,
                     out RaycastHit hit,
-                    detectPointDist, ~0,
+                    detectPointDist,
+                    ~0,
                     QueryTriggerInteraction.Ignore))
         {
             if (!hit.collider.CompareTag("Player"))
@@ -61,7 +66,7 @@ public class LaserShootController : MonoBehaviour
                                 target,
                                 rotationSpeed * Time.fixedDeltaTime);
 
-        Shoot(playerDir);
+        Shoot();
     }
 
     // 플레이어 사이의 거리가 일정 거리 이하인지 확인
@@ -70,15 +75,15 @@ public class LaserShootController : MonoBehaviour
         return (transform.position - _player.position).sqrMagnitude < detectPointDist * detectPointDist;
     }
 
-    private void Shoot(Vector3 playerDir)
+    private void Shoot()
     {
         if (Time.time - _lastLaserShootTime > laserShootCooltime)
         {
-            ShootLaser(playerDir);
+            ShootLaser();
         }
     }
 
-    private void ShootLaser(Vector3 playerDir)
+    private void ShootLaser()
     {
         GameObject obj;
         if (laserShootType == LaserShootType.Push)
@@ -87,8 +92,7 @@ public class LaserShootController : MonoBehaviour
             obj = LaserShootBluePool.Instance.GetObject();
 
         obj.transform.position = _rayCastPoint.position;
-        Debug.Log(obj.transform.position);
-        obj.transform.rotation = Quaternion.LookRotation(playerDir);
+        obj.transform.rotation = Quaternion.LookRotation(transform.forward);
         LaserShootObjectController laser = obj.GetComponent<LaserShootObjectController>();
         obj.GetComponent<ShotBehavior>().speed = laserSpeed;
         laser.Init(maxLaserShootMoveDist);

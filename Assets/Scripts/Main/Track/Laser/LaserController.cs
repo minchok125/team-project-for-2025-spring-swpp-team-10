@@ -13,7 +13,7 @@ public class LaserController : MonoBehaviour
     /// <summary>
     /// 레이저의 검출 기능 활성화 여부
     /// </summary>
-    public bool isLaserActive = true; 
+    public bool isLaserActive = true;
 
     public enum LaserType { LightningShock, PlatformDisappear, None }
     [Tooltip("플레이어와 레이저가 닿았을 때 이벤트 타입\n"
@@ -48,13 +48,16 @@ public class LaserController : MonoBehaviour
     [Tooltip("레이저 자체가 움직이는 경우 true")]
     [SerializeField] private bool isLaserMoving;
 
+    [Tooltip("연동할 레이저포가 있다면 연결. 없으면 null로 유지")]
+    [SerializeField] private LaserShootController laserShoot;
+
 
     private const float OFFSET_FROM_HIT = 1.2f;
     private Vector3 _playerPosition;
     private Vector3 _laserOrigin; // 레이저 시작 지점 월드좌표
     private Vector3 _laserMaxPoint; // 레이저 길이가 laserMaxDist일 때의 끝 지점 월드좌표
     private Vector3 _laserCenter; // 레이저 길이가 laserMaxDist일 때의 중심 지점 월드좌표
-    
+
 
     private ParticleSystem _laserHitParticle;
     private VolumetricLineBehavior _laserLineBehavior;
@@ -62,13 +65,15 @@ public class LaserController : MonoBehaviour
     private Color _laserColor;
     private RaycastHit _hit;
     private Transform _player;
+    private LayerMask _layerMask;
 
 
 
 
     private void Start()
     {
-        ValidateCheck();
+        int laserDetectLayer = 1 << LayerMask.NameToLayer("LaserDetect");
+        _layerMask = ~laserDetectLayer;
 
         _laserHitParticle = GetComponentInChildren<ParticleSystem>();
         ParticleStop();
@@ -113,15 +118,15 @@ public class LaserController : MonoBehaviour
         {
             ShootLaser();
         }
-    } 
+    }
 
-    
+
     // 변수가 잘못 설정되지 않았는지 검사
     [Conditional("UNITY_EDITOR")]
     private void ValidateCheck()
     {
         if (!isLaserMoving &&
-                (TryGetComponent(out MovingPlatformController mov) 
+                (TryGetComponent(out MovingPlatformController mov)
                 || TryGetComponent(out PingPongMovingPlatformController ppMov))
             )
         {
@@ -140,11 +145,11 @@ public class LaserController : MonoBehaviour
     // 레이저를 발사해 레이저 끝점 검출, 플레이어 검출 이벤트
     private void ShootLaser()
     {
-        if (Physics.Raycast(transform.position, transform.forward, out _hit, laserMaxDist, ~0, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(transform.position, transform.forward, out _hit, laserMaxDist, _layerMask, QueryTriggerInteraction.Ignore))
         {
-            _laserLineBehavior.EndPos 
+            _laserLineBehavior.EndPos
                 = Vector3.forward * ((_hit.point - transform.position).magnitude - OFFSET_FROM_HIT);
-            
+
             if (_laserHitParticle != null)
             {
                 _laserHitParticle.transform.position = _hit.point - transform.forward * 0.7f;
@@ -217,9 +222,41 @@ public class LaserController : MonoBehaviour
     private void DetectedPlayer()
     {
         if (_laserType == LaserType.LightningShock)
+        {
+            NotifyLaserShoot();
             PlayerManager.Instance.LightningShock();
+        }
         else if (_laserType == LaserType.PlatformDisappear)
+        {
             _platformDisappearMgr.PlatformDisappear();
+        }
+    }
+
+    float _laserShootRotationSpeed;
+    float _laserShootLaserShootCooltime;
+    float _laserShootLaserSpeed;
+
+    private void NotifyLaserShoot()
+    {
+        if (laserShoot != null && PlayerManager.Instance.canLightningShock)
+        {
+            _laserShootRotationSpeed = laserShoot.rotationSpeed;
+            _laserShootLaserShootCooltime = laserShoot.laserShootCooltime;
+            _laserShootLaserSpeed = laserShoot.laserSpeed;
+
+            laserShoot.rotationSpeed = 30f;
+            laserShoot.laserShootCooltime = 0.05f;
+            laserShoot.laserSpeed = 350f;
+
+            Invoke(nameof(LaserShootBurstEnd), 3.5f);
+        }
+    }
+
+    private void LaserShootBurstEnd()
+    {
+        laserShoot.rotationSpeed = _laserShootRotationSpeed;
+        laserShoot.laserShootCooltime = _laserShootLaserShootCooltime;
+        laserShoot.laserSpeed = _laserShootLaserSpeed;
     }
 
     private void ParticlePlay()
@@ -303,6 +340,7 @@ class LaserControllerEditor : Editor
     SerializedProperty laserMaxDistProp;
     SerializedProperty isEndPointDynamicProp;
     SerializedProperty isLaserMovingProp;
+    SerializedProperty laserShootProp;
 
     private void OnEnable()
     {
@@ -316,6 +354,7 @@ class LaserControllerEditor : Editor
         laserMaxDistProp = serializedObject.FindProperty("laserMaxDist");
         isEndPointDynamicProp = serializedObject.FindProperty("isEndPointDynamic");
         isLaserMovingProp = serializedObject.FindProperty("isLaserMoving");
+        laserShootProp = serializedObject.FindProperty("laserShoot");
     }
 
     public override void OnInspectorGUI()
@@ -345,6 +384,8 @@ class LaserControllerEditor : Editor
         EditorGUILayout.PropertyField(laserMaxDistProp);
         EditorGUILayout.PropertyField(isEndPointDynamicProp);
         EditorGUILayout.PropertyField(isLaserMovingProp);
+
+        EditorGUILayout.PropertyField(laserShootProp);
 
         serializedObject.ApplyModifiedProperties();
     }

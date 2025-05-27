@@ -211,7 +211,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
         #region Object Reaction Variables
         private const float LIGHTNING_SHOCK_COOLTIME = 3f;
-        private bool canLightningShock;
+        public bool canLightningShock { get; private set; }
     
     
         private float _yForce = 10f;

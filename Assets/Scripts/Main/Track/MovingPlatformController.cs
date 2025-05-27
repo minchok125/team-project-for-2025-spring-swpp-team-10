@@ -86,7 +86,8 @@ public class MovingPlatformController : MonoBehaviour
         switch (seq.modifyType)
         {
             case Type.Position:
-                transform.localPosition = Vector3.LerpUnclamped(_fromValue, _toValue, t);
+                //transform.localPosition = Vector3.LerpUnclamped(_fromValue, _toValue, t);
+                transform.localPosition = AA(transform.localPosition, Vector3.LerpUnclamped(_fromValue, _toValue, t), seq);
                 break;
             case Type.Rotation:
                 Quaternion fromRotation = Quaternion.Euler(_fromValue);
@@ -97,6 +98,17 @@ public class MovingPlatformController : MonoBehaviour
                 transform.localScale = Vector3.LerpUnclamped(_fromValue, _toValue, t);
                 break;
         }
+    }
+
+    Vector3 AA(Vector3 vec, Vector3 apply, MoveSequence seq)
+    {
+
+        if (seq.xb) vec.x = apply.x;
+        if (seq.yb) vec.y = apply.y;
+        if (seq.zb) vec.z = apply.z;
+        if (seq.modifyType == Type.Rotation) vec = apply;
+
+        return vec;
     }
 
     float ApplyEase(MoveSequence seq, float t)
