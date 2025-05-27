@@ -37,7 +37,7 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
         }
 
         // 게임 시작 시 다음 체크포인트 UI를 초기화합니다. (orderedCheckpoints가 비어있지 않다면 첫 번째를 알림)
-        UpdateNextCheckpointUI(GetNextCheckpointPosition());
+        UpdateNextCheckpoint(GetNextCheckpointPosition());
     }
 
     public void RegisterObserver(INextCheckpointObserver observer)
@@ -86,7 +86,7 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
             HLogger.General.Info($"체크포인트 '{activatedCheckpoint.gameObject.name}' (인덱스: {_currentCheckpointIndex}) 활성화됨. 위치: {_lastCheckpointPosition}");
 
             Vector3? nextCheckpointPos = GetNextCheckpointPosition(); // 다음 체크포인트 위치 가져오기
-            UpdateNextCheckpointUI(nextCheckpointPos); // UI 업데이트 알림
+            UpdateNextCheckpoint(nextCheckpointPos); // UI 업데이트 알림
         }
         else
         {
@@ -152,7 +152,7 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
     /// <summary>
     /// UI 업데이트를 위한 이벤트를 호출하는 헬퍼 메소드입니다.
     /// </summary>
-    private void UpdateNextCheckpointUI(Vector3? nextPosition)
+    private void UpdateNextCheckpoint(Vector3? nextPosition)
     {
         foreach (var observer in _observers)
         {
