@@ -1,7 +1,8 @@
 using TMPro;
 using UnityEngine;
+using Hampossible.Utils;
 
-public class UIManager : RuntimeSingleton<UIManager>
+public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 {
 	[Header("References")]
 	[SerializeField] private TextMeshProUGUI timerText;
@@ -9,9 +10,23 @@ public class UIManager : RuntimeSingleton<UIManager>
 	[SerializeField] private NextCheckpointUIController nextCheckpointUI;
 	[SerializeField] private GameObject endingTextObj;
 
-    protected override void Awake()
+	protected override void Awake()
+	{
+		base.Awake();
+		// CheckpointManager에 옵저버로 등록
+        if (CheckpointManager.Instance != null)
+        {
+            CheckpointManager.Instance.RegisterObserver(this);
+        }
+    }
+
+	private void OnDestroy()
     {
-        base.Awake();
+        // UIManager가 파괴될 때 CheckpointManager에서 옵저버 등록 해제
+        if (CheckpointManager.Instance != null)
+        {
+            CheckpointManager.Instance.UnregisterObserver(this);
+        }
     }
 
 	public void InitUIManager()
@@ -22,6 +37,7 @@ public class UIManager : RuntimeSingleton<UIManager>
 
 		// 아래는 추후에 저장 기능이 구현되면 PlayerData를 받아서 값을 설정하도록 수정되어야 함
 		timerText.text = "Timer [00:00.00 s]";
+
 	}
 
 	private void Update()
@@ -29,8 +45,28 @@ public class UIManager : RuntimeSingleton<UIManager>
 		/* Next Checkpoint UI 표시 여부를 토글할 수 있도록 지정해 둠
 		 * 키 지정은 임의로 해둔 것이므로, 추후 수정 필요
 		 */
-		if (Input.GetKeyDown(KeyCode.C)) nextCheckpointUI.ToggleDisplay();
+		if (Input.GetKeyDown(KeyCode.C))
+		{
+			if (nextCheckpointUI != null)
+			{
+				nextCheckpointUI.ToggleDisplay(); // 사용자의 UI 표시/숨김 토글
+			}
+			else
+			{
+				HLogger.General.Error("NextCheckpointUI가 할당되지 않았습니다. UIManager의 인스펙터에서 할당해주세요.");
+			}
+		}
+		
 	}
+
+	// INextCheckpointObserver 인터페이스 구현 메서드
+    public void OnNextCheckpointChanged(Vector3? nextPosition)
+    {
+        if (nextCheckpointUI != null)
+        {
+            nextCheckpointUI.UpdateTargetPosition(nextPosition);
+        }
+    }
 
 	public void ResumeGame()
 	{
@@ -71,8 +107,5 @@ public class UIManager : RuntimeSingleton<UIManager>
 		settingsPanel.SetActive(false);
 	}
 
-	public void UpdateNextCheckpoint(Vector3 nextCpPos)
-	{
-		nextCheckpointUI.UpdateNextCheckpoint(nextCpPos);
-	}
+	
 }
