@@ -218,8 +218,10 @@ MonoBehaviour:
   isLaserActive: 1
   laserType: 0
   platformDisappearMgr: {fileID: 0}
-  visulaizeLine: 0
+  visulaizeLine: 1
   detectPointDist: 100
+  setDistWhenPlayerFar: 0
+  distWhenPlayerFar: 0
   detectLineDist: 5
   laserMaxDist: 50
   isEndPointDynamic: 0
