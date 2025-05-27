@@ -33,7 +33,6 @@ public class LaserShootYellowPool : RuntimeSingleton<LaserShootYellowPool>
         // 재사용 가능한 오브젝트 반환
         if (_pool.Count > 0)
         {
-            Debug.Log("aa");
             GameObject obj = _pool.Dequeue();
             obj.SetActive(true);
             return obj;

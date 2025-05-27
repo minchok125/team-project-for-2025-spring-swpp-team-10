@@ -17,8 +17,8 @@ public class AutomaticDoorController : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        _leftDoor.DOLocalMoveZ(-6, 2f);
-        _rightDoor.DOLocalMoveZ(6, 2f);
+        _leftDoor.DOLocalMoveZ(-6, 2f).SetUpdate(UpdateType.Fixed);
+        _rightDoor.DOLocalMoveZ(6, 2f).SetUpdate(UpdateType.Fixed);
 
         GameManager.PlaySfx(SfxType.AutomaticDoorOpen);
     }
@@ -28,8 +28,8 @@ public class AutomaticDoorController : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        _leftDoor.DOLocalMoveZ(-3, 2f);
-        _rightDoor.DOLocalMoveZ(3, 2f);
+        _leftDoor.DOLocalMoveZ(-3, 2f).SetUpdate(UpdateType.Fixed);
+        _rightDoor.DOLocalMoveZ(3, 2f).SetUpdate(UpdateType.Fixed);
 
         GameManager.PlaySfx(SfxType.AutomaticDoorClose);
     }
