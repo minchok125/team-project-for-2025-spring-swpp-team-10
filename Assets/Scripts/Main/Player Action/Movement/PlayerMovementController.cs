@@ -193,13 +193,13 @@ public class PlayerMovementController : MonoBehaviour
     private void UpdateMovement()
     {
         // 입력이 잠기지 않았다면 이동 처리
-        if (!playerMgr.isInputLock)
+        if (!playerMgr.IsInputLock())
             playerMgr.isMoving = curMovement.Move();
 
         // 볼 상태가 아닐 때만 걷기 애니메이션 업데이트
         if (!playerMgr.isBall)
         {
-            bool setWalking = playerMgr.isInputLock ? false : playerMgr.isMoving;
+            bool setWalking = playerMgr.IsInputLock() ? false : playerMgr.isMoving;
             animator.SetBool("IsWalking", setWalking);
         }
     }
@@ -300,7 +300,7 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleJumpInput()
     {
         jumped = false;
-        bool isInputLock = PlayerManager.Instance.isInputLock;
+        bool isInputLock = PlayerManager.Instance.IsInputLock();
 
         if (!playerMgr.isBall && playerMgr.onWire)
             return;
@@ -371,8 +371,7 @@ public class PlayerMovementController : MonoBehaviour
         rb.AddForce(normal * power + Vector3.up * 2, ForceMode.VelocityChange);
 
         // 일시적으로 입력 잠금
-        playerMgr.isInputLock = true;
-        playerMgr.SetInputLockAfterSeconds(false, 0.3f);
+        playerMgr.SetInputLockDuringSeconds(0.3f);
 
         // 점프 방향으로 회전 코루틴 시작
         StartCoroutine(SlideWallJumpRotate());
@@ -420,7 +419,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         // 공중에서 스페이스바를 누르면 활공 토글
         if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !playerMgr.onWire
-            && !playerMgr.isInputLock)
+            && !playerMgr.IsInputLock())
         {
             // jumped : 이번 Update 프레임 때 점프를 했는지
             if (!jumped && playerMgr.skill.HasGliding())
