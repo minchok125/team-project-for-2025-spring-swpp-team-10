@@ -28,7 +28,7 @@ public class TrampolineController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !PlayerManager.Instance.isInputLock) 
+        if (Input.GetKeyDown(KeyCode.Space) && !PlayerManager.Instance.IsInputLock()) 
         {
             isJump = true;
             jumpStartTime = Time.time;
