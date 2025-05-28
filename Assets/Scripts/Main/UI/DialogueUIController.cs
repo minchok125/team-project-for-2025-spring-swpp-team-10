@@ -26,6 +26,10 @@ public class DialogueUIController : MonoBehaviour
     [SerializeField] private Color green;
     [SerializeField] private Color blue;
     [SerializeField] private Color purple;
+
+    [Header("Character Sprites")]
+    [SerializeField] private Sprite hamster;
+    [SerializeField] private Sprite radio;
     
     private List<DialogueBlockController> _blockControllers = new List<DialogueBlockController>();
     private float _offset;
@@ -119,11 +123,15 @@ public class DialogueUIController : MonoBehaviour
         GameObject newObj = _objectPool.GetObject();
         DialogueBlockController newController = newObj.GetComponent<DialogueBlockController>();
         _blockControllers.Add(newController);
-        
-        
-        
         string processedText = _textProcessor.Process(_currData[_currDataIdx]["text"].ToString());
-        newController.InitDialogueBlock(fadeDuration, processedText, _objectPool);
+        Sprite charSprite;
+        switch (_currData[_currDataIdx]["character"])
+        {
+            case "hamster": charSprite = hamster; break;
+            case "radio": charSprite = radio; break;
+            default: charSprite = null; Debug.LogError("character sprite 지정 안 됨"); break;
+        }
+        newController.InitDialogueBlock(fadeDuration, charSprite, processedText, _objectPool);
         newController.Show();
 
         // lifetime이 끝나면 dialogue를 destroy하도록 설정
