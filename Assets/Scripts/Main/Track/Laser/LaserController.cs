@@ -161,6 +161,10 @@ public class LaserController : MonoBehaviour
             {
                 DetectedPlayer();
             }
+            else if (_hit.collider.TryGetComponent(out DroneGuardController drone))
+            {
+                drone.OnHit();
+            }
         }
         else
         {
