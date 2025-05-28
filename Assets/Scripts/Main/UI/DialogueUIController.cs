@@ -119,6 +119,9 @@ public class DialogueUIController : MonoBehaviour
         GameObject newObj = _objectPool.GetObject();
         DialogueBlockController newController = newObj.GetComponent<DialogueBlockController>();
         _blockControllers.Add(newController);
+        
+        
+        
         string processedText = _textProcessor.Process(_currData[_currDataIdx]["text"].ToString());
         newController.InitDialogueBlock(fadeDuration, processedText, _objectPool);
         newController.Show();
