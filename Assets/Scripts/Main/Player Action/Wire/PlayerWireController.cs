@@ -517,7 +517,7 @@ public class PlayerWireController : MonoBehaviour
 
         RaycastHit raycastHit;
         Physics.Raycast(cam.transform.position, cam.transform.forward,
-                        out raycastHit, grabDistance + camDist, WhatIsGrappable,
+                        out raycastHit, grabDistance + camDist + 6f, WhatIsGrappable,
                         QueryTriggerInteraction.Ignore);
 
         Vector3 realHitPoint = Vector3.zero;
@@ -620,6 +620,10 @@ public class PlayerWireController : MonoBehaviour
         if (fpc != null && PlayerManager.Instance.isBall)
             fpc.onWire = true;
 
+        // 콜라이더 자체에는 fpc가 없지만, fpc와 연동되는 오브젝트인 경우 
+        if (grabObject.TryGetComponent(out NotifyFallingPlatform nfp))
+            nfp.SetOnWire(true);
+
         if (grabObject.TryGetComponent(out WireClickButton btnObj))
         {
             btnObj.Click();
@@ -647,6 +651,10 @@ public class PlayerWireController : MonoBehaviour
         FallingPlatformController fpc = grabObject.GetComponent<FallingPlatformController>();
         if (fpc != null && PlayerManager.Instance.isBall)
             fpc.onWire = false;
+
+        // 콜라이더 자체에는 fpc가 없지만, fpc와 연동되는 오브젝트인 경우 
+        if (grabObject.TryGetComponent(out NotifyFallingPlatform nfp))
+            nfp.SetOnWire(false);
     }
     #endregion
 }

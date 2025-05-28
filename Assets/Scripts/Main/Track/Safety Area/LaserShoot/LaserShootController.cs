@@ -16,7 +16,7 @@ public class LaserShootController : MonoBehaviour
     [Tooltip("레이저 포가 최대로 갈 수 있는 거리. 이 거리를 넘어서면 포는 사라짐")]
     public float maxLaserShootMoveDist = 300;
     public float rotationSpeed = 5f;
-    [SerializeField] private GameObject shootLaserPrefab;
+    [SerializeField] private bool isShootLaser = true;
     public float laserShootCooltime = 0.2f;
     public float laserSpeed = 1f;
 
@@ -61,12 +61,16 @@ public class LaserShootController : MonoBehaviour
         }
 
         Quaternion target = Quaternion.LookRotation(playerDir);
+        float angleDifference = Quaternion.Angle(transform.rotation, target);
+        Debug.Log(angleDifference);
+        float _rotationSpeed = rotationSpeed * (2 - 0.25f * Mathf.Clamp(angleDifference, 0f, 4f));
         transform.rotation = Quaternion.Slerp(
                                 transform.rotation,
                                 target,
-                                rotationSpeed * Time.fixedDeltaTime);
+                                _rotationSpeed * Time.fixedDeltaTime);
 
-        Shoot();
+        if (isShootLaser)
+            Shoot();
     }
 
     // 플레이어 사이의 거리가 일정 거리 이하인지 확인
