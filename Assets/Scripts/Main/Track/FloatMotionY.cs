@@ -20,7 +20,7 @@ public class FloatMotionY : MonoBehaviour
     {
         float time = Time.time * frequency;
         float noiseOffset = (Mathf.PerlinNoise(_seed, time) - 0.5f) * 2f * noise;
-        float yOffset = (Mathf.Sin(offset + time * Mathf.PI * 2f) + noiseOffset) * amplitude;
+        float yOffset = Mathf.Sin(offset + time * Mathf.PI * 2f) * amplitude + noiseOffset;
 
         transform.localPosition = new Vector3(transform.localPosition.x, _initY + yOffset, transform.localPosition.z);
     }

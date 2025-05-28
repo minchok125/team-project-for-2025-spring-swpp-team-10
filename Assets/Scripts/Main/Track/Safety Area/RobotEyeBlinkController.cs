@@ -4,7 +4,8 @@ using DG.Tweening;
 
 public class RobotEyeBlinkController : MonoBehaviour
 {
-    [Header("Blink Settings")]
+    [SerializeField] private bool isBlackDrone = false;
+
     [Tooltip("눈을 감았다가 뜨는 전체 애니메이션 시간 (초)")]
     private float _blinkDuration = 0.4f; 
 
@@ -16,9 +17,13 @@ public class RobotEyeBlinkController : MonoBehaviour
 
     private Coroutine _blinkCoroutine;
     private Transform _leftEye, _rightEye;
+    private Vector3 _blinkScale;
 
     void Start()
     {
+        if (isBlackDrone) _blinkScale = new Vector3(1, 0.05f, 1f);
+        else _blinkScale = new Vector3(1, 0.1f, 0.1f);
+
         _leftEye = transform.GetChild(1);
         _rightEye = transform.GetChild(2);
         // 게임 시작 시 깜빡임 코루틴 시작
@@ -85,8 +90,8 @@ public class RobotEyeBlinkController : MonoBehaviour
     private void PerformBlinkAnimation()
     {
         Sequence seq = DOTween.Sequence();
-        seq.Append(_leftEye.DOScale(new Vector3(1f, 0.1f, 0.1f), 0.15f))
-           .Join(_rightEye.DOScale(new Vector3(1f, 0.1f, 0.1f), 0.15f))
+        seq.Append(_leftEye.DOScale(_blinkScale, 0.15f))
+           .Join(_rightEye.DOScale(_blinkScale, 0.15f))
            .AppendInterval(0.1f)
            .Append(_leftEye.DOScale(1f, 0.15f))
            .Join(_rightEye.DOScale(1f, 0.15f));
