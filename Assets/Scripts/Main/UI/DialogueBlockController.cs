@@ -19,10 +19,11 @@ public class DialogueBlockController : MonoBehaviour
         _rect = GetComponent<RectTransform>();
     }
 
-    public void InitDialogueBlock(float fadeDuration, object text, ObjectPool objectPool)
+    public void InitDialogueBlock(float fadeDuration, Sprite charSprite, string text, ObjectPool objectPool)
     {
         _rect.anchoredPosition = Vector2.zero;
         
+        character.sprite = charSprite;
         character.color = Color.clear;
         textBody.color = Color.clear;
         this.text.color = Color.clear;
@@ -47,7 +48,7 @@ public class DialogueBlockController : MonoBehaviour
 
     public void Show()
     {
-        character.DOColor(Color.green, _fadeDuration);
+        character.DOColor(Color.white, _fadeDuration);
         textBody.DOColor(Color.white, _fadeDuration);
         text.DOColor(textColor, _fadeDuration);
     }
