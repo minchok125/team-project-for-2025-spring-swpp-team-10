@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using DG.Tweening.Plugins.Core.PathCore;
+using UnityEditor.UIElements;
 using UnityEngine.UI;
 
 public class DialogueUIController : MonoBehaviour
@@ -33,10 +34,11 @@ public class DialogueUIController : MonoBehaviour
     
     private List<DialogueBlockController> _blockControllers = new List<DialogueBlockController>();
     private float _offset;
-    private List<Dictionary<string, object>> _currData = new List<Dictionary<string, object>>();
-    private int _currDataIdx;
     private ObjectPool _objectPool;
     private TextProcessor _textProcessor;
+    private List<Dictionary<string, object>> _oneLineDialogueData;
+
+    
 
     private void Awake()
     {
@@ -55,8 +57,10 @@ public class DialogueUIController : MonoBehaviour
         float parentHeight = gameObject.GetComponent<RectTransform>().sizeDelta.y;
         float prefabHeight = dialoguePrefab.GetComponent<RectTransform>().sizeDelta.y;
         _offset = (parentHeight - (prefabHeight * maxDialogueNum)) / maxDialogueNum + prefabHeight;
-
-        _currDataIdx = 0;
+        
+        // 한 줄 dialogue의 csv 파일 읽어 오기
+        string path = System.IO.Path.Combine("Dialogues", "OneLine");
+        _oneLineDialogueData = CSVReader.Read(path);
     }
 
     private void ClearDialogue()
@@ -70,22 +74,28 @@ public class DialogueUIController : MonoBehaviour
     public void StartDialogue(string fileName)
     {
         // file 이름을 통해 일련의 dialogue 진행
-        _currDataIdx = 0;
         ClearDialogue();
         string path = System.IO.Path.Combine("Dialogues", fileName);
-        _currData = CSVReader.Read(path);
+        List<Dictionary<string, object>> dialogueData = CSVReader.Read(path);
 
-        if (_currData == null) return;
+        if (dialogueData == null) return;
 
-        StartCoroutine(DialogueCoroutine());
+        StartCoroutine(DialogueCoroutine(dialogueData));
     }
 
-    private IEnumerator DialogueCoroutine()
+    private IEnumerator DialogueCoroutine(List<Dictionary<string, object>> dialogueData)
     {
-        while (_currDataIdx < _currData.Count)
+        for(int i = 0; i < dialogueData.Count; i++)
         {
             // delay만큼 대기
-            yield return WaitForDelay();
+            float delay;
+            try
+            {
+                string tmp = dialogueData[i]["delay"].ToString();
+                delay = Convert.ToSingle(tmp);
+            }
+            catch { delay = defaultDelay; }
+            yield return new WaitForSeconds(delay);
             
             // 대기 종료 이후 dialogye block 생성 sequence 시작
             while (true)
@@ -93,7 +103,16 @@ public class DialogueUIController : MonoBehaviour
                 // dialogueBlock이 이미 꽉 차 있으면 대기
                 if (_blockControllers.Count < maxDialogueNum)
                 {
-                    yield return GenerateDialogueBlock();
+                    float lifetime;
+                    try
+                    {
+                        string tmp = dialogueData[i]["lifetime"].ToString();
+                        lifetime = Convert.ToSingle(tmp);
+                    }
+                    catch { lifetime = defaultLifetime; }
+
+                    GenerateDialogueBlock(dialogueData[i]["character"].ToString(), 
+                        dialogueData[i]["text"].ToString(), lifetime);
                     break;
                 }
                 yield return null;
@@ -101,19 +120,7 @@ public class DialogueUIController : MonoBehaviour
         }
     }
 
-    private IEnumerator WaitForDelay()
-    {
-        float delay;
-        try
-        {
-            string tmp = _currData[_currDataIdx]["delay"].ToString();
-            delay = Convert.ToSingle(tmp);
-        }
-        catch { delay = defaultDelay; }
-        yield return new WaitForSeconds(delay);
-    }
-
-    private IEnumerator GenerateDialogueBlock()
+    private void GenerateDialogueBlock(string character, string text, float lifetime)
     {
         // 기존의 dialogue들은 아래로 한 칸씩 이동
         for (int i = 0; i < _blockControllers.Count; i++)
@@ -123,29 +130,19 @@ public class DialogueUIController : MonoBehaviour
         GameObject newObj = _objectPool.GetObject();
         DialogueBlockController newController = newObj.GetComponent<DialogueBlockController>();
         _blockControllers.Add(newController);
-        string processedText = _textProcessor.Process(_currData[_currDataIdx]["text"].ToString());
+        string processedText = _textProcessor.Process(text);
         Sprite charSprite;
-        switch (_currData[_currDataIdx]["character"])
+        switch (character.ToLower())
         {
             case "hamster": charSprite = hamster; break;
             case "radio": charSprite = radio; break;
-            default: charSprite = null; Debug.LogError("character sprite 지정 안 됨"); break;
+            default: charSprite = null; Debug.LogError($"character 이름 이상: {character}"); break;
         }
         newController.InitDialogueBlock(fadeDuration, charSprite, processedText, _objectPool);
         newController.Show();
 
         // lifetime이 끝나면 dialogue를 destroy하도록 설정
-        float lifetime;
-        try
-        {
-            string tmp = _currData[_currDataIdx]["lifetime"].ToString();
-            lifetime = Convert.ToSingle(tmp);
-        }
-        catch { lifetime = defaultLifetime; }
         DOVirtual.DelayedCall(lifetime, () => RemoveDialogue(newController));
-        
-        _currDataIdx++;
-        yield return null;
     }
 
     private void RemoveDialogue(DialogueBlockController controller)
@@ -154,14 +151,46 @@ public class DialogueUIController : MonoBehaviour
         _blockControllers.Remove(controller);
     }
 
-    public void StartOneLineDialogue(string fileName, int idx)
+    public void StartOneLineDialogue(string character, string text, float lifetime)
     {
-        // 한 줄 짜리 dialogue를 출력
+        // 직접 한 줄 짜리 dialogue 출력
+        ClearDialogue();
+        GenerateDialogueBlock(character, text, lifetime);
+    }
+
+    public void StartOneLineDialogue(int idx)
+    {
+        // csv 파일을 통해 한 줄 짜리 dialogue를 출력
+        ClearDialogue();
+
+        if (idx >= _oneLineDialogueData.Count)
+        {
+            Debug.LogError($"Index out of range [idx:{idx}, one line count:{_oneLineDialogueData.Count}]");
+            return;
+        }
         
+        float lifetime;
+        try
+        {
+            string tmp = _oneLineDialogueData[idx]["lifetime"].ToString();
+            lifetime = Convert.ToSingle(tmp);
+        }
+        catch { lifetime = defaultLifetime; }
+        GenerateDialogueBlock(_oneLineDialogueData[idx]["character"].ToString(),
+            _oneLineDialogueData[idx]["text"].ToString(),
+            lifetime);
     }
 
     public void DebugDialogue(string fileName)
     {
         StartDialogue(fileName);
+    }
+
+    public void DebugOneLineDialogue(string idx)
+    {
+        if (int.TryParse(idx, out int index))
+        {
+            StartOneLineDialogue(index);
+        }
     }
 }
