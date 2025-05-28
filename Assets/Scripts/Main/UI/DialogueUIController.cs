@@ -71,18 +71,6 @@ public class DialogueUIController : MonoBehaviour
         _blockControllers.Clear();
     }
 
-    public void StartDialogue(string fileName)
-    {
-        // file 이름을 통해 일련의 dialogue 진행
-        ClearDialogue();
-        string path = System.IO.Path.Combine("Dialogues", fileName);
-        List<Dictionary<string, object>> dialogueData = CSVReader.Read(path);
-
-        if (dialogueData == null) return;
-
-        StartCoroutine(DialogueCoroutine(dialogueData));
-    }
-
     private IEnumerator DialogueCoroutine(List<Dictionary<string, object>> dialogueData)
     {
         for(int i = 0; i < dialogueData.Count; i++)
@@ -150,15 +138,27 @@ public class DialogueUIController : MonoBehaviour
         controller.Remove();
         _blockControllers.Remove(controller);
     }
+    
+    public void StartDialogue(string fileName)
+    {
+        // file 이름을 통해 일련의 dialogue 진행
+        ClearDialogue();
+        string path = System.IO.Path.Combine("Dialogues", fileName);
+        List<Dictionary<string, object>> dialogueData = CSVReader.Read(path);
 
-    public void StartOneLineDialogue(string character, string text, float lifetime)
+        if (dialogueData == null) return;
+
+        StartCoroutine(DialogueCoroutine(dialogueData));
+    }
+
+    public void StartDialogue(string character, string text, float lifetime)
     {
         // 직접 한 줄 짜리 dialogue 출력
         ClearDialogue();
         GenerateDialogueBlock(character, text, lifetime);
     }
 
-    public void StartOneLineDialogue(int idx)
+    public void StartDialogue(int idx)
     {
         // csv 파일을 통해 한 줄 짜리 dialogue를 출력
         ClearDialogue();
@@ -190,7 +190,7 @@ public class DialogueUIController : MonoBehaviour
     {
         if (int.TryParse(idx, out int index))
         {
-            StartOneLineDialogue(index);
+            StartDialogue(index);
         }
     }
 }
