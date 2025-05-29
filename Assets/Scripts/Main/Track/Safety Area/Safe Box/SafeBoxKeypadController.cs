@@ -7,12 +7,15 @@ using UnityEngine.UI;
 public class SafeBoxKeypadController : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI numberText;
+    [SerializeField] private GameObject passwordUI;
 
     [SerializeField] private Color successColor, failColor;
     [SerializeField] private ObjectProperties safeObjProp;
 
     private ObjectProperties[] _childObjProps;
 
+
+    private bool hasFailed = false;
     private int _curNum;
     private int _curDigit;
     private int answer = 0827;
@@ -24,6 +27,7 @@ public class SafeBoxKeypadController : MonoBehaviour
         _curNum = _curDigit = 0;
         numberText.text = "";
         safeObjProp.canGrabInHamsterMode = false;
+        hasFailed = false;
         _wait = new WaitForSeconds(0.1f);
     }
 
@@ -53,6 +57,7 @@ public class SafeBoxKeypadController : MonoBehaviour
         numberText.color = successColor;
         GameManager.PlaySfx(SfxType.KeypadSuccess);
         safeObjProp.canGrabInHamsterMode = true;
+        passwordUI.SetActive(false);
     }
 
     private IEnumerator Fail()
@@ -73,5 +78,11 @@ public class SafeBoxKeypadController : MonoBehaviour
         _curNum = 0;
         numberText.text = "";
         numberText.color = Color.white;
+
+        if (!hasFailed && !MainSceneManager.Instance.doYouKnowSafeBoxPassword)
+        {
+            UIManager.Instance.DoDialogue("SafeBoxPasswordFailedDialogue");
+        }
+        hasFailed = true;
     }
 }

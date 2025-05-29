@@ -178,7 +178,7 @@ public class DrawOutline : MonoBehaviour
         for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
         {
             Renderer rd = _linkedOutlineRenderers[i];
-            rd.SetPropertyBlock(_outlineFillMpb, _outlineFillIndexes[i]);
+            rd?.SetPropertyBlock(_outlineFillMpb, _outlineFillIndexes[i]);
         }
     }
 
