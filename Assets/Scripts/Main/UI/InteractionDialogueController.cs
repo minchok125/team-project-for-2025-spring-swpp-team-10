@@ -7,6 +7,7 @@ using UnityEditor.Rendering;
 using UnityEditor;
 #endif
 
+// 트리거나 콜라이더에 플레이어가 부딪혔을 때 특정 대사를 출력합니다.
 public class InteractionDialogueController : MonoBehaviour
 {
     [SerializeField] private bool destroyThis = false;
@@ -25,7 +26,7 @@ public class InteractionDialogueController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (!isTrigger)
+        if (!isTrigger || !other.CompareTag("Player"))
             return;
 
         DoDialogue();
@@ -33,7 +34,7 @@ public class InteractionDialogueController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (isTrigger)
+        if (isTrigger || !collision.collider.CompareTag("Player"))
             return;
 
         DoDialogue();

@@ -63,8 +63,10 @@ public class DialogueUIController : MonoBehaviour
         _oneLineDialogueData = CSVReader.Read(path);
     }
 
-    private void ClearDialogue()
+    public void ClearDialogue()
     {
+        // 아직 표시되지 않은 예약된 Dialogue 삭제
+        StopAllCoroutines();
         // 현재 표시 중인 모든 Dialogue 삭제
         foreach (DialogueBlockController controller in _blockControllers)
             controller.Remove();
