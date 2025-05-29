@@ -51,7 +51,7 @@ public class DialogueUIController : MonoBehaviour
     public void InitDialogue()
     {
         // 혹시 남아 있는 Dialogue 있으면 삭제
-        ClearDialogue();
+        // ClearDialogue();
         
         // height과 max dialogue num을 기준으로 각 dialogue 사이의 offset 계산
         float parentHeight = gameObject.GetComponent<RectTransform>().sizeDelta.y;
@@ -110,14 +110,14 @@ public class DialogueUIController : MonoBehaviour
 
     private void GenerateDialogueBlock(string character, string text, float lifetime)
     {
-        // 기존의 dialogue들은 아래로 한 칸씩 이동
-        for (int i = 0; i < _blockControllers.Count; i++)
-            _blockControllers[i].MoveTo(_offset * (_blockControllers.Count - i) * -1);
-                    
         // Object Pool을 통해 Dialogue Block 받아 온 뒤 Dialogue Block Controller 초기화
         GameObject newObj = _objectPool.GetObject();
         DialogueBlockController newController = newObj.GetComponent<DialogueBlockController>();
         _blockControllers.Add(newController);
+
+        for (int i = 0; i < _blockControllers.Count; i++)
+            _blockControllers[i].MoveTo(_offset * -i);
+
         string processedText = _textProcessor.Process(text);
         Sprite charSprite;
         switch (character.ToLower())
@@ -127,22 +127,26 @@ public class DialogueUIController : MonoBehaviour
             default: charSprite = null; Debug.LogError($"character 이름 이상: {character}"); break;
         }
         newController.InitDialogueBlock(fadeDuration, charSprite, processedText, _objectPool);
+        newController.SetPosition(_offset * (_blockControllers.Count - 1) * -1);
         newController.Show();
-
+        
         // lifetime이 끝나면 dialogue를 destroy하도록 설정
-        DOVirtual.DelayedCall(lifetime, () => RemoveDialogue(newController));
+        // 0.05f : 삭제와 동시에 새로운 창이 생성이 될 때 _blockControllers.Count가 모호한 부분을 방지
+        DOVirtual.DelayedCall(lifetime - 0.05f, () => RemoveDialogue(newController));
     }
 
     private void RemoveDialogue(DialogueBlockController controller)
     {
         controller.Remove();
         _blockControllers.Remove(controller);
+        for (int i = 0; i < _blockControllers.Count; i++)
+            _blockControllers[i].MoveTo(_offset * -i);
     }
     
     public void StartDialogue(string fileName)
     {
         // file 이름을 통해 일련의 dialogue 진행
-        ClearDialogue();
+        // ClearDialogue();
         string path = System.IO.Path.Combine("Dialogues", fileName);
         List<Dictionary<string, object>> dialogueData = CSVReader.Read(path);
 
@@ -154,14 +158,14 @@ public class DialogueUIController : MonoBehaviour
     public void StartDialogue(string character, string text, float lifetime)
     {
         // 직접 한 줄 짜리 dialogue 출력
-        ClearDialogue();
+        // ClearDialogue();
         GenerateDialogueBlock(character, text, lifetime);
     }
 
     public void StartDialogue(int idx)
     {
         // csv 파일을 통해 한 줄 짜리 dialogue를 출력
-        ClearDialogue();
+        // ClearDialogue();
 
         if (idx >= _oneLineDialogueData.Count+1)
         {

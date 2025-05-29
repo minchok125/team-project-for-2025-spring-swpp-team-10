@@ -52,4 +52,9 @@ public class DialogueBlockController : MonoBehaviour
         textBody.DOColor(Color.white, _fadeDuration);
         text.DOColor(textColor, _fadeDuration);
     }
+    
+    public void SetPosition(float newPosY)
+    {
+        _rect.anchoredPosition = new Vector2(_rect.anchoredPosition.x, newPosY);
+    }
 }
