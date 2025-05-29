@@ -5807,7 +5807,6 @@ RectTransform:
   - {fileID: 755814634484322329}
   - {fileID: 755814633979935816}
   - {fileID: 755814634309005207}
-  - {fileID: 9176204505610414008}
   - {fileID: 755814634233154616}
   m_Father: {fileID: 755814634988977727}
   m_RootOrder: 10
@@ -7621,7 +7620,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 755814633940574692}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -11996,7 +11995,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 755814634927732182}
-  m_LocalRotation: {x: 0.16525832, y: 0.51424783, z: -0.10172841, w: 0.8353982}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -13959,7 +13958,7 @@ MonoBehaviour:
   pausedMenuPanel: {fileID: 755814633979935817}
   settingsPanel: {fileID: 755814633988461567}
   endingTextObj: {fileID: 755814634233154617}
-  dialogueUIController: {fileID: 427247834903297174}
+  dialogueUIController: {fileID: 0}
 --- !u!114 &755814635210011107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19327,7 +19326,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 427247834903297174}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DialogueUIController, Assembly-CSharp
         m_MethodName: DebugOneLineDialogue
         m_Mode: 0
@@ -19428,110 +19427,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
---- !u!1 &4462677158002003288
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 9176204505610414008}
-  - component: {fileID: 2229615110108737258}
-  - component: {fileID: 1391820183823059552}
-  - component: {fileID: 427247834903297174}
-  m_Layer: 5
-  m_Name: Dialogues Parent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &9176204505610414008
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4462677158002003288}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 755814633940574692}
-  m_RootOrder: 13
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 10, y: 0}
-  m_SizeDelta: {x: 550, y: 460}
-  m_Pivot: {x: 0, y: 0.5}
---- !u!222 &2229615110108737258
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4462677158002003288}
-  m_CullTransparentMesh: 1
---- !u!114 &1391820183823059552
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4462677158002003288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 0.47058824}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!114 &427247834903297174
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4462677158002003288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 292296576f12ad54c9a927d29f4e2113, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialoguePrefab: {fileID: 3730791877496687810, guid: 702b21776306d7c4abba8802ea3655d7,
-    type: 3}
-  maxDialogueNum: 4
-  defaultLifetime: 1
-  defaultDelay: 1
-  fadeDuration: 0.5
-  gray: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
-  red: {r: 1, g: 0, b: 0, a: 1}
-  orange: {r: 1, g: 0.53187966, b: 0, a: 1}
-  yellow: {r: 1, g: 0.9696857, b: 0, a: 1}
-  green: {r: 0.15765762, g: 1, b: 0, a: 1}
-  blue: {r: 0, g: 0.19833922, b: 1, a: 1}
-  purple: {r: 0.42921925, g: 0, b: 1, a: 1}
-  hamster: {fileID: 21300000, guid: 2ca07372adefa014fbaadda9f1a85fb6, type: 3}
-  radio: {fileID: 21300000, guid: ef52d78d2bb5f574e8fea8ab497d5e3e, type: 3}
 --- !u!1 &4818786735384207096
 GameObject:
   m_ObjectHideFlags: 0
@@ -19828,7 +19723,7 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 427247834903297174}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: DialogueUIController, Assembly-CSharp
         m_MethodName: DebugDialogue
         m_Mode: 0
