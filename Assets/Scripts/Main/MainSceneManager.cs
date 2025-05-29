@@ -73,7 +73,8 @@ class CursorController
 
 public class MainSceneManager : RuntimeSingleton<MainSceneManager>
 {
-    public bool isSafeBoxOpened = false; 
+    public bool isSafeBoxOpened = false;
+    public bool doYouKnowSafeBoxPassword = false;
 
     private MainSceneFacade _mainSceneFacade;
 
@@ -98,7 +99,9 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         _mainSceneFacade.InitializeGame();
         _gameState = GameStates.Playing;
         _timeRecord = 0f;
+
         isSafeBoxOpened = false;
+        doYouKnowSafeBoxPassword = false;
     }
 
     private void Update()

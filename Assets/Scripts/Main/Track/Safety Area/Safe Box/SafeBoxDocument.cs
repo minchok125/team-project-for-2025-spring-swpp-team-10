@@ -9,7 +9,7 @@ public class SafeBoxDocument : MonoBehaviour, IWireClickButton
 
     public void Click()
     {
-        GameManager.PlaySfx(SfxType.Pickup);
+        GameManager.PlaySfx(SfxType.Pickup1);
         warning.StartWarning();
         Destroy(otherDocument);
         Destroy(gameObject);

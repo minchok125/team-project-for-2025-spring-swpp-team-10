@@ -19,6 +19,8 @@ public class ElectricRoomController : MonoBehaviour
         if (_remainBlackDroneCount > 0)
             _remainBlackDroneCount--;
 
+        DoDialogue();
+
         HLogger.General.Info($"남은 검정색 드론 개수 {_remainBlackDroneCount}", this);
 
         if (_remainBlackDroneCount <= 0)
@@ -51,7 +53,26 @@ public class ElectricRoomController : MonoBehaviour
     private IEnumerator OnWarningCoroutine()
     {
         DoorClose();
-        yield return new WaitForSeconds(25f);
+        yield return new WaitForSeconds(21f);
         DoorOpen();
+    }
+
+    private void DoDialogue()
+    {
+        if (_remainBlackDroneCount == 2)
+        {
+            UIManager.Instance.DoDialogue("radio", "좋아, 그렇게 레이저를 유도하면 된다.", 4f);
+            HLogger.General.Info("좋아, 그렇게 레이저를 유도하면 된다.", this);
+        }
+        else if (_remainBlackDroneCount == 1)
+        {
+            UIManager.Instance.DoDialogue("radio", "검정 드론이 이제 하나 남았어", 4f);
+            HLogger.General.Info("검정 드론이 이제 하나 남았어", this);
+        }
+        else
+        {
+            UIManager.Instance.DoDialogue("radio", "잘헀어! 금고방을 열었으니 이제 기밀문서를 탈취하도록.", 5f);
+            HLogger.General.Info("잘헀어! 금고방을 열었으니 이제 기밀문서를 탈취하도록.", this);
+        }
     }
 }

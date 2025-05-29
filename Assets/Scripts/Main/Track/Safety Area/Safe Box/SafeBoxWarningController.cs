@@ -50,6 +50,7 @@ public class SafeBoxWarningController : MonoBehaviour
         SetObjectColorRed();
         SetObjectActive();
         warningEvent?.Invoke();
+        UIManager.Instance.DoDialogue("SafeBoxOpenDialogue");
     }
 
     private IEnumerator SetWallColorRed()

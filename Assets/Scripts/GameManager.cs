@@ -26,7 +26,9 @@ public enum SfxType
     KeypadInput,
     KeypadSuccess,
     KeypadFail,
-    Pickup
+    Pickup1,
+    Pickup2,
+    Pickup3
 }
 
 
