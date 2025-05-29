@@ -163,19 +163,26 @@ public class DialogueUIController : MonoBehaviour
         // csv 파일을 통해 한 줄 짜리 dialogue를 출력
         ClearDialogue();
 
-        if (idx >= _oneLineDialogueData.Count)
+        if (idx >= _oneLineDialogueData.Count+1)
         {
-            Debug.LogError($"Index out of range [idx:{idx}, one line count:{_oneLineDialogueData.Count}]");
+            Debug.LogError($"Index out of range [idx:{idx}, max index:{_oneLineDialogueData.Count+1}]");
+            return;
+        }
+        else if (idx < 2)
+        {
+            Debug.LogError($"index는 2부터 시작입니다 [idx:{idx}]");
             return;
         }
         
         float lifetime;
         try
         {
+            idx--;
             string tmp = _oneLineDialogueData[idx]["lifetime"].ToString();
             lifetime = Convert.ToSingle(tmp);
         }
         catch { lifetime = defaultLifetime; }
+        
         GenerateDialogueBlock(_oneLineDialogueData[idx]["character"].ToString(),
             _oneLineDialogueData[idx]["text"].ToString(),
             lifetime);
