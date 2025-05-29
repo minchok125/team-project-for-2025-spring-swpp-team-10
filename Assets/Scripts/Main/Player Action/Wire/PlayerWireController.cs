@@ -368,9 +368,6 @@ public class PlayerWireController : MonoBehaviour
         if (!PlayerManager.Instance.onWire)
             return;
 
-        GrabbedObjectExit();
-
-        grabObject = null;
         hitPoint.SetParent(followPlayerHitParent);
         PlayerManager.Instance.onWire = false;
         PlayerManager.Instance.onWireCollider = null;
@@ -379,6 +376,17 @@ public class PlayerWireController : MonoBehaviour
 
         // 다음 와이어 발사를 위해 hitPoint 전환
         isHitPoint1 = !isHitPoint1;
+
+        try // 혹시 여기서 error가 나더라도 grabObject를 안전하게 null로 만듦
+        {
+            GrabbedObjectExit();
+        }
+        catch
+        {
+            grabObject = null;
+        }
+
+        grabObject = null;
     }
     #endregion
 

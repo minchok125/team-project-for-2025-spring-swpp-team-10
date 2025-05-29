@@ -57,6 +57,7 @@ public class SafeBoxKeypadController : MonoBehaviour
         numberText.color = successColor;
         GameManager.PlaySfx(SfxType.KeypadSuccess);
         safeObjProp.canGrabInHamsterMode = true;
+        MainSceneManager.Instance.isSafeBoxOpened = true;
         passwordUI.SetActive(false);
     }
 

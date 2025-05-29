@@ -18,7 +18,7 @@ public class AutomaticDoorClosed : MonoBehaviour
 
     public void OnWarning()
     {
-        doorController.enabled = false;
+        Destroy(doorController);
     }
 
     private void OnTriggerEnter(Collider other)

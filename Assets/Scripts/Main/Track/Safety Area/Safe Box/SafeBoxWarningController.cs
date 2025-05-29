@@ -42,10 +42,19 @@ public class SafeBoxWarningController : MonoBehaviour
         wallEmissionMaterial.SetColor(k_EmissionColor, _defaultEmissionColor * _defaultEmissionIntensity);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            StartWarning();
+        }
+    }
+
 
     public void StartWarning()
     {
         HLogger.General.Warning("Safe Box Warning!!!", this);
+        MainSceneManager.Instance.isSafeBoxOpened = true;
         StartCoroutine(SetWallColorRed());
         SetObjectColorRed();
         SetObjectActive();

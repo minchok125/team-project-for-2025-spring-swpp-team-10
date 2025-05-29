@@ -7,6 +7,7 @@ public class NotifyFallingPlatform : MonoBehaviour
     [SerializeField] private FallingPlatformController fpc;
     public void SetOnWire(bool active)
     {
-        fpc.onWire = active;
+        if (fpc != null)
+            fpc.onWire = active;
     }
 }

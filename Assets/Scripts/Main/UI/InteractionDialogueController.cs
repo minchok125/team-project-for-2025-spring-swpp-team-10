@@ -11,6 +11,8 @@ using UnityEditor;
 public class InteractionDialogueController : MonoBehaviour
 {
     [SerializeField] private bool destroyThis = false;
+    [Tooltip("같은 내용을 출력하는 최소 간격")]
+    [SerializeField] private float minimumNotificationCooldown = 0.1f;
     [Tooltip("트리거면 true, 콜라이더면 false")]
     [SerializeField] private bool isTrigger = true;
     [SerializeField] private bool isOnelineDialogue = false;
@@ -23,10 +25,12 @@ public class InteractionDialogueController : MonoBehaviour
     [SerializeField] private string fileName;
     [SerializeField] private int index;
 
+    private bool canInteract = true;
+
 
     void OnTriggerEnter(Collider other)
     {
-        if (!isTrigger || !other.CompareTag("Player"))
+        if (!isTrigger || !other.CompareTag("Player") || !canInteract)
             return;
 
         DoDialogue();
@@ -34,7 +38,7 @@ public class InteractionDialogueController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (isTrigger || !collision.collider.CompareTag("Player"))
+        if (isTrigger || !collision.collider.CompareTag("Player") || !canInteract)
             return;
 
         DoDialogue();
@@ -63,6 +67,14 @@ public class InteractionDialogueController : MonoBehaviour
 
         if (destroyThis)
             Destroy(gameObject);
+
+        canInteract = false;
+        Invoke(nameof(CanInteractTrue), minimumNotificationCooldown);
+    }
+
+    private void CanInteractTrue()
+    {
+        canInteract = true;
     }
 }
 
