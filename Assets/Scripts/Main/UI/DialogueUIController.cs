@@ -56,7 +56,7 @@ public class DialogueUIController : MonoBehaviour
         // height과 max dialogue num을 기준으로 각 dialogue 사이의 offset 계산
         float parentHeight = gameObject.GetComponent<RectTransform>().sizeDelta.y;
         float prefabHeight = dialoguePrefab.GetComponent<RectTransform>().sizeDelta.y;
-        _offset = (parentHeight - (prefabHeight * maxDialogueNum)) / maxDialogueNum + prefabHeight;
+        _offset = (parentHeight - prefabHeight * maxDialogueNum) /(maxDialogueNum - 1) + prefabHeight;
         
         // 한 줄 dialogue의 csv 파일 읽어 오기
         string path = System.IO.Path.Combine("Dialogues", "OneLine");
