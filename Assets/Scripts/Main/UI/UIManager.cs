@@ -110,6 +110,5 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	public void DoDialogue(string fileName) { dialogueUIController.StartDialogue(fileName); }
 	public void DoDialogue(string character, string text, float lifetime) { dialogueUIController.StartDialogue(character, text, lifetime); }
 	public void DoDialogue(int idx) { dialogueUIController.StartDialogue(idx); }
-	
-	
+	public void ClearDialogue() { dialogueUIController.ClearDialogue();  }	
 }
