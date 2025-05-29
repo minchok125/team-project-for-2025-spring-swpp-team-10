@@ -178,7 +178,21 @@ public class DrawOutline : MonoBehaviour
         for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
         {
             Renderer rd = _linkedOutlineRenderers[i];
-            rd?.SetPropertyBlock(_outlineFillMpb, _outlineFillIndexes[i]);
+
+            if (rd != null && _outlineFillMpb != null) // rd와 _outlineFillMpb 모두 null이 아닌지 확인
+            {
+                int materialIndex = _outlineFillIndexes[i];
+            
+                // materialIndex가 Renderer의 유효한 재질 범위 내에 있는지 확인
+                if (materialIndex >= 0 && materialIndex < rd.sharedMaterials.Length)
+                {
+                    rd.SetPropertyBlock(_outlineFillMpb, materialIndex);
+                }
+                else
+                {
+                    Debug.LogWarning($"Material index {materialIndex} is out of bounds for Renderer '{rd.name}'. It has {rd.sharedMaterials.Length} materials.", this);
+                }
+            }
         }
     }
 

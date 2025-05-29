@@ -99,8 +99,15 @@ public class Outline : MonoBehaviour {
     needsUpdate = true;
   }
 
+  private bool _isOutlineAdded = false;
+
   void OnEnable() {
-    foreach (var renderer in renderers) {
+    if (_isOutlineAdded) return;
+
+    _isOutlineAdded = true;
+
+    foreach (var renderer in renderers)
+    {
 
       // Append outline shaders
       var materials = renderer.sharedMaterials.ToList();
