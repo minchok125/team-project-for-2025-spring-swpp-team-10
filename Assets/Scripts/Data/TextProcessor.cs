@@ -22,6 +22,17 @@ public class TextProcessor
     
     public string Process(string input)
     {
+        // string result = input;
+        //
+        // foreach (var pair in _colorCode)
+        // {
+        //     string opStart = "$" + pair.Key + "$";
+        //     string opEnd = "$\\" + pair.Key + "$";
+        //     result = result.Replace(opStart, $"<color=#{pair.Value}>");
+        //     result = result.Replace(opEnd, $"</color>");
+        // }
+
+
         Queue<string> queue = new Queue<string>();
         StringBuilder _sb = new StringBuilder();
         _sb.Clear();
@@ -31,28 +42,28 @@ public class TextProcessor
         {
             if (input[idx] != '$')
             { _sb.Append(input[idx]); idx++; continue; }
-
+        
             try
             {
-                char op;
-                bool end = false;
-                
-                if (input[idx+2] == '$') { _sb.Append("<color=#"); op = char.ToLower(input[idx + 1]); }
-                else if (input[idx + 1] == '\\' && input[idx + 3] == '$') 
-                { _sb.Append("<\\color=#"); op = char.ToLower(input[idx + 2]); end = true; }
-                else { _sb.Append(input[idx]); idx++; continue; }
-                
-                switch (op)
+                if (input[idx + 2] == '$')
                 {
-                    case 'd': case 'r': case 'o': case 'y': case 'g': case 'b': case 'p':
-                        _sb.Append(_colorCode[op] + ">");
-                        idx += 3; 
-                        if (end) idx++; 
-                        break;
+                    _sb.Append("<color=#");
+                    char op = char.ToLower(input[idx + 1]); 
+                    switch (op)
+                    {
+                        case 'd': case 'r': case 'o': case 'y': case 'g': case 'b': case 'p':
+                            _sb.Append(_colorCode[op] + ">");
+                            idx += 3;  
+                            break;
                 
-                    default:
-                        _sb.Append(input[idx]); idx++;  break;
+                        default:
+                            _sb.Append(input[idx]); idx++;  break;
+                    }
                 }
+                else if (input[idx + 1] == '/' && input[idx + 3] == '$') 
+                { _sb.Append("</color>"); idx += 4; }
+                else { _sb.Append(input[idx]); idx++; }
+                
             }
             catch
             {
