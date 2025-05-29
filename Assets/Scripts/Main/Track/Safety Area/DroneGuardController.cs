@@ -5,6 +5,8 @@ using DG.Tweening;
 
 public class DroneGuardController : MonoBehaviour
 {
+    [SerializeField] ElectricRoomController room;
+
     private ParticleSystem _lightningParticle;
     private bool _hit;
 
@@ -29,8 +31,11 @@ public class DroneGuardController : MonoBehaviour
         Transform Left_Arm = DroneGuard_Bone_Main.GetChild(1);
         Transform Right_Arm = DroneGuard_Bone_Main.GetChild(2);
 
-        Down_Half.DOLocalMoveY(-0.0062f, 0.5f);
-        Left_Arm.DOLocalMoveX(-0.004f, 0.5f);
-        Right_Arm.DOLocalMoveX(0.004f, 0.5f);
+        Down_Half.DOLocalMoveY(-0.0067f, 1f);
+        Left_Arm.DOLocalMoveX(-0.0045f, 1f);
+        Right_Arm.DOLocalMoveX(0.0045f, 1f);
+
+        GameManager.PlaySfx(SfxType.BlackDroneCrash);
+        room.RemovedBlackDrone();
     }
 }

@@ -624,7 +624,7 @@ public class PlayerWireController : MonoBehaviour
         if (grabObject.TryGetComponent(out NotifyFallingPlatform nfp))
             nfp.SetOnWire(true);
 
-        if (grabObject.TryGetComponent(out WireClickButton btnObj))
+        if (grabObject.TryGetComponent(out IWireClickButton btnObj))
         {
             btnObj.Click();
             EndShoot();

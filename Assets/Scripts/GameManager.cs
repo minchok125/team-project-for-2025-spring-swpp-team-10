@@ -20,7 +20,13 @@ public enum SfxType
     GymBall,
     AutomaticDoorOpen,
     AutomaticDoorClose,
-    LaserPush
+    LaserPush,
+    BlackDroneCrash,
+    SwitchClicked,
+    KeypadInput,
+    KeypadSuccess,
+    KeypadFail,
+    Pickup
 }
 
 

@@ -62,7 +62,6 @@ public class LaserShootController : MonoBehaviour
 
         Quaternion target = Quaternion.LookRotation(playerDir);
         float angleDifference = Quaternion.Angle(transform.rotation, target);
-        Debug.Log(angleDifference);
         float _rotationSpeed = rotationSpeed * (2 - 0.25f * Mathf.Clamp(angleDifference, 0f, 4f));
         transform.rotation = Quaternion.Slerp(
                                 transform.rotation,
