@@ -91,6 +91,7 @@ public class SwitchController : MonoBehaviour
     {
         isSwitchOn = !isSwitchOn;
         InvokeSwitchStateEvents();
+        GameManager.PlaySfx(SfxType.SwitchClicked);
         HLogger.General.Info($"Switch Toggled to {(isSwitchOn ? "On" : "Off")}", this);
     }
 

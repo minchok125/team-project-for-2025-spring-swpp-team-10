@@ -73,6 +73,8 @@ class CursorController
 
 public class MainSceneManager : RuntimeSingleton<MainSceneManager>
 {
+    public bool isSafeBoxOpened = false; 
+
     private MainSceneFacade _mainSceneFacade;
 
     private enum GameStates { Playing, Paused, BadEnding, GoodEnding };
@@ -96,6 +98,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         _mainSceneFacade.InitializeGame();
         _gameState = GameStates.Playing;
         _timeRecord = 0f;
+        isSafeBoxOpened = false;
     }
 
     private void Update()
