@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Hampossible.Utils;
 using UnityEngine;
 
 public class SecureRoomTwoFiveDoorController : MonoBehaviour
@@ -14,6 +15,9 @@ public class SecureRoomTwoFiveDoorController : MonoBehaviour
         isNotOpened = false;
         door.DoorOpen();
         Invoke(nameof(DoorClose), doorCloseTime);
+
+        UIManager.Instance.DoDialogue("hamster", "이제 문이 열렸을 거야", 5f);
+        HLogger.General.Info("이제 문이 열렸을 거야", this);
     }
 
     private void DoorClose()

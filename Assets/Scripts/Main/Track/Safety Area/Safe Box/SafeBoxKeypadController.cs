@@ -11,14 +11,15 @@ public class SafeBoxKeypadController : MonoBehaviour
 
     [SerializeField] private Color successColor, failColor;
     [SerializeField] private ObjectProperties safeObjProp;
+    [SerializeField] private GameObject DrawerInformer;
 
     private ObjectProperties[] _childObjProps;
 
 
-    private bool hasFailed = false;
+    private bool _hasFailed = false;
     private int _curNum;
     private int _curDigit;
-    private int answer = 0827;
+    private const int ANSWER = 0827;
     private WaitForSeconds _wait;
 
     private void Start()
@@ -27,7 +28,7 @@ public class SafeBoxKeypadController : MonoBehaviour
         _curNum = _curDigit = 0;
         numberText.text = "";
         safeObjProp.canGrabInHamsterMode = false;
-        hasFailed = false;
+        _hasFailed = false;
         _wait = new WaitForSeconds(0.1f);
     }
 
@@ -46,7 +47,7 @@ public class SafeBoxKeypadController : MonoBehaviour
 
     private void CheckNumber()
     {
-        if (_curNum == answer)
+        if (_curNum == ANSWER)
             Success();
         else
             StartCoroutine(Fail());
@@ -80,10 +81,12 @@ public class SafeBoxKeypadController : MonoBehaviour
         numberText.text = "";
         numberText.color = Color.white;
 
-        if (!hasFailed && !MainSceneManager.Instance.doYouKnowSafeBoxPassword)
+        if (!_hasFailed && !MainSceneManager.Instance.doYouKnowSafeBoxPassword)
         {
             UIManager.Instance.DoDialogue("SafeBoxPasswordFailedDialogue");
+            DrawerInformer.SetActive(true);
+            DrawerInformer.transform.GetChild(0).GetComponent<SetTransformScale>().SetScaleFromZero(3.5f);
         }
-        hasFailed = true;
+        _hasFailed = true;
     }
 }

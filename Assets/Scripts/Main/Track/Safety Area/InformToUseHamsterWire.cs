@@ -15,7 +15,7 @@ public class InformToUseHamsterWire : MonoBehaviour
     {
         _time = 0;
         _firstInformed = false;
-        virtualCamera.Follow = PlayerManager.Instance.transform;
+        virtualCamera.Follow = PlayerManager.Instance.followPlayerTransform;
     }
 
     private void OnTriggerStay(Collider other)
