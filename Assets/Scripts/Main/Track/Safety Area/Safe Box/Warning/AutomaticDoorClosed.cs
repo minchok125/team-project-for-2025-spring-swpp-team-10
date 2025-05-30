@@ -23,7 +23,7 @@ public class AutomaticDoorClosed : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!MainSceneManager.Instance.isSafeBoxOpened)
+        if (!MainSceneManager.Instance.isSafeBoxOpened || !other.CompareTag("Player"))
             return;
 
         if (!isCheckedDoorIsNotOpen)

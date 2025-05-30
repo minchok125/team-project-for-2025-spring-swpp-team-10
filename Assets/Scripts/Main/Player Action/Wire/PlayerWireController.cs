@@ -212,6 +212,9 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void ModeConvert()
     {
+        if (PlayerManager.Instance.IsInputLock())
+            return;
+            
         if (Input.GetKeyDown(KeyCode.Tab) && Time.time - convertedTime > 0.5f)
         {
             PlayerManager.Instance.ModeConvert();
