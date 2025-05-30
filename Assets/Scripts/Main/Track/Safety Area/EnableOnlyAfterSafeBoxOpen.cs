@@ -32,5 +32,6 @@ public class EnableOnlyAfterSafeBoxOpen : MonoBehaviour
     {
         for (int i = 0; i < _childs.Length; i++)
             _childs[i].SetActive(MainSceneManager.Instance.isSafeBoxOpened);
+        gameObject.SetActive(MainSceneManager.Instance.isSafeBoxOpened);
     }
 }
