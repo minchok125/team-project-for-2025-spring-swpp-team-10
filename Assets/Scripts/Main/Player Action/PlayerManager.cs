@@ -191,6 +191,16 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     [HideInInspector] public PlayerWireController playerWire;
 
     /// <summary>
+    /// 플레이어의 위치로 동기화되는 트랜스폼입니다.
+    /// </summary>
+    /// <remarks>
+    /// 플레이어 공 모드의 경우 계속해서 굴러가므로, 위치만 동기화시키는 트랜스폼이 필요합니다.
+    /// 햄스터 모드 시네머신 카메라에서 쓰이는 Follow 트랜스폼으로, 플레이어의 약간 위를 가리킵니다.
+    /// PlayerManager 인스펙터 에서 직접 "CM Target" > "HamsterCamTarget"을 참조시킨 것을 가정합니다.
+    /// </remarks>
+    public Transform followPlayerTransform;
+
+    /// <summary>
     /// 플레이어의 움직임 컨트롤러 참조입니다.
     /// </summary>
     [HideInInspector] private PlayerMovementController playerMovement;
@@ -198,20 +208,28 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
 
     #region Private Variables
-    private int inputLockNumber;
-    private Rigidbody rb;
-    private GameObject hamsterLightningShockParticle;
-    private GameObject ballLightningShockParticle;
+    private int _inputLockNumber;
+    private int _mouseInputLockNumber;
+    private Rigidbody _rb;
+    private GameObject _hamsterLightningShockParticle;
+    private GameObject _ballLightningShockParticle;
 
 
 
-    private Action modeConvert;
-    private Vector3 accumulatedMovement;
-    private const float LIGHTNING_SHOCK_COOLTIME = 3f;
-    private bool canLightningShock;
+    private Action _modeConvert;
+    private Vector3 _accumulatedMovement;
 
 
-
+        #region Object Reaction Variables
+        private const float LIGHTNING_SHOCK_COOLTIME = 3f;
+        public bool canLightningShock { get; private set; }
+    
+    
+        private float _yForce = 10f;
+        private float _forceMag = 100f;
+        private float _laserPushTime = 0.2f;
+        private bool _canLaserPush = true;
+        #endregion
     #endregion
 
 
@@ -224,13 +242,13 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         InitializeComponents();
 
         // 변수 초기화
-        hamsterLightningShockParticle?.SetActive(false);
-        ballLightningShockParticle?.SetActive(false);
+        _hamsterLightningShockParticle?.SetActive(false);
+        _ballLightningShockParticle?.SetActive(false);
         canLightningShock = true;
-        inputLockNumber = 0;
+        _inputLockNumber = _mouseInputLockNumber = 0;
 
         // 씬 리셋 시 구독자 전부 제거
-        modeConvert = null;
+        _modeConvert = null;
     }
 
     private void Update()
@@ -241,10 +259,10 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
     private void FixedUpdate()
     {
-        if (accumulatedMovement != Vector3.zero)
+        if (_accumulatedMovement != Vector3.zero)
         {
-            rb.MovePosition(rb.position + accumulatedMovement);
-            accumulatedMovement = Vector3.zero;
+            _rb.MovePosition(_rb.position + _accumulatedMovement);
+            _accumulatedMovement = Vector3.zero;
         }
     }
     #endregion
@@ -256,12 +274,12 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         skill = GetComponent<PlayerSkillController>();
         playerMovement = GetComponent<PlayerMovementController>();
         playerWire = GetComponent<PlayerWireController>();
-        rb = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
 
-        hamsterLightningShockParticle
+        _hamsterLightningShockParticle
             = transform.Find("Hamster Normal")
                        .Find("Lightning Particle")?.gameObject;
-        ballLightningShockParticle 
+        _ballLightningShockParticle
             = transform.Find("Hamster Ball")
                        .Find("Lightning Particle")?.gameObject;
     }
@@ -273,7 +291,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// <param name="move">이동시킬 벡터</param>
     public void AddMovement(Vector3 move)
     {
-        accumulatedMovement += move;
+        _accumulatedMovement += move;
     }
 
     /// <summary>
@@ -297,7 +315,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         Vector3 moveVec = (forwardVec * ver + rightVec * hor).normalized;
 
         // 접착벽에서는 이동 방향이 제한됨
-        if (isOnSlideWall) 
+        if (isOnSlideWall)
         {
             moveVec = GetSlideMoveVec(moveVec);
         }
@@ -324,7 +342,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         // moveVec에서 SlideWall의 노말벡터와 평행한 성분 제거
         normalMag = Vector3.Dot(moveVec, slideWallNormal);
         moveVec = (moveVec - slideWallNormal * normalMag).normalized;
-        
+
         return moveVec;
     }
 
@@ -336,8 +354,14 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// <param name="time">입력을 잠금하는 시간(초)</param>
     public void SetInputLockDuringSeconds(float lockedTime)
     {
-        inputLockNumber++;
+        _inputLockNumber++;
         Invoke(nameof(DownInputLockNumber), lockedTime);
+    }
+
+    public void SetMouseInputLockDuringSeconds(float lockedTime)
+    {
+        _mouseInputLockNumber++;
+        Invoke(nameof(DownMouseInputLockNumber), lockedTime);
     }
 
     /// <summary>
@@ -350,22 +374,37 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// </remarks>
     public void SetInputLockPermanent(bool active)
     {
-        if (active) inputLockNumber = Mathf.Max(1, inputLockNumber + 1);
-        else inputLockNumber--;
+        if (active) _inputLockNumber = Mathf.Max(1, _inputLockNumber + 1);
+        else _inputLockNumber--;
     }
-    
+
+    public void SetMouseInputLockPermanent(bool active)
+    {
+        if (active) _mouseInputLockNumber = Mathf.Max(1, _mouseInputLockNumber + 1);
+        else _mouseInputLockNumber--;
+    }
+
     /// <summary>
     /// 입력이 잠금된 상태인지 여부를 반환합니다.
     /// </summary>
     /// <returns>입력이 잠금된 상태라면 True를 반환합니다.</returns>
     public bool IsInputLock()
     {
-        return inputLockNumber > 0;
+        return _inputLockNumber > 0;
+    }
+
+    public bool IsMouseInputLock()
+    {
+        return _mouseInputLockNumber > 0;
     }
 
     private void DownInputLockNumber()
     {
-        inputLockNumber--;
+        _inputLockNumber--;
+    }
+    private void DownMouseInputLockNumber()
+    {
+        _mouseInputLockNumber--;
     }
     #endregion
 
@@ -379,7 +418,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// </summary>
     public void ModeConvert()
     {
-        modeConvert?.Invoke();
+        _modeConvert?.Invoke();
     }
 
     /// <summary>
@@ -387,7 +426,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// </summary>
     public void ModeConvertAddAction(Action action)
     {
-        modeConvert += action;
+        _modeConvert += action;
     }
 
     /// <summary>
@@ -424,8 +463,8 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         playerWire.EndShoot();
         isGliding = false;
 
-        if (isBall) ballLightningShockParticle.SetActive(true);
-        else hamsterLightningShockParticle.SetActive(true);
+        if (isBall) _ballLightningShockParticle.SetActive(true);
+        else _hamsterLightningShockParticle.SetActive(true);
 
         GameManager.PlaySfx(SfxType.LightningShock);
 
@@ -435,8 +474,8 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     // inputLock 풀림, 전기효과 풀림
     private void LightningShockEndAfterFewSeconds()
     {
-        if (isBall) ballLightningShockParticle.SetActive(false);
-        else hamsterLightningShockParticle.SetActive(false);
+        _ballLightningShockParticle.SetActive(false);
+        _hamsterLightningShockParticle.SetActive(false);
 
         Invoke(nameof(CanLightningShockAfterFewSeconds), 0.4f);
     }
@@ -446,6 +485,30 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         canLightningShock = true;
     }
 
+    /// <summary>
+    /// 맞으면 밀려나가는 레이저에 맞습니다.
+    /// </summary>
+    /// <param name="forceDir">밀려나갈 방향</param>
+    public void LaserPush(Vector3 forceDir)
+    {
+        if (!_canLaserPush)
+            return;
 
+        _canLaserPush = false;
+        playerWire.EndShoot();
+        isGliding = false;
+
+        forceDir = new Vector3(forceDir.x  * _forceMag, _yForce, forceDir.z  * _forceMag);
+        _rb.AddForce(forceDir, ForceMode.VelocityChange);
+
+        GameManager.PlaySfx(SfxType.LaserPush);
+
+        SetInputLockDuringSeconds(_laserPushTime);
+        Invoke(nameof(LaserPushEndAfterFewSeconds), _laserPushTime);
+    }
+    private void LaserPushEndAfterFewSeconds()
+    {
+        _canLaserPush = true;
+    }
     #endregion
 }

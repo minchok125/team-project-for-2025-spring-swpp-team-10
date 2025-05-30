@@ -1,7 +1,6 @@
 using Hampossible.Utils;
 using UnityEngine;
-using UnityEditor.Rendering;
-
+using Cinemachine;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -11,6 +10,8 @@ using UnityEditor;
 public class InteractionDialogueController : MonoBehaviour
 {
     [SerializeField] private bool destroyThis = false;
+    [Tooltip("같은 내용을 출력하는 최소 간격")]
+    [SerializeField] private float minimumNotificationCooldown = 0.1f;
     [Tooltip("트리거면 true, 콜라이더면 false")]
     [SerializeField] private bool isTrigger = true;
     [SerializeField] private bool isOnelineDialogue = false;
@@ -23,21 +24,48 @@ public class InteractionDialogueController : MonoBehaviour
     [SerializeField] private string fileName;
     [SerializeField] private int index;
 
+    [Tooltip("트리거 입장 시 대사와 함께 VirtualCamera 연출을 사용할 것인지 여부")]
+    [SerializeField] private bool useVirtualCamera;
+    [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    [Tooltip("카메라를 비추는 시간")]
+    [SerializeField] private float cameraShotTime = 3f;
+    [Tooltip("가상 카메라가 플레이어를 따라가도록 할지 여부를 결정합니다. (Follow를 자동으로 플레이어로 설정해줍니다.)")]
+    [SerializeField] private bool isFollowPlayer = false;
+
+    private bool _canInteract = true;
+
+
+    void Start()
+    {
+        if (useVirtualCamera)
+        {
+            if (virtualCamera == null)
+                HLogger.General.Warning("Virtual Camera가 null입니다.", null);
+            else if (isFollowPlayer)
+                virtualCamera.Follow = PlayerManager.Instance.followPlayerTransform;
+        }
+
+        if (destroyThis)
+            minimumNotificationCooldown = 999999;
+    }
+
 
     void OnTriggerEnter(Collider other)
     {
-        if (!isTrigger || !other.CompareTag("Player"))
+        if (!isTrigger || !other.CompareTag("Player") || !_canInteract)
             return;
 
         DoDialogue();
+        DoCamera();
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (isTrigger || !collision.collider.CompareTag("Player"))
+        if (isTrigger || !collision.collider.CompareTag("Player") || !_canInteract)
             return;
 
         DoDialogue();
+        DoCamera();
     }
 
     void DoDialogue()
@@ -61,8 +89,45 @@ public class InteractionDialogueController : MonoBehaviour
             HLogger.General.Info($"{fileName} 대사를 출력합니다.", this);
         }
 
-        if (destroyThis)
+        _canInteract = false;
+        Invoke(nameof(CanInteractTrue), minimumNotificationCooldown);
+    }
+
+    private void CanInteractTrue()
+    {
+        _canInteract = true;
+    }
+
+    private void DoCamera()
+    {
+        if (!useVirtualCamera)
+            return;
+
+        virtualCamera.Priority = 11;
+        PlayerManager.Instance.SetMouseInputLockDuringSeconds(cameraShotTime + 2f);
+        Invoke(nameof(ChangeCameraHamsterPriorityToNine), cameraShotTime);
+    }
+
+    private void ChangeCameraHamsterPriorityToNine()
+    {
+        virtualCamera.Priority = 9;
+    }
+
+
+    private void DoDelete()
+    {
+        if (!destroyThis)
+            return;
+
+        if (!useVirtualCamera)
             Destroy(gameObject);
+        else
+            Invoke(nameof(destroyThis), cameraShotTime + 0.1f);
+    }
+
+    private void DestroyThis()
+    {
+        Destroy(gameObject);
     }
 }
 
@@ -77,6 +142,7 @@ class TriggerEnterDialogueControllerEditor : Editor
     InteractionDialogueController _target;
 
     SerializedProperty destroyThisProp;
+    SerializedProperty minimumNotificationCooldownProp;
     SerializedProperty isTriggerProp;
     SerializedProperty isOnelineDialogueProp;
     SerializedProperty characterProp;
@@ -85,11 +151,16 @@ class TriggerEnterDialogueControllerEditor : Editor
     SerializedProperty fileNameProp;
     SerializedProperty isOnelineFileDialogueProp;
     SerializedProperty indexProp;
+    SerializedProperty useVirtualCameraProp;
+    SerializedProperty virtualCameraProp;
+    SerializedProperty cameraShotTimeProp;
+    SerializedProperty isFollowPlayerProp;
 
 
     private void OnEnable()
     {
         destroyThisProp = serializedObject.FindProperty("destroyThis");
+        minimumNotificationCooldownProp = serializedObject.FindProperty("minimumNotificationCooldown");
         isTriggerProp = serializedObject.FindProperty("isTrigger");
         isOnelineDialogueProp = serializedObject.FindProperty("isOnelineDialogue");
         characterProp = serializedObject.FindProperty("character");
@@ -98,6 +169,10 @@ class TriggerEnterDialogueControllerEditor : Editor
         fileNameProp = serializedObject.FindProperty("fileName");
         isOnelineFileDialogueProp = serializedObject.FindProperty("isOnelineFileDialogue");
         indexProp = serializedObject.FindProperty("index");
+        useVirtualCameraProp = serializedObject.FindProperty("useVirtualCamera");
+        virtualCameraProp = serializedObject.FindProperty("virtualCamera");
+        cameraShotTimeProp = serializedObject.FindProperty("cameraShotTime");
+        isFollowPlayerProp = serializedObject.FindProperty("isFollowPlayer");
     }
 
     public override void OnInspectorGUI()
@@ -105,6 +180,7 @@ class TriggerEnterDialogueControllerEditor : Editor
         serializedObject.Update();
 
         EditorGUILayout.PropertyField(destroyThisProp);
+        EditorGUILayout.PropertyField(minimumNotificationCooldownProp);
         EditorGUILayout.PropertyField(isTriggerProp);
         EditorGUILayout.PropertyField(isOnelineDialogueProp);
 
@@ -125,6 +201,14 @@ class TriggerEnterDialogueControllerEditor : Editor
         else
         {
             EditorGUILayout.PropertyField(fileNameProp);
+        }
+
+        EditorGUILayout.PropertyField(useVirtualCameraProp);
+        if (useVirtualCameraProp.boolValue)
+        {
+            EditorGUILayout.PropertyField(virtualCameraProp);
+            EditorGUILayout.PropertyField(cameraShotTimeProp);
+            EditorGUILayout.PropertyField(isFollowPlayerProp);
         }
 
         serializedObject.ApplyModifiedProperties();
