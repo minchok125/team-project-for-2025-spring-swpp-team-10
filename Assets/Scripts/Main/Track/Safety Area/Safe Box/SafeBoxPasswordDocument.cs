@@ -5,6 +5,7 @@ using UnityEngine;
 public class SafeBoxPasswordDocument : MonoBehaviour, IWireClickButton
 {
     [SerializeField] private GameObject passwordUI;
+    [SerializeField] private SetTransformScale informOrb;
 
     public void Click()
     {
@@ -12,6 +13,7 @@ public class SafeBoxPasswordDocument : MonoBehaviour, IWireClickButton
         MainSceneManager.Instance.doYouKnowSafeBoxPassword = true;
         UIManager.Instance.DoDialogue("hamster", "좋았어, 금고 비밀번호는 <b>[0827]</b>이야!", 5f);
         passwordUI.SetActive(true);
+        informOrb.SetScaleZero(true);
         Destroy(gameObject);
     }
 }

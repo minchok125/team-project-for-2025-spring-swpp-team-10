@@ -6,6 +6,13 @@ using Cinemachine;
 public class VirtualCameraLookController : MonoBehaviour
 {
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    [SerializeField] private bool isFollowPlayer = false;
+
+    void Start()
+    {
+        if (isFollowPlayer)
+            virtualCamera.Follow = PlayerManager.Instance.transform;
+    }
 
     void OnTriggerEnter(Collider other)
     {

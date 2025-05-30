@@ -11,12 +11,13 @@ public class ElectricRoomController : MonoBehaviour
     [SerializeField] private Transform leftDoor;
     [SerializeField] private Transform rightDoor;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    [SerializeField] private GameObject doorInformer;
 
     private int _remainBlackDroneCount = 3;
 
     private void Start()
     {
-        virtualCamera.Follow = PlayerManager.Instance.transform;
+        virtualCamera.Follow = PlayerManager.Instance.followPlayerTransform;
     }
 
     public void RemovedBlackDrone()
@@ -32,6 +33,7 @@ public class ElectricRoomController : MonoBehaviour
         {
             DoorOpen();
             CameraControl();
+            DoorInform();
         }
     }
 
@@ -85,11 +87,18 @@ public class ElectricRoomController : MonoBehaviour
     private void CameraControl()
     {
         virtualCamera.Priority = 11;
-        Invoke(nameof(ChangeCameraHamsterPriorityToNine), 2f);
+        Invoke(nameof(ChangeCameraHamsterPriorityToNine), 4f);
     }
 
     private void ChangeCameraHamsterPriorityToNine()
     {
         virtualCamera.Priority = 9;
+    }
+
+    private void DoorInform()
+    {
+        doorInformer.SetActive(true);
+        doorInformer.transform.GetChild(0).GetComponent<SetTransformScale>().SetScaleFromZero(7);
+        doorInformer.transform.GetChild(1).GetComponent<SetTransformScale>().SetScaleFromZero(7);
     }
 }

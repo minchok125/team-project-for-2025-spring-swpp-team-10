@@ -24,8 +24,7 @@ public class InformGoToFallingObject : MonoBehaviour
         _player = PlayerManager.Instance.transform;
         _firstInformedHamsterObject = _informedFallingObject = false;
         _noNeedToInformHamster = _informedToJump = false;
-        virtualCameraFalling.Follow = PlayerManager.Instance.transform;
-        virtualCameraHamster.Follow = PlayerManager.Instance.transform;
+        virtualCameraFalling.Follow = PlayerManager.Instance.followPlayerTransform;
     }
 
 
@@ -39,9 +38,10 @@ public class InformGoToFallingObject : MonoBehaviour
 
         if (!_informedFallingObject)
         {
-            UIManager.Instance.DoDialogue("hamster", "저기 큐브 위에 올라타면 될 것 같아", 7f);
-            HLogger.General.Info("저기 큐브 위에 올라타면 될 것 같아", this);
+            UIManager.Instance.DoDialogue("hamster", "저 <b>큐브</b> 위에 올라타면 될 것 같아", 7f);
+            HLogger.General.Info("저 <b>큐브</b> 위에 올라타면 될 것 같아", this);
             virtualCameraFalling.Priority = 11;
+            PlayerManager.Instance.SetMouseInputLockDuringSeconds(5f);
             Invoke(nameof(ChangeCameraFallingPriorityToNine), 3f);
             _informedFallingObject = true;
         }
@@ -60,7 +60,7 @@ public class InformGoToFallingObject : MonoBehaviour
         if (_noNeedToInformHamster)
             return;
 
-        if (hamsterObject.localPosition.z > 490)
+        if (hamsterObject.localPosition.z > 535)
             _noNeedToInformHamster = true;
 
         _time += Time.fixedDeltaTime;
@@ -69,7 +69,7 @@ public class InformGoToFallingObject : MonoBehaviour
         {
             UIManager.Instance.DoDialogue("hamster", "방금 옮겼던 <b>큐브</b>를 가져와서 활용해 보자", 7f);
             HLogger.General.Info("방금 옮겼던 <b>큐브</b>를 가져와서 활용해 보자", this);
-            PlayerManager.Instance.SetInputLockDuringSeconds(4f);
+            PlayerManager.Instance.SetMouseInputLockDuringSeconds(5f);
             virtualCameraHamster.Priority = 11;
             _time = 0;
             _firstInformedHamsterObject = true;

@@ -148,7 +148,8 @@ public class PlayerWireController : MonoBehaviour
         if (!EventSystem.current.IsPointerOverGameObject())
         {
             // 와이어 발사
-            if (Input.GetMouseButtonDown(0) && !PlayerManager.Instance.IsInputLock())
+            if (Input.GetMouseButtonDown(0) && !PlayerManager.Instance.IsInputLock()
+                                            && !PlayerManager.Instance.IsMouseInputLock())
             {
                 WireShoot();
             }
@@ -161,7 +162,8 @@ public class PlayerWireController : MonoBehaviour
             // 빠르게 와이어 감기
             if (PlayerManager.Instance.skill.HasRetractor())
             {
-                if (Input.GetMouseButtonDown(1) && !PlayerManager.Instance.IsInputLock())
+                if (Input.GetMouseButtonDown(1) && !PlayerManager.Instance.IsInputLock()
+                                                && !PlayerManager.Instance.IsMouseInputLock())
                 {
                     shortenStartTime = Time.time;
                     isShortenWireFast = true;
@@ -255,7 +257,9 @@ public class PlayerWireController : MonoBehaviour
     private void DrawOutline()
     {
         // 조준 중인 오브젝트 외곽선 표시
-        if (predictionHit.point != Vector3.zero && predictionHit.collider.gameObject != gameObject) 
+        if (predictionHit.point != Vector3.zero
+            && predictionHit.collider.gameObject != gameObject
+            && !PlayerManager.Instance.IsMouseInputLock()) 
         {
             // 햄스터용 오브젝트이고 pull 스킬이 없는 경우는 외곽선 표시하지 않음
             bool reject = !PlayerManager.Instance.isBall && !PlayerManager.Instance.skill.HasHamsterWire();
