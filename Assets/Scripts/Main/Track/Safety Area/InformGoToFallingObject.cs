@@ -24,7 +24,10 @@ public class InformGoToFallingObject : MonoBehaviour
         _player = PlayerManager.Instance.transform;
         _firstInformedHamsterObject = _informedFallingObject = false;
         _noNeedToInformHamster = _informedToJump = false;
+        virtualCameraFalling.Follow = PlayerManager.Instance.transform;
+        virtualCameraHamster.Follow = PlayerManager.Instance.transform;
     }
+
 
     private void OnTriggerEnter(Collider other)
     {

@@ -25,12 +25,12 @@ public class InteractionDialogueController : MonoBehaviour
     [SerializeField] private string fileName;
     [SerializeField] private int index;
 
-    private bool canInteract = true;
+    private bool _canInteract = true;
 
 
     void OnTriggerEnter(Collider other)
     {
-        if (!isTrigger || !other.CompareTag("Player") || !canInteract)
+        if (!isTrigger || !other.CompareTag("Player") || !_canInteract)
             return;
 
         DoDialogue();
@@ -38,7 +38,7 @@ public class InteractionDialogueController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (isTrigger || !collision.collider.CompareTag("Player") || !canInteract)
+        if (isTrigger || !collision.collider.CompareTag("Player") || !_canInteract)
             return;
 
         DoDialogue();
@@ -68,13 +68,13 @@ public class InteractionDialogueController : MonoBehaviour
         if (destroyThis)
             Destroy(gameObject);
 
-        canInteract = false;
+        _canInteract = false;
         Invoke(nameof(CanInteractTrue), minimumNotificationCooldown);
     }
 
     private void CanInteractTrue()
     {
-        canInteract = true;
+        _canInteract = true;
     }
 }
 

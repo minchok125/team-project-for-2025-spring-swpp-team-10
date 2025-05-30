@@ -3,19 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using Hampossible.Utils;
+using Cinemachine;
 
 // 금고 있는 방 직전의 방 기믹 매니저
 public class ElectricRoomController : MonoBehaviour
 {
     [SerializeField] private Transform leftDoor;
     [SerializeField] private Transform rightDoor;
+    [SerializeField] private CinemachineVirtualCamera virtualCamera;
 
     private int _remainBlackDroneCount = 3;
 
+    private void Start()
+    {
+        virtualCamera.Follow = PlayerManager.Instance.transform;
+    }
+
     public void RemovedBlackDrone()
     {
-        GameManager.PlaySfx(SfxType.AutomaticDoorOpen);
-
         if (_remainBlackDroneCount > 0)
             _remainBlackDroneCount--;
 
@@ -26,6 +31,7 @@ public class ElectricRoomController : MonoBehaviour
         if (_remainBlackDroneCount <= 0)
         {
             DoorOpen();
+            CameraControl();
         }
     }
 
@@ -71,8 +77,19 @@ public class ElectricRoomController : MonoBehaviour
         }
         else
         {
-            UIManager.Instance.DoDialogue("radio", "잘헀어! 금고방을 열었으니 이제 기밀문서를 탈취하도록.", 5f);
-            HLogger.General.Info("잘헀어! 금고방을 열었으니 이제 기밀문서를 탈취하도록.", this);
+            UIManager.Instance.DoDialogue("radio", "잘했어! 금고방을 열었으니 이제 기밀문서를 탈취하도록.", 5f);
+            HLogger.General.Info("잘했했어! 금고방을 열었으니 이제 기밀문서를 탈취하도록.", this);
         }
+    }
+
+    private void CameraControl()
+    {
+        virtualCamera.Priority = 11;
+        Invoke(nameof(ChangeCameraHamsterPriorityToNine), 2f);
+    }
+
+    private void ChangeCameraHamsterPriorityToNine()
+    {
+        virtualCamera.Priority = 9;
     }
 }
