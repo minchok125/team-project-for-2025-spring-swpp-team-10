@@ -8,14 +8,21 @@ public class InformToUseHamsterWire : MonoBehaviour
 {
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
 
-    private float _time;
+    private float _lastInformtime;
     private bool _firstInformed;
 
     void Start()
     {
-        _time = 0;
         _firstInformed = false;
         virtualCamera.Follow = PlayerManager.Instance.followPlayerTransform;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("Player"))
+            return;
+
+        _lastInformtime = Time.time;
     }
 
     private void OnTriggerStay(Collider other)
@@ -30,24 +37,17 @@ public class InformToUseHamsterWire : MonoBehaviour
             Destroy(gameObject);
         }
 
-        _time += Time.fixedDeltaTime;
-        if (!_firstInformed && _time > 18 || _firstInformed && _time > 30)
+        float timeFromLastInform = Time.time - _lastInformtime;
+        if (!_firstInformed && timeFromLastInform > 15
+            || _firstInformed && timeFromLastInform > 30)
         {
             UIManager.Instance.DoDialogue("hamster", "주변에 햄스터 와이어를 사용할 만한 물체가 있는지 찾아보자", 7f);
             HLogger.General.Info("주변에 햄스터 와이어를 사용할 만한 물체가 있는지 찾아보자", this);
             ChangeCameraPriority(11);
-            _time = 0;
+            timeFromLastInform = Time.time;
             _firstInformed = true;
             Invoke(nameof(ChangeCameraPriorityToNine), 3f);
         }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (!other.CompareTag("Player"))
-            return;
-
-        _time = 0;
     }
 
     private void ChangeCameraPriorityToNine()

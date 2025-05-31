@@ -73,7 +73,9 @@ class CursorController
 
 public class MainSceneManager : RuntimeSingleton<MainSceneManager>
 {
+    [HideInInspector]
     public bool isSafeBoxOpened = false;
+    [HideInInspector]
     public bool doYouKnowSafeBoxPassword = false;
 
     private MainSceneFacade _mainSceneFacade;

@@ -12,7 +12,7 @@ public class InformGoToFallingObject : MonoBehaviour
     [SerializeField] private Transform fallingObject;
 
     private Transform _player;
-    private float _time;
+    private float _lastInformtime;
     private bool _firstInformedHamsterObject;
     private bool _noNeedToInformHamster;
     private bool _informedFallingObject;
@@ -20,7 +20,6 @@ public class InformGoToFallingObject : MonoBehaviour
 
     void Start()
     {
-        _time = 0;
         _player = PlayerManager.Instance.transform;
         _firstInformedHamsterObject = _informedFallingObject = false;
         _noNeedToInformHamster = _informedToJump = false;
@@ -35,6 +34,8 @@ public class InformGoToFallingObject : MonoBehaviour
 
         if (PlayerManager.Instance.onWire && !PlayerManager.Instance.isBall)
             _noNeedToInformHamster = true;
+
+        _lastInformtime = Time.time;
 
         if (!_informedFallingObject)
         {
@@ -62,15 +63,15 @@ public class InformGoToFallingObject : MonoBehaviour
         if (hamsterObject.localPosition.z > 535)
             _noNeedToInformHamster = true;
 
-        _time += Time.fixedDeltaTime;
-
-        if (!_firstInformedHamsterObject && _time > 40 || _firstInformedHamsterObject && _time > 40)
+        float timeFromLastInform = Time.time - _lastInformtime;
+        if (!_firstInformedHamsterObject && timeFromLastInform > 30
+            || _firstInformedHamsterObject && timeFromLastInform > 40)
         {
             UIManager.Instance.DoDialogue("hamster", "방금 옮겼던 <b>큐브</b>를 가져와서 활용해 보자", 7f);
             HLogger.General.Info("방금 옮겼던 <b>큐브</b>를 가져와서 활용해 보자", this);
             PlayerManager.Instance.SetMouseInputLockDuringSeconds(5f);
             virtualCameraHamster.Priority = 11;
-            _time = 0;
+            _lastInformtime = Time.time;
             _firstInformedHamsterObject = true;
             Invoke(nameof(ChangeCameraHamsterPriorityToNine), 3f);
         }
@@ -95,14 +96,6 @@ public class InformGoToFallingObject : MonoBehaviour
             HLogger.General.Info("큐브 위에 올라가서 <size=42>점프!</size>", this);
             _informedToJump = true;
         }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (!other.CompareTag("Player"))
-            return;
-
-        _time = 0;
     }
 
     private void ChangeCameraFallingPriorityToNine()
