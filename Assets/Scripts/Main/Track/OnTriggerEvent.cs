@@ -13,6 +13,9 @@ public class OnTriggerEvent : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (!other.CompareTag("Player"))
+            return;
+
         enterEvent?.Invoke();
 
         if (destroyAfterEvent)
@@ -24,6 +27,9 @@ public class OnTriggerEvent : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+        if (!other.CompareTag("Player"))
+            return;
+            
         exitEvent?.Invoke();
     }
 }

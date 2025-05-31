@@ -48,8 +48,6 @@ public class DrawOutline : MonoBehaviour
 
         // 자기 자신과 자식의 렌더러 목록
         Renderer[] childRenderers = GetComponentsInChildren<Renderer>(true);
-        if (gameObject.name == "Body")
-            Debug.Log("asaa", this);
 
         // 등록된 오브젝트들에 Outline 머티리얼이 없다면 Outline 머티리얼 추가
             // 자식 렌더러는 제외 (부모에 Outline이 있으면 자동으로 추가됨)

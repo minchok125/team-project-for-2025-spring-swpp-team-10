@@ -1,6 +1,5 @@
 using Cinemachine;
 using Hampossible.Utils;
-using UnityEditor.EditorTools;
 using UnityEngine;
 
 public class ContinuousNotifier : MonoBehaviour
@@ -24,12 +23,11 @@ public class ContinuousNotifier : MonoBehaviour
     [Tooltip("가상 카메라가 플레이어를 따라가도록 할지 여부를 결정합니다. (Follow를 자동으로 플레이어로 설정해줍니다.)")]
     [SerializeField] private bool isFollowPlayer = false;
 
-    private float _time;
+    private float _lastInformtime;
     private bool _firstInformed;
 
     void Start()
     {
-        _time = 0;
         _firstInformed = false;
 
         if (useVirtualCamera)
@@ -41,9 +39,13 @@ public class ContinuousNotifier : MonoBehaviour
         }
     }
 
-    void OnEnable()
+
+    private void OnTriggerEnter(Collider other)
     {
-        _time = 0;
+        if (!other.CompareTag("Player"))
+            return;
+
+        _lastInformtime = Time.time;
     }
 
     private void OnTriggerStay(Collider other)
@@ -51,9 +53,9 @@ public class ContinuousNotifier : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        _time += Time.fixedDeltaTime;
-        if (!_firstInformed && _time > firstInformTime
-            || _firstInformed && _time > continuousInformTime)
+        float timeFromLastInform = Time.time - _lastInformtime;
+        if (!_firstInformed && timeFromLastInform > firstInformTime
+            || _firstInformed && timeFromLastInform > continuousInformTime)
         {
             UIManager.Instance.DoDialogue(character, text, lifetime);
             HLogger.General.Info(text, this);
@@ -64,18 +66,11 @@ public class ContinuousNotifier : MonoBehaviour
                 Invoke(nameof(ChangeCameraPriorityToNine), cameraShotTime);
             }
 
-            _time = 0;
+            _lastInformtime = Time.time;
             _firstInformed = true;
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (!other.CompareTag("Player"))
-            return;
-
-        _time = 0;
-    }
 
     private void ChangeCameraPriorityToNine()
     {
