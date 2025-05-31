@@ -48,17 +48,19 @@ public class DrawOutline : MonoBehaviour
 
         // 자기 자신과 자식의 렌더러 목록
         Renderer[] childRenderers = GetComponentsInChildren<Renderer>(true);
+        if (gameObject.name == "Body")
+            Debug.Log("asaa", this);
 
         // 등록된 오브젝트들에 Outline 머티리얼이 없다면 Outline 머티리얼 추가
-        // 자식 렌더러는 제외 (부모에 Outline이 있으면 자동으로 추가됨)
-        for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
-        {
-            if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline)
-                && !childRenderers.Contains(_linkedOutlineRenderers[i]))
+            // 자식 렌더러는 제외 (부모에 Outline이 있으면 자동으로 추가됨)
+            for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
             {
-                _linkedOutlineRenderers[i].gameObject.AddComponent<Outline>();
+                if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline)
+                    && !childRenderers.Contains(_linkedOutlineRenderers[i]))
+                {
+                    _linkedOutlineRenderers[i].gameObject.AddComponent<Outline>();
+                }
             }
-        }
 
         foreach (Renderer childRd in childRenderers)
         {

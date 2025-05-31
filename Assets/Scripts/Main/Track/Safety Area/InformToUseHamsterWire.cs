@@ -31,7 +31,7 @@ public class InformToUseHamsterWire : MonoBehaviour
         }
 
         _time += Time.fixedDeltaTime;
-        if (!_firstInformed && _time > 15 || _firstInformed && _time > 30)
+        if (!_firstInformed && _time > 18 || _firstInformed && _time > 30)
         {
             UIManager.Instance.DoDialogue("hamster", "주변에 햄스터 와이어를 사용할 만한 물체가 있는지 찾아보자", 7f);
             HLogger.General.Info("주변에 햄스터 와이어를 사용할 만한 물체가 있는지 찾아보자", this);

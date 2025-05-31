@@ -11,12 +11,15 @@ public class SafeBoxKeypadController : MonoBehaviour
 
     [SerializeField] private Color successColor, failColor;
     [SerializeField] private ObjectProperties safeObjProp;
-    [SerializeField] private GameObject DrawerInformer;
+    [SerializeField] private GameObject drawerInformer;
+    [SerializeField] private GameObject useHamsterWireInformer;
+    [SerializeField] private GameObject findSafeBoxInformer;
 
     private ObjectProperties[] _childObjProps;
 
 
     private bool _hasFailed = false;
+    private bool _success = false;
     private int _curNum;
     private int _curDigit;
     private const int ANSWER = 0827;
@@ -34,8 +37,12 @@ public class SafeBoxKeypadController : MonoBehaviour
 
     public void GetInput(int num)
     {
-        if (_curDigit >= 4)
+        if (_curDigit >= 4 || _success)
             return;
+
+        // 더 이상 금고를 찾으라고 알리지 않음
+        if (findSafeBoxInformer.activeSelf)
+            findSafeBoxInformer.SetActive(false);
 
         _curDigit++;
         _curNum = _curNum * 10 + num;
@@ -55,10 +62,12 @@ public class SafeBoxKeypadController : MonoBehaviour
 
     private void Success()
     {
+        _success = true;
         numberText.color = successColor;
         GameManager.PlaySfx(SfxType.KeypadSuccess);
         safeObjProp.canGrabInHamsterMode = true;
         MainSceneManager.Instance.isSafeBoxOpened = true;
+        useHamsterWireInformer.SetActive(false);
         passwordUI.SetActive(false);
     }
 
@@ -84,8 +93,9 @@ public class SafeBoxKeypadController : MonoBehaviour
         if (!_hasFailed && !MainSceneManager.Instance.doYouKnowSafeBoxPassword)
         {
             UIManager.Instance.DoDialogue("SafeBoxPasswordFailedDialogue");
-            DrawerInformer.SetActive(true);
-            DrawerInformer.transform.GetChild(0).GetComponent<SetTransformScale>().SetScaleFromZero(3.5f);
+            drawerInformer.SetActive(true);
+            drawerInformer.transform.GetChild(0).GetComponent<SetTransformScale>().SetScaleFromZero(3.5f);
+            useHamsterWireInformer.SetActive(true);
         }
         _hasFailed = true;
     }

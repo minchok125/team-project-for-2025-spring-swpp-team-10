@@ -87,7 +87,7 @@ public class ElectricRoomController : MonoBehaviour
     private void CameraControl()
     {
         virtualCamera.Priority = 11;
-        Invoke(nameof(ChangeCameraHamsterPriorityToNine), 4f);
+        Invoke(nameof(ChangeCameraHamsterPriorityToNine), 3f);
     }
 
     private void ChangeCameraHamsterPriorityToNine()

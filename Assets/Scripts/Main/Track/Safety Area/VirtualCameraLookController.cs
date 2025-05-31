@@ -11,7 +11,7 @@ public class VirtualCameraLookController : MonoBehaviour
     void Start()
     {
         if (isFollowPlayer)
-            virtualCamera.Follow = PlayerManager.Instance.transform;
+            virtualCamera.Follow = PlayerManager.Instance.followPlayerTransform;
     }
 
     void OnTriggerEnter(Collider other)

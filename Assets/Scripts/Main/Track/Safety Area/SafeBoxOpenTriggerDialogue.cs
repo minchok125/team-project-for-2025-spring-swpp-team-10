@@ -7,6 +7,7 @@ using UnityEngine;
 public class SafeBoxOpenTriggerDialogue : MonoBehaviour
 {
     [SerializeField] private bool destroyOnTrigger = false;
+    [SerializeField] private bool disableCollider = false;
     [SerializeField] private int triggerIdx;
 
 
@@ -45,6 +46,9 @@ public class SafeBoxOpenTriggerDialogue : MonoBehaviour
 
         if (destroyOnTrigger)
             Destroy(gameObject);
+        else if (disableCollider)
+            foreach (Collider col in GetComponents<Collider>())
+                col.enabled = false;
 
         _canInteract = false;
         Invoke(nameof(CanInteractTrue), 1f);
