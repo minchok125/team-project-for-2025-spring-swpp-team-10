@@ -190,7 +190,6 @@ class TriggerEnterDialogueControllerEditor : Editor
         if (!destroyThisProp.boolValue)
             EditorGUILayout.PropertyField(minimumNotificationCooldownProp);
 
-
         EditorGUILayout.PropertyField(isTriggerProp);
         EditorGUILayout.PropertyField(isOnelineDialogueProp);
 
