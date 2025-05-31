@@ -26,7 +26,8 @@ public class DrawOutline : MonoBehaviour
     private float _outlineWidth = 10;
     private bool _outlineEnabled = false;
     private List<int> _outlineFillIndexes;
-    
+    private BlinkNewController _blinkNewController;
+
     private static readonly Color BALL_COLOR = new Color(0.3981f, 0.7492f, 1f, 1f);
     private static readonly Color HAMSTER_COLOR = new Color(0.8902f, 0.6196f, 0.2745f, 1f);
 
@@ -43,19 +44,23 @@ public class DrawOutline : MonoBehaviour
 
     private void Init()
     {
+        _blinkNewController = GetComponent<BlinkNewController>();
+
         // 자기 자신과 자식의 렌더러 목록
         Renderer[] childRenderers = GetComponentsInChildren<Renderer>(true);
+        if (gameObject.name == "Body")
+            Debug.Log("asaa", this);
 
         // 등록된 오브젝트들에 Outline 머티리얼이 없다면 Outline 머티리얼 추가
-        // 자식 렌더러는 제외 (부모에 Outline이 있으면 자동으로 추가됨)
-        for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
-        {
-            if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline)
-                && !childRenderers.Contains(_linkedOutlineRenderers[i]))
+            // 자식 렌더러는 제외 (부모에 Outline이 있으면 자동으로 추가됨)
+            for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
             {
-                _linkedOutlineRenderers[i].gameObject.AddComponent<Outline>();
+                if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline)
+                    && !childRenderers.Contains(_linkedOutlineRenderers[i]))
+                {
+                    _linkedOutlineRenderers[i].gameObject.AddComponent<Outline>();
+                }
             }
-        }
 
         foreach (Renderer childRd in childRenderers)
         {
@@ -169,10 +174,27 @@ public class DrawOutline : MonoBehaviour
             _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.Never);
         }
 
+        if (_blinkNewController != null && !_outlineEnabled)
+            ApplyBlinkControllerCircumstance();
+
         for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
         {
             Renderer rd = _linkedOutlineRenderers[i];
-            rd.SetPropertyBlock(_outlineFillMpb, _outlineFillIndexes[i]);
+
+            if (rd != null && _outlineFillMpb != null) // rd와 _outlineFillMpb 모두 null이 아닌지 확인
+            {
+                int materialIndex = _outlineFillIndexes[i];
+            
+                // materialIndex가 Renderer의 유효한 재질 범위 내에 있는지 확인
+                if (materialIndex >= 0 && materialIndex < rd.sharedMaterials.Length)
+                {
+                    rd.SetPropertyBlock(_outlineFillMpb, materialIndex);
+                }
+                else
+                {
+                    Debug.LogWarning($"Material index {materialIndex} is out of bounds for Renderer '{rd.name}'. It has {rd.sharedMaterials.Length} materials.", this);
+                }
+            }
         }
     }
 
@@ -188,5 +210,18 @@ public class DrawOutline : MonoBehaviour
     {
         _outlineColor = color;
         ApplyOutlineSettings();
+    }
+
+    // BlinkNewController가 있으며 현재 사라지고 있는 상태라면 다시 하얀색 외곽선으로 되돌립니다.
+    private void ApplyBlinkControllerCircumstance()
+    {
+        if (!_blinkNewController.isDisappearing)
+            return;
+
+        Color outlineColor = new Color(1, 1, 1, _blinkNewController.curAlpha);
+        _outlineFillMpb.SetColor(k_OutlineColorID, outlineColor);
+        _outlineFillMpb.SetFloat(k_OutlineWidthID, 4f);
+        _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
+        _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
     }
 }

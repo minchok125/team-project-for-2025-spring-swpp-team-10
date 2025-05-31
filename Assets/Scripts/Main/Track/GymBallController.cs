@@ -24,7 +24,6 @@ public class GymBallController : MonoBehaviour
             if (isKinematic)
                 rb.isKinematic = true;
         }
-        Debug.Log(rb);
     }
 
     void OnCollisionEnter(Collision collision)
