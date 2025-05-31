@@ -8238,7 +8238,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 545999250}
-  m_LocalRotation: {x: 0.0013128027, y: -0.00007349076, z: 0.00015624617, w: 0.99999917}
+  m_LocalRotation: {x: 0.0013128027, y: -0.00007349077, z: 0.00015624618, w: 0.99999917}
   m_LocalPosition: {x: 0.00000000617631, y: -0.00005519663, z: -0.000026050398}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -24011,7 +24011,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1597888883}
-  m_LocalRotation: {x: -0.06820253, y: -0.00008417402, z: 0.00015075973, w: 0.99767154}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -24259,6 +24259,7 @@ MonoBehaviour:
   settingsPanel: {fileID: 0}
   nextCheckpointUI: {fileID: 0}
   endingTextObj: {fileID: 0}
+  dialogueUIController: {fileID: 0}
 --- !u!114 &1646605239
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24943,7 +24944,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1665868589}
-  m_LocalRotation: {x: -0.03363417, y: -0.00007890608, z: 0.0001535825, w: 0.9994343}
+  m_LocalRotation: {x: -0.03363412, y: -0.00007890609, z: 0.00015358254, w: 0.9994343}
   m_LocalPosition: {x: 0.00000000617631, y: -0.00005519663, z: -0.000026050398}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -29235,6 +29236,7 @@ MonoBehaviour:
   slideWallNormal: {x: 0, y: 0, z: 0}
   skill: {fileID: 0}
   playerWire: {fileID: 0}
+  followPlayerTransform: {fileID: 0}
 --- !u!120 &1939750748
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -31977,6 +31979,7 @@ MonoBehaviour:
   settingsPanel: {fileID: 0}
   nextCheckpointUI: {fileID: 0}
   endingTextObj: {fileID: 0}
+  dialogueUIController: {fileID: 0}
 --- !u!114 &2136716059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32428,7 +32431,7 @@ PrefabInstance:
     - target: {fileID: 7186327919841762784, guid: 3edae3083c8f0e3429da59eb362d5f79,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 5306
+      value: 5309
       objectReference: {fileID: 0}
     - target: {fileID: 7186327919841762787, guid: 3edae3083c8f0e3429da59eb362d5f79,
         type: 3}
