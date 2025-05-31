@@ -38,8 +38,7 @@ public class InformGoToFallingObject : MonoBehaviour
 
         if (!_informedFallingObject)
         {
-            UIManager.Instance.DoDialogue("hamster", "저 <b>큐브</b> 위에 올라타면 될 것 같아", 7f);
-            HLogger.General.Info("저 <b>큐브</b> 위에 올라타면 될 것 같아", this);
+            StartCoroutine(DoFallingObjectDialogue());
             virtualCameraFalling.Priority = 11;
             PlayerManager.Instance.SetMouseInputLockDuringSeconds(5f);
             Invoke(nameof(ChangeCameraFallingPriorityToNine), 3f);
@@ -75,6 +74,15 @@ public class InformGoToFallingObject : MonoBehaviour
             _firstInformedHamsterObject = true;
             Invoke(nameof(ChangeCameraHamsterPriorityToNine), 3f);
         }
+    }
+
+    private IEnumerator DoFallingObjectDialogue()
+    {
+        UIManager.Instance.DoDialogue("hamster", "저 <b>큐브</b> 위에 올라타면 될 것 같아", 7f);
+        HLogger.General.Info("저 <b>큐브</b> 위에 올라타면 될 것 같아", this);
+        yield return new WaitForSeconds(3f);
+        UIManager.Instance.DoDialogue("hamster", "방향키 입력 없이도 $r$부스터$/r$를 쓸 수 있으니 잘 활용해 보자", 7f);
+        HLogger.General.Info("방향키 입력 없이도 $r$부스터$/r$를 쓸 수 있으니 잘 활용해 보자", this);
     }
 
     private void InformToJump()
