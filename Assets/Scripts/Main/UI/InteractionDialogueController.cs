@@ -41,7 +41,7 @@ public class InteractionDialogueController : MonoBehaviour
         if (useVirtualCamera)
         {
             if (virtualCamera == null)
-                HLogger.General.Warning("Virtual Camera가 null입니다.", null);
+                HLogger.General.Warning("Virtual Camera가 null입니다.", this);
             else if (isFollowPlayer)
                 virtualCamera.Follow = PlayerManager.Instance.followPlayerTransform;
         }
@@ -186,7 +186,11 @@ class TriggerEnterDialogueControllerEditor : Editor
         serializedObject.Update();
 
         EditorGUILayout.PropertyField(destroyThisProp);
-        EditorGUILayout.PropertyField(minimumNotificationCooldownProp);
+
+        if (!destroyThisProp.boolValue)
+            EditorGUILayout.PropertyField(minimumNotificationCooldownProp);
+
+
         EditorGUILayout.PropertyField(isTriggerProp);
         EditorGUILayout.PropertyField(isOnelineDialogueProp);
 

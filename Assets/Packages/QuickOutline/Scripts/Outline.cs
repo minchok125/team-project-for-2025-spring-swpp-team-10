@@ -102,7 +102,11 @@ public class Outline : MonoBehaviour {
   private bool _isOutlineAdded = false;
 
   void OnEnable() {
-    if (_isOutlineAdded) return;
+    if (_isOutlineAdded)
+    {
+      Debug.Log("zzz", this);
+      return;
+    }
 
     _isOutlineAdded = true;
 

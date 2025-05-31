@@ -17,6 +17,7 @@ public class LaserShootController : MonoBehaviour
     public float maxLaserShootMoveDist = 300;
     public float rotationSpeed = 5f;
     [SerializeField] private bool isShootLaser = true;
+    [SerializeField] private bool rotateOnlyWhenPlayerIsVisible = true;
     public float laserShootCooltime = 0.2f;
     public float laserSpeed = 1f;
 
@@ -49,12 +50,14 @@ public class LaserShootController : MonoBehaviour
 
         Vector3 playerDir = (_player.position - transform.position).normalized;
 
-        if (Physics.Raycast(transform.position + playerDir * 19f,
+        if (rotateOnlyWhenPlayerIsVisible
+            && Physics.Raycast(transform.position + playerDir * 19f,
                     playerDir,
                     out RaycastHit hit,
                     detectPointDist,
                     ~0,
-                    QueryTriggerInteraction.Ignore))
+                    QueryTriggerInteraction.Ignore)
+            )
         {
             if (!hit.collider.CompareTag("Player"))
                 return;

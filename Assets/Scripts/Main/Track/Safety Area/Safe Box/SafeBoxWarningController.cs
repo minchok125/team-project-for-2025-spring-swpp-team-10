@@ -36,6 +36,10 @@ public class SafeBoxWarningController : MonoBehaviour
     public UnityEvent warningEvent;
     #endregion
 
+    #region CustomLogic
+    [SerializeField] private BoxCollider roomTwoFourBoxColliderMove;
+    #endregion
+
 
     private void Start()
     {
@@ -60,6 +64,11 @@ public class SafeBoxWarningController : MonoBehaviour
         SetObjectActive();
         warningEvent?.Invoke();
         UIManager.Instance.DoDialogue("SafeBoxOpenDialogue");
+
+        // Custom Logic
+        roomTwoFourBoxColliderMove.center = new Vector3(1,
+                        roomTwoFourBoxColliderMove.center.y,
+                        roomTwoFourBoxColliderMove.center.z);
     }
 
     private IEnumerator SetWallColorRed()
