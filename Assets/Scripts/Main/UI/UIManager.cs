@@ -9,6 +9,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	[SerializeField] private GameObject pausedMenuPanel, settingsPanel;
 	[SerializeField] private NextCheckpointUIController nextCheckpointUI;
 	[SerializeField] private GameObject endingTextObj;
+	[SerializeField] private DialogueUIController dialogueUIController;
 
 	protected override void Awake()
 	{
@@ -37,7 +38,6 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 
 		// 아래는 추후에 저장 기능이 구현되면 PlayerData를 받아서 값을 설정하도록 수정되어야 함
 		timerText.text = "Timer [00:00.00 s]";
-
 	}
 
 	private void Update()
@@ -107,5 +107,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		settingsPanel.SetActive(false);
 	}
 
-	
+	public void DoDialogue(string fileName) { dialogueUIController.StartDialogue(fileName); }
+	public void DoDialogue(string character, string text, float lifetime) { dialogueUIController.StartDialogue(character, text, lifetime); }
+	public void DoDialogue(int idx) { dialogueUIController.StartDialogue(idx); }
+	public void ClearDialogue() { dialogueUIController.ClearDialogue();  }	
 }
