@@ -7,6 +7,7 @@ using UnityEditor;
 #endif
 
 // 트리거나 콜라이더에 플레이어가 부딪혔을 때 특정 대사를 출력합니다.
+// public void DoDialogue()로 외부해서 대사 호출이 가능합니다.
 public class InteractionDialogueController : MonoBehaviour
 {
     [SerializeField] private bool destroyThis = false;
@@ -35,7 +36,7 @@ public class InteractionDialogueController : MonoBehaviour
     private bool _canInteract = true;
 
 
-    void Start()
+    private void Start()
     {
         if (useVirtualCamera)
         {
@@ -50,26 +51,29 @@ public class InteractionDialogueController : MonoBehaviour
     }
 
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (!isTrigger || !other.CompareTag("Player") || !_canInteract)
             return;
 
         DoDialogue();
-        DoCamera();
+        DoDelete();
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
         if (isTrigger || !collision.collider.CompareTag("Player") || !_canInteract)
             return;
 
         DoDialogue();
-        DoCamera();
+        DoDelete();
     }
 
-    void DoDialogue()
+    public void DoDialogue()
     {
+        if (!_canInteract)
+            return;
+
         if (isOnelineDialogue)
         {
             if (isOnelineFileDialogue)
@@ -91,6 +95,8 @@ public class InteractionDialogueController : MonoBehaviour
 
         _canInteract = false;
         Invoke(nameof(CanInteractTrue), minimumNotificationCooldown);
+
+        DoCamera();
     }
 
     private void CanInteractTrue()
@@ -122,7 +128,7 @@ public class InteractionDialogueController : MonoBehaviour
         if (!useVirtualCamera)
             Destroy(gameObject);
         else
-            Invoke(nameof(destroyThis), cameraShotTime + 0.1f);
+            Invoke(nameof(DestroyThis), cameraShotTime + 0.1f);
     }
 
     private void DestroyThis()
