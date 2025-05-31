@@ -13,6 +13,8 @@ public class CubeMovementController : MonoBehaviour
         _blink = GetComponent<BlinkNewController>();
         if (_blink == null)
             HLogger.General.Warning("BlinkPlatformController을 추가해 주세요", this);
+        else
+            _blink.isEndShootWhenDisappear = false;
     }
 
     // private void Update()
@@ -63,8 +65,6 @@ public class CubeMovementController : MonoBehaviour
 
     public void Disappear(float disappearTime)
     {
-        if (_blink == null)
-            HLogger.General.Info("Aaa", this);
         _blink.FadeOut(FADE_DURATION);
         Invoke(nameof(Appear), disappearTime);
     }

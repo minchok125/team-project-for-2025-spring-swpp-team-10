@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Hampossible.Utils;
 using UnityEngine;
 
@@ -7,10 +8,12 @@ public class DrawerConfiner : MonoBehaviour
     [SerializeField] GameObject[] drawers;
     [Tooltip("drawers의 순서에 맞는 오브젝트를 와이어로 끌어올 수 있는 최대거리")]
     [SerializeField] float[] drawersOpenMaxDist;
+    [Tooltip("리지드바디 설정을 스크립트에서 바꾸지 않음")]
+    [SerializeField] private bool customRigidSetting = false;
 
-    private Collider[] drawersCol;
-    private Rigidbody[] drawersRigid;
-    private Vector3[] drawersOrigin;
+    private List<List<Collider>> _drawersCol;
+    private Rigidbody[] _drawersRigid;
+    private Vector3[] _drawersOrigin;
 
     private void Start()
     {
@@ -25,22 +28,28 @@ public class DrawerConfiner : MonoBehaviour
 
     private void Init()
     {
-        drawersCol = new Collider[drawers.Length];
-        drawersOrigin = new Vector3[drawers.Length];
-        drawersRigid = new Rigidbody[drawers.Length];
+        _drawersCol = new List<List<Collider>>();
+        _drawersOrigin = new Vector3[drawers.Length];
+        _drawersRigid = new Rigidbody[drawers.Length];
         for (int i = 0; i < drawers.Length; i++)
         {
-            drawersCol[i] = drawers[i].GetComponent<Collider>();
-            drawersOrigin[i] = drawers[i].transform.position;
+            _drawersCol.Add(new List<Collider>());
+            foreach (Collider col in drawers[i].GetComponents<Collider>())
+                _drawersCol[i].Add(col);
+
+            _drawersOrigin[i] = drawers[i].transform.position;
 
             if (drawers[i].TryGetComponent(out Rigidbody rb))
-                drawersRigid[i] = rb;
+                _drawersRigid[i] = rb;
             else
-                drawersRigid[i] = drawers[i].AddComponent<Rigidbody>();
+                _drawersRigid[i] = drawers[i].AddComponent<Rigidbody>();
 
-            drawersRigid[i].mass = 0.8f;
-            drawersRigid[i].isKinematic = true;
-            drawersRigid[i].constraints = RigidbodyConstraints.FreezePositionY
+            if (customRigidSetting)
+                continue;
+
+            _drawersRigid[i].mass = 0.8f;
+            _drawersRigid[i].isKinematic = true;
+            _drawersRigid[i].constraints = RigidbodyConstraints.FreezePositionY
                                         | RigidbodyConstraints.FreezeRotationX
                                         | RigidbodyConstraints.FreezeRotationY
                                         | RigidbodyConstraints.FreezeRotationZ;
@@ -51,25 +60,35 @@ public class DrawerConfiner : MonoBehaviour
     {
         if (PlayerManager.Instance.isBall || !PlayerManager.Instance.onWire)
         {
+            for (int i = 0; i < _drawersRigid.Length; i++)
+                _drawersRigid[i].isKinematic = true;
             return;
         }
 
-        for (int i = 0; i < drawersRigid.Length; i++)
+        for (int i = 0; i < _drawersRigid.Length; i++)
         {
-            if (PlayerManager.Instance.onWireCollider != drawersCol[i])
+            if (!ContainsCol(i))
                 continue;
 
             // transform.forward 방향으로 서랍이 열린 거리
-            float openDist = Vector3.Dot(transform.forward, drawersRigid[i].transform.position - drawersOrigin[i]);
+            float openDist = Vector3.Dot(transform.forward, _drawersRigid[i].transform.position - _drawersOrigin[i]);
             if (openDist >= drawersOpenMaxDist[i] - 0.05f)
             {
-                drawersRigid[i].MovePosition(drawersOrigin[i] + transform.forward * drawersOpenMaxDist[i]);
-                drawersRigid[i].isKinematic = true;
+                _drawersRigid[i].MovePosition(_drawersOrigin[i] + transform.forward * drawersOpenMaxDist[i]);
+                _drawersRigid[i].isKinematic = true;
             }
             else
             {
-                drawersRigid[i].isKinematic = false;
+                _drawersRigid[i].isKinematic = false;
             }
         }
+    }
+
+    private bool ContainsCol(int idx)
+    {
+        for (int i = 0; i < _drawersCol[idx].Count; i++)
+            if (_drawersCol[idx][i] == PlayerManager.Instance.onWireCollider)
+                return true;
+        return false;
     }
 }

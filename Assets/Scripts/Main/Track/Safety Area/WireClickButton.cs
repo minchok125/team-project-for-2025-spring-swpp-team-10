@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class WireClickButton : MonoBehaviour
+public class WireClickButton : MonoBehaviour, IWireClickButton
 {
     [Header("와이어로 누르는 버튼 스크립트. 실제 눌러지는 버튼에 추가해 주세요")]
     public UnityEvent onClick;

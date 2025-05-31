@@ -477,7 +477,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         _ballLightningShockParticle.SetActive(false);
         _hamsterLightningShockParticle.SetActive(false);
 
-        Invoke(nameof(CanLightningShockAfterFewSeconds), 0.4f);
+        Invoke(nameof(CanLightningShockAfterFewSeconds), 0.6f);
     }
     // 다시 전기에 맞을 수 있음
     private void CanLightningShockAfterFewSeconds()

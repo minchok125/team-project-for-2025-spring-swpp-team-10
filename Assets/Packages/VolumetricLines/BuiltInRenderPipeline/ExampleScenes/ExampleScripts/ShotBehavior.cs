@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class ShotBehavior : MonoBehaviour {
+	public float speed = 10f;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
+	private Rigidbody _rb;
+
+    void Start()
+    {
+		_rb = GetComponent<Rigidbody>();
+    }
+
 	// Update is called once per frame
-	void Update () {
-		transform.position += transform.forward * Time.deltaTime * 1000f;
-	
+	void FixedUpdate()
+	{
+		//transform.position += transform.forward * Time.deltaTime * speed;
+		_rb.MovePosition(_rb.transform.position + transform.forward * Time.fixedDeltaTime * speed);
 	}
 }
