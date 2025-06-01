@@ -79,7 +79,7 @@ public class FallingPlatformController : MonoBehaviour
     void LateUpdate()
     {
         if (cylinder != null)
-            cylinder.position = new Vector3(transform.localPosition.x, initY - maxDownLength * 0.5f, transform.localPosition.z);
+            cylinder.position = new Vector3(transform.position.x, initY - maxDownLength * 0.5f, transform.position.z);
     }
 
     private void Down()
