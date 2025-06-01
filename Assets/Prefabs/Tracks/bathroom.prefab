@@ -51686,7 +51686,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 4862
+  m_VersionIndex: 4868
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -68151,17 +68151,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8779807678511941663, guid: f6aec20f6e52e5b40a11c3f6f62cdfad,
         type: 3}
+      propertyPath: ShapeModule.type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8779807678511941663, guid: f6aec20f6e52e5b40a11c3f6f62cdfad,
+        type: 3}
       propertyPath: ShapeModule.m_Scale.x
-      value: 20
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8779807678511941663, guid: f6aec20f6e52e5b40a11c3f6f62cdfad,
         type: 3}
       propertyPath: ShapeModule.m_Scale.y
-      value: 20
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 8779807678511941663, guid: f6aec20f6e52e5b40a11c3f6f62cdfad,
         type: 3}
       propertyPath: ShapeModule.m_Scale.z
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8779807678511941663, guid: f6aec20f6e52e5b40a11c3f6f62cdfad,
+        type: 3}
+      propertyPath: ShapeModule.radiusThickness
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
