@@ -107,6 +107,11 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		settingsPanel.SetActive(false);
 	}
 
+	public void OnCheckpointProgressUpdated(int activatedIndex, int totalCheckpoints)
+    {
+        // 체크포인트 진행상황을 3/5 이런 식으로 표시할 수 있게 알리는 메서드입니다. 추후 UI 구현 가능
+    }
+
 	public void DoDialogue(string fileName) { dialogueUIController.StartDialogue(fileName); }
 	public void DoDialogue(string character, string text, float lifetime) { dialogueUIController.StartDialogue(character, text, lifetime); }
 	public void DoDialogue(int idx) { dialogueUIController.StartDialogue(idx); }

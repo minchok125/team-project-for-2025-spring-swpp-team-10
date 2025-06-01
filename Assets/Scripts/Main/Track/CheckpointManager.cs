@@ -36,8 +36,11 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
             HLogger.General.Warning("CheckpointManager: 초기 스폰 포인트(Initial Spawn Point)가 설정되지 않았습니다. 첫 번째 체크포인트 활성화 전까지 기본 위치를 사용합니다.");
         }
 
-        // 게임 시작 시 다음 체크포인트 UI를 초기화합니다. (orderedCheckpoints가 비어있지 않다면 첫 번째를 알림)
-        UpdateNextCheckpoint(GetNextCheckpointPosition());
+        // 게임 시작 시 초기 상태를 옵저버에게 알립니다.
+        // 1. 초기 진행 상황 알림
+        NotifyProgressUpdated();
+        // 2. 초기 목표 위치 알림
+        NotifyTargetChanged(GetNextCheckpointPosition());
     }
 
     public void RegisterObserver(INextCheckpointObserver observer)
@@ -45,6 +48,8 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
         if (!_observers.Contains(observer))
         {
             _observers.Add(observer);
+            observer.OnCheckpointProgressUpdated(_currentCheckpointIndex, orderedCheckpoints.Count);
+            observer.OnNextCheckpointChanged(GetNextCheckpointPosition());
         }
     }
 
@@ -54,7 +59,7 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
         {
             _observers.Remove(observer);
         }
-    }   
+    }
 
     public void CheckpointActivated(CheckpointController activatedCheckpoint)
     {
@@ -84,9 +89,15 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
             _lastCheckpointPosition = activatedCheckpoint.transform.position; // 리스폰 위치도 갱신
             _hasCheckpointBeenSet = true;
             HLogger.General.Info($"체크포인트 '{activatedCheckpoint.gameObject.name}' (인덱스: {_currentCheckpointIndex}) 활성화됨. 위치: {_lastCheckpointPosition}");
-
+            /*
             Vector3? nextCheckpointPos = GetNextCheckpointPosition(); // 다음 체크포인트 위치 가져오기
             UpdateNextCheckpoint(nextCheckpointPos); // UI 업데이트 알림
+            */
+
+            // 1. 진행 상황이 변경되었음을 알림
+            NotifyProgressUpdated();
+            // 2. 다음 목표 위치가 변경되었음을 알림
+            NotifyTargetChanged(GetNextCheckpointPosition());
         }
         else
         {
@@ -144,11 +155,15 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
         return _lastCheckpointPosition;
     }
 
+    public int GetCurrentCheckpointIndex() => _currentCheckpointIndex;
+    public int GetTotalCheckpoints() => orderedCheckpoints.Count;
+
     public bool HasCheckpointBeenSet()
     {
         return _hasCheckpointBeenSet;
     }
-    
+
+    /*
     /// <summary>
     /// UI 업데이트를 위한 이벤트를 호출하는 헬퍼 메소드입니다.
     /// </summary>
@@ -167,5 +182,31 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
         {
             HLogger.General.Debug("UI 알림: 다음 체크포인트가 없거나 시퀀스가 종료되었습니다.");
         }
+    }
+    */
+
+    
+    /// <summary>
+    /// 옵저버들에게 현재 체크포인트 진행 상황을 알립니다.
+    /// </summary>
+    private void NotifyProgressUpdated()
+    {
+        foreach (var observer in _observers)
+        {
+            observer.OnCheckpointProgressUpdated(_currentCheckpointIndex, orderedCheckpoints.Count);
+        }
+        HLogger.General.Debug($"UI 알림: 진행 상황 업데이트됨 ({_currentCheckpointIndex + 1}/{orderedCheckpoints.Count})");
+    }
+
+    /// <summary>
+    /// 옵저버들에게 다음 목표 체크포인트의 위치를 알립니다.
+    /// </summary>
+    private void NotifyTargetChanged(Vector3? nextPosition)
+    {
+        foreach (var observer in _observers)
+        {
+            observer.OnNextCheckpointChanged(nextPosition);
+        }
+        HLogger.General.Debug($"UI 알림: 다음 목표 위치 업데이트됨 ({(nextPosition.HasValue ? nextPosition.Value.ToString() : "없음")})");
     }
 }
