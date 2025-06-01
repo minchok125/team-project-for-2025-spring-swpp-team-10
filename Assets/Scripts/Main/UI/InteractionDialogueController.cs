@@ -14,6 +14,8 @@ public class InteractionDialogueController : MonoBehaviour
     [SerializeField] private bool destroyThis = false;
     [Tooltip("같은 내용을 출력하는 최소 간격")]
     [SerializeField] private float minimumNotificationCooldown = 0.1f;
+    [Tooltip("트리거나 콜라이더와 접촉할 때 대사를 출력한다면 true")]
+    [SerializeField] private bool dialogueOnTriggerOrCollier = true;
     [Tooltip("트리거면 true, 콜라이더면 false")]
     [SerializeField] private bool isTrigger = true;
 
@@ -61,7 +63,7 @@ public class InteractionDialogueController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isTrigger || !other.CompareTag("Player") || !_canInteract)
+        if (!dialogueOnTriggerOrCollier || !isTrigger || !_canInteract || !other.CompareTag("Player"))
             return;
 
         DoDialogue();
@@ -70,7 +72,7 @@ public class InteractionDialogueController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (isTrigger || !collision.collider.CompareTag("Player") || !_canInteract)
+        if (!dialogueOnTriggerOrCollier || isTrigger || !_canInteract || !collision.collider.CompareTag("Player"))
             return;
 
         DoDialogue();
@@ -166,6 +168,7 @@ class TriggerEnterDialogueControllerEditor : Editor
 
     SerializedProperty destroyThisProp;
     SerializedProperty minimumNotificationCooldownProp;
+    SerializedProperty dialogueOnTriggerOrCollierProp;
     SerializedProperty isTriggerProp;
     SerializedProperty isOnelineDialogueProp;
     SerializedProperty characterProp;
@@ -184,6 +187,7 @@ class TriggerEnterDialogueControllerEditor : Editor
     {
         destroyThisProp = serializedObject.FindProperty("destroyThis");
         minimumNotificationCooldownProp = serializedObject.FindProperty("minimumNotificationCooldown");
+        dialogueOnTriggerOrCollierProp = serializedObject.FindProperty("dialogueOnTriggerOrCollier");
         isTriggerProp = serializedObject.FindProperty("isTrigger");
         isOnelineDialogueProp = serializedObject.FindProperty("isOnelineDialogue");
         characterProp = serializedObject.FindProperty("character");
@@ -202,14 +206,16 @@ class TriggerEnterDialogueControllerEditor : Editor
     {
         serializedObject.Update();
 
-        EditorGUILayout.PropertyField(destroyThisProp);
+        EditorGUILayout.PropertyField(dialogueOnTriggerOrCollierProp);
+        if (dialogueOnTriggerOrCollierProp.boolValue)
+        {
+            EditorGUILayout.PropertyField(isTriggerProp);
+            EditorGUILayout.PropertyField(destroyThisProp);
+            if (!destroyThisProp.boolValue)
+                EditorGUILayout.PropertyField(minimumNotificationCooldownProp);
+        }
 
-        if (!destroyThisProp.boolValue)
-            EditorGUILayout.PropertyField(minimumNotificationCooldownProp);
-
-        EditorGUILayout.PropertyField(isTriggerProp);
         EditorGUILayout.PropertyField(isOnelineDialogueProp);
-
         if (isOnelineDialogueProp.boolValue)
         {
             EditorGUILayout.PropertyField(isOnelineFileDialogueProp);
