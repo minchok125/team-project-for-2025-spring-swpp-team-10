@@ -95,6 +95,9 @@ public class PlayerMovementController : MonoBehaviour
 
     // 볼 이동 컨트롤러 참조
     private BallMovementController ball;
+
+    [Tooltip("부스터 상태일 때 표시될 이펙트")]
+    [SerializeField] private GameObject boostEffectInstance;
     #endregion
 
 
@@ -518,13 +521,22 @@ public class PlayerMovementController : MonoBehaviour
         if (!playerMgr.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0
             || !playerMgr.isBall || !playerMgr.skill.HasBoost())
         {
+            boostEffectInstance.SetActive(false);
             playerMgr.isBoosting = false;
             return;
+        }
+
+        Vector3 backward = -rb.velocity.normalized;
+        if (backward != Vector3.zero)
+        {
+            boostEffectInstance.transform.position = transform.position + backward * 1f;
+            boostEffectInstance.transform.rotation = Quaternion.LookRotation(backward);
         }
 
         // 즉발성 부스트 활성화
         if (Input.GetKeyDown(KeyCode.LeftShift) && currentBoostEnergy >= burstBoostEnergyUsage)
         {
+            boostEffectInstance.SetActive(true);
             playerMgr.isBoosting = true;
             ball.BurstBoost();
             currentBoostEnergy -= burstBoostEnergyUsage;
