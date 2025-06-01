@@ -73,6 +73,11 @@ class CursorController
 
 public class MainSceneManager : RuntimeSingleton<MainSceneManager>
 {
+    [HideInInspector]
+    public bool isSafeBoxOpened = false;
+    [HideInInspector]
+    public bool doYouKnowSafeBoxPassword = false;
+
     private MainSceneFacade _mainSceneFacade;
 
     private enum GameStates { Playing, Paused, BadEnding, GoodEnding };
@@ -96,6 +101,9 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         _mainSceneFacade.InitializeGame();
         _gameState = GameStates.Playing;
         _timeRecord = 0f;
+
+        isSafeBoxOpened = false;
+        doYouKnowSafeBoxPassword = false;
     }
 
     private void Update()

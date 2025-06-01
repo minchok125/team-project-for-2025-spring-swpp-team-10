@@ -148,7 +148,8 @@ public class PlayerWireController : MonoBehaviour
         if (!EventSystem.current.IsPointerOverGameObject())
         {
             // 와이어 발사
-            if (Input.GetMouseButtonDown(0) && !PlayerManager.Instance.IsInputLock())
+            if (Input.GetMouseButtonDown(0) && !PlayerManager.Instance.IsInputLock()
+                                            && !PlayerManager.Instance.IsMouseInputLock())
             {
                 WireShoot();
             }
@@ -161,7 +162,8 @@ public class PlayerWireController : MonoBehaviour
             // 빠르게 와이어 감기
             if (PlayerManager.Instance.skill.HasRetractor())
             {
-                if (Input.GetMouseButtonDown(1) && !PlayerManager.Instance.IsInputLock())
+                if (Input.GetMouseButtonDown(1) && !PlayerManager.Instance.IsInputLock()
+                                                && !PlayerManager.Instance.IsMouseInputLock())
                 {
                     shortenStartTime = Time.time;
                     isShortenWireFast = true;
@@ -212,6 +214,9 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void ModeConvert()
     {
+        if (PlayerManager.Instance.IsInputLock())
+            return;
+            
         if (Input.GetKeyDown(KeyCode.Tab) && Time.time - convertedTime > 0.5f)
         {
             PlayerManager.Instance.ModeConvert();
@@ -252,7 +257,9 @@ public class PlayerWireController : MonoBehaviour
     private void DrawOutline()
     {
         // 조준 중인 오브젝트 외곽선 표시
-        if (predictionHit.point != Vector3.zero && predictionHit.collider.gameObject != gameObject) 
+        if (predictionHit.point != Vector3.zero
+            && predictionHit.collider.gameObject != gameObject
+            && !PlayerManager.Instance.IsMouseInputLock()) 
         {
             // 햄스터용 오브젝트이고 pull 스킬이 없는 경우는 외곽선 표시하지 않음
             bool reject = !PlayerManager.Instance.isBall && !PlayerManager.Instance.skill.HasHamsterWire();
@@ -368,9 +375,6 @@ public class PlayerWireController : MonoBehaviour
         if (!PlayerManager.Instance.onWire)
             return;
 
-        GrabbedObjectExit();
-
-        grabObject = null;
         hitPoint.SetParent(followPlayerHitParent);
         PlayerManager.Instance.onWire = false;
         PlayerManager.Instance.onWireCollider = null;
@@ -379,6 +383,17 @@ public class PlayerWireController : MonoBehaviour
 
         // 다음 와이어 발사를 위해 hitPoint 전환
         isHitPoint1 = !isHitPoint1;
+
+        try // 혹시 여기서 error가 나더라도 grabObject를 안전하게 null로 만듦
+        {
+            GrabbedObjectExit();
+        }
+        catch
+        {
+            grabObject = null;
+        }
+
+        grabObject = null;
     }
     #endregion
 
@@ -517,7 +532,7 @@ public class PlayerWireController : MonoBehaviour
 
         RaycastHit raycastHit;
         Physics.Raycast(cam.transform.position, cam.transform.forward,
-                        out raycastHit, grabDistance + camDist, WhatIsGrappable,
+                        out raycastHit, grabDistance + camDist + 6f, WhatIsGrappable,
                         QueryTriggerInteraction.Ignore);
 
         Vector3 realHitPoint = Vector3.zero;
@@ -620,7 +635,11 @@ public class PlayerWireController : MonoBehaviour
         if (fpc != null && PlayerManager.Instance.isBall)
             fpc.onWire = true;
 
-        if (grabObject.TryGetComponent(out WireClickButton btnObj))
+        // 콜라이더 자체에는 fpc가 없지만, fpc와 연동되는 오브젝트인 경우 
+        if (grabObject.TryGetComponent(out NotifyFallingPlatform nfp))
+            nfp.SetOnWire(true);
+
+        if (grabObject.TryGetComponent(out IWireClickButton btnObj))
         {
             btnObj.Click();
             EndShoot();
@@ -647,6 +666,10 @@ public class PlayerWireController : MonoBehaviour
         FallingPlatformController fpc = grabObject.GetComponent<FallingPlatformController>();
         if (fpc != null && PlayerManager.Instance.isBall)
             fpc.onWire = false;
+
+        // 콜라이더 자체에는 fpc가 없지만, fpc와 연동되는 오브젝트인 경우 
+        if (grabObject.TryGetComponent(out NotifyFallingPlatform nfp))
+            nfp.SetOnWire(false);
     }
     #endregion
 }
