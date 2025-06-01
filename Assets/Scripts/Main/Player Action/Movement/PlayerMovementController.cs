@@ -98,6 +98,7 @@ public class PlayerMovementController : MonoBehaviour
 
     [Tooltip("부스터 상태일 때 표시될 이펙트")]
     [SerializeField] private ParticleSystem boostEffectInstance;
+    private ParticleSystem.EmissionModule _boostEffectEmission;
     #endregion
 
 
@@ -124,7 +125,8 @@ public class PlayerMovementController : MonoBehaviour
     #region Unity Lifecycle Methods
     void Awake()
     {
-        boostEffectInstance.Stop();
+        _boostEffectEmission = boostEffectInstance.emission;
+        _boostEffectEmission.enabled = false;
     }
 
     void Start()
@@ -526,8 +528,7 @@ public class PlayerMovementController : MonoBehaviour
         if (!playerMgr.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0
             || !playerMgr.isBall || !playerMgr.skill.HasBoost())
         {
-            if (boostEffectInstance.isPlaying)
-                boostEffectInstance.Stop();
+            _boostEffectEmission.enabled = false;
             playerMgr.isBoosting = false;
             return;
         }
@@ -542,7 +543,11 @@ public class PlayerMovementController : MonoBehaviour
         // 즉발성 부스트 활성화
         if (Input.GetKeyDown(KeyCode.LeftShift) && currentBoostEnergy >= burstBoostEnergyUsage)
         {
-            boostEffectInstance.Play();
+            if (!boostEffectInstance.isPlaying)
+                boostEffectInstance.Play();
+            _boostEffectEmission.enabled = true;
+            boostEffectInstance.Emit(20);
+
             playerMgr.isBoosting = true;
             ball.BurstBoost();
             currentBoostEnergy -= burstBoostEnergyUsage;

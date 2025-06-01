@@ -74,7 +74,7 @@ public class PlayWarningSound : MonoBehaviour
     // 특정 함수로 사운드 재생 시작
     public void StartAlarmSound()
     {
-        if (alarmAudioSource != null && !alarmAudioSource.isPlaying)
+        if (alarmAudioSource != null && !alarmAudioSource.isPlaying && MainSceneManager.Instance.isSafeBoxOpened)
         {
             alarmAudioSource.Play();
             HLogger.General.Info("경보음 재생 시작.");
