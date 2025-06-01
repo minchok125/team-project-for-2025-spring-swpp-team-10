@@ -7,11 +7,22 @@ using Hampossible.Utils;
 
 public class BlinkNewController : MonoBehaviour
 {
+    /// <summary>
+    /// 이 물체가 사라질 때 와이어가 연결되어 있다면 연결을 끊을지 여부
+    /// </summary>
+    public bool isEndShootWhenDisappear = true;
+    /// <summary>
+    /// 현재 사라지고 있는 상태인지 여부
+    /// </summary>
+    public bool isDisappearing = false;
+    public float curAlpha = 0f;
+
     private Renderer[] _disappearRenderers; // 디더링 효과를 내는 오브젝트의 렌더러 모음
     private Color[] _ditheringMatColors; // 디더링 효과를 내는 머티리얼의 각 색상
     private MaterialPropertyBlock _outlineFillMpb; // 외곽선 머티리얼 (같은 머티리얼 공유)
     private int[] _outlineFillIdxes; // 렌더러의 머티리얼들 중에서 OutlineFill 머티리얼의 인덱스
     private Collider[] _disappearCols; // 사라질 콜라이더 모음
+    private DrawOutline _drawOutline;
 
     private static readonly int k_BaseColorID = Shader.PropertyToID("_BaseColor");
     private static readonly int k_OutlineColorID = Shader.PropertyToID("_OutlineColor");
@@ -65,18 +76,23 @@ public class BlinkNewController : MonoBehaviour
     {
         _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
         _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
+        if (_drawOutline == null)
+            _drawOutline = GetComponent<DrawOutline>();
+        _drawOutline.dontDrawHightlightOutline = true;
+        isDisappearing = true;
 
-        float currentAlpha = _ditheringMatColors[0].a;
+        curAlpha = _ditheringMatColors[0].a;
         float prevAlpha = 1f;
 
-        DOVirtual.Float(currentAlpha, 0f, fadeOutDuration, a =>
+        DOVirtual.Float(curAlpha, 0f, fadeOutDuration, a =>
         {
             SetAlpha(a);
             // 알파값이 0.5일 때 콜라이더 비활성화
             if (prevAlpha >= 0.5f && a < 0.5f)
             {
                 SetCollider(false);
-                EndShoot();
+                if (isEndShootWhenDisappear)
+                    EndShoot();
             }
             prevAlpha = a;
         }).SetEase(Ease.OutSine);
@@ -85,10 +101,10 @@ public class BlinkNewController : MonoBehaviour
     // 오브젝트가 나타나고 외곽선이 사라지는 시퀀스
     public void FadeIn(float fadeInDuration)
     {
-        float currentAlpha = _ditheringMatColors[0].a;
+        curAlpha = _ditheringMatColors[0].a;
         float prevAlpha = 0f;
 
-        DOVirtual.Float(currentAlpha, 1f, fadeInDuration, a =>
+        DOVirtual.Float(curAlpha, 1f, fadeInDuration, a =>
         {
             SetAlpha(a);
             // 알파값이 0.5일 때 콜라이더 활성화
@@ -102,6 +118,10 @@ public class BlinkNewController : MonoBehaviour
     {
         _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 0f);
         _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.Never);
+        if (_drawOutline == null)
+            _drawOutline = GetComponent<DrawOutline>();
+        _drawOutline.dontDrawHightlightOutline = false;
+        isDisappearing = false;
     }
 
 

@@ -39,13 +39,13 @@ public class SkillSelectManager : MonoBehaviour
 
     public void OnSpeed()
     {
-        skill.AddSpeedRate(0.3f);
+        skill.AddSpeedRate(0.1f);
         Hampossible.Utils.HLogger.Skill.Info("이동 속도 증가 선택됨", this);
         Close();
     }
     public void OnJump()
     {
-        skill.AddJumpHeightRate(0.3f);
+        skill.AddJumpHeightRate(0.1f);
         Hampossible.Utils.HLogger.Skill.Info("점프력 증가 선택됨", this);
         Close();
     }

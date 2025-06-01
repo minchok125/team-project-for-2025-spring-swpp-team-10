@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 3392012}
   - component: {fileID: 2394440}
   - component: {fileID: 6520728}
+  - component: {fileID: 8116045895797688022}
   m_Layer: 0
   m_Name: Floor_Small_01
   m_TagString: Untagged
@@ -129,3 +130,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.0000029, y: 1.0000019, z: 0.01}
   m_Center: {x: -1.5000005, y: -0.5000005, z: 0.00000021855712}
+--- !u!114 &8116045895797688022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 180408}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a074c9e73aecfeb47b89dd1b9e10ec2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canPlayerJump: 1
+  canGrabInBallMode: 0
+  canGrabInHamsterMode: 0
+  generateRigidbody: 1
+  nonDetectable: 0
