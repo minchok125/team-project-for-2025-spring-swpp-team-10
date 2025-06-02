@@ -70,9 +70,6 @@ public class BallWireController : MonoBehaviour, IWire
 
         // SpringJoint 컴포넌트 추가 및 초기 설정
         ConfigureSpringJoint(hit, dist);
-
-        Debug.Log("=============Start=============");
-        Debug.Log($"time: {Time.time:F2} | wire max: {sj.maxDistance:F3}, min: {sj.minDistance:F3}");
     }
 
     private void ConfigureSpringJoint(RaycastHit hit, float dist)

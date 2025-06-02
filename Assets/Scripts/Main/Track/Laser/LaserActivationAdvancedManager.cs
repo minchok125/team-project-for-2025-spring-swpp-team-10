@@ -64,18 +64,19 @@ public class LaserActivationAdvancedManager : MonoBehaviour
     {
         if (!IsPlayerNear())
         {
+            if (_isPlayerPrevNear)
+                StopAllCoroutines();
             _isPlayerPrevNear = false;
-            return;
         }
         else if (!_isPlayerPrevNear)
         {
+            _isPlayerPrevNear = true;
             // 각 레이저 시퀀스를 독립적으로 시작
             foreach (LaserSequence sequence in _laserSequences)
             {
                 StartCoroutine(ManageLaserSequence(sequence));
             }
         }
-        _isPlayerPrevNear = true;
     }
 
     // 레이저 중심지점과 플레이어 사이의 거리가 일정 거리 이하인지 확인

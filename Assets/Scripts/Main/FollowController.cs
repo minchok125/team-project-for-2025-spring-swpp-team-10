@@ -16,12 +16,29 @@ public class FollowController : MonoBehaviour
     [Tooltip("follow의 위치로 수렴하는 속도")]
     [SerializeField] private float lerpSpeed = 5f;
 
+    private Rigidbody _rigid;
+
+    void Start()
+    {
+        _rigid = GetComponent<Rigidbody>();
+    }
+
     void FixedUpdate()
     {
-        if (isLerp)
-            transform.position = Vector3.Lerp(transform.position, follow.position + offset, lerpSpeed * Time.deltaTime);
+        if (_rigid != null)
+        {
+            if (isLerp)
+                _rigid.MovePosition(Vector3.Lerp(_rigid.transform.position, follow.position + offset, lerpSpeed * Time.deltaTime));
+            else
+                _rigid.MovePosition(follow.position + offset);
+        }
         else
-            transform.position = follow.position + offset;
+        {
+            if (isLerp)
+                transform.position = Vector3.Lerp(transform.position, follow.position + offset, lerpSpeed * Time.deltaTime);
+            else
+                transform.position = follow.position + offset;
+        }
     }
 }
 

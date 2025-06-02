@@ -14,6 +14,7 @@ public class NextCheckpointUIController : MonoBehaviour
 
     [Header("States")]
     [SerializeField] private bool isDisplayed;
+    private bool _hasValidTarget = false; // 유효한 타겟이 있는지 여부
     private Vector3 _targetPos;
 
     private void Awake()
@@ -25,6 +26,7 @@ public class NextCheckpointUIController : MonoBehaviour
     {
         // 초기화 시에는 Next Checkpoint UI를 표시하지 않도록
         isDisplayed = false;
+        _hasValidTarget = false;
         gameObject.SetActive(false);
     }
 
@@ -32,14 +34,36 @@ public class NextCheckpointUIController : MonoBehaviour
     {
         // Next Checkpoint UI 표시 여부 토글
         isDisplayed = !isDisplayed;
-        gameObject.SetActive(isDisplayed);
+        UpdateActiveState();
     }
 
-    public void UpdateNextCheckpoint(Vector3 newTargetPos) { _targetPos = newTargetPos; }
+    // CheckpointManager로부터 호출될 메서드 (UIManager를 통해)
+    public void UpdateTargetPosition(Vector3? newTargetPos)
+    {
+        if (newTargetPos.HasValue)
+        {
+            _targetPos = newTargetPos.Value;
+            _hasValidTarget = true;
+        }
+        else
+        {
+            _hasValidTarget = false;
+        }
+        UpdateActiveState();
+    }
+
+    private void UpdateActiveState()
+    {
+        // 사용자가 UI를 보도록 설정했고, 유효한 타겟이 있을 때만 활성화
+        gameObject.SetActive(isDisplayed && _hasValidTarget);
+    }
 
     private void LateUpdate()
     {
-        if (isDisplayed) AdjustNextCheckpointUI();
+        if (gameObject.activeSelf)
+        {
+            AdjustNextCheckpointUI();
+        }
     }
 
     private void AdjustNextCheckpointUI()

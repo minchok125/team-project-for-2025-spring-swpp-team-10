@@ -8,12 +8,12 @@ public class CubeStageCountButton : MonoBehaviour
     [SerializeField] private TextMeshProUGUI countTxt;
     [SerializeField] private Transform door;
 
-    private int _remainButtonCount = 5;
+    private int _remainButtonCount = 4;
     private const float MOVE_TIME = 6.5f;
     private float startLocalY = 3f;
     private float endLocalY = 180f;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         countTxt.text = "Remain : " + _remainButtonCount.ToString();

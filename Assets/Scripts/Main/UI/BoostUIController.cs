@@ -8,9 +8,9 @@ public class BoostUIFacade
     private TextMeshProUGUI _text;
     private Color _boostTextColor;
 
-    public BoostUIFacade(Image[] images, TextMeshProUGUI text, Color boostTextColor)
+    public BoostUIFacade(Image[] images, Image backgroundImage, TextMeshProUGUI text, Color boostTextColor)
     {
-        _imageController = new ImageController(images);
+        _imageController = new ImageController(images, backgroundImage);
         _text = text;
         _boostTextColor = boostTextColor;
     }
@@ -44,12 +44,14 @@ public class BoostUIFacade
 class ImageController
 {
     private Image[] _images;
+    private Image _backgroundImage;
     private float _boostTime;
     private float _startEnergy;
 
-    public ImageController(Image[] images)
+    public ImageController(Image[] images, Image backgroundImage)
     {
         _images = images;
+        _backgroundImage = backgroundImage;
     }
 
     public void Control(PlayerMovementController player, bool isBoosting, float deltaTime)
@@ -113,6 +115,7 @@ class ImageController
     private void SetImageSize(float size)
     {
         _images[0].rectTransform.sizeDelta = _images[1].rectTransform.sizeDelta = Vector3.one * size;
+        _backgroundImage.rectTransform.sizeDelta = Vector3.one * size * 1.1f;
     }
 
     private void SetImageAlpha(float alpha)
@@ -120,6 +123,10 @@ class ImageController
         var color = _images[0].color;
         color.a = alpha;
         _images[0].color = color;
+
+        color = _backgroundImage.color;
+        color.a = alpha;
+        _backgroundImage.color = color;
     }
 }
 
@@ -127,6 +134,7 @@ class ImageController
 public class BoostUIController : MonoBehaviour
 {
     [SerializeField] private Color boostTextColor;
+    [SerializeField] private Image backgroundImage;
     private BoostUIFacade _boostUIFacade;
     private PlayerMovementController player;
 
@@ -139,7 +147,7 @@ public class BoostUIController : MonoBehaviour
         txt = GetComponentInChildren<TextMeshProUGUI>();
         player = GameObject.Find("Player").GetComponent<PlayerMovementController>();
 
-        _boostUIFacade = new BoostUIFacade(image, txt, boostTextColor);
+        _boostUIFacade = new BoostUIFacade(image, backgroundImage, txt, boostTextColor);
     }
 
     void Update()
