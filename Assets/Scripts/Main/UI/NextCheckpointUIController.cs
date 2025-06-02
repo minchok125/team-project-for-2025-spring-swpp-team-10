@@ -7,7 +7,7 @@ public class NextCheckpointUIController : MonoBehaviour
     [Header("References")]
     [SerializeField] private TextMeshProUGUI distanceText;
     [SerializeField] private GameObject player;
-    
+
     [Header("Values")]
     [SerializeField] private float ellipseHorizontalRadius;
     [SerializeField] private float ellipseVerticalRadius;
@@ -72,7 +72,7 @@ public class NextCheckpointUIController : MonoBehaviour
         Vector3 screenPos = Camera.main.WorldToScreenPoint(_targetPos);
         Vector3 clampedScreenPos = screenPos;
         Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
-        
+
         bool isBehindCamera = screenPos.z > 0;
         bool isInsideScreen =
             screenPos.z > 0 &&
@@ -80,12 +80,12 @@ public class NextCheckpointUIController : MonoBehaviour
             screenPos.y >= 0 && screenPos.y <= Screen.height;
         clampedScreenPos.x = Mathf.Clamp(screenPos.x, 0f, Screen.width);
         clampedScreenPos.y = Mathf.Clamp(screenPos.y, 0f, Screen.height);
-        
+
         // screen 내에 target이 위치하지 않은 경우, screen 내에 UI를 표시하도록 조정 
         if (!isInsideScreen)
         {
             if (isBehindCamera) screenPos *= -1;
-            
+
             Vector2 dirVec = new Vector2(clampedScreenPos.x - screenCenter.x, clampedScreenPos.y - screenCenter.y);
             Vector2 newDirVec = new Vector2(Mathf.Abs(dirVec.x), Mathf.Abs(dirVec.y));
             // 가장자리에 있지 않다면
@@ -101,33 +101,33 @@ public class NextCheckpointUIController : MonoBehaviour
             dirVec = new Vector2(newDirVec.x * (dirVec.x > 0 ? 1 : -1), newDirVec.y * (dirVec.y > 0 ? 1 : -1));
             clampedScreenPos = new Vector2(Screen.width / 2f, Screen.height / 2f) + dirVec;
         }
-        
+
         // 타원을 기준으로 그보다 바깥에 위치하는 경우, 타원 가장자리 중 가장 가까운 점으로 UI 위치 조정
         Vector3 dirFromCenter = clampedScreenPos - screenCenter;
         float ellipseEquation =
             (dirFromCenter.x * dirFromCenter.x) / (ellipseHorizontalRadius * ellipseHorizontalRadius)
             + (dirFromCenter.y * dirFromCenter.y) / (ellipseVerticalRadius * ellipseVerticalRadius);
         bool isInsideEllipse = ellipseEquation <= 1f;
-        
+
         if (!isInsideEllipse)
         {
             // 타원 가장자리에 닿도록 방향을 스케일링
             float angle = Mathf.Atan2(dirFromCenter.y / ellipseVerticalRadius, dirFromCenter.x / ellipseHorizontalRadius);
             dirFromCenter.x = Mathf.Cos(angle) * ellipseHorizontalRadius;
             dirFromCenter.y = Mathf.Sin(angle) * ellipseVerticalRadius;
-            
+
             clampedScreenPos = screenCenter + new Vector3(dirFromCenter.x, dirFromCenter.y, 0f);
         }
-        
+
         // UI 위치 반영
         transform.position = clampedScreenPos;
-        
+
         // 거리 계산
         float dist = Vector3.Distance(player.transform.position, _targetPos);
         transform.localScale = Vector3.one * Mathf.Clamp(Mathf.Lerp(1f, 0.5f, dist / 50f), 0.5f, 1f);
-        
+
         distanceText.text = $"{dist:F1}m";
     }
-    
-    
+
+
 }
