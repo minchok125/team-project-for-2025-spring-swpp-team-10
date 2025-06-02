@@ -95,6 +95,10 @@ public class PlayerMovementController : MonoBehaviour
 
     // 볼 이동 컨트롤러 참조
     private BallMovementController ball;
+
+    [Tooltip("부스터 상태일 때 표시될 이펙트")]
+    [SerializeField] private ParticleSystem boostEffectInstance;
+    private ParticleSystem.EmissionModule _boostEffectEmission;
     #endregion
 
 
@@ -119,6 +123,12 @@ public class PlayerMovementController : MonoBehaviour
 
 
     #region Unity Lifecycle Methods
+    void Awake()
+    {
+        _boostEffectEmission = boostEffectInstance.emission;
+        _boostEffectEmission.enabled = false;
+    }
+
     void Start()
     {
         // 컴포넌트 캐싱
@@ -193,13 +203,13 @@ public class PlayerMovementController : MonoBehaviour
     private void UpdateMovement()
     {
         // 입력이 잠기지 않았다면 이동 처리
-        if (!playerMgr.isInputLock)
+        if (!playerMgr.IsInputLock())
             playerMgr.isMoving = curMovement.Move();
 
         // 볼 상태가 아닐 때만 걷기 애니메이션 업데이트
         if (!playerMgr.isBall)
         {
-            bool setWalking = playerMgr.isInputLock ? false : playerMgr.isMoving;
+            bool setWalking = playerMgr.IsInputLock() ? false : playerMgr.isMoving;
             animator.SetBool("IsWalking", setWalking);
         }
     }
@@ -300,7 +310,7 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleJumpInput()
     {
         jumped = false;
-        bool isInputLock = PlayerManager.Instance.isInputLock;
+        bool isInputLock = PlayerManager.Instance.IsInputLock();
 
         if (!playerMgr.isBall && playerMgr.onWire)
             return;
@@ -371,8 +381,7 @@ public class PlayerMovementController : MonoBehaviour
         rb.AddForce(normal * power + Vector3.up * 2, ForceMode.VelocityChange);
 
         // 일시적으로 입력 잠금
-        playerMgr.isInputLock = true;
-        playerMgr.SetInputLockAfterSeconds(false, 0.3f);
+        playerMgr.SetInputLockDuringSeconds(0.3f);
 
         // 점프 방향으로 회전 코루틴 시작
         StartCoroutine(SlideWallJumpRotate());
@@ -420,7 +429,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         // 공중에서 스페이스바를 누르면 활공 토글
         if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !playerMgr.onWire
-            && !playerMgr.isInputLock)
+            && !playerMgr.IsInputLock())
         {
             // jumped : 이번 Update 프레임 때 점프를 했는지
             if (!jumped && playerMgr.skill.HasGliding())
@@ -519,13 +528,26 @@ public class PlayerMovementController : MonoBehaviour
         if (!playerMgr.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0
             || !playerMgr.isBall || !playerMgr.skill.HasBoost())
         {
+            _boostEffectEmission.enabled = false;
             playerMgr.isBoosting = false;
             return;
+        }
+
+        Vector3 backward = -rb.velocity.normalized;
+        if (backward != Vector3.zero)
+        {
+            boostEffectInstance.transform.position = transform.position + backward * 1f;
+            boostEffectInstance.transform.rotation = Quaternion.LookRotation(backward);
         }
 
         // 즉발성 부스트 활성화
         if (Input.GetKeyDown(KeyCode.LeftShift) && currentBoostEnergy >= burstBoostEnergyUsage)
         {
+            if (!boostEffectInstance.isPlaying)
+                boostEffectInstance.Play();
+            _boostEffectEmission.enabled = true;
+            boostEffectInstance.Emit(20);
+
             playerMgr.isBoosting = true;
             ball.BurstBoost();
             currentBoostEnergy -= burstBoostEnergyUsage;

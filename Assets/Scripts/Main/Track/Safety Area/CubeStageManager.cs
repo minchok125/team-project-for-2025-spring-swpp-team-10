@@ -12,13 +12,13 @@ public class CubeStageManager : MonoBehaviour
     private bool[,,] _isCubesRotating;
     private bool[,,] _isCubesDisappearing;
 
-    private static float i_interval = 70; // y
+    private static float i_interval = 50; // y
     private static float j_interval = 120; // z
     private static float k_interval = 120; // x
 
     private const float MOVE_TIME = 3f;
     private const float ROTATE_TIME = 2f;
-    private const float DISAPPEAR_TIME = 3f;
+    private const float DISAPPEAR_TIME = 3.5f;
 
     private WaitForSeconds _moveWait;
     private WaitForSeconds _rotateWait;
@@ -64,10 +64,10 @@ public class CubeStageManager : MonoBehaviour
         _disappearWait = new WaitForSeconds(DISAPPEAR_TIME + 0.5f);
 
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 5; i++)
             StartCoroutine(Move());
 
-        for (int i = 0; i < 12; i++)
+        for (int i = 0; i < 15; i++)
             StartCoroutine(Rotate());
 
         for (int i = 0; i < 12; i++)
@@ -84,7 +84,7 @@ public class CubeStageManager : MonoBehaviour
         while (true)
         {
             StartCoroutine(MoveCube());
-            yield return new WaitForSeconds(MOVE_TIME + Random.Range(0.7f, 3f));
+            yield return new WaitForSeconds(MOVE_TIME + Random.Range(0.7f, 4f));
         }
     }
 
@@ -224,7 +224,7 @@ public class CubeStageManager : MonoBehaviour
         while (true)
         {
             StartCoroutine(DisappearCube());
-            yield return new WaitForSeconds(DISAPPEAR_TIME + Random.Range(0.7f, 2.5f));
+            yield return new WaitForSeconds(DISAPPEAR_TIME + Random.Range(0.7f, 3f));
         }
     }
 

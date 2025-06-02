@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using Hampossible.Utils;
 
-public class UIManager : RuntimeSingleton<UIManager>
+public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 {
 	[Header("References")]
 	[SerializeField] private TextMeshProUGUI timerText;
@@ -35,6 +35,22 @@ public class UIManager : RuntimeSingleton<UIManager>
 
 		_storePanel.SetActive(false);
 		HLogger.Info("StorePanelController 초기화 완료");
+
+		// CheckpointManager에 옵저버로 등록
+		if (CheckpointManager.Instance != null)
+		{
+			CheckpointManager.Instance.RegisterObserver(this);
+		}
+	}
+	[SerializeField] private DialogueUIController dialogueUIController;
+
+	private void OnDestroy()
+	{
+		// UIManager가 파괴될 때 CheckpointManager에서 옵저버 등록 해제
+		if (CheckpointManager.Instance != null)
+		{
+			CheckpointManager.Instance.UnregisterObserver(this);
+		}
 	}
 
 	public void InitUIManager()
@@ -53,7 +69,27 @@ public class UIManager : RuntimeSingleton<UIManager>
 		/* Next Checkpoint UI 표시 여부를 토글할 수 있도록 지정해 둠
 		 * 키 지정은 임의로 해둔 것이므로, 추후 수정 필요
 		 */
-		if (Input.GetKeyDown(KeyCode.C)) nextCheckpointUI.ToggleDisplay();
+		if (Input.GetKeyDown(KeyCode.C))
+		{
+			if (nextCheckpointUI != null)
+			{
+				nextCheckpointUI.ToggleDisplay(); // 사용자의 UI 표시/숨김 토글
+			}
+			else
+			{
+				HLogger.General.Error("NextCheckpointUI가 할당되지 않았습니다. UIManager의 인스펙터에서 할당해주세요.");
+			}
+		}
+
+	}
+
+	// INextCheckpointObserver 인터페이스 구현 메서드
+	public void OnNextCheckpointChanged(Vector3? nextPosition)
+	{
+		if (nextCheckpointUI != null)
+		{
+			nextCheckpointUI.UpdateTargetPosition(nextPosition);
+		}
 	}
 
 	public void ResumeGame()
@@ -118,6 +154,11 @@ public class UIManager : RuntimeSingleton<UIManager>
 
 	public void UpdateNextCheckpoint(Vector3 nextCpPos)
 	{
-		nextCheckpointUI.UpdateNextCheckpoint(nextCpPos);
+		nextCheckpointUI.UpdateTargetPosition(nextCpPos);
 	}
+
+	public void DoDialogue(string fileName) { dialogueUIController.StartDialogue(fileName); }
+	public void DoDialogue(string character, string text, float lifetime) { dialogueUIController.StartDialogue(character, text, lifetime); }
+	public void DoDialogue(int idx) { dialogueUIController.StartDialogue(idx); }
+	public void ClearDialogue() { dialogueUIController.ClearDialogue(); }
 }

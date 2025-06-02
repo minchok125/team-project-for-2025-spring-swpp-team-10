@@ -17,7 +17,18 @@ public enum SfxType
     LaserPlatformDisappear,
     WireClickButtonClicked,
     SecureAreaRoom1DoorOpen,
-    GymBall
+    GymBall,
+    AutomaticDoorOpen,
+    AutomaticDoorClose,
+    LaserPush,
+    BlackDroneCrash,
+    SwitchClicked,
+    KeypadInput,
+    KeypadSuccess,
+    KeypadFail,
+    Pickup1,
+    Pickup2,
+    Pickup3
 }
 
 
@@ -72,7 +83,8 @@ public class GameManager : PersistentSingleton<GameManager>
         Application.targetFrameRate = 120;
 
         // 2. 해상도 고정 (전체화면 모드: false -> 창모드, true -> 전체화면)
-        Screen.SetResolution(1280, 720, false);
+        // Screen.SetResolution(1280, 720, false);
+        Screen.SetResolution(1920, 1080, true);
 
         // 3. VSync 끄기 (VSync가 켜져 있으면 targetFrameRate가 무시될 수 있음)
         QualitySettings.vSyncCount = 0;
