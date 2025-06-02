@@ -100,7 +100,8 @@ public class BallWireController : MonoBehaviour, IWire
     public void ShortenWire(bool isFast)
     {
         // 최소 길이에 도달했으면 더 이상 감지 않음
-        if (sj.maxDistance <= 2)
+        // 잡은 물체의 속도가 너무 빠르면 오히려 줄이 늘어남
+        if (sj.maxDistance <= 2 || rb.velocity.sqrMagnitude >= 2500 || sj.maxDistance > grabDistance + 20f)
             return;
 
         // 와이어 최소 길이 설정
