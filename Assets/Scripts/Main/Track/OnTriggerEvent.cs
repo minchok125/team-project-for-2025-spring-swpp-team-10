@@ -16,6 +16,35 @@ public class OnTriggerEvent : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
+        EnterEvent();
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (!other.CompareTag("Player"))
+            return;
+
+        ExitEvent();
+    }
+
+    void OnCollisionEnter(Collision other)
+    {
+        if (!other.collider.CompareTag("Player"))
+            return;
+
+        EnterEvent();
+    }
+
+    void OnCollisionExit(Collision other)
+    {
+        if (!other.collider.CompareTag("Player"))
+            return;
+
+        ExitEvent();
+    }
+
+    void EnterEvent()
+    {
         enterEvent?.Invoke();
 
         if (destroyAfterEvent)
@@ -25,11 +54,8 @@ public class OnTriggerEvent : MonoBehaviour
                 col.enabled = false;
     }
 
-    void OnTriggerExit(Collider other)
+    void ExitEvent()
     {
-        if (!other.CompareTag("Player"))
-            return;
-            
         exitEvent?.Invoke();
     }
 }
