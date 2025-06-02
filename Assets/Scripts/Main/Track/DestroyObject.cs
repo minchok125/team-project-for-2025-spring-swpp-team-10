@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class DestroyObject : MonoBehaviour
 {
-    [Tooltip("»èÁ¦ÇÒ ¿ÀºêÁ§Æ®µéÀ» ¼±ÅÃÇÕ´Ï´Ù. ÀÚ±â ÀÚ½ÅÀº ÀÚµ¿À¸·Î ¼±ÅÃµÇÁö ¾Ê½À´Ï´Ù.")]
+    [Header("ì˜¤ë¸Œì íŠ¸ Destroy í•¨ìˆ˜ë¥¼ ì œê³µí•©ë‹ˆë‹¤.")]
+    [Space]
+    [Tooltip("ì‚­ì œí•  ì˜¤ë¸Œì íŠ¸ë“¤ì„ ì„ íƒí•©ë‹ˆë‹¤. ìê¸° ìì‹ ì€ ìë™ìœ¼ë¡œ ì„ íƒë˜ì§€ ì•ŠìŠµë‹ˆë‹¤.")]
     [SerializeField] private GameObject[] destroyObjs;
-    [Tooltip("ÀÚ±â ÀÚ½ÅÀ» »èÁ¦ÇÑ´Ù¸é true")]
+    [Tooltip("ìê¸° ìì‹ ì„ ì‚­ì œí•œë‹¤ë©´ true")]
     [SerializeField] private bool destroyThis = true;
 
     public void OnDestroy()

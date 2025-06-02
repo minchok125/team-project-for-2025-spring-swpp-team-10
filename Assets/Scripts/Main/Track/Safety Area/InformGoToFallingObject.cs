@@ -95,6 +95,7 @@ public class InformGoToFallingObject : MonoBehaviour
             UIManager.Instance.DoDialogue("hamster", "큐브 위에 올라가서 <size=42>점프!</size>", 7f);
             HLogger.General.Info("큐브 위에 올라가서 <size=42>점프!</size>", this);
             _informedToJump = true;
+            Destroy(gameObject);
         }
     }
 

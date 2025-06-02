@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class DeleteOutline : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -9,7 +13,7 @@ public class DeleteOutline : MonoBehaviour
     {
         Invoke(nameof(RemoveOutline), 0.05f);
     }
-    
+
     private void RemoveOutline()
     {
         Renderer rd = GetComponent<Renderer>();
@@ -34,3 +38,14 @@ public class DeleteOutline : MonoBehaviour
         rd.materials = newMaterials;
     }
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(DeleteOutline))]
+public class DeleteOutlineEditor : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        EditorGUILayout.HelpBox("이 스크립트가 있는 오브젝트는 Outline이 그려지지 않습니다.", MessageType.Info);
+    }
+}
+#endif
