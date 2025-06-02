@@ -90,10 +90,8 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         var uiManager = GetComponent<UIManager>();
         _mainSceneFacade = new MainSceneFacade(uiManager);
 
-        if (IsInstanceNull())
-        {
+        //if (IsInstanceNull())
             InitMainSceneManager();
-        }
     }
 
     private void InitMainSceneManager() // 게임 처음 시작 or 게임 재시작 시 초기화 되어야 하는 내용
