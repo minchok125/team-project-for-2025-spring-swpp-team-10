@@ -1,59 +1,57 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class OpeningManager : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Camera cam0;
-    [SerializeField] private Camera cam1;
-    [SerializeField] private Camera cam2;
-    [SerializeField] private Camera cam3;
-    [SerializeField] private Camera cam4;
-    [SerializeField] private Camera cam5;
-    [SerializeField] private Camera cam6;
+    [SerializeField] private Camera logoCam;
+
+    [SerializeField] private Camera[] cutSceneCams;
     [SerializeField] private GameObject logoPanels, cutScenePanels;
-    [SerializeField] private RectTransform leftPaddingRect, rightPaddingRect, topPaddingRect, bottomPaddingRect;
 
-    [Header("Timing")]
-    [SerializeField] private float playingDuration, shrinkDuration, standUpDuration, logoHoldingDuration;
+    [Header("Logo - Timing")]
+    [SerializeField] private float playingDuration;
+    [SerializeField] private float shrinkDuration, standUpDuration;
+    [SerializeField] private float shrinkHoldingDuration, logoHoldingDuration;
 
-    [Header("Logo")]
+    [Header("Logo - Values")]
+    [SerializeField] private Transform hamster;
     [SerializeField] private Vector3 logoCamPos, logoCamRot;
     [SerializeField] private Vector3 hamsterStartPos, hamsterEndPos;
     [SerializeField] private Vector3 hamsterStartRot, hamsterEndRot;
     [SerializeField] private float leftPadding, rightPadding, topPadding, bottomPadding;
+    [SerializeField] private RectTransform leftPaddingRect, rightPaddingRect, topPaddingRect, bottomPaddingRect;
+    [SerializeField] private GameObject logo;
+
+    [Header("CutScene - Values")] 
+    [SerializeField] private GameObject[] covers;
+    [SerializeField] private Vector2[] cutSceneCamsRectPos, cutSceneCamsRectRot;
+    [SerializeField] private Vector3[] cutSceneCamsTransStartPos, cutSceneCamsTransStartRot;
+    [SerializeField] private Vector3[] cutSceneCamsTransEndPos, cutSceneCamsTransEndRot;
     
-    [Header("CutScene - Rect")]
-    [SerializeField] private Vector2 safeCutRectPos, safeCutRectSize;
-    [SerializeField] private Vector2 hamsterCutRectPos, hamsterCutRectSize;
-    [SerializeField] private Vector2 roomCutRectPos, roomCutRectSize;
-    [SerializeField] private Vector2 kitchenCutRectPos, kitchenCutRectSize;
-    [SerializeField] private Vector2 livingRoomCutRectPos, livingRoomCutRectSize;
-    [SerializeField] private Vector2 bathroomCutRectPos, bathroomCutRectSize;
-    
-    [Header("CutScene - Cam Walk")]
-    [SerializeField] private Vector3 safeCutCamStartPos, safeCutCamEndPos, safeCutCamRot;
-    [SerializeField] private Vector3 hamsterCamStartPos, hamsterCamEndPos, hamsterCamRot;
-    [SerializeField] private Vector3 roomCamStartPos, roomCamEndPos, roomCamRot;
-    [SerializeField] private Vector3 kitchenCamStartPos, kitchenCamEndPos, kitchenCamRot;
-    [SerializeField] private Vector3 livingRoomCamStartPos, livingRoomCamEndPos, livingRoomCamRot;
-    [SerializeField] private Vector3 bathroomCamStartPos, bathroomCamEndPos, bathroomCamRot;
+    [Header("CutScene - Timing")]
+    [SerializeField] private float beforeCutsceneDuration;
+    [SerializeField] private float[] cutSceneDuration;
+    [SerializeField] private float[] cutSceneHoldingDuration, cutSceneCamWalkDuration;
 
 
-    private float _maxHeight = 1100f;
-    private float _maxWidth = 1940f;
+    private readonly float _maxHeight = 1100f;
+    private readonly float _maxWidth = 1940f;
     
     private void Awake()
     {
-        cam0.enabled = false;
-        cam1.enabled = false;
-        cam2.enabled = false;
-        cam3.enabled = false;
-        cam5.enabled = false;
-        cam4.enabled = false;
-        cam6.enabled = false;
+        logoCam.enabled = false;
+
+        for (int i = 0; i < cutSceneCams.Length; i++)
+        {
+            cutSceneCams[i].enabled = false;
+            cutSceneCams[i].rect = new Rect(cutSceneCamsRectPos[i], cutSceneCamsRectRot[i]);
+            cutSceneCams[i].transform.position = cutSceneCamsTransStartPos[i];
+            cutSceneCams[i].transform.rotation = Quaternion.Euler(cutSceneCamsTransStartRot[i]);
+        }
         
         logoPanels.SetActive(false);
         cutScenePanels.SetActive(false);
@@ -61,44 +59,36 @@ public class OpeningManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(LogoCoroutine());
+        hamster.position = hamsterStartPos;
+        hamster.rotation = Quaternion.Euler(hamsterStartRot);
+        StartCoroutine(OpeningCoroutine());
     }
 
     public IEnumerator OpeningCoroutine()
     {
         yield return LogoCoroutine();
+        yield return CutSceneCoroutine();
     }
 
     public void DebugCamRect()
     {
-        cam1.rect = new Rect(safeCutRectPos, safeCutRectSize);
-        cam2.rect = new Rect(hamsterCutRectPos, hamsterCutRectSize);
-        cam3.rect = new Rect(roomCutRectPos, roomCutRectSize);
-        cam4.rect = new Rect(kitchenCutRectPos, kitchenCutRectSize);
-        cam5.rect = new Rect(livingRoomCutRectPos, livingRoomCutRectSize);
-        cam6.rect = new Rect(bathroomCutRectPos, bathroomCutRectSize);
-        
-        cam1.transform.position = safeCutCamStartPos;
-        cam2.transform.position = hamsterCamStartPos;
-        cam3.transform.position = roomCamStartPos;
-        cam4.transform.position = kitchenCamStartPos;
-        cam5.transform.position = livingRoomCamStartPos;
-        cam6.transform.position = bathroomCamStartPos;
-        
-        cam1.transform.rotation = Quaternion.Euler(safeCutCamRot);
-        cam2.transform.rotation = Quaternion.Euler(hamsterCamRot);
-        cam3.transform.rotation = Quaternion.Euler(roomCamRot);
-        cam4.transform.rotation = Quaternion.Euler(kitchenCamRot);
-        cam5.transform.rotation = Quaternion.Euler(livingRoomCamRot);
-        cam6.transform.rotation = Quaternion.Euler(bathroomCamRot);
+        for (int i = 0; i < cutSceneCams.Length; i++)
+        {
+            cutSceneCams[i].enabled = false;
+            cutSceneCams[i].rect = new Rect(cutSceneCamsRectPos[i], cutSceneCamsRectRot[i]);
+            cutSceneCams[i].transform.position = cutSceneCamsTransStartPos[i];
+            cutSceneCams[i].transform.rotation = Quaternion.Euler(cutSceneCamsTransStartRot[i]);
+        }
     }
 
 
     private IEnumerator LogoCoroutine()
     {
-        cam0.transform.position = logoCamPos;
-        cam0.transform.rotation = Quaternion.Euler(logoCamRot);
-        cam0.enabled = true;
+        logoCam.transform.position = logoCamPos;
+        logoCam.transform.rotation = Quaternion.Euler(logoCamRot);
+        logoCam.enabled = true;
+        
+        logo.SetActive(false);
         
         logoPanels.SetActive(true);
         
@@ -108,13 +98,14 @@ public class OpeningManager : MonoBehaviour
         bottomPaddingRect.sizeDelta = Vector2.zero;
         
         
-        
         // yield return new WaitForSeconds(playingDuration);
 
         yield return ShrinkingCoroutine();
+        yield return new WaitForSeconds(shrinkHoldingDuration);
+        yield return LogoHoldingCoroutine();
         
         
-        cam0.enabled = false;
+        logoCam.enabled = false;
         logoPanels.SetActive(false);
     }
 
@@ -135,6 +126,39 @@ public class OpeningManager : MonoBehaviour
             bottomPaddingRect.sizeDelta = Vector2.Lerp(maxWidthSize, bottomPaddingSize, elapsed / shrinkDuration);
             topPaddingRect.sizeDelta = Vector2.Lerp(maxWidthSize, topPaddingSize, elapsed / shrinkDuration);
             yield return null;
+        }
+    }
+
+    private IEnumerator LogoHoldingCoroutine()
+    {
+        hamster.DOMove(hamsterEndPos, standUpDuration);
+        hamster.DORotate(hamsterEndRot, standUpDuration);
+        logo.SetActive(true);
+        yield return new WaitForSeconds(logoHoldingDuration);
+    }
+
+    private IEnumerator CutSceneCoroutine()
+    {
+        foreach(GameObject cover in covers)
+            cover.SetActive(true);
+        
+        foreach(Camera cam in cutSceneCams)
+            cam.enabled = true;
+        
+        cutScenePanels.SetActive(true);
+        
+        yield return new WaitForSeconds(beforeCutsceneDuration);
+
+        for (int i = 0; i < covers.Length; i++)
+        {
+            covers[i].SetActive(false);
+            if (i < cutSceneCams.Length)
+            {
+                yield return new WaitForSeconds(cutSceneHoldingDuration[i]);
+                cutSceneCams[i].transform.DOMove(cutSceneCamsTransEndPos[i], cutSceneCamWalkDuration[i]);
+                cutSceneCams[i].transform.DORotate(cutSceneCamsTransEndRot[i], cutSceneCamWalkDuration[i]);
+            }
+            yield return new WaitForSeconds(cutSceneDuration[i]);
         }
     }
 }
