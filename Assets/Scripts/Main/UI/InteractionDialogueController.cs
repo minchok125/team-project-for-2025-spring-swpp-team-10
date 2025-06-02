@@ -54,6 +54,7 @@ public class InteractionDialogueController : MonoBehaviour
     private bool _canInteract = true;
 
 
+
     private void Start()
     {
         if (useVirtualCamera)
@@ -258,7 +259,7 @@ class TriggerEnterDialogueControllerEditor : Editor
             EditorGUILayout.PropertyField(cameraShotTimeProp);
             EditorGUILayout.PropertyField(isFollowPlayerProp);
         }
-
+        
         EditorGUILayout.PropertyField(dialogueEnableStartCheckpointProp);
         EditorGUILayout.PropertyField(dialogueEnableEndCheckpointProp);
 
