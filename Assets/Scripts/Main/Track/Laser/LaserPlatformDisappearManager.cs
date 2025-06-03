@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Rendering;
+using Hampossible.Utils;
 
 public class LaserPlatformDisappearManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     [Header("오브젝트의 머티리얼은 Dithering Material로 해주세요")]
     [SerializeField] private GameObject[] disappearObjects;
 
+    private List<LaserPlatformDisappearGetAlpha> _disappearAlpha; // DrawOutline과 연계하기 위한 정보
     private List<Renderer> _disappearRenderers; // 디더링 효과를 내는 오브젝트의 렌더러 모음
     private List<Color> _ditheringMatColors; // 디더링 효과를 내는 머티리얼의 각 색상
     private MaterialPropertyBlock _outlineFillMpb; // 외곽선 머티리얼 (같은 머티리얼 공유)
@@ -39,6 +41,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
 
     private void Init()
     {
+        _disappearAlpha = new List<LaserPlatformDisappearGetAlpha>();
         _disappearRenderers = new List<Renderer>();
         _ditheringMatColors = new List<Color>();
         _outlineFillMpb = new MaterialPropertyBlock();
@@ -47,8 +50,13 @@ public class LaserPlatformDisappearManager : MonoBehaviour
         _disappearCols = new List<Collider>();
         _resetPositionObjs = new List<LaserPositionReset>();
 
-        foreach (GameObject obj in disappearObjects)
+        for (int i = 0; i < disappearObjects.Length; i++)
         {
+            GameObject obj = disappearObjects[i];
+
+            if (obj.TryGetComponent(out LaserPlatformDisappearGetAlpha getAlpha))
+                _disappearAlpha.Add(getAlpha);
+
             Renderer rd = obj.GetComponent<Renderer>();
             _disappearRenderers.Add(rd);
 
@@ -73,7 +81,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
                 _resetPositionObjs.Add(lpr);
         }
 
-        SetAlpha(1);
+        //SetAlpha(1);
     }
 
     public void PlatformDisappear()
@@ -108,10 +116,15 @@ public class LaserPlatformDisappearManager : MonoBehaviour
         {
             if (obj.TryGetComponent(out DrawOutline draw))
                 draw.dontDrawHightlightOutline = true;
+            obj.GetComponent<Outline>().AddMaterial();
         }
         foreach (LaserPositionReset lpr in _resetPositionObjs)
         {
             lpr.ResetPosition();
+        }
+        foreach (LaserPlatformDisappearGetAlpha lpdg in _disappearAlpha)
+        {
+            lpdg.isDisappearing = true;
         }
     }
 
@@ -124,6 +137,11 @@ public class LaserPlatformDisappearManager : MonoBehaviour
         {
             if (obj.TryGetComponent(out DrawOutline draw))
                 draw.dontDrawHightlightOutline = false;
+            obj.GetComponent<Outline>().RemoveMaterial();
+        }
+        foreach (LaserPlatformDisappearGetAlpha lpdg in _disappearAlpha)
+        {
+            lpdg.isDisappearing = false;
         }
     }
 
@@ -183,8 +201,15 @@ public class LaserPlatformDisappearManager : MonoBehaviour
 
             mpb.SetColor(k_BaseColorID, color);
             _disappearRenderers[i].SetPropertyBlock(mpb, 0);
-            _disappearRenderers[i].SetPropertyBlock(_outlineFillMpb, _outlineFillIdxes[i]);
+
+            if (_disappearRenderers[i].materials.Length > _outlineFillIdxes[i])
+                _disappearRenderers[i].SetPropertyBlock(_outlineFillMpb, _outlineFillIdxes[i]);
+            else
+                HLogger.General.Warning("렌더러의 머티리얼에 _outlineFillIdxes[i] 인덱스가 없습니다.", _disappearRenderers[i]);
         }
+        
+        for (int i = 0; i < _disappearAlpha.Count; i++)
+            _disappearAlpha[i].alpha = a;
     }
 
     // 콜라이더들의 enabled를 active로 설정

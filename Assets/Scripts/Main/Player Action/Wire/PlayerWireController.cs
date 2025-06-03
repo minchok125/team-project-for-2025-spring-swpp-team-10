@@ -69,6 +69,7 @@ public class PlayerWireController : MonoBehaviour
         InitializeComponents();
         InitializeHitPoints();
         InitializeWireControlStates();
+        ForceEndShootIfNoInput();
     }
 
     private void Update()
@@ -395,9 +396,17 @@ public class PlayerWireController : MonoBehaviour
 
         grabObject = null;
     }
+
+    // 가끔 EndShoot가 호출이 안 되어서 Spring Joint가 남아있는 것 같아 5초마다 주기적으로 검사하고 호출합니다.
+    private void ForceEndShootIfNoInput()
+    {
+        if (!Input.GetMouseButton(0))
+            EndShoot();
+        Invoke(nameof(ForceEndShootIfNoInput), 5f);
+    }
     #endregion
 
-    
+
 
     #region Retractor Functions
     /// <summary>

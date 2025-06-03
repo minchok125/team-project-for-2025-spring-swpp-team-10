@@ -51,7 +51,8 @@ public class BlinkNewController : MonoBehaviour
             if (outlineFillIdx == -1)
             {
                 outlineFillIdxes.Add(rd.materials.Length + 1);
-                rd.gameObject.AddComponent<Outline>();
+                if (rd.gameObject.GetComponent<Outline>() == null)
+                    rd.gameObject.AddComponent<Outline>();
             }
             else
             {
@@ -67,13 +68,16 @@ public class BlinkNewController : MonoBehaviour
         _ditheringMatColors = ditheringMatColors.ToArray();
         _outlineFillIdxes = outlineFillIdxes.ToArray();
 
-        SetAlpha(1);
+        // SetAlpha(1);
     }
 
 
     // 오브젝트가 사라지고 외곽선만 남는 시퀀스
     public void FadeOut(float fadeOutDuration)
     {
+        for (int i = 0; i < _disappearRenderers.Length; i++)
+            _disappearRenderers[i].GetComponent<Outline>().AddMaterial();
+
         _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
         _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
         if (_drawOutline == null)
@@ -122,7 +126,11 @@ public class BlinkNewController : MonoBehaviour
             _drawOutline = GetComponent<DrawOutline>();
         _drawOutline.dontDrawHightlightOutline = false;
         isDisappearing = false;
+
+        for (int i = 0; i < _disappearRenderers.Length; i++)
+            _disappearRenderers[i].GetComponent<Outline>().RemoveMaterial();
     }
+
 
 
     /// 오브젝트 본체의 투명도를 a로 설정
@@ -143,7 +151,9 @@ public class BlinkNewController : MonoBehaviour
 
             mpb.SetColor(k_BaseColorID, color);
             _disappearRenderers[i].SetPropertyBlock(mpb, 0);
-            _disappearRenderers[i].SetPropertyBlock(_outlineFillMpb, _outlineFillIdxes[i]);
+
+            if (_disappearRenderers[i].sharedMaterials.Length > _outlineFillIdxes[i])
+                _disappearRenderers[i].SetPropertyBlock(_outlineFillMpb, _outlineFillIdxes[i]);
         }
     }
 
