@@ -46,7 +46,8 @@ public class ObjectProperties : MonoBehaviour
         {
             gameObject.layer = LayerMask.NameToLayer("Attachable");
 
-            if (!HasOutlineInParents() && !TryGetComponent(out Outline outline))
+            //if (!HasOutlineInParents() && !TryGetComponent(out Outline outline))
+            if (!TryGetComponent(out Outline outline))
                 gameObject.AddComponent<Outline>();
             if (!TryGetComponent(out DrawOutline drawOutline))
                 gameObject.AddComponent<DrawOutline>();

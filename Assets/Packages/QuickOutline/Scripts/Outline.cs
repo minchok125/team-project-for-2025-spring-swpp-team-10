@@ -75,6 +75,7 @@ public class Outline : MonoBehaviour {
   private List<ListVector3> bakeValues = new List<ListVector3>();
 
   private Renderer[] renderers;
+  private int[] renderersMaterialCount;
   private Material outlineMaskMaterial;
   private Material outlineFillMaterial;
 
@@ -83,10 +84,18 @@ public class Outline : MonoBehaviour {
   void Awake() {
 
     // Cache renderers
-    renderers = GetComponentsInChildren<Renderer>();
+    List<Renderer> renderersList = GetComponentsInChildren<Renderer>().ToList();
+    for (int i = renderersList.Count - 1; i >= 0; i--)
+      if (renderersList[i].TryGetComponent(out DeleteOutline delete))
+        renderersList.RemoveAt(i);
+    renderers = renderersList.ToArray();
+
+    renderersMaterialCount = new int[renderers.Length];
+    for (int i = 0; i < renderers.Length; i++)
+      renderersMaterialCount[i] = renderers[i].sharedMaterials.Length;
 
     // Instantiate outline materials
-    outlineMaskMaterial = Instantiate(Resources.Load<Material>(@"Materials/OutlineMask"));
+      outlineMaskMaterial = Instantiate(Resources.Load<Material>(@"Materials/OutlineMask"));
     outlineFillMaterial = Instantiate(Resources.Load<Material>(@"Materials/OutlineFill"));
 
     outlineMaskMaterial.name = "OutlineMask (Instance)";
@@ -102,25 +111,12 @@ public class Outline : MonoBehaviour {
   private bool _isOutlineAdded = false;
 
   void OnEnable() {
-    if (_isOutlineAdded)
-    {
-      Debug.Log("zzz", this);
-      return;
-    }
+    // if (_isOutlineAdded)
+    //   return;
 
-    _isOutlineAdded = true;
+    // _isOutlineAdded = true;
 
-    foreach (var renderer in renderers)
-    {
-
-      // Append outline shaders
-      var materials = renderer.sharedMaterials.ToList();
-
-      materials.Add(outlineMaskMaterial);
-      materials.Add(outlineFillMaterial);
-
-      renderer.materials = materials.ToArray();
-    }
+    
   }
 
   void OnValidate() {
@@ -149,16 +145,23 @@ public class Outline : MonoBehaviour {
   }
 
   void OnDisable() {
-    foreach (var renderer in renderers) {
+    for (int i = 0; i < renderers.Length; i++)
+    {
+      var renderer = renderers[i];
 
       // Remove outline shaders
       if (renderer == null)
         continue;
-      
+
       var materials = renderer.sharedMaterials.ToList();
 
-      materials.Remove(outlineMaskMaterial);
-      materials.Remove(outlineFillMaterial);
+      // materials.Remove(outlineMaskMaterial);
+      // materials.Remove(outlineFillMaterial);
+      if (renderer.sharedMaterials.Length > renderersMaterialCount[i])
+      {
+        materials.RemoveAt(materials.Count - 1);
+        materials.RemoveAt(materials.Count - 1);
+      }
 
       renderer.materials = materials.ToArray();
     }
@@ -169,6 +172,30 @@ public class Outline : MonoBehaviour {
     // Destroy material instances
     Destroy(outlineMaskMaterial);
     Destroy(outlineFillMaterial);
+  }
+
+  public void RemoveMaterial()
+  {
+    OnDisable();
+  }
+
+  public void AddMaterial()
+  {
+    for (int i = 0; i < renderers.Length; i++)
+    {
+      var renderer = renderers[i];
+
+      if (renderer == null || renderer.sharedMaterials.Length > renderersMaterialCount[i])
+        continue;
+
+      // Append outline shaders
+      var materials = renderer.sharedMaterials.ToList();
+
+      materials.Add(outlineMaskMaterial);
+      materials.Add(outlineFillMaterial);
+
+      renderer.materials = materials.ToArray();
+    }
   }
 
   void Bake() {

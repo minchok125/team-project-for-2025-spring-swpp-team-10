@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Hampossible.Utils;
 
 public class SafeBoxKeypadController : MonoBehaviour
 {
@@ -67,6 +68,8 @@ public class SafeBoxKeypadController : MonoBehaviour
         GameManager.PlaySfx(SfxType.KeypadSuccess);
         safeObjProp.canGrabInHamsterMode = true;
         MainSceneManager.Instance.isSafeBoxOpened = true;
+        UIManager.Instance.DoDialogue("hamster", "금고 안의 <b>문서</b>를 가져가자", 4f);
+        HLogger.General.Info("금고 안의 <b>문서</b>를 가져가자", this);
         useHamsterWireInformer.SetActive(false);
         passwordUI.SetActive(false);
     }
