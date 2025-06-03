@@ -45,7 +45,7 @@ public class ModeConverterController : MonoBehaviour
     /// </summary>
     private void Convert()
     {
-        if (PlayerManager.Instance.isBall) 
+        if (!PlayerManager.Instance.isBall) 
         {
             // 공 모드에서 햄스터 모드로 전환
             HamsterSetActive(true);          // 햄스터 모델 활성화
@@ -77,9 +77,6 @@ public class ModeConverterController : MonoBehaviour
             rb.constraints &= ~RigidbodyConstraints.FreezeRotationY;
             rb.constraints &= ~RigidbodyConstraints.FreezeRotationZ;
         }
-
-        // 상태 토글
-        PlayerManager.Instance.isBall = !PlayerManager.Instance.isBall;
     }
 
     /// <summary>
