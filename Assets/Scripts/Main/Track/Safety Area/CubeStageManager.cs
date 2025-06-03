@@ -24,11 +24,20 @@ public class CubeStageManager : MonoBehaviour
     private WaitForSeconds _rotateWait;
     private WaitForSeconds _disappearWait;
 
+    private Transform _player;
+    private const float MINX = -309f;
+    private const float MAXX = 356f;
+    private const float MINY = -660f;
+    private const float MAXY = 0f;
+    private const float MINZ = -21f;
+    private const float MAXZ = 921f;
 
     public GameObject[] cubeObjs;
 
     private void OnEnable()
     {
+        _player = PlayerManager.Instance.transform;
+
         cubeObjs = new GameObject[64];
         for (int i = 0; i < 4; i++)
         {
@@ -223,9 +232,19 @@ public class CubeStageManager : MonoBehaviour
         yield return new WaitForSeconds(Random.Range(0f, 1f));
         while (true)
         {
-            StartCoroutine(DisappearCube());
+            if (IsPlayerInRange())
+                StartCoroutine(DisappearCube());
             yield return new WaitForSeconds(DISAPPEAR_TIME + Random.Range(0.7f, 3f));
         }
+    }
+
+    private bool IsPlayerInRange()
+    {
+        Vector3 relativePlayerPosition = _player.position - this.transform.position;
+        bool isInRangeX = (relativePlayerPosition.x >= MINX && relativePlayerPosition.x <= MAXX);
+        bool isInRangeY = (relativePlayerPosition.y >= MINY && relativePlayerPosition.y <= MAXY);
+        bool isInRangeZ = (relativePlayerPosition.z >= MINZ && relativePlayerPosition.z <= MAXZ);
+        return isInRangeX && isInRangeY && isInRangeZ;
     }
 
     IEnumerator DisappearCube()

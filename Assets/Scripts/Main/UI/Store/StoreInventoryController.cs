@@ -27,11 +27,13 @@ public class StoreInventoryController : MonoBehaviour
     {
         ClearGrid();
 
-#if UNITY_EDITOR
-        List<Item> inventory = mockInventory ?? new List<Item>();
-#else
+// #if UNITY_EDITOR
+//         List<Item> inventory = mockInventory ?? new List<Item>();
+// #else
+//         List<Item> inventory = ItemManager.Instance.GetInventory();
+// #endif
+
         List<Item> inventory = ItemManager.Instance.GetStandItems();
-#endif
 
         foreach (var item in inventory)
         {

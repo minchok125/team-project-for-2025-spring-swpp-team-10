@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -59,19 +58,18 @@ public class DrawOutline : MonoBehaviour
         if (_linkedOutlineRenderers == null)
             _linkedOutlineRenderers = new Renderer[0];
 
+        _linkedOutlineRenderers = (_linkedOutlineRenderers ?? Enumerable.Empty<Renderer>()).
+                        Concat(childRenderers.ToArray() ?? Enumerable.Empty<Renderer>()).ToArray();
+
         // 등록된 오브젝트들에 Outline 머티리얼이 없다면 Outline 머티리얼 추가
-        // 자식 렌더러는 제외 (부모에 Outline이 있으면 자동으로 추가됨)
         for (int i = 0; i < _linkedOutlineRenderers.Length; i++)
         {
-            if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline)
-                && !childRenderers.Contains(_linkedOutlineRenderers[i]))
+            if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline))
             {
                 _linkedOutlineRenderers[i].gameObject.AddComponent<Outline>();
             }
         }
 
-        _linkedOutlineRenderers = (_linkedOutlineRenderers ?? Enumerable.Empty<Renderer>()).
-                        Concat(childRenderers.ToArray() ?? Enumerable.Empty<Renderer>()).ToArray();
 
         List<Outline> outlines = new List<Outline>();
         for (int i = 0; i < _linkedOutlineRenderers.Length; i++)
