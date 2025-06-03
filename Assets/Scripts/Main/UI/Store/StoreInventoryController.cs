@@ -30,7 +30,7 @@ public class StoreInventoryController : MonoBehaviour
 #if UNITY_EDITOR
         List<Item> inventory = mockInventory ?? new List<Item>();
 #else
-        List<Item> inventory = ItemManager.Instance.GetInventory();
+        List<Item> inventory = ItemManager.Instance.GetStandItems();
 #endif
 
         foreach (var item in inventory)
