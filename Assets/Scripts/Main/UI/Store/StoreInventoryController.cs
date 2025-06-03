@@ -33,7 +33,7 @@ public class StoreInventoryController : MonoBehaviour
 //         List<Item> inventory = ItemManager.Instance.GetInventory();
 // #endif
 
-        List<Item> inventory = mockInventory ?? new List<Item>();
+        List<Item> inventory = ItemManager.Instance.GetStandItems();
 
         foreach (var item in inventory)
         {
