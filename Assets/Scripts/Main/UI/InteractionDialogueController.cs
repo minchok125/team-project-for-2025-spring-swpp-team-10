@@ -35,7 +35,8 @@ public class InteractionDialogueController : MonoBehaviour
     [SerializeField] private int index;
 
     [Header("카메라 연출 설정")]
-    [Tooltip("트리거 입장 시 대사와 함께 VirtualCamera 연출을 사용할 것인지 여부")]
+    [Tooltip("트리거 입장 시 대사와 함께 VirtualCamera 연출을 사용할 것인지 여부\n"+
+            "public void DoDialogue()로 호출해도 카메라 연출이 실행됩니다.")]
     [SerializeField] private bool useVirtualCamera;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [Tooltip("카메라를 비추는 시간")]
@@ -43,7 +44,16 @@ public class InteractionDialogueController : MonoBehaviour
     [Tooltip("가상 카메라가 플레이어를 따라가도록 할지 여부를 결정합니다. (Follow를 자동으로 플레이어로 설정해줍니다.)")]
     [SerializeField] private bool isFollowPlayer = false;
 
+
+    public enum CheckpointIndex { GameStart, Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, GameEnd }
+    [Header("대사 출력 체크포인트 범위")]
+    [Tooltip("플레이어가 콜라이더나 트리거에 진입했을 때, 현재 체크포인트 인덱스가 이 값 이상이면 대사를 출력합니다.")]
+    [SerializeField] private CheckpointIndex dialogueEnableStartCheckpoint = CheckpointIndex.GameStart;
+    [Tooltip("플레이어가 콜라이더나 트리거에 진입했을 때, 현재 체크포인트 인덱스가 이 값을 초과하면 대사를 출력하지 않습니다.")]
+    [SerializeField] private CheckpointIndex dialogueEnableEndCheckpoint = CheckpointIndex.GameEnd;
+
     private bool _canInteract = true;
+
 
 
     private void Start()
@@ -63,7 +73,7 @@ public class InteractionDialogueController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!dialogueOnTriggerOrCollier || !isTrigger || !_canInteract || !other.CompareTag("Player"))
+        if (!isTrigger || !CanDoDialogue() ||!other.CompareTag("Player"))
             return;
 
         DoDialogue();
@@ -72,11 +82,18 @@ public class InteractionDialogueController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!dialogueOnTriggerOrCollier || isTrigger || !_canInteract || !collision.collider.CompareTag("Player"))
+        if (isTrigger || !CanDoDialogue() || !collision.collider.CompareTag("Player"))
             return;
 
         DoDialogue();
         DoDelete();
+    }
+
+    private bool CanDoDialogue()
+    {
+        return dialogueOnTriggerOrCollier && _canInteract
+            && (int)dialogueEnableStartCheckpoint - 1 <= CheckpointManager.Instance.GetCurrentCheckpointIndex()
+            && CheckpointManager.Instance.GetCurrentCheckpointIndex() <= (int)dialogueEnableStartCheckpoint - 1;
     }
 
     // 대사 출력 함수
@@ -181,6 +198,8 @@ class TriggerEnterDialogueControllerEditor : Editor
     SerializedProperty virtualCameraProp;
     SerializedProperty cameraShotTimeProp;
     SerializedProperty isFollowPlayerProp;
+    SerializedProperty dialogueEnableStartCheckpointProp;
+    SerializedProperty dialogueEnableEndCheckpointProp;
 
 
     private void OnEnable()
@@ -200,6 +219,8 @@ class TriggerEnterDialogueControllerEditor : Editor
         virtualCameraProp = serializedObject.FindProperty("virtualCamera");
         cameraShotTimeProp = serializedObject.FindProperty("cameraShotTime");
         isFollowPlayerProp = serializedObject.FindProperty("isFollowPlayer");
+        dialogueEnableStartCheckpointProp = serializedObject.FindProperty("dialogueEnableStartCheckpoint");
+        dialogueEnableEndCheckpointProp = serializedObject.FindProperty("dialogueEnableEndCheckpoint");
     }
 
     public override void OnInspectorGUI()
@@ -242,6 +263,9 @@ class TriggerEnterDialogueControllerEditor : Editor
             EditorGUILayout.PropertyField(cameraShotTimeProp);
             EditorGUILayout.PropertyField(isFollowPlayerProp);
         }
+        
+        EditorGUILayout.PropertyField(dialogueEnableStartCheckpointProp);
+        EditorGUILayout.PropertyField(dialogueEnableEndCheckpointProp);
 
         serializedObject.ApplyModifiedProperties();
     }
