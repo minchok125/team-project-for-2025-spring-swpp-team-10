@@ -418,6 +418,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// </summary>
     public void ModeConvert()
     {
+        isBall = !isBall;
         _modeConvert?.Invoke();
     }
 
