@@ -28,7 +28,10 @@ public enum SfxType
     KeypadFail,
     Pickup1,
     Pickup2,
-    Pickup3
+    Pickup3,
+    OpeningLogoSfx1,
+    OpeningLogoSfx2,
+    OpeningLogoSfx3,
 }
 
 

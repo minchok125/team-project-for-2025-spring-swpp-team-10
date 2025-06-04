@@ -2,15 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 
 public class OpeningManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Camera logoCam;
-
     [SerializeField] private Camera[] cutSceneCams;
     [SerializeField] private GameObject logoPanels, cutScenePanels;
+    [SerializeField] private TextMeshProUGUI subtitleText;
 
     [Header("Logo - Timing")]
     [SerializeField] private float playingDuration;
@@ -34,9 +35,22 @@ public class OpeningManager : MonoBehaviour
     
     [Header("CutScene - Timing")]
     [SerializeField] private float beforeCutsceneDuration;
+    [SerializeField] private float afterCutsceneDuration;
     [SerializeField] private float[] cutSceneDuration;
     [SerializeField] private float[] cutSceneHoldingDuration, cutSceneCamWalkDuration;
 
+    private string[] _subtitles = new []
+    {
+        "아-아-... 잘 들리나?",
+        "당신이 위치한 집 안의 깊숙한 곳에는\n금고가 위치해 있다.",
+        "이 금고 속 비밀문서 탈취를 위해 요원 햄스터,\n바로 당신이 투입된 것이다.",
+        "장난감 햄스터로 위장한 만큼\n작은 몸집으로 인해 이동에 제약이 생길 것이다.\n집안의 여러 물건들을 활용해 행동할 것.",
+        "단, 모든 물건들이 도움만을 주는 것은 아니니\n주의하도록.",
+        "또한, 체크포인트에 도달하면\n아이템을 얻을 수 있다.",
+        "필요한 아이템을 골라 미션 수행에\n도움을 받도록.",
+        "최대한 빠른 시간 안에 완수하지 않으면\n어떤 일이 발생할지 모르니 주의하도록.",
+        "그럼, 준비됐나?"
+    };
 
     private readonly float _maxHeight = 1100f;
     private readonly float _maxWidth = 1940f;
@@ -134,11 +148,16 @@ public class OpeningManager : MonoBehaviour
         hamster.DOMove(hamsterEndPos, standUpDuration);
         hamster.DORotate(hamsterEndRot, standUpDuration);
         logo.SetActive(true);
+        // GameManager.PlaySfx(SfxType.OpeningLogoSfx1);
+        GameManager.PlaySfx(SfxType.OpeningLogoSfx2);
+        // GameManager.PlaySfx(SfxType.OpeningLogoSfx3);
         yield return new WaitForSeconds(logoHoldingDuration);
     }
 
     private IEnumerator CutSceneCoroutine()
     {
+        GameManager.PlayBgm(0);
+        
         foreach(GameObject cover in covers)
             cover.SetActive(true);
         
@@ -146,7 +165,8 @@ public class OpeningManager : MonoBehaviour
             cam.enabled = true;
         
         cutScenePanels.SetActive(true);
-        
+
+        subtitleText.text = _subtitles[0];
         yield return new WaitForSeconds(beforeCutsceneDuration);
 
         for (int i = 0; i < covers.Length; i++)
@@ -154,11 +174,15 @@ public class OpeningManager : MonoBehaviour
             covers[i].SetActive(false);
             if (i < cutSceneCams.Length)
             {
+                subtitleText.text = _subtitles[i+1];
                 yield return new WaitForSeconds(cutSceneHoldingDuration[i]);
                 cutSceneCams[i].transform.DOMove(cutSceneCamsTransEndPos[i], cutSceneCamWalkDuration[i]);
                 cutSceneCams[i].transform.DORotate(cutSceneCamsTransEndRot[i], cutSceneCamWalkDuration[i]);
             }
             yield return new WaitForSeconds(cutSceneDuration[i]);
         }
+        
+        subtitleText.text = _subtitles[8];
+        yield return new WaitForSeconds(afterCutsceneDuration);
     }
 }
