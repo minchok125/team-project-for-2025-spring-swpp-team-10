@@ -13,14 +13,14 @@ public class LaserController : MonoBehaviour
     /// <summary>
     /// 레이저의 검출 기능 활성화 여부
     /// </summary>
-    public bool isLaserActive = true; 
+    public bool isLaserActive = true;
 
-    public enum LaserType { LightningShock, PlatformDisappear }
+    public enum LaserType { LightningShock, PlatformDisappear, None }
     [Tooltip("플레이어와 레이저가 닿았을 때 이벤트 타입\n"
            + "LightningShock : 3초간 플레이어 움직임 정지\n"
            + "PlatformDisappear : 정해진 플랫폼들이 일정 시간 동안 사라짐")]
-    [SerializeField] private LaserType laserType;
-    [SerializeField] private LaserPlatformDisappearManager platformDisappearMgr;
+    [SerializeField] private LaserType _laserType;
+    [SerializeField] private LaserPlatformDisappearManager _platformDisappearMgr;
 
 
     [Header("Optimization")]
@@ -28,7 +28,11 @@ public class LaserController : MonoBehaviour
     [SerializeField] private bool visulaizeLine = true;
     [Header("*씬뷰의 빨간선 조절*")]
     [Tooltip("레이저 중심점과 플레이어 사이의 거리가 일정 거리 이하일 때 감지 시작")]
-    [SerializeField] public float detectPointDist = 300; 
+    [SerializeField] public float detectPointDist = 300;
+    [Tooltip("플레이어가 멀리 있을 때 레이저의 길이를 특정 길이로 설정할지 여부")]
+    [SerializeField] private bool setDistWhenPlayerFar = false;
+    [Tooltip("플레이어가 멀리 있을 때 설정될 레이저의 길이")]
+    [SerializeField] private float distWhenPlayerFar = 0f;
     // LaserControllerEditor에서 접근하기 위해 public 설정
     [Header("*씬뷰의 초록선 조절*")]
     [Tooltip("레이저 선분과 플레이어 사이의 거리가 일정 거리 이하일 때 감지 시작")]
@@ -44,43 +48,48 @@ public class LaserController : MonoBehaviour
     [Tooltip("레이저 자체가 움직이는 경우 true")]
     [SerializeField] private bool isLaserMoving;
 
+    [Tooltip("연동할 레이저포가 있다면 연결. 없으면 null로 유지")]
+    [SerializeField] private LaserShootController laserShoot;
+
 
     private const float OFFSET_FROM_HIT = 1.2f;
-    private Vector3 playerPosition;
-    private Vector3 laserOrigin; // 레이저 시작 지점 월드좌표
-    private Vector3 laserMaxPoint; // 레이저 길이가 laserMaxDist일 때의 끝 지점 월드좌표
-    private Vector3 laserCenter; // 레이저 길이가 laserMaxDist일 때의 중심 지점 월드좌표
-    
+    private Vector3 _playerPosition;
+    private Vector3 _laserOrigin; // 레이저 시작 지점 월드좌표
+    private Vector3 _laserMaxPoint; // 레이저 길이가 laserMaxDist일 때의 끝 지점 월드좌표
+    private Vector3 _laserCenter; // 레이저 길이가 laserMaxDist일 때의 중심 지점 월드좌표
 
-    private ParticleSystem laserHitParticle;
-    private VolumetricLineBehavior laserLineBehavior;
-    private Renderer myRenderer;
-    private Color laserColor;
-    private RaycastHit hit;
-    private Transform player;
 
-    
+    private ParticleSystem _laserHitParticle;
+    private VolumetricLineBehavior _laserLineBehavior;
+    private Renderer _myRenderer;
+    private Color _laserColor;
+    private RaycastHit _hit;
+    private Transform _player;
+    private LayerMask _layerMask;
+
+
 
 
     private void Start()
     {
-        ValidateCheck();
+        int laserDetectLayer = 1 << LayerMask.NameToLayer("LaserDetect");
+        _layerMask = ~laserDetectLayer;
 
-        laserHitParticle = GetComponentInChildren<ParticleSystem>();
+        _laserHitParticle = GetComponentInChildren<ParticleSystem>();
         ParticleStop();
 
-        laserLineBehavior = GetComponent<VolumetricLineBehavior>();
-        laserLineBehavior.StartPos = Vector3.zero;
+        _laserLineBehavior = GetComponent<VolumetricLineBehavior>();
+        _laserLineBehavior.StartPos = Vector3.zero;
 
-        myRenderer = GetComponent<Renderer>();
-        laserColor = myRenderer.material.color;
-        player = PlayerManager.Instance.transform;
+        _myRenderer = GetComponent<Renderer>();
+        _laserColor = _myRenderer.material.color;
+        _player = PlayerManager.Instance.transform;
 
         if (!isLaserMoving)
         {
-            laserOrigin = transform.position;
-            laserMaxPoint = transform.position + transform.forward * laserMaxDist;
-            laserCenter = (laserOrigin + laserMaxPoint) / 2f;
+            _laserOrigin = transform.position;
+            _laserMaxPoint = transform.position + transform.forward * laserMaxDist;
+            _laserCenter = (_laserOrigin + _laserMaxPoint) / 2f;
         }
 
         // 플레이어의 renderQueue가 3000이므로 (5/13 기준) 플레이어보다 높게 설정
@@ -92,10 +101,13 @@ public class LaserController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        bool playerNear = IsPlayerNearLaserOrigin();
         // 레이이저 비활성화 || 가벼운 Point-Point 검사
-        if (!isLaserActive || !IsPlayerNearLaserOrigin())
+        if (!isLaserActive || !playerNear)
         {
             ParticleStop();
+            if (!playerNear && setDistWhenPlayerFar)
+                _laserLineBehavior.EndPos = Vector3.forward * distWhenPlayerFar;
             return;
         }
 
@@ -106,25 +118,25 @@ public class LaserController : MonoBehaviour
         {
             ShootLaser();
         }
-    } 
+    }
 
-    
+
     // 변수가 잘못 설정되지 않았는지 검사
     [Conditional("UNITY_EDITOR")]
     private void ValidateCheck()
     {
         if (!isLaserMoving &&
-                (TryGetComponent(out MovingPlatformController mov) 
+                (TryGetComponent(out MovingPlatformController mov)
                 || TryGetComponent(out PingPongMovingPlatformController ppMov))
             )
         {
             HLogger.General.Warning("레이저에 Moving 스크립트가 부착되어 있으나, isLaserMoving이 false입니다.", this);
         }
 
-        if (laserType == LaserType.PlatformDisappear && platformDisappearMgr == null)
+        if (_laserType == LaserType.PlatformDisappear && _platformDisappearMgr == null)
         {
-            platformDisappearMgr = GetComponentInParent<LaserPlatformDisappearManager>();
-            if (platformDisappearMgr == null)
+            _platformDisappearMgr = GetComponentInParent<LaserPlatformDisappearManager>();
+            if (_platformDisappearMgr == null)
                 HLogger.General.Error("레이저에 platformDisappearMgr를 설정해 주거나\n"
                     + "부모 오브젝트 위치에 LaserPlatformDisappearManager를 추가해 주세요", this);
         }
@@ -133,27 +145,31 @@ public class LaserController : MonoBehaviour
     // 레이저를 발사해 레이저 끝점 검출, 플레이어 검출 이벤트
     private void ShootLaser()
     {
-        if (Physics.Raycast(transform.position, transform.forward, out hit, laserMaxDist))
+        if (Physics.Raycast(transform.position, transform.forward, out _hit, laserMaxDist, _layerMask, QueryTriggerInteraction.Ignore))
         {
-            laserLineBehavior.EndPos 
-                = Vector3.forward * ((hit.point - transform.position).magnitude - OFFSET_FROM_HIT);
-            
-            if (laserHitParticle != null)
+            _laserLineBehavior.EndPos
+                = Vector3.forward * ((_hit.point - transform.position).magnitude - OFFSET_FROM_HIT);
+
+            if (_laserHitParticle != null)
             {
-                laserHitParticle.transform.position = hit.point - transform.forward * 0.7f;
+                _laserHitParticle.transform.position = _hit.point - transform.forward * 0.7f;
                 ParticlePlay();
             }
 
             // 플레이어와 레이저가 닿음
-            if (hit.collider.CompareTag("Player"))
+            if (_hit.collider.CompareTag("Player"))
             {
                 DetectedPlayer();
+            }
+            else if (_hit.collider.TryGetComponent(out DroneGuardController drone))
+            {
+                drone.OnHit();
             }
         }
         else
         {
             ParticleStop();
-            laserLineBehavior.EndPos = Vector3.forward * laserMaxDist;
+            _laserLineBehavior.EndPos = Vector3.forward * laserMaxDist;
         }
     }
 
@@ -163,9 +179,9 @@ public class LaserController : MonoBehaviour
     {
         // 레이저가 움직인다면, 레이저의 중심점 계산
         if (isLaserMoving)
-            laserCenter = transform.position + transform.forward * laserMaxDist * 0.5f;
+            _laserCenter = transform.position + transform.forward * laserMaxDist * 0.5f;
 
-        return (laserCenter - player.position).sqrMagnitude < detectPointDist * detectPointDist;
+        return (_laserCenter - _player.position).sqrMagnitude < detectPointDist * detectPointDist;
     }
 
 
@@ -186,50 +202,82 @@ public class LaserController : MonoBehaviour
     // 레이저 선분과 플레이어 사이의 거리
     private float GetSqrDistFromPlayerToLaserLine()
     {
-        playerPosition = player.position;
+        _playerPosition = _player.position;
 
         // 레이저가 움직인다면, 레이저의 시작점과 끝점 계산
         if (isLaserMoving)
         {
-            laserOrigin = transform.position;
-            laserMaxPoint = transform.position + transform.forward * laserMaxDist;
+            _laserOrigin = transform.position;
+            _laserMaxPoint = transform.position + transform.forward * laserMaxDist;
         }
 
-        Vector3 line = laserMaxPoint - laserOrigin;
-        Vector3 toPoint = playerPosition - laserOrigin;
+        Vector3 line = _laserMaxPoint - _laserOrigin;
+        Vector3 toPoint = _playerPosition - _laserOrigin;
 
         float t = Vector3.Dot(toPoint, line) / line.sqrMagnitude;
         t = Mathf.Clamp01(t);
 
-        Vector3 projection = laserOrigin + t * line;
-        return (playerPosition - projection).sqrMagnitude;
+        Vector3 projection = _laserOrigin + t * line;
+        return (_playerPosition - projection).sqrMagnitude;
     }
 
 
     /// 레이저가 플레이어를 검출했을 때 이벤트
     private void DetectedPlayer()
     {
-        if (laserType == LaserType.LightningShock)
+        if (_laserType == LaserType.LightningShock)
+        {
+            NotifyLaserShoot();
             PlayerManager.Instance.LightningShock();
-        else if (laserType == LaserType.PlatformDisappear)
-            platformDisappearMgr.PlatformDisappear();
+        }
+        else if (_laserType == LaserType.PlatformDisappear)
+        {
+            _platformDisappearMgr.PlatformDisappear();
+        }
+    }
+
+    float _laserShootRotationSpeed;
+    float _laserShootLaserShootCooltime;
+    float _laserShootLaserSpeed;
+
+    private void NotifyLaserShoot()
+    {
+        if (laserShoot != null && PlayerManager.Instance.canLightningShock)
+        {
+            _laserShootRotationSpeed = laserShoot.rotationSpeed;
+            _laserShootLaserShootCooltime = laserShoot.laserShootCooltime;
+            _laserShootLaserSpeed = laserShoot.laserSpeed;
+
+            laserShoot.rotationSpeed = 30f;
+            laserShoot.laserShootCooltime = 0.05f;
+            laserShoot.laserSpeed = 350f;
+
+            Invoke(nameof(LaserShootBurstEnd), 3.5f);
+        }
+    }
+
+    private void LaserShootBurstEnd()
+    {
+        laserShoot.rotationSpeed = _laserShootRotationSpeed;
+        laserShoot.laserShootCooltime = _laserShootLaserShootCooltime;
+        laserShoot.laserSpeed = _laserShootLaserSpeed;
     }
 
     private void ParticlePlay()
     {
-        if (laserHitParticle?.isPlaying == false)
+        if (_laserHitParticle?.isPlaying == false)
         {
-            laserHitParticle.gameObject.SetActive(true);
-            laserHitParticle.Play();
+            _laserHitParticle.gameObject.SetActive(true);
+            _laserHitParticle.Play();
         }
     }
 
     private void ParticleStop()
     {
-        if (laserHitParticle?.isPlaying == true)
+        if (_laserHitParticle?.isPlaying == true)
         {
-            laserHitParticle.Stop();
-            laserHitParticle.gameObject.SetActive(false);
+            _laserHitParticle.Stop();
+            _laserHitParticle.gameObject.SetActive(false);
         }
     }
 
@@ -240,7 +288,7 @@ public class LaserController : MonoBehaviour
     /// <param name="a">레이저의 투명도 (0~1)</param>
     public void SetLaserAlpha(float a)
     {
-        myRenderer.material.color = laserColor * a;
+        _myRenderer.material.color = _laserColor * a;
     }
 
 
@@ -290,21 +338,27 @@ class LaserControllerEditor : Editor
     SerializedProperty platformDisappearMgrProp;
     SerializedProperty visulaizeLineProp;
     SerializedProperty detectPointDistProp;
+    SerializedProperty distWhenPlayerFarProp;
+    SerializedProperty setDistWhenPlayerFarProp;
     SerializedProperty detectLineDistProp;
     SerializedProperty laserMaxDistProp;
     SerializedProperty isEndPointDynamicProp;
     SerializedProperty isLaserMovingProp;
+    SerializedProperty laserShootProp;
 
     private void OnEnable()
     {
-        laserTypeProp = serializedObject.FindProperty("laserType");
-        platformDisappearMgrProp = serializedObject.FindProperty("platformDisappearMgr");
+        laserTypeProp = serializedObject.FindProperty("_laserType");
+        platformDisappearMgrProp = serializedObject.FindProperty("_platformDisappearMgr");
         visulaizeLineProp = serializedObject.FindProperty("visulaizeLine");
         detectPointDistProp = serializedObject.FindProperty("detectPointDist");
+        setDistWhenPlayerFarProp = serializedObject.FindProperty("setDistWhenPlayerFar");
+        distWhenPlayerFarProp = serializedObject.FindProperty("distWhenPlayerFar");
         detectLineDistProp = serializedObject.FindProperty("detectLineDist");
         laserMaxDistProp = serializedObject.FindProperty("laserMaxDist");
         isEndPointDynamicProp = serializedObject.FindProperty("isEndPointDynamic");
         isLaserMovingProp = serializedObject.FindProperty("isLaserMoving");
+        laserShootProp = serializedObject.FindProperty("laserShoot");
     }
 
     public override void OnInspectorGUI()
@@ -322,6 +376,9 @@ class LaserControllerEditor : Editor
 
         EditorGUILayout.PropertyField(visulaizeLineProp);
         EditorGUILayout.PropertyField(detectPointDistProp);
+        EditorGUILayout.PropertyField(setDistWhenPlayerFarProp);
+        if (setDistWhenPlayerFarProp.boolValue)
+            EditorGUILayout.PropertyField(distWhenPlayerFarProp);
 
         if (!isEndPointDynamicProp.boolValue)
             EditorGUILayout.PropertyField(detectLineDistProp);
@@ -332,6 +389,8 @@ class LaserControllerEditor : Editor
         EditorGUILayout.PropertyField(isEndPointDynamicProp);
         EditorGUILayout.PropertyField(isLaserMovingProp);
 
+        EditorGUILayout.PropertyField(laserShootProp);
+
         serializedObject.ApplyModifiedProperties();
     }
 
@@ -340,7 +399,7 @@ class LaserControllerEditor : Editor
         if (!visulaizeLineProp.boolValue)
             return;
 
-        _target = target as LaserController;    
+        _target = target as LaserController; 
 
         // Scene 뷰에서 조절 가능한 구형 영역 표시
         HandleDetectPointDist();

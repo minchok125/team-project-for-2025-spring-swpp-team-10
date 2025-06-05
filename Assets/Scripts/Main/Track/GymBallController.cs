@@ -10,6 +10,7 @@ public class GymBallController : MonoBehaviour
     [SerializeField] private float bounceForce = 5;
     [Tooltip("튕길 때 순간적으로 오브젝트가 커지는 정도 (0이면 안 커짐)")]
     [SerializeField, Range(0, 2)] private float bounceScale = 0.2f;
+    [SerializeField] private bool isKinematic = false;
 
     private Vector3 initScale;
     private Rigidbody rb;
@@ -18,8 +19,11 @@ public class GymBallController : MonoBehaviour
     {
         initScale = transform.localScale;
         if (!TryGetComponent(out rb))
+        {
             rb = gameObject.AddComponent<Rigidbody>();
-        Debug.Log(rb);
+            if (isKinematic)
+                rb.isKinematic = true;
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -37,11 +41,12 @@ public class GymBallController : MonoBehaviour
             transform.localScale = initScale * (1 + bounceScale);
             transform.DOScale(initScale, 0.5f).SetEase(Ease.InBounce);
 
+            GameManager.PlaySfx(SfxType.GymBall);
+
             // 플레이어라면 입력 제한 걸기
-            if (collision.gameObject.CompareTag("Player")) 
+            if (collision.gameObject.CompareTag("Player"))
             {
-                PlayerManager.Instance.isInputLock = true;
-                PlayerManager.Instance.SetInputLockAfterSeconds(false, 0.4f);
+                PlayerManager.Instance.SetInputLockDuringSeconds(0.4f);
             }
         }
     }

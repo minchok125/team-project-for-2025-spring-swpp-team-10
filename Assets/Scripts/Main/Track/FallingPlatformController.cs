@@ -34,7 +34,7 @@ public class FallingPlatformController : MonoBehaviour
 
     void Start()
     {
-        initY = transform.position.y;
+        initY = transform.localPosition.y;
         onPlayer = false;
 
         rb = GetComponent<Rigidbody>();
@@ -78,14 +78,15 @@ public class FallingPlatformController : MonoBehaviour
 
     void LateUpdate()
     {
-        cylinder.position = new Vector3(transform.position.x, initY - maxDownLength * 0.5f, transform.position.z);
+        if (cylinder != null)
+            cylinder.position = new Vector3(transform.position.x, initY - maxDownLength * 0.5f, transform.position.z);
     }
 
     private void Down()
     {
-        if (transform.position.y <= initY - maxDownLength) 
+        if (transform.localPosition.y <= initY - maxDownLength) 
         {
-            transform.position = new Vector3(transform.position.x, initY - maxDownLength, transform.position.z);
+            transform.localPosition = new Vector3(transform.localPosition.x, initY - maxDownLength, transform.localPosition.z);
             rb.velocity = Vector3.zero;
             return;
         }
@@ -95,9 +96,9 @@ public class FallingPlatformController : MonoBehaviour
 
     private void Up()
     {
-        if (transform.position.y >= initY) 
+        if (transform.localPosition.y >= initY) 
         {
-            transform.position = new Vector3(transform.position.x, initY, transform.position.z);
+            transform.localPosition = new Vector3(transform.localPosition.x, initY, transform.localPosition.z);
             rb.velocity = Vector3.zero;
             return;
         }

@@ -15,18 +15,22 @@ public class DrawOutline : MonoBehaviour
     [Header("이 오브젝트의 렌더러는 리스트에 자동으로 추가됩니다.")]
     [Tooltip("이 오브젝트의 외곽선을 표시할 때 함께 외곽선을 표시할 렌더러 리스트입니다.\n"
              + "함께 표시될 오브젝트에는 DrawOutline 컴포넌트를 추가하지 않아야 합니다.")]
-    [SerializeField] private List<Renderer> _linkedOutlineRenderers = new List<Renderer>();
+    [SerializeField] private Renderer[] _linkedOutlineRenderers;
 
     private ObjectProperties _objProp;
     private int _frameCountAfterDrawCall = 2;
     private bool _isBallColor;
 
+    private Outline[] _outlines;
     private MaterialPropertyBlock _outlineFillMpb;
     private Color _outlineColor;
     private float _outlineWidth = 10;
     private bool _outlineEnabled = false;
-    private List<int> _outlineFillIndexes;
-    
+    private int[] _outlineFillIndexes;
+    private BlinkNewController _blinkNewController;
+    private LaserPlatformDisappearGetAlpha _disappearGetAlpha;
+
+
     private static readonly Color BALL_COLOR = new Color(0.3981f, 0.7492f, 1f, 1f);
     private static readonly Color HAMSTER_COLOR = new Color(0.8902f, 0.6196f, 0.2745f, 1f);
 
@@ -38,32 +42,46 @@ public class DrawOutline : MonoBehaviour
 
     void Start()
     {
+        _blinkNewController = GetComponent<BlinkNewController>();
+        _disappearGetAlpha = GetComponent<LaserPlatformDisappearGetAlpha>();
+        Invoke(nameof(Init), 0.01f);
+    }
+
+    private void Init()
+    {
         // 자기 자신과 자식의 렌더러 목록
-        Renderer[] childRenderers = GetComponentsInChildren<Renderer>(true);
+        List<Renderer> childRenderers = GetComponentsInChildren<Renderer>(true).ToList();
+        for (int i = childRenderers.Count - 1; i >= 0; i--)
+            if (childRenderers[i].TryGetComponent(out DeleteOutline delete))
+                childRenderers.RemoveAt(i);
+
+        if (_linkedOutlineRenderers == null)
+            _linkedOutlineRenderers = new Renderer[0];
+
+        _linkedOutlineRenderers = (_linkedOutlineRenderers ?? Enumerable.Empty<Renderer>()).
+                        Concat(childRenderers.ToArray() ?? Enumerable.Empty<Renderer>()).ToArray();
 
         // 등록된 오브젝트들에 Outline 머티리얼이 없다면 Outline 머티리얼 추가
-        // 자식 렌더러는 제외 (부모에 Outline이 있으면 자동으로 추가됨)
-        for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
+        for (int i = 0; i < _linkedOutlineRenderers.Length; i++)
         {
-            if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline)
-                && !childRenderers.Contains(_linkedOutlineRenderers[i]))
+            if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline))
             {
                 _linkedOutlineRenderers[i].gameObject.AddComponent<Outline>();
             }
         }
 
-        foreach (Renderer childRd in childRenderers)
-        {
-            _linkedOutlineRenderers.Add(childRd);
-        }
+
+        List<Outline> outlines = new List<Outline>();
+        for (int i = 0; i < _linkedOutlineRenderers.Length; i++)
+            if (_linkedOutlineRenderers[i].TryGetComponent(out Outline outline))
+                outlines.Add(outline);
+        _outlines = outlines.ToArray();
 
         _outlineFillMpb = new MaterialPropertyBlock();
 
         FindOutlineFillIndexes();
 
-        // 초기 외곽선 색 결정
         _isBallColor = TryGetComponent(out _objProp) && _objProp.canGrabInBallMode;
-        SetOutlineColor(_isBallColor ? BALL_COLOR : HAMSTER_COLOR);
     }
 
 
@@ -82,43 +100,45 @@ public class DrawOutline : MonoBehaviour
     // 이름이 OutlineFill로 시작하는 머티리얼 인덱스 찾기
     private void FindOutlineFillIndexes()
     {
-        _outlineFillIndexes = new List<int>();
-        List<int> tempIdxes = new List<int>();
-        for (int i = _linkedOutlineRenderers.Count - 1; i >= 0; i--)
-        {
-            int idx = FindMaterialIndex(_linkedOutlineRenderers[i], "OutlineFill");
-            if (idx == -1)
-            {
-                _linkedOutlineRenderers.RemoveAt(i);
-                continue;
-            }
-            tempIdxes.Add(idx);
-        }
-        for (int i = tempIdxes.Count - 1; i >= 0; i--)
-        {
-            _outlineFillIndexes.Add(tempIdxes[i]);
-        }
+        _outlineFillIndexes = new int[_linkedOutlineRenderers.Length];
+        // List<int> tempIdxes = new List<int>();
+        // for (int i = _linkedOutlineRenderers.Count - 1; i >= 0; i--)
+        // {
+        //     int idx = FindMaterialIndex(_linkedOutlineRenderers[i], "OutlineFill");
+        //     if (idx == -1)
+        //     {
+        //         _linkedOutlineRenderers.RemoveAt(i);
+        //         continue;
+        //     }
+        //     tempIdxes.Add(idx);
+        // }
+        // for (int i = tempIdxes.Count - 1; i >= 0; i--)
+        // {
+        //     _outlineFillIndexes.Add(tempIdxes[i]);
+        // }
+        for (int i = 0; i < _linkedOutlineRenderers.Length; i++)
+            _outlineFillIndexes[i] = _linkedOutlineRenderers[i].materials.Length + 1;
     }
 
-    private int FindMaterialIndex(Renderer renderer, string materialNamePrefix)
-    {
-        if (renderer == null)
-        {
-            return -1;
-        }
+    // private int FindMaterialIndex(Renderer renderer, string materialNamePrefix)
+    // {
+    //     if (renderer == null)
+    //     {
+    //         return -1;
+    //     }
 
-        // sharedMaterials를 사용하여 머티리얼 인스턴스 생성 방지
-        Material[] materials = renderer.sharedMaterials;
+    //     // sharedMaterials를 사용하여 머티리얼 인스턴스 생성 방지
+    //     Material[] materials = renderer.sharedMaterials;
 
-        for (int i = 0; i < materials.Length; i++)
-        {
-            if (materials[i] != null && materials[i].name.StartsWith(materialNamePrefix))
-            {
-                return i;
-            }
-        }
-        return -1; // 찾지 못함
-    }
+    //     for (int i = 0; i < materials.Length; i++)
+    //     {
+    //         if (materials[i] != null && materials[i].name.StartsWith(materialNamePrefix))
+    //         {
+    //             return i;
+    //         }
+    //     }
+    //     return -1; // 찾지 못함
+    // }
 
     public void Draw()
     {
@@ -147,24 +167,33 @@ public class DrawOutline : MonoBehaviour
     // 오브젝트의 외곽선에 현재 정보를 반영합니다.
     private void ApplyOutlineSettings()
     {
+        if (_blinkNewController != null && !_outlineEnabled)
+            ApplyBlinkControllerCircumstance();
+
+        if (_outlineFillMpb == null || !_outlineEnabled)
+            return;
+
         _outlineFillMpb.SetColor(k_OutlineColorID, _outlineColor);
         _outlineFillMpb.SetFloat(k_OutlineWidthID, _outlineWidth);
 
-        if (_outlineEnabled)
-        {
-            _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
-            _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
-        }
-        else
-        {
-            _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 0f);
-            _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.Never);
-        }
-
-        for (int i = 0; i < _linkedOutlineRenderers.Count; i++)
+        for (int i = 0; i < _linkedOutlineRenderers.Length; i++)
         {
             Renderer rd = _linkedOutlineRenderers[i];
-            rd.SetPropertyBlock(_outlineFillMpb, _outlineFillIndexes[i]);
+
+            if (rd != null && _outlineFillMpb != null) // rd와 _outlineFillMpb 모두 null이 아닌지 확인
+            {
+                int materialIndex = _outlineFillIndexes[i];
+
+                // materialIndex가 Renderer의 유효한 재질 범위 내에 있는지 확인
+                if (materialIndex >= 0 && materialIndex < rd.sharedMaterials.Length)
+                {
+                    rd.SetPropertyBlock(_outlineFillMpb, materialIndex);
+                }
+                else
+                {
+                    Debug.LogWarning($"Material index {materialIndex} is out of bounds for Renderer '{rd.name}'. It has {rd.sharedMaterials.Length} materials.", this);
+                }
+            }
         }
     }
 
@@ -172,7 +201,24 @@ public class DrawOutline : MonoBehaviour
     private void SetOutlineEnabled(bool enabled)
     {
         _outlineEnabled = enabled;
-        ApplyOutlineSettings();
+
+        if (enabled)
+        {
+            if (_outlines != null)
+                for (int i = 0; i < _outlines.Length; i++)
+                    _outlines[i]?.AddMaterial();
+            SetOutlineColor(_isBallColor ? BALL_COLOR : HAMSTER_COLOR);
+        }
+        else
+        {
+            if (_blinkNewController?.isDisappearing == true)
+                ApplyBlinkControllerCircumstance();
+            else if (_disappearGetAlpha?.isDisappearing == true)
+                ApplyPlatformDisappearCircumstance();
+            else if (_outlines != null)
+                for (int i = 0; i < _outlines.Length; i++)
+                    _outlines[i]?.RemoveMaterial();
+        }
     }
 
     // 외곽선의 색을 지정합니다.
@@ -180,5 +226,28 @@ public class DrawOutline : MonoBehaviour
     {
         _outlineColor = color;
         ApplyOutlineSettings();
+    }
+
+    // BlinkNewController가 있으며 현재 사라지고 있는 상태라면 다시 하얀색 외곽선으로 되돌립니다.
+    private void ApplyBlinkControllerCircumstance()
+    {
+        if (!_blinkNewController.isDisappearing)
+            return;
+
+        Color outlineColor = new Color(1, 1, 1, _blinkNewController.curAlpha);
+        _outlineFillMpb.SetColor(k_OutlineColorID, outlineColor);
+        _outlineFillMpb.SetFloat(k_OutlineWidthID, 4f);
+        _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
+        _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
+    }
+
+    private void ApplyPlatformDisappearCircumstance()
+    {
+        Debug.Log("hi" + _disappearGetAlpha.alpha);
+        Color outlineColor = new Color(1, 1, 1, 1 - _disappearGetAlpha.alpha);
+        _outlineFillMpb.SetColor(k_OutlineColorID, outlineColor);
+        _outlineFillMpb.SetFloat(k_OutlineWidthID, 4f);
+        _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
+        _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
     }
 }

@@ -30,7 +30,6 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     [SerializeField] private AudioClip boostAudio;
     [SerializeField] private AudioClip retractorAudio;
     [SerializeField] private AudioClip balloonAudio;
-    [SerializeField] private AudioClip lightningShockAudio;
     #endregion
 
 
@@ -176,15 +175,6 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     public Vector3 slideWallNormal;
 
     /// <summary>
-    /// 플레이어 입력이 현재 잠겨있는지 여부를 나타냅니다.
-    /// </summary>
-    /// <remarks>
-    /// 컷신, 대화, 특수 애니메이션 등 특정 상황에서 
-    /// 플레이어 입력을 일시적으로 비활성화할 때 사용됩니다.
-    /// </remarks>
-    public bool isInputLock;
-
-    /// <summary>
     /// 플레이어의 스킬 컨트롤러 참조입니다.
     /// </summary>
     /// <remarks>
@@ -201,6 +191,16 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     [HideInInspector] public PlayerWireController playerWire;
 
     /// <summary>
+    /// 플레이어의 위치로 동기화되는 트랜스폼입니다.
+    /// </summary>
+    /// <remarks>
+    /// 플레이어 공 모드의 경우 계속해서 굴러가므로, 위치만 동기화시키는 트랜스폼이 필요합니다.
+    /// 햄스터 모드 시네머신 카메라에서 쓰이는 Follow 트랜스폼으로, 플레이어의 약간 위를 가리킵니다.
+    /// PlayerManager 인스펙터 에서 직접 "CM Target" > "HamsterCamTarget"을 참조시킨 것을 가정합니다.
+    /// </remarks>
+    public Transform followPlayerTransform;
+
+    /// <summary>
     /// 플레이어의 움직임 컨트롤러 참조입니다.
     /// </summary>
     [HideInInspector] private PlayerMovementController playerMovement;
@@ -208,19 +208,28 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
 
     #region Private Variables
-    private Rigidbody rb;
-    private GameObject hamsterLightningShockParticle;
-    private GameObject ballLightningShockParticle;
+    private int _inputLockNumber;
+    private int _mouseInputLockNumber;
+    private Rigidbody _rb;
+    private GameObject _hamsterLightningShockParticle;
+    private GameObject _ballLightningShockParticle;
 
 
 
-    private Action modeConvert; // 
-    private Vector3 accumulatedMovement;
-    private const float LIGHTNING_SHOCK_COOLTIME = 3f;
-    private bool canLightningShock;
+    private Action _modeConvert;
+    private Vector3 _accumulatedMovement;
 
 
-
+        #region Object Reaction Variables
+        private const float LIGHTNING_SHOCK_COOLTIME = 3f;
+        public bool canLightningShock { get; private set; }
+    
+    
+        private float _yForce = 10f;
+        private float _forceMag = 100f;
+        private float _laserPushTime = 0.2f;
+        private bool _canLaserPush = true;
+        #endregion
     #endregion
 
 
@@ -233,26 +242,27 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         InitializeComponents();
 
         // 변수 초기화
-        hamsterLightningShockParticle?.SetActive(false);
-        ballLightningShockParticle?.SetActive(false);
+        _hamsterLightningShockParticle?.SetActive(false);
+        _ballLightningShockParticle?.SetActive(false);
         canLightningShock = true;
+        _inputLockNumber = _mouseInputLockNumber = 0;
 
         // 씬 리셋 시 구독자 전부 제거
-        modeConvert = null;
+        _modeConvert = null;
     }
 
     private void Update()
     {
-        if (isInputLock) moveDir = Vector3.zero;
+        if (IsInputLock()) moveDir = Vector3.zero;
         else moveDir = GetInputMoveDir();
     }
 
     private void FixedUpdate()
     {
-        if (accumulatedMovement != Vector3.zero)
+        if (_accumulatedMovement != Vector3.zero)
         {
-            rb.MovePosition(rb.position + accumulatedMovement);
-            accumulatedMovement = Vector3.zero;
+            _rb.MovePosition(_rb.position + _accumulatedMovement);
+            _accumulatedMovement = Vector3.zero;
         }
     }
     #endregion
@@ -264,12 +274,12 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         skill = GetComponent<PlayerSkillController>();
         playerMovement = GetComponent<PlayerMovementController>();
         playerWire = GetComponent<PlayerWireController>();
-        rb = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
 
-        hamsterLightningShockParticle
+        _hamsterLightningShockParticle
             = transform.Find("Hamster Normal")
                        .Find("Lightning Particle")?.gameObject;
-        ballLightningShockParticle 
+        _ballLightningShockParticle
             = transform.Find("Hamster Ball")
                        .Find("Lightning Particle")?.gameObject;
     }
@@ -281,7 +291,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// <param name="move">이동시킬 벡터</param>
     public void AddMovement(Vector3 move)
     {
-        accumulatedMovement += move;
+        _accumulatedMovement += move;
     }
 
     /// <summary>
@@ -305,7 +315,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         Vector3 moveVec = (forwardVec * ver + rightVec * hor).normalized;
 
         // 접착벽에서는 이동 방향이 제한됨
-        if (isOnSlideWall) 
+        if (isOnSlideWall)
         {
             moveVec = GetSlideMoveVec(moveVec);
         }
@@ -332,32 +342,69 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         // moveVec에서 SlideWall의 노말벡터와 평행한 성분 제거
         normalMag = Vector3.Dot(moveVec, slideWallNormal);
         moveVec = (moveVec - slideWallNormal * normalMag).normalized;
-        
+
         return moveVec;
     }
 
 
     #region Set Input Lock
     /// <summary>
-    /// 지정된 시간 후에 입력 잠금 상태를 설정합니다.
+    /// 지정된 시간 동안 입력을 잠금합니다.
     /// </summary>
-    /// <param name="isLock">잠금 상태 (true: 잠금, false: 해제)</param>
-    /// <param name="time">지연 시간 (초)</param>
+    /// <param name="time">입력을 잠금하는 시간(초)</param>
+    public void SetInputLockDuringSeconds(float lockedTime)
+    {
+        _inputLockNumber++;
+        Invoke(nameof(DownInputLockNumber), lockedTime);
+    }
+
+    public void SetMouseInputLockDuringSeconds(float lockedTime)
+    {
+        _mouseInputLockNumber++;
+        Invoke(nameof(DownMouseInputLockNumber), lockedTime);
+    }
+
+    /// <summary>
+    /// 단순히 입력을 잠금하거나, 입력 잠금을 해제합니다.
+    /// </summary>
+    /// <param name="active">입력 잠금을 한다면 true</param>
     /// <remarks>
-    /// 특정 이벤트 후 일정 시간이 지난 뒤 입력 상태를 변경할 때 사용됩니다.
+    /// 입력이 잠금되는 시간을 직접 지정하기 어려울 때 사용합니다.
+    /// 반드시 SetInputLockPermanent(true/false) 쌍이 함께 있어야 합니다.
     /// </remarks>
-    public void SetInputLockAfterSeconds(bool isLock, float time)
+    public void SetInputLockPermanent(bool active)
     {
-        if (isLock) Invoke(nameof(SetInputLockTrue), time);
-        else Invoke(nameof(SetInputLockFalse), time);
+        if (active) _inputLockNumber = Mathf.Max(1, _inputLockNumber + 1);
+        else _inputLockNumber--;
     }
-    private void SetInputLockTrue()
+
+    public void SetMouseInputLockPermanent(bool active)
     {
-        isInputLock = true;
+        if (active) _mouseInputLockNumber = Mathf.Max(1, _mouseInputLockNumber + 1);
+        else _mouseInputLockNumber--;
     }
-    private void SetInputLockFalse()
+
+    /// <summary>
+    /// 입력이 잠금된 상태인지 여부를 반환합니다.
+    /// </summary>
+    /// <returns>입력이 잠금된 상태라면 True를 반환합니다.</returns>
+    public bool IsInputLock()
     {
-        isInputLock = false;
+        return _inputLockNumber > 0;
+    }
+
+    public bool IsMouseInputLock()
+    {
+        return _mouseInputLockNumber > 0;
+    }
+
+    private void DownInputLockNumber()
+    {
+        _inputLockNumber--;
+    }
+    private void DownMouseInputLockNumber()
+    {
+        _mouseInputLockNumber--;
     }
     #endregion
 
@@ -370,8 +417,9 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// 현재 상태의 반대 모드로 플레이어를 변환합니다.
     /// </summary>
     public void ModeConvert()
-    { 
-        modeConvert?.Invoke(); 
+    {
+        isBall = !isBall;
+        _modeConvert?.Invoke();
     }
 
     /// <summary>
@@ -379,7 +427,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// </summary>
     public void ModeConvertAddAction(Action action)
     {
-        modeConvert += action;
+        _modeConvert += action;
     }
 
     /// <summary>
@@ -412,26 +460,25 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         if (!canLightningShock)
             return;
 
-        isInputLock = true;
         canLightningShock = false;
         playerWire.EndShoot();
         isGliding = false;
 
-        if (isBall) ballLightningShockParticle.SetActive(true);
-        else hamsterLightningShockParticle.SetActive(true);
+        if (isBall) _ballLightningShockParticle.SetActive(true);
+        else _hamsterLightningShockParticle.SetActive(true);
 
-        GameManager.PlaySfx(lightningShockAudio);
+        GameManager.PlaySfx(SfxType.LightningShock);
 
+        SetInputLockDuringSeconds(LIGHTNING_SHOCK_COOLTIME);
         Invoke(nameof(LightningShockEndAfterFewSeconds), LIGHTNING_SHOCK_COOLTIME);
     }
     // inputLock 풀림, 전기효과 풀림
     private void LightningShockEndAfterFewSeconds()
     {
-        isInputLock = false;
-        if (isBall) ballLightningShockParticle.SetActive(false);
-        else hamsterLightningShockParticle.SetActive(false);
+        _ballLightningShockParticle.SetActive(false);
+        _hamsterLightningShockParticle.SetActive(false);
 
-        Invoke(nameof(CanLightningShockAfterFewSeconds), 0.4f);
+        Invoke(nameof(CanLightningShockAfterFewSeconds), 0.6f);
     }
     // 다시 전기에 맞을 수 있음
     private void CanLightningShockAfterFewSeconds()
@@ -439,6 +486,30 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         canLightningShock = true;
     }
 
+    /// <summary>
+    /// 맞으면 밀려나가는 레이저에 맞습니다.
+    /// </summary>
+    /// <param name="forceDir">밀려나갈 방향</param>
+    public void LaserPush(Vector3 forceDir)
+    {
+        if (!_canLaserPush)
+            return;
 
+        _canLaserPush = false;
+        playerWire.EndShoot();
+        isGliding = false;
+
+        forceDir = new Vector3(forceDir.x  * _forceMag, _yForce, forceDir.z  * _forceMag);
+        _rb.AddForce(forceDir, ForceMode.VelocityChange);
+
+        GameManager.PlaySfx(SfxType.LaserPush);
+
+        SetInputLockDuringSeconds(_laserPushTime);
+        Invoke(nameof(LaserPushEndAfterFewSeconds), _laserPushTime);
+    }
+    private void LaserPushEndAfterFewSeconds()
+    {
+        _canLaserPush = true;
+    }
     #endregion
 }

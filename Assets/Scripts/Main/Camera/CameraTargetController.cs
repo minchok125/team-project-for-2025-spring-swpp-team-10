@@ -56,7 +56,7 @@ public class CameraTargetController : MonoBehaviour
     /// <param name="hitPoint">와이어가 연결된 점의 위치</param>
     void SetBallWirePos(Vector3 hitPoint)
     {
-        Vector3 diff = hitPoint + player.position;
+        Vector3 diff = hitPoint - player.position;
         if (diff.sqrMagnitude < ballWireCamPointDist * ballWireCamPointDist)
             transform.position = hitPoint + offset;
         else
