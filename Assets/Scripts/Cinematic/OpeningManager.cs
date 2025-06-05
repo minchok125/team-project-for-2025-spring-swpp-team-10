@@ -172,9 +172,9 @@ public class OpeningManager : MonoBehaviour
         for (int i = 0; i < covers.Length; i++)
         {
             covers[i].SetActive(false);
+            subtitleText.text = _subtitles[i+1];
             if (i < cutSceneCams.Length)
             {
-                subtitleText.text = _subtitles[i+1];
                 yield return new WaitForSeconds(cutSceneHoldingDuration[i]);
                 cutSceneCams[i].transform.DOLocalMove(cutSceneCamsTransEndPos[i], cutSceneCamWalkDuration[i]);
                 cutSceneCams[i].transform.DORotate(cutSceneCamsTransEndRot[i], cutSceneCamWalkDuration[i]);
