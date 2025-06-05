@@ -13,10 +13,10 @@ public class PausedMenuController : MonoBehaviour
 	private void Awake()
 	{
 		settingsPanel.SetActive(false);
-		
+
 		bgmVolumeSlider.value = GameManager.Instance.bgmVolume;
 		sfxVolumeSlider.value = GameManager.Instance.sfxVolume;
-		
+
 		bgmVolumeSlider.onValueChanged.AddListener(GameManager.SetBgmVolume);
 		sfxVolumeSlider.onValueChanged.AddListener(GameManager.SetSfxVolume);
 
@@ -34,6 +34,16 @@ public class PausedMenuController : MonoBehaviour
 	public void CloseSettings()
 	{
 		settingsPanel.SetActive(false);
+	}
+
+	public void OpenStore()
+	{
+		uIManager.OpenStore();
+	}
+
+	public void CloseStore()
+	{
+		uIManager.CloseStore();
 	}
 
 	public void GoBackToTitle()

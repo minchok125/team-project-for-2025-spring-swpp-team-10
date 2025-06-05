@@ -57,7 +57,8 @@ public class CoinController : MonoBehaviour
         HLogger.Player.Info($"플레이어가 '{gameObject.name}' ({coinValue} 코인) 수집 시도.", this);
 
         // ItemManager를 통해 코인 추가
-        ItemManager.Instance.AddCoin(coinValue);
+        // TODO: Collider object가 Coin Property를 가지고 있도록 수정
+        ItemManager.Instance.AddCoin(Coin.Create(CoinGrade.Silver));
 
         // 수집 효과 재생 (선택 사항)
         PlayCollectEffects();

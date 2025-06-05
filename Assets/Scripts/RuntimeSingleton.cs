@@ -29,7 +29,8 @@ public abstract class RuntimeSingleton<T> : MonoBehaviour where T : MonoBehaviou
 
     protected virtual void Awake()
     {
-        if (_instance == null)
+        _instance = this as T;
+        /*if (_instance == null)
         {
             _instance = this as T;
         }
@@ -37,7 +38,7 @@ public abstract class RuntimeSingleton<T> : MonoBehaviour where T : MonoBehaviou
         {
             Destroy(gameObject);
             return;
-        }
+        }*/
 
         // DontDestroyOnLoad(gameObject);
     }

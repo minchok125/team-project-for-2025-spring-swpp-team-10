@@ -46,6 +46,7 @@ public class ObjectProperties : MonoBehaviour
         {
             gameObject.layer = LayerMask.NameToLayer("Attachable");
 
+            //if (!HasOutlineInParents() && !TryGetComponent(out Outline outline))
             if (!TryGetComponent(out Outline outline))
                 gameObject.AddComponent<Outline>();
             if (!TryGetComponent(out DrawOutline drawOutline))
@@ -64,6 +65,25 @@ public class ObjectProperties : MonoBehaviour
         {
             gameObject.layer = LayerMask.NameToLayer("Default");
         }
+    }
+
+    // 부모가 Outline을 생성할 예정이라면, 해당 오브젝트에서 Outline을 생성할 경우 중복해서 외곽선이 생성됩니다.
+    private bool HasOutlineInParents()
+    {
+        Transform current = transform.parent;
+
+        while (current != null)
+        {
+            if (current.TryGetComponent(out ObjectProperties objProp))
+            {
+                if (objProp.canGrabInBallMode || objProp.canGrabInHamsterMode)
+                    return true;
+            }
+
+            current = current.parent;
+        }
+
+        return false;
     }
 
     private void RemoveOutlineMaterial()

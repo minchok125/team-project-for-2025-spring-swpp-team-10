@@ -15,7 +15,7 @@ public class MovingPlatformController : MonoBehaviour
     public float startWaitTime;
     public MoveSequence[] seqs;
 
-    private int _curIndex = 0;
+    private int _curIndex = 1;
     private float _timer = 0f;
     private float _waitTimer = 0f;
     private bool _isWaiting = true;
@@ -24,6 +24,7 @@ public class MovingPlatformController : MonoBehaviour
 
     void Start()
     {
+        _curIndex = seqs.Length > 1 ? 1 : 0;
         ApplySeqValue(0); // 시작값 적용
         _lastRotationValue = transform.localEulerAngles;
         _waitTimer = startWaitTime;
@@ -85,7 +86,8 @@ public class MovingPlatformController : MonoBehaviour
         switch (seq.modifyType)
         {
             case Type.Position:
-                transform.localPosition = Vector3.LerpUnclamped(_fromValue, _toValue, t);
+                //transform.localPosition = Vector3.LerpUnclamped(_fromValue, _toValue, t);
+                transform.localPosition = AA(transform.localPosition, Vector3.LerpUnclamped(_fromValue, _toValue, t), seq);
                 break;
             case Type.Rotation:
                 Quaternion fromRotation = Quaternion.Euler(_fromValue);
@@ -96,6 +98,17 @@ public class MovingPlatformController : MonoBehaviour
                 transform.localScale = Vector3.LerpUnclamped(_fromValue, _toValue, t);
                 break;
         }
+    }
+
+    Vector3 AA(Vector3 vec, Vector3 apply, MoveSequence seq)
+    {
+
+        if (seq.xb) vec.x = apply.x;
+        if (seq.yb) vec.y = apply.y;
+        if (seq.zb) vec.z = apply.z;
+        if (seq.modifyType == Type.Rotation) vec = apply;
+
+        return vec;
     }
 
     float ApplyEase(MoveSequence seq, float t)
@@ -154,6 +167,7 @@ public class MoveSequence
     public DG.Tweening.Ease ease;
     public AnimationCurve customEase; // 직접 조절 가능한 ease
 }
+
 
 
 #if UNITY_EDITOR
@@ -286,6 +300,7 @@ public class MoveSequenceDrawer : PropertyDrawer
 
 
 [CustomEditor(typeof(MovingPlatformController))]
+[CanEditMultipleObjects]
 public class MovingPlatformControllerEditor : Editor
 {
     public override void OnInspectorGUI()

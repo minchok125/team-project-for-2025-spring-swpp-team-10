@@ -76,6 +76,7 @@ GameObject:
   - component: {fileID: 3390482}
   - component: {fileID: 2360762}
   - component: {fileID: 6573736}
+  - component: {fileID: 5641717028653107084}
   m_Layer: 0
   m_Name: Floor_01
   m_TagString: Untagged
@@ -161,6 +162,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.0000029, y: 3.000002, z: 0.02}
   m_Center: {x: -1.5000005, y: -1.5000007, z: 0.00000013113421}
+--- !u!114 &5641717028653107084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a074c9e73aecfeb47b89dd1b9e10ec2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canPlayerJump: 1
+  canGrabInBallMode: 0
+  canGrabInHamsterMode: 0
+  generateRigidbody: 1
+  nonDetectable: 0
 --- !u!1 &112936
 GameObject:
   m_ObjectHideFlags: 0
@@ -173,6 +191,7 @@ GameObject:
   - component: {fileID: 3372520}
   - component: {fileID: 2399722}
   - component: {fileID: 6582718}
+  - component: {fileID: 4910990737411101028}
   m_Layer: 0
   m_Name: Floor_01
   m_TagString: Untagged
@@ -258,6 +277,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.0000029, y: 3.000002, z: 0.02}
   m_Center: {x: -1.5000005, y: -1.5000007, z: 0.00000013113421}
+--- !u!114 &4910990737411101028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a074c9e73aecfeb47b89dd1b9e10ec2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canPlayerJump: 1
+  canGrabInBallMode: 0
+  canGrabInHamsterMode: 0
+  generateRigidbody: 1
+  nonDetectable: 0
 --- !u!1 &119278
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,6 +436,7 @@ GameObject:
   - component: {fileID: 3327064}
   - component: {fileID: 2377122}
   - component: {fileID: 6578366}
+  - component: {fileID: 9112771914174678199}
   m_Layer: 0
   m_Name: Floor_01
   m_TagString: Untagged
@@ -485,6 +522,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.0000029, y: 3.000002, z: 0.02}
   m_Center: {x: -1.5000005, y: -1.5000007, z: 0.00000013113421}
+--- !u!114 &9112771914174678199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a074c9e73aecfeb47b89dd1b9e10ec2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canPlayerJump: 1
+  canGrabInBallMode: 0
+  canGrabInHamsterMode: 0
+  generateRigidbody: 1
+  nonDetectable: 0
 --- !u!1 &123900
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,6 +794,7 @@ GameObject:
   - component: {fileID: 3348156}
   - component: {fileID: 2380016}
   - component: {fileID: 6500474}
+  - component: {fileID: 8927960404183065930}
   m_Layer: 0
   m_Name: Floor_01
   m_TagString: Untagged
@@ -825,6 +880,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.0000029, y: 3.000002, z: 0.02}
   m_Center: {x: -1.5000005, y: -1.5000007, z: 0.00000013113421}
+--- !u!114 &8927960404183065930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a074c9e73aecfeb47b89dd1b9e10ec2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canPlayerJump: 1
+  canGrabInBallMode: 0
+  canGrabInHamsterMode: 0
+  generateRigidbody: 1
+  nonDetectable: 0
 --- !u!1 &151292
 GameObject:
   m_ObjectHideFlags: 0
@@ -869,6 +941,7 @@ GameObject:
   - component: {fileID: 3301324}
   - component: {fileID: 2342306}
   - component: {fileID: 6535652}
+  - component: {fileID: 6817284831047976823}
   m_Layer: 0
   m_Name: Floor_01
   m_TagString: Untagged
@@ -954,6 +1027,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.0000029, y: 3.000002, z: 0.02}
   m_Center: {x: -1.5000005, y: -1.5000007, z: 0.00000013113421}
+--- !u!114 &6817284831047976823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 151294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a074c9e73aecfeb47b89dd1b9e10ec2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canPlayerJump: 1
+  canGrabInBallMode: 0
+  canGrabInHamsterMode: 0
+  generateRigidbody: 1
+  nonDetectable: 0
 --- !u!1 &171276
 GameObject:
   m_ObjectHideFlags: 0
@@ -1400,6 +1490,7 @@ GameObject:
   - component: {fileID: 3345294}
   - component: {fileID: 2398816}
   - component: {fileID: 6594698}
+  - component: {fileID: 1336557464379457706}
   m_Layer: 0
   m_Name: Floor_01
   m_TagString: Untagged
@@ -1485,6 +1576,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.0000029, y: 3.000002, z: 0.02}
   m_Center: {x: -1.5000005, y: -1.5000007, z: 0.00000013113421}
+--- !u!114 &1336557464379457706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a074c9e73aecfeb47b89dd1b9e10ec2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canPlayerJump: 1
+  canGrabInBallMode: 0
+  canGrabInHamsterMode: 0
+  generateRigidbody: 1
+  nonDetectable: 0
 --- !u!1 &189400
 GameObject:
   m_ObjectHideFlags: 0

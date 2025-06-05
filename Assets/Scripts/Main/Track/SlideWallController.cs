@@ -51,7 +51,7 @@ public class SlideWallController : MonoBehaviour
             return;
 
         // 슬라이드벽에서 점프를 해서 입력에 락 걸림
-        if (PlayerManager.Instance.isInputLock)
+        if (PlayerManager.Instance.IsInputLock())
             return;
 
         connectedBody.velocity = new Vector3(connectedBody.velocity.x, 0, connectedBody.velocity.z);
