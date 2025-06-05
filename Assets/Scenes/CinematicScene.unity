@@ -2817,11 +2817,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
-    - target: {fileID: 214280053394726523, guid: 0b3d3381eb7beaa4d91bc1deec28bd11,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 214280053394726527, guid: 0b3d3381eb7beaa4d91bc1deec28bd11,
         type: 3}
       propertyPath: m_RootOrder
@@ -34030,7 +34025,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1522045228}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &1522045232
 Camera:
   m_ObjectHideFlags: 0
