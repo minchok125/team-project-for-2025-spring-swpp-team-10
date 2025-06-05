@@ -63,7 +63,7 @@ public class OpeningManager : MonoBehaviour
         {
             cutSceneCams[i].enabled = false;
             cutSceneCams[i].rect = new Rect(cutSceneCamsRectPos[i], cutSceneCamsRectRot[i]);
-            cutSceneCams[i].transform.position = cutSceneCamsTransStartPos[i];
+            cutSceneCams[i].transform.localPosition = cutSceneCamsTransStartPos[i];
             cutSceneCams[i].transform.rotation = Quaternion.Euler(cutSceneCamsTransStartRot[i]);
         }
         
@@ -73,7 +73,7 @@ public class OpeningManager : MonoBehaviour
 
     private void Start()
     {
-        hamster.position = hamsterStartPos;
+        hamster.localPosition = hamsterStartPos;
         hamster.rotation = Quaternion.Euler(hamsterStartRot);
         StartCoroutine(OpeningCoroutine());
     }
@@ -90,7 +90,7 @@ public class OpeningManager : MonoBehaviour
         {
             cutSceneCams[i].enabled = false;
             cutSceneCams[i].rect = new Rect(cutSceneCamsRectPos[i], cutSceneCamsRectRot[i]);
-            cutSceneCams[i].transform.position = cutSceneCamsTransStartPos[i];
+            cutSceneCams[i].transform.localPosition = cutSceneCamsTransStartPos[i];
             cutSceneCams[i].transform.rotation = Quaternion.Euler(cutSceneCamsTransStartRot[i]);
         }
     }
@@ -98,7 +98,7 @@ public class OpeningManager : MonoBehaviour
 
     private IEnumerator LogoCoroutine()
     {
-        logoCam.transform.position = logoCamPos;
+        logoCam.transform.localPosition = logoCamPos;
         logoCam.transform.rotation = Quaternion.Euler(logoCamRot);
         logoCam.enabled = true;
         
@@ -145,7 +145,7 @@ public class OpeningManager : MonoBehaviour
 
     private IEnumerator LogoHoldingCoroutine()
     {
-        hamster.DOMove(hamsterEndPos, standUpDuration);
+        hamster.DOLocalMove(hamsterEndPos, standUpDuration);
         hamster.DORotate(hamsterEndRot, standUpDuration);
         logo.SetActive(true);
         // GameManager.PlaySfx(SfxType.OpeningLogoSfx1);
@@ -176,7 +176,7 @@ public class OpeningManager : MonoBehaviour
             {
                 subtitleText.text = _subtitles[i+1];
                 yield return new WaitForSeconds(cutSceneHoldingDuration[i]);
-                cutSceneCams[i].transform.DOMove(cutSceneCamsTransEndPos[i], cutSceneCamWalkDuration[i]);
+                cutSceneCams[i].transform.DOLocalMove(cutSceneCamsTransEndPos[i], cutSceneCamWalkDuration[i]);
                 cutSceneCams[i].transform.DORotate(cutSceneCamsTransEndRot[i], cutSceneCamWalkDuration[i]);
             }
             yield return new WaitForSeconds(cutSceneDuration[i]);
