@@ -58,10 +58,12 @@ public class OpeningManager : MonoBehaviour
     private void Awake()
     {
         logoCam.enabled = false;
+        logoCam.gameObject.SetActive(true);
 
         for (int i = 0; i < cutSceneCams.Length; i++)
         {
             cutSceneCams[i].enabled = false;
+            cutSceneCams[i].gameObject.SetActive(true);
             cutSceneCams[i].rect = new Rect(cutSceneCamsRectPos[i], cutSceneCamsRectRot[i]);
             cutSceneCams[i].transform.localPosition = cutSceneCamsTransStartPos[i];
             cutSceneCams[i].transform.rotation = Quaternion.Euler(cutSceneCamsTransStartRot[i]);
@@ -83,18 +85,6 @@ public class OpeningManager : MonoBehaviour
         yield return LogoCoroutine();
         yield return CutSceneCoroutine();
     }
-
-    public void DebugCamRect()
-    {
-        for (int i = 0; i < cutSceneCams.Length; i++)
-        {
-            cutSceneCams[i].enabled = false;
-            cutSceneCams[i].rect = new Rect(cutSceneCamsRectPos[i], cutSceneCamsRectRot[i]);
-            cutSceneCams[i].transform.localPosition = cutSceneCamsTransStartPos[i];
-            cutSceneCams[i].transform.rotation = Quaternion.Euler(cutSceneCamsTransStartRot[i]);
-        }
-    }
-
 
     private IEnumerator LogoCoroutine()
     {
