@@ -93,7 +93,7 @@ public class InteractionDialogueController : MonoBehaviour
     {
         return dialogueOnTriggerOrCollier && _canInteract
             && (int)dialogueEnableStartCheckpoint - 1 <= CheckpointManager.Instance.GetCurrentCheckpointIndex()
-            && CheckpointManager.Instance.GetCurrentCheckpointIndex() <= (int)dialogueEnableStartCheckpoint - 1;
+            && CheckpointManager.Instance.GetCurrentCheckpointIndex() <= (int)dialogueEnableEndCheckpoint - 1;
     }
 
     // 대사 출력 함수
