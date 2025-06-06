@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using Hampossible.Utils;
+using DG.Tweening;
 
 /// <summary>
 /// 플레이어의 움직임을 관리하는 컴포넌트
@@ -106,7 +107,7 @@ public class PlayerMovementController : MonoBehaviour
     #region Gliding Variables
     [Header("Gliding")]
     [Tooltip("활공 시 표시될 메시 오브젝트")]
-    [SerializeField] private GameObject glidingMesh;
+    [SerializeField] private BalloonMovementController balloon;
     #endregion
 
 
@@ -143,6 +144,7 @@ public class PlayerMovementController : MonoBehaviour
 
         // 모드 전환 시 해당 메서드가 함께 실행됨
         PlayerManager.Instance.ModeConvertAddAction(ChangeCurMovement);
+        PlayerManager.Instance.ModeConvertAddAction(SetIsHamsterValueAnimator);
     }
 
 
@@ -158,7 +160,7 @@ public class PlayerMovementController : MonoBehaviour
         // 부스터 에너지 관리
         UpdateBoostEnergy();
 
-        curMovement.OnUpdate();
+        //curMovement.OnUpdate();
 
         if (velocityTxt != null)
             velocityTxt.text
@@ -168,6 +170,7 @@ public class PlayerMovementController : MonoBehaviour
 
     void FixedUpdate()
     {
+        curMovement.OnUpdate();
         // 이동 처리
         UpdateMovement();
         
@@ -191,6 +194,7 @@ public class PlayerMovementController : MonoBehaviour
         playerMgr.isJumping = false;
         playerMgr.isBoosting = false;
         playerMgr.isGliding = false;
+        SetIsHamsterValueAnimator();
     }
     #endregion
 
@@ -218,6 +222,14 @@ public class PlayerMovementController : MonoBehaviour
     /// 현재 이동 방식을 변경합니다 (공 또는 햄스터)
     /// </summary>
     private void ChangeCurMovement()
+    {
+        if (playerMgr.isBall)
+            Invoke(nameof(ChangeCurMovementAfterFewSeconds), PlayerManager.MODE_CONVERT_TIME);
+        else
+            ChangeCurMovementAfterFewSeconds();
+    }
+
+    private void ChangeCurMovementAfterFewSeconds()
     {
         if (playerMgr.isBall)
             curMovement = GetComponent<BallMovementController>();
@@ -289,7 +301,7 @@ public class PlayerMovementController : MonoBehaviour
             GetComponent<PlayerWireController>().EndShoot(); // 와이어 사용 중이었다면 취소
             playerMgr.isJumping = false;
             playerMgr.isGliding = false;
-            glidingMesh.SetActive(false); // 글라이딩 메시 비활성화
+            EndGliding();
             playerMgr.isBoosting = false; // 부스트 상태 해제
 
             HLogger.General.Info($"마지막 체크포인트 ({checkpointPosition})로 이동했습니다.");
@@ -416,6 +428,11 @@ public class PlayerMovementController : MonoBehaviour
     {
         animator.SetTrigger("Jump");
     }
+
+    public void SetIsHamsterValueAnimator()
+    {
+        animator.SetBool("IsHamster", !PlayerManager.Instance.isBall);
+    }
     #endregion
 
 
@@ -434,18 +451,51 @@ public class PlayerMovementController : MonoBehaviour
             // jumped : 이번 Update 프레임 때 점프를 했는지
             if (!jumped && playerMgr.skill.HasGliding())
             {
-                playerMgr.isGliding = !playerMgr.isGliding;
+                if (playerMgr.isGliding) EndGliding();
+                else StartGliding();
             }
         }
 
         // 지면에 닿으면 활공 종료
-        if (playerMgr.isGround)
+        if (playerMgr.isGround && playerMgr.isGliding)
         {
-            playerMgr.isGliding = false;
+            EndGliding();
         }
+    }
 
-        // 활공 메시 표시 여부 설정
-        glidingMesh.SetActive(playerMgr.isGliding);
+    public void StartGliding()
+    {
+        if (playerMgr.isGliding)
+            return;
+
+        StartGlidingSub();
+        balloon.StartGliding(1f);
+    }
+
+    public void StartGlidingFast()
+    {
+        if (playerMgr.isGliding)
+            return;
+
+        StartGlidingSub();
+        balloon.StartGliding(0.25f);
+    }
+
+    private void StartGlidingSub()
+    {
+        playerMgr.isGliding = true;
+        balloon.gameObject.SetActive(true);
+        animator.SetBool("IsGliding", true);
+    }
+
+    public void EndGliding()
+    {
+        if (!playerMgr.isGliding)
+            return;
+
+        playerMgr.isGliding = false;
+        balloon.EndGliding();
+        animator.SetBool("IsGliding", false);
     }
     #endregion
 

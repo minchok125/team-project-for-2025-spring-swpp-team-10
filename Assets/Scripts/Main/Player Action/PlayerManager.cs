@@ -1,4 +1,5 @@
 using System;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
 /// <summary>
@@ -200,10 +201,12 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// </remarks>
     public Transform followPlayerTransform;
 
+    public const float MODE_CONVERT_TIME = 0.4f;
+
     /// <summary>
     /// 플레이어의 움직임 컨트롤러 참조입니다.
     /// </summary>
-    [HideInInspector] private PlayerMovementController playerMovement;
+    [HideInInspector] public PlayerMovementController playerMovement;
     #endregion
 
 
@@ -212,7 +215,9 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     private int _mouseInputLockNumber;
     private Rigidbody _rb;
     private GameObject _hamsterLightningShockParticle;
-    private GameObject _ballLightningShockParticle;
+    [SerializeField] private GameObject _ballLightningShockParticle;
+    private BalloonMovementController _balloon;
+    [SerializeField] private GameObject _balloonHamsterRope;
 
 
 
@@ -275,13 +280,14 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         playerMovement = GetComponent<PlayerMovementController>();
         playerWire = GetComponent<PlayerWireController>();
         _rb = GetComponent<Rigidbody>();
+        _balloon = transform.GetChild(2).GetComponent<BalloonMovementController>();
 
         _hamsterLightningShockParticle
-            = transform.Find("Hamster Normal")
+            = transform.GetChild(0).GetChild(0)
                        .Find("Lightning Particle")?.gameObject;
-        _ballLightningShockParticle
-            = transform.Find("Hamster Ball")
-                       .Find("Lightning Particle")?.gameObject;
+        // _ballLightningShockParticle
+        //     = transform.Find("Hamster Ball")
+        //                .Find("Lightning Particle")?.gameObject;
     }
 
 
@@ -418,8 +424,49 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// </summary>
     public void ModeConvert()
     {
+        if (!isBall) // 햄스터 -> 공
+        {
+            if (isGliding)
+            {
+                playerMovement.EndGliding();
+                isGliding = true;
+            }
+        }
+        else // 공 -> 햄스터
+        {
+            if (isGliding)
+            {
+                _balloonHamsterRope.SetActive(true);
+                _balloon.MoveYToFitHamster();
+            }
+            SetRotation();
+        }
+        
         isBall = !isBall;
         _modeConvert?.Invoke();
+
+        if (isBall && isGliding) // 햄스터 -> 공
+            Invoke(nameof(ReCreateBalloon), 0.22f);
+    }
+
+    // 공 -> 햄스터 전환 때 햄스터의 방향을 현재 속도의 방향으로 설정합니다.
+    private void SetRotation()
+    {
+        Vector3 vel = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
+        if (vel.sqrMagnitude < 0.001f)
+        {
+            transform.rotation = Quaternion.identity;
+        }
+        else
+        {
+            transform.rotation = Quaternion.LookRotation(vel);
+        }
+    }
+
+    private void ReCreateBalloon()
+    {
+        isGliding = false;
+        playerMovement.StartGlidingFast();
     }
 
     /// <summary>
@@ -462,7 +509,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
         canLightningShock = false;
         playerWire.EndShoot();
-        isGliding = false;
+        playerMovement.EndGliding();
 
         if (isBall) _ballLightningShockParticle.SetActive(true);
         else _hamsterLightningShockParticle.SetActive(true);
