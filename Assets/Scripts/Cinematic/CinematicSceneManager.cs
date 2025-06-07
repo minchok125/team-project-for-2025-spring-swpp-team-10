@@ -10,49 +10,51 @@ public class CinematicSceneManager : MonoBehaviour
     [SerializeField] private GameObject fadePanel;
     [SerializeField] private float fadeDuration;
     [SerializeField] private OpeningManager openingManager;
+    [SerializeField] private EndingManager endingManager;
     
-    private GameManager.CinematicModes cinematicMode;
-    private Image fadePanelImg;
+    private GameManager.CinematicModes _cinematicMode;
+    private Image _fadePanelImg;
 
     private void Awake()
     {
-        fadePanelImg = fadePanel.GetComponent<Image>();
+        _fadePanelImg = fadePanel.GetComponent<Image>();
     }
 
     private void Start()
     {
-        cinematicMode = GameManager.Instance.cinematicMode;
+        _cinematicMode = GameManager.Instance.cinematicMode;
 
-        switch (cinematicMode)
+        switch (_cinematicMode)
         {
             case GameManager.CinematicModes.Opening:
                 StartCoroutine(Opening());
                 break;
             
             case GameManager.CinematicModes.GoodEnding:
+                StartCoroutine(GoodEnding());
                 break;
             
             case GameManager.CinematicModes.BadEnding:
                 break;
             
             default:
-                Debug.LogError("시네마틱 모드 이상: " + cinematicMode);
+                Debug.LogError("시네마틱 모드 이상: " + _cinematicMode);
                 break;
         }
     }
 
     private void FadeIn()
     {
-        fadePanelImg.color = Color.black;
+        _fadePanelImg.color = Color.black;
         fadePanel.SetActive(true);
-        fadePanelImg.DOColor(Color.clear, fadeDuration).OnComplete(() => fadePanel.SetActive(false));
+        _fadePanelImg.DOColor(Color.clear, fadeDuration).OnComplete(() => fadePanel.SetActive(false));
     }
 
     private IEnumerator FadeOut()
     {
-        fadePanelImg.color = Color.clear;
+        _fadePanelImg.color = Color.clear;
         fadePanel.SetActive(true);
-        fadePanelImg.DOColor(Color.black, fadeDuration);
+        _fadePanelImg.DOColor(Color.black, fadeDuration);
 
         float currBgmVolume = GameManager.Instance.bgmVolume;
         for(float elapsed = 0; elapsed < fadeDuration; elapsed += Time.deltaTime)
@@ -69,23 +71,28 @@ public class CinematicSceneManager : MonoBehaviour
     {
         FadeIn();
         yield return openingManager.OpeningCoroutine(fadeDuration);
-        yield return FadeOut();
-        SceneManager.LoadScene("MainScene");
+        yield return Load("MainScene");
     }
 
-    private void EndCinematicScene()
+    private IEnumerator GoodEnding()
     {
-        switch (cinematicMode)
-        {
-            case GameManager.CinematicModes.Opening:
-                
-                break;
-            
-            case GameManager.CinematicModes.GoodEnding:
-                break;
-            
-            case GameManager.CinematicModes.BadEnding:
-                break;
-        }
+        FadeIn();
+        yield return endingManager.GoodEndingCoroutine(fadeDuration);
+    }
+
+    public void GoBackToTitle()
+    {
+        StartCoroutine(Load("TitleScene"));
+    }
+
+    public void PlayAgain()
+    {
+        StartCoroutine(Load("MainScene"));
+    }
+
+    private IEnumerator Load(string sceneName)
+    {
+        yield return FadeOut();
+        SceneManager.LoadScene(sceneName);
     }
 }
