@@ -49,7 +49,6 @@ public class HamsterWireController : MonoBehaviour, IWire
     private Transform hitPoint;
     // 잡힌 물체의 Transform
     private Transform grabTransform;
-    private CapsuleCollider hamsterCol;
 
 
     #region New
@@ -59,7 +58,6 @@ public class HamsterWireController : MonoBehaviour, IWire
 
         grabDistance = GetComponent<PlayerWireController>().grabDistance;
         hitPoint = GetComponent<PlayerWireController>().hitPoint;
-        hamsterCol = transform.Find("Hamster Normal").GetComponent<CapsuleCollider>();
     }
 
     /// <summary>
