@@ -64,8 +64,10 @@ public class EndingManager : MonoBehaviour
         
         _fadePanelImg.color = Color.clear;
         fadePanel.SetActive(true);
-        _fadePanelImg.DOColor(goodEndingColor, escapeFadeOutDuration)
-            .OnComplete(() => StartCoroutine(GoodEndingScoreboardCoroutine()));
+        _fadePanelImg.DOColor(goodEndingColor, escapeFadeOutDuration);
+        yield return new WaitForSeconds(escapeFadeOutDuration);
+
+        yield return GoodEndingScoreboardCoroutine();
     }
 
     public IEnumerator BadEndingCoroutine(float fadeDuration)
@@ -77,6 +79,9 @@ public class EndingManager : MonoBehaviour
         _fadePanelImg.color = Color.clear;
         fadePanel.SetActive(true);
         _fadePanelImg.DOColor(badEndingColor, escapeFadeOutDuration);
+        yield return new WaitForSeconds(escapeFadeOutDuration);
+        
+        yield return BadEndingScoreboardCoroutine();
     }
 
     private IEnumerator EscapeCoroutine(float fadeDuration)
@@ -131,6 +136,14 @@ public class EndingManager : MonoBehaviour
         receipt.SetActive(true);
         receiptImg.DOColor(Color.white, receiptFadeInDuration)
             .OnComplete(() => goodEndingSb.SetActive(true));
+    }
+
+    private IEnumerator BadEndingScoreboardCoroutine()
+    {
+        escapeCam.enabled = false;
+        escapeCam.gameObject.SetActive(false);
+        
+        
     }
 
     private void UpdateScoreboard()
