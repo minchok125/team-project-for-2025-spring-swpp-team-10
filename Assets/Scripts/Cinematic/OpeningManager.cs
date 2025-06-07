@@ -96,11 +96,6 @@ public class OpeningManager : MonoBehaviour
         hamster.rotation = Quaternion.Euler(hamsterStartRot);
     }
 
-    private void Start()
-    {
-        // StartCoroutine(OpeningCoroutine());
-    }
-
     public IEnumerator OpeningCoroutine(float fadeDuration)
     {
         openingCanvas.SetActive(true);
