@@ -218,7 +218,7 @@ public class PlayerWireController : MonoBehaviour
         if (PlayerManager.Instance.IsInputLock())
             return;
             
-        if (Input.GetKeyDown(KeyCode.Tab) && Time.time - convertedTime > 0.5f)
+        if (Input.GetKeyDown(KeyCode.Tab) && Time.time - convertedTime > 1f)
         {
             PlayerManager.Instance.ModeConvert();
             EndShoot();

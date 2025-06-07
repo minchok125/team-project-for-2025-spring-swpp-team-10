@@ -15,13 +15,14 @@ public class GroundCheck : MonoBehaviour
     void Start()
     {
         detectionMask = ~LayerMask.GetMask("Player");
+        detectionMask &= ~LayerMask.GetMask("NoCollide");
     }
 
 
     void FixedUpdate()
     {
         // 지면 위에 있을 때 지면과 플레이어 바닥 사이의 거리 오프셋
-        float groundDist = PlayerManager.Instance.isBall ? 0.85f : 0.05f;
+            float groundDist = PlayerManager.Instance.isBall ? 0.8f : 0.05f;
 
         // 플레이어의 Position에서 플레이어 꼭대기 위치까지의 y축 거리
         float yOffset = PlayerManager.Instance.isBall ? 1f : 1.8f;
