@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,8 +10,8 @@ public class EndingManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject endingCanvas;
-    [SerializeField] private Camera escapeCam, houseCam;
-    [SerializeField] private GameObject townHamster, townLights;
+    [SerializeField] private Camera escapeCam, houseCam, mugShotCam;
+    [SerializeField] private GameObject townHamster, townLights, scoreboard;
     [SerializeField] private CinematicHamsterController trackHamsterController, houseHamsterController;
     
     [Header("Escape")]
@@ -23,7 +24,7 @@ public class EndingManager : MonoBehaviour
     [SerializeField] private float escapeFadeOutDuration;
 
     [Header("Good Ending")]
-    [SerializeField] private GameObject goodEndingSb, receipt;
+    [SerializeField] private GameObject receipt;
     [SerializeField] private float houseFadeInDuration;
     [SerializeField] private Vector3 houseCamStartPos, houseCamStartRot;
     [SerializeField] private Vector3 showHouseCamRot;
@@ -33,7 +34,15 @@ public class EndingManager : MonoBehaviour
     [SerializeField] private float receiptFadeInDuration;
     
     [Header("Bad Ending")]
-    [SerializeField] private GameObject badEndingSb;
+    [SerializeField] private GameObject policeParent;
+    [SerializeField] private Vector3 policeCamStartPos, policeCamStartRot;
+    [SerializeField] private float policeFadeInDuration, policeHamsterDuration;
+    [SerializeField] private Vector3 policeCamEndPos, policeCamEndRot;
+    [SerializeField] private float showPoliceDuration, showPoliceHoldingDuration;
+    [SerializeField] private GameObject mugShotPadding;
+    [SerializeField] private Vector3 mugShotCamRectPos, mugShotCamRectRot, mugShotCamTransPos, mugShotCamTransRot;
+    [SerializeField] private float policeFadeOutDuration, mugShotDuration, mugShotHoldingDuration;
+    
     
     private Sequence _endingSeq;
     private Image _fadePanelImg;
@@ -41,6 +50,7 @@ public class EndingManager : MonoBehaviour
     private void Awake()
     {
         endingCanvas.SetActive(false);
+        scoreboard.SetActive(false);
         
         escapeCam.enabled = false;
         escapeCam.gameObject.SetActive(false);
@@ -48,13 +58,15 @@ public class EndingManager : MonoBehaviour
         houseCam.enabled = false;
         houseCam.gameObject.SetActive(false);
         
+        mugShotCam.enabled = false;
+        mugShotCam.gameObject.SetActive(false);
+        
         fadePanel.SetActive(false);
         _fadePanelImg = fadePanel.GetComponent<Image>();
         
-        goodEndingSb.SetActive(false);
         receipt.SetActive(false);
-        
-        badEndingSb.SetActive(false);
+        policeParent.SetActive(false);
+        mugShotPadding.SetActive(false);
     }
 
     public IEnumerator GoodEndingCoroutine(float fadeDuration)
@@ -73,7 +85,6 @@ public class EndingManager : MonoBehaviour
     public IEnumerator BadEndingCoroutine(float fadeDuration)
     {
         endingCanvas.SetActive(true);
-        fadePanel.SetActive(false);
         yield return EscapeCoroutine(fadeDuration);
         
         _fadePanelImg.color = Color.clear;
@@ -111,6 +122,7 @@ public class EndingManager : MonoBehaviour
 
     private IEnumerator GoodEndingScoreboardCoroutine()
     {
+        UpdateScoreboard();
         escapeCam.enabled = false;
         escapeCam.gameObject.SetActive(false);
         
@@ -120,8 +132,9 @@ public class EndingManager : MonoBehaviour
         houseCam.transform.localPosition = houseCamStartPos;
         houseCam.transform.rotation = Quaternion.Euler(houseCamStartRot);
         
-        _fadePanelImg.DOColor(Color.clear, houseFadeInDuration).SetEase(Ease.Linear);
+        _fadePanelImg.DOColor(Color.clear, houseFadeInDuration);
         yield return new WaitForSeconds(houseFadeInDuration);
+        fadePanel.SetActive(false);
 
         houseCam.transform.DORotate(showHouseCamRot, showHouseDuration);
         StartCoroutine(houseHamsterController.RunAway(showHouseHoldingDuration + showHouseHoldingDuration));
@@ -135,15 +148,48 @@ public class EndingManager : MonoBehaviour
         receiptImg.color = Color.clear;
         receipt.SetActive(true);
         receiptImg.DOColor(Color.white, receiptFadeInDuration)
-            .OnComplete(() => goodEndingSb.SetActive(true));
+            .OnComplete(() => scoreboard.SetActive(true));
     }
 
     private IEnumerator BadEndingScoreboardCoroutine()
     {
+        UpdateScoreboard();
         escapeCam.enabled = false;
         escapeCam.gameObject.SetActive(false);
         
+        townLights.SetActive(true);
+        policeParent.SetActive(true);
         
+        houseCam.enabled = true;
+        houseCam.gameObject.SetActive(true);
+        houseCam.transform.localPosition = policeCamStartPos;
+        houseCam.transform.rotation = Quaternion.Euler(policeCamStartRot);
+        
+        _fadePanelImg.DOColor(Color.clear, policeFadeInDuration);
+        yield return new WaitForSeconds(policeFadeInDuration + policeHamsterDuration);
+
+        houseCam.transform.DOLocalMove(policeCamEndPos, showPoliceDuration);
+        houseCam.transform.DORotate(policeCamEndRot, showPoliceDuration).SetEase(Ease.Linear);
+        yield return new WaitForSeconds(showPoliceDuration + showPoliceHoldingDuration);
+
+        _fadePanelImg.DOColor(Color.black, policeFadeOutDuration);
+        yield return new WaitForSeconds(policeFadeOutDuration);
+
+        mugShotCam.rect = new Rect(mugShotCamRectPos, mugShotCamRectRot);
+        mugShotCam.transform.localPosition = mugShotCamTransPos;
+        mugShotCam.transform.rotation = quaternion.Euler(mugShotCamTransRot);
+        yield return new WaitForSeconds(mugShotDuration);
+        
+        houseCam.enabled = false;
+        houseCam.gameObject.SetActive(false);
+        
+        fadePanel.SetActive(false);
+        mugShotPadding.SetActive(true);
+        mugShotCam.enabled = true;
+        mugShotCam.gameObject.SetActive(true);
+        yield return new WaitForSeconds(mugShotHoldingDuration);
+
+        scoreboard.SetActive(true);
     }
 
     private void UpdateScoreboard()
