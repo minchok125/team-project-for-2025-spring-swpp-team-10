@@ -35,6 +35,7 @@ public class CinematicSceneManager : MonoBehaviour
                 break;
             
             case GameManager.CinematicModes.BadEnding:
+                StartCoroutine(BadEnding());
                 break;
             
             default:
@@ -78,6 +79,12 @@ public class CinematicSceneManager : MonoBehaviour
     {
         FadeIn();
         yield return endingManager.GoodEndingCoroutine(fadeDuration);
+    }
+
+    private IEnumerator BadEnding()
+    {
+        FadeIn();
+        yield return endingManager.BadEndingCoroutine(fadeDuration);
     }
 
     public void GoBackToTitle()
