@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 /// <summary>
 /// 레벨 1의 특정 시퀀스를 관리하는 컨트롤러입니다. Animator 대신 Transform의 좌표와 각도를 직접 제어합니다.
@@ -23,10 +24,15 @@ public class LevelOneController : MonoBehaviour, INextCheckpointObserver
     [SerializeField] private float doorOpenSpeedFactor = 1.0f;
 
     [Header("로봇청소기 이동 설정")]
-    [Tooltip("로봇청소기가 이동할 목표 지점 (상호작용 지점).")]
-    [SerializeField] private Transform robotInteractionPoint;
-    [Tooltip("로봇청소기의 이동 속도 (값이 클수록 빠름, 1이면 1초 소요)")]
-    [SerializeField] private float robotVacuumMoveSpeedFactor = 1.0f;
+    [Tooltip("로봇청소기가 이동할 첫 번째 목표 지점 (상호작용 지점).")]
+    [SerializeField] private Transform robotInteractionPoint1;
+    [Tooltip("로봇청소기가 이동할 두 번째 목표 지점 (상호작용 지점).")]
+    [SerializeField] private Transform robotInteractionPoint2;
+    [Tooltip("로봇청소기가 첫 번째 포인트로 이동하는 시간")]
+    [SerializeField] private float robotVacuumMoveTime1 = 2.5f;
+    [Tooltip("로봇청소기가 두두 번째 포인트로 이동하는 시간")]
+    [SerializeField] private float robotVacuumMoveTime2 = 0.8f;
+
 
     [Header("시퀀스 딜레이 (초)")]
     [Tooltip("콜라병이 떨어진 후 문이 열리기 시작하기까지의 시간")]
@@ -48,7 +54,7 @@ public class LevelOneController : MonoBehaviour, INextCheckpointObserver
         {
             Debug.LogError("Robot Vacuum Transform이 Inspector에 할당되지 않았습니다.");
         }
-        if (robotInteractionPoint == null)
+        if (robotInteractionPoint1 == null || robotInteractionPoint2 == null)
         {
             Debug.LogError("Robot Interaction Point가 Inspector에 할당되지 않았습니다.");
         }
@@ -93,7 +99,8 @@ public class LevelOneController : MonoBehaviour, INextCheckpointObserver
         Debug.Log("레벨 1 시퀀스를 시작합니다.");
 
         if (robotVacuumTransform == null) { Debug.LogError("LevelOneController: RobotVacuum Transform이 설정되지 않았습니다!"); yield break; }
-        if (robotInteractionPoint == null) { Debug.LogError("LevelOneController: RobotInteractionPoint가 설정되지 않았습니다!"); yield break; }
+        if (robotInteractionPoint1 == null || robotInteractionPoint2 == null)
+        { Debug.LogError("LevelOneController: RobotInteractionPoint가 설정되지 않았습니다!"); yield break; }
 
         initialRobotPosition = robotVacuumTransform.position;
         initialRobotRotation = robotVacuumTransform.rotation; // 초기 회전값 저장 (참고용)
@@ -109,23 +116,40 @@ public class LevelOneController : MonoBehaviour, INextCheckpointObserver
 
         yield return new WaitForSeconds(delayBeforeRobotVacuumEnters);
 
-        Debug.Log("로봇청소기를 지정 지점(" + robotInteractionPoint.name + ")으로 이동시킵니다. (회전 없음)");
-        yield return StartCoroutine(MoveObjectToDestination(
-            robotVacuumTransform,
-            robotInteractionPoint.position,
-            robotVacuumMoveSpeedFactor
-        ));
+        Debug.Log("로봇청소기를 지정 지점(" + robotInteractionPoint1.name + ")으로 이동시킵니다. (회전 없음)");
+        robotVacuumTransform.DOMove(robotInteractionPoint1.position, robotVacuumMoveTime1)
+                            .SetEase(Ease.Linear);
+        yield return new WaitForSeconds(robotVacuumMoveTime1);
+
+        Debug.Log("로봇청소기를 지정 지점(" + robotInteractionPoint2.name + ")으로 이동시킵니다. (회전 없음)");
+        robotVacuumTransform.DOMove(robotInteractionPoint2.position, robotVacuumMoveTime2)
+                            .SetEase(Ease.Linear);
+        yield return new WaitForSeconds(robotVacuumMoveTime2);
+
+        // yield return StartCoroutine(MoveObjectToDestination(
+        //     robotVacuumTransform,
+        //     robotInteractionPoint.position,
+        //     robotVacuumMoveSpeedFactor
+        // ));
 
         yield return new WaitForSeconds(delayBeforeBottleDisappears);
         MakeBottleDisappear();
         yield return new WaitForSeconds(delayBeforeRobotVacuumReturns);
 
         Debug.Log("로봇청소기를 원래 위치로 복귀시킵니다. (회전 없음)");
-        yield return StartCoroutine(MoveObjectToDestination(
-            robotVacuumTransform,
-            initialRobotPosition,
-            robotVacuumMoveSpeedFactor
-        ));
+        // yield return StartCoroutine(MoveObjectToDestination(
+        //     robotVacuumTransform,
+        //     initialRobotPosition,
+        //     robotVacuumMoveSpeedFactor
+        // ));
+
+        robotVacuumTransform.DOMove(robotInteractionPoint1.position, robotVacuumMoveTime2)
+                            .SetEase(Ease.Linear);
+        yield return new WaitForSeconds(robotVacuumMoveTime2);
+
+        robotVacuumTransform.DOMove(initialRobotPosition, robotVacuumMoveTime1)
+                            .SetEase(Ease.Linear);
+        yield return new WaitForSeconds(robotVacuumMoveTime1);
         
         Debug.Log("레벨 1 시퀀스를 완료했습니다.");
     }
@@ -160,25 +184,25 @@ public class LevelOneController : MonoBehaviour, INextCheckpointObserver
     /// <param name="objectToMove">이동시킬 오브젝트의 Transform</param>
     /// <param name="targetPosition">목표 위치</param>
     /// <param name="speedFactor">이동 속도 계수 (클수록 빠름)</param>
-    private IEnumerator MoveObjectToDestination(
-        Transform objectToMove,
-        Vector3 targetPosition,
-        float speedFactor)
-    {
-        Vector3 legStartPosition = objectToMove.position;
-        float time = 0;
+    // private IEnumerator MoveObjectToDestination(
+    //     Transform objectToMove,
+    //     Vector3 targetPosition,
+    //     float speedFactor)
+    // {
+    //     Vector3 legStartPosition = objectToMove.position;
+    //     float time = 0;
 
-        while (time < 1)
-        {
-            // 위치 이동: 현재 레그의 시작점에서 목표 위치로 Lerp
-            objectToMove.position = Vector3.Lerp(legStartPosition, targetPosition, time);
+    //     while (time < 1)
+    //     {
+    //         // 위치 이동: 현재 레그의 시작점에서 목표 위치로 Lerp
+    //         objectToMove.position = Vector3.Lerp(legStartPosition, targetPosition, time);
 
-            time += Time.deltaTime * speedFactor;
-            yield return null;
-        }
+    //         time += Time.deltaTime * speedFactor;
+    //         yield return null;
+    //     }
 
-        objectToMove.position = targetPosition;
-    }
+    //     objectToMove.position = targetPosition;
+    // }
 
     private void MakeBottleDisappear()
     {
