@@ -15,8 +15,6 @@ public class HamsterMovementController : MonoBehaviour, IMovement
     [Header("PhysicMaterial")]
     [Tooltip("땅에 있을 때 PhysicMaterial (마찰력 O)")]
     [SerializeField] private PhysicMaterial hamsterGround;
-    [Tooltip("땅에 있으며 와이어 조작할 때 PhysicMaterial (마찰력 거의X)")]
-    [SerializeField] private PhysicMaterial hamsterGroundWire;
     [Tooltip("공중에서 PhysicMaterial (마찰력 X)")]
     [SerializeField] private PhysicMaterial hamsterJump;
 
@@ -31,7 +29,7 @@ public class HamsterMovementController : MonoBehaviour, IMovement
 
     private void Start()
     {
-        col = transform.Find("Hamster Normal").GetComponent<CapsuleCollider>();
+        col = transform.GetChild(0).GetChild(0).GetComponent<CapsuleCollider>();
         rb = GetComponent<Rigidbody>();
 
         if (col == null)
