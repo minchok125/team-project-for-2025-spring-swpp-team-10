@@ -67,6 +67,7 @@ public class DrawOutline : MonoBehaviour
             if (!_linkedOutlineRenderers[i].TryGetComponent(out Outline outline))
             {
                 _linkedOutlineRenderers[i].gameObject.AddComponent<Outline>();
+                Debug.Log($"이 오브젝트에서 오류가 발생할 예정입니다: {gameObject.name}", this.gameObject);
             }
         }
 
