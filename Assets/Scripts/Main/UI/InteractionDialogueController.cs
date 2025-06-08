@@ -10,6 +10,8 @@ using UnityEditor;
 // public void DoDialogue()로 외부해서 대사 호출이 가능합니다.
 public class InteractionDialogueController : MonoBehaviour
 {
+    [Tooltip("대사를 최초 한 번만 실행합니다.")]
+    [SerializeField] private bool executeOnlyOnce = false;
     [Tooltip("대사를 출력한 직후 오브젝트를 삭제합니다.")]
     [SerializeField] private bool destroyThis = false;
     [Tooltip("같은 내용을 출력하는 최소 간격")]
@@ -53,6 +55,7 @@ public class InteractionDialogueController : MonoBehaviour
     [SerializeField] private CheckpointIndex dialogueEnableEndCheckpoint = CheckpointIndex.GameEnd;
 
     private bool _canInteract = true;
+    private bool _hasBeenExecuted = false;
 
 
 
@@ -91,6 +94,9 @@ public class InteractionDialogueController : MonoBehaviour
 
     private bool CanDoDialogue()
     {
+        if (executeOnlyOnce && _hasBeenExecuted)
+            return false;
+        
         return dialogueOnTriggerOrCollier && _canInteract
             && (int)dialogueEnableStartCheckpoint - 1 <= CheckpointManager.Instance.GetCurrentCheckpointIndex()
             && CheckpointManager.Instance.GetCurrentCheckpointIndex() <= (int)dialogueEnableEndCheckpoint - 1;
@@ -123,6 +129,7 @@ public class InteractionDialogueController : MonoBehaviour
             HLogger.General.Info($"{fileName} 대사를 출력합니다.", this);
         }
 
+        _hasBeenExecuted = true; // 대사 실행됨을 표시
         _canInteract = false;
         Invoke(nameof(CanInteractTrue), minimumNotificationCooldown); // n초 뒤 다시 출력 가능
 
@@ -183,6 +190,7 @@ class TriggerEnterDialogueControllerEditor : Editor
 {
     InteractionDialogueController _target;
 
+    SerializedProperty executeOnlyOnceProp;
     SerializedProperty destroyThisProp;
     SerializedProperty minimumNotificationCooldownProp;
     SerializedProperty dialogueOnTriggerOrCollierProp;
@@ -204,6 +212,7 @@ class TriggerEnterDialogueControllerEditor : Editor
 
     private void OnEnable()
     {
+        executeOnlyOnceProp = serializedObject.FindProperty("executeOnlyOnce");
         destroyThisProp = serializedObject.FindProperty("destroyThis");
         minimumNotificationCooldownProp = serializedObject.FindProperty("minimumNotificationCooldown");
         dialogueOnTriggerOrCollierProp = serializedObject.FindProperty("dialogueOnTriggerOrCollier");
@@ -233,7 +242,11 @@ class TriggerEnterDialogueControllerEditor : Editor
             EditorGUILayout.PropertyField(isTriggerProp);
             EditorGUILayout.PropertyField(destroyThisProp);
             if (!destroyThisProp.boolValue)
-                EditorGUILayout.PropertyField(minimumNotificationCooldownProp);
+            {
+                EditorGUILayout.PropertyField(executeOnlyOnceProp);
+                if (!executeOnlyOnceProp.boolValue)
+                    EditorGUILayout.PropertyField(minimumNotificationCooldownProp);
+            }
         }
 
         EditorGUILayout.PropertyField(isOnelineDialogueProp);
