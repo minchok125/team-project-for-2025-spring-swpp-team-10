@@ -358,10 +358,11 @@ public class PlayerWireController : MonoBehaviour
         hitPoint.SetParent(grabObject.transform);
         hitPoint.position = predictionHit.point;
 
-        // LineRenderer 설정
-        // lr.positionCount = 2;
-        // lr.SetPosition(0, transform.position);
-        // lr.SetPosition(1, predictionHit.point);
+        // 와이어 튕김 정도 설정
+        float dist = (hitPoint.position - transform.position).magnitude;
+        float distRate = Mathf.Min(1, dist / 50f); // 0 ~ 50 -> 0 ~ 1
+        float waveHeight = 8f * distRate;
+        grapplingWire.SetWaveHeight(waveHeight);
 
         // 와이어 발사
         currentWire.WireShoot(predictionHit);
