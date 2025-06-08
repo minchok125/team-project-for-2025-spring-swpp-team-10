@@ -320,11 +320,13 @@ public class PlayerWireController : MonoBehaviour
         {
             currentWire = PlayerManager.Instance.isBall ? GetComponent<BallWireController>() 
                                                         : GetComponent<HamsterWireController>();
+            PlayerManager.Instance.playerMovement.EndGliding();
         }
         // 공 와이어만 가능한 오브젝트
         else if (objProperty.canGrabInBallMode)
         {
             currentWire = GetComponent<BallWireController>();
+            PlayerManager.Instance.playerMovement.EndGliding();
             PlayerManager.Instance.ConvertToBall();
         }
         // 햄스터 와이어만 가능한 오브젝트
@@ -337,6 +339,7 @@ public class PlayerWireController : MonoBehaviour
                 return false;
             }
             currentWire = GetComponent<HamsterWireController>();
+            PlayerManager.Instance.playerMovement.EndGliding();
             PlayerManager.Instance.ConvertToHamster();
         }
         
@@ -349,7 +352,6 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void ConfigureWireShot()
     {
-        PlayerManager.Instance.isGliding = false;
         PlayerManager.Instance.onWire = true;
         PlayerManager.Instance.onWireCollider = predictionHit.collider;
 
