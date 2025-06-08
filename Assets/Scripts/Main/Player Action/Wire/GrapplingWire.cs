@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using Hampossible.Utils;
 using UnityEngine;
 
+// https://github.com/affaxltd/rope-tutorial/blob/master/GrapplingRope.cs 참고
+
 public class GrapplingWire : MonoBehaviour
 {
     private Spring _spring;
     private LineRenderer _lr;
     private Vector3 _currentGrapplePosition;
     private Transform _player;
+    private bool _drawed;
 
     public int quality;
     public float damper;
@@ -27,18 +30,28 @@ public class GrapplingWire : MonoBehaviour
         _player = PlayerManager.Instance.transform;
     }
 
+    public void SetWaveHeight(float waveHeight)
+    {
+        this.waveHeight = waveHeight;
+    }
+
     public void DrawWire()
     {
-        //If not grappling, don't draw rope
         if (!PlayerManager.Instance.onWire)
         {
+            if (_drawed)
+                _spring.Reset();
+            _drawed = false;
             return;
         }
+
+        _drawed = true;
 
         if (_lr.positionCount <= 2)
         {
             _spring.Reset();
             _spring.SetVelocity(velocity);
+            _currentGrapplePosition = _player.position;
             _lr.positionCount = quality + 1;
         }
 
@@ -64,11 +77,8 @@ public class GrapplingWire : MonoBehaviour
 
     public void EndWire()
     {
-        HLogger.General.Info("zzzzzzzzz" + PlayerManager.Instance.onWire);
         _currentGrapplePosition = _player.position;
         _spring.Reset();
-        // if (_lr.positionCount > 0)
-        //     _lr.positionCount = 0;
         StopAllCoroutines();
         StartCoroutine(EndWireAnimation());
     }
