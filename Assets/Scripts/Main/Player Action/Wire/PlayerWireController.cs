@@ -60,6 +60,7 @@ public class PlayerWireController : MonoBehaviour
     private float convertedTime = -10; // Tab 버튼 눌러서 모드가 변환된 시간
 
     private string prevGrabObjectTag; // 잡고 있는 오브젝트의 바뀌기 전 태그 (잡고 있는 오브젝트는 태그를 바꿈)
+    private bool isObjectIClickButton;
     #endregion
 
 
@@ -237,7 +238,11 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void UpdateVisuals()
     {
-        grapplingWire.DrawWire();
+        if (PlayerManager.Instance.onWire && !isObjectIClickButton)
+        {
+            grapplingWire.DrawWire();
+            currentWire.WireUpdate();
+        }
         DrawOutline();
     }
 
@@ -260,9 +265,10 @@ public class PlayerWireController : MonoBehaviour
     private void DrawOutline()
     {
         // 조준 중인 오브젝트 외곽선 표시
-        if (predictionHit.point != Vector3.zero
+        if (predictionHit.collider != null
+            && predictionHit.point != Vector3.zero
             && predictionHit.collider.gameObject != gameObject
-            && !PlayerManager.Instance.IsMouseInputLock()) 
+            && !PlayerManager.Instance.IsMouseInputLock())
         {
             // 햄스터용 오브젝트이고 pull 스킬이 없는 경우는 외곽선 표시하지 않음
             bool reject = !PlayerManager.Instance.isBall && !PlayerManager.Instance.skill.HasHamsterWire();
@@ -384,7 +390,8 @@ public class PlayerWireController : MonoBehaviour
         hitPoint.SetParent(followPlayerHitParent);
         PlayerManager.Instance.onWire = false;
         PlayerManager.Instance.onWireCollider = null;
-        grapplingWire.EndWire();
+        if (!isObjectIClickButton)
+            grapplingWire.EndWire();
         currentWire.EndShoot();
 
         // 다음 와이어 발사를 위해 hitPoint 전환
@@ -655,9 +662,11 @@ public class PlayerWireController : MonoBehaviour
 
         if (grabObject.TryGetComponent(out IWireClickButton btnObj))
         {
+            isObjectIClickButton = true;
             btnObj.Click();
             EndShoot();
         }
+        else isObjectIClickButton = false;
     }
 
     /// <summary>
