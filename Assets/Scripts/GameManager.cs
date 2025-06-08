@@ -117,7 +117,7 @@ public class GameManager : PersistentSingleton<GameManager>
         InitSfxDict();
         InitBgmDict();
         
-        cinematicMode = CinematicModes.Opening;
+        cinematicMode = CinematicModes.BadEnding;
     }
 
     // sfxdict 초기화

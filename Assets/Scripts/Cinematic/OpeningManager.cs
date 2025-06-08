@@ -78,12 +78,12 @@ public class OpeningManager : MonoBehaviour
         logoCam.gameObject.SetActive(false);
         
         logoCam.enabled = false;
-        logoCam.gameObject.SetActive(true);
+        logoCam.gameObject.SetActive(false);
 
         for (int i = 0; i < cutSceneCams.Length; i++)
         {
             cutSceneCams[i].enabled = false;
-            cutSceneCams[i].gameObject.SetActive(true);
+            cutSceneCams[i].gameObject.SetActive(false);
             cutSceneCams[i].rect = new Rect(cutSceneCamsRectPos[i], cutSceneCamsRectRot[i]);
             cutSceneCams[i].transform.localPosition = cutSceneCamsTransStartPos[i];
             cutSceneCams[i].transform.rotation = Quaternion.Euler(cutSceneCamsTransStartRot[i]);

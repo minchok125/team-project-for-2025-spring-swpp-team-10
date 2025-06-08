@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,7 +12,7 @@ public class EndingManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject endingCanvas;
     [SerializeField] private Camera escapeCam, houseCam, mugShotCam;
-    [SerializeField] private GameObject townHamster, townLights, scoreboard;
+    [SerializeField] private GameObject townHamster, townLights;
     [SerializeField] private CinematicHamsterController trackHamsterController, houseHamsterController;
     
     [Header("Escape")]
@@ -43,6 +44,12 @@ public class EndingManager : MonoBehaviour
     [SerializeField] private Vector3 mugShotCamRectPos, mugShotCamRectRot, mugShotCamTransPos, mugShotCamTransRot;
     [SerializeField] private float policeFadeOutDuration, mugShotDuration, mugShotHoldingDuration;
     
+    [Header("Scoreboard")]
+    [SerializeField] private GameObject scoreboard;
+    [SerializeField] private TextMeshProUGUI endingText;
+    
+    public bool ShowingSb { get; private set; }  
+    
     
     private Sequence _endingSeq;
     private Image _fadePanelImg;
@@ -69,6 +76,8 @@ public class EndingManager : MonoBehaviour
         mugShotPadding.SetActive(false);
         
         houseHamsterController.gameObject.SetActive(false);
+        
+        ShowingSb = false;
     }
 
     public IEnumerator GoodEndingCoroutine(float fadeDuration)
@@ -81,7 +90,8 @@ public class EndingManager : MonoBehaviour
         _fadePanelImg.DOColor(goodEndingColor, escapeFadeOutDuration);
         yield return new WaitForSeconds(escapeFadeOutDuration);
 
-        yield return GoodEndingScoreboardCoroutine();
+        yield return RunAwayCoroutine();
+        ShowScoreboard(true);
     }
 
     public IEnumerator BadEndingCoroutine(float fadeDuration)
@@ -94,7 +104,9 @@ public class EndingManager : MonoBehaviour
         _fadePanelImg.DOColor(badEndingColor, escapeFadeOutDuration);
         yield return new WaitForSeconds(escapeFadeOutDuration);
         
-        yield return BadEndingScoreboardCoroutine();
+        yield return PoliceCoroutine();
+        ShowScoreboard(false);
+        
     }
 
     private IEnumerator EscapeCoroutine(float fadeDuration)
@@ -122,9 +134,8 @@ public class EndingManager : MonoBehaviour
         yield return new WaitForSeconds(runDuration + jumpDuration);
     }
 
-    private IEnumerator GoodEndingScoreboardCoroutine()
+    private IEnumerator RunAwayCoroutine()
     {
-        UpdateScoreboard();
         escapeCam.enabled = false;
         escapeCam.gameObject.SetActive(false);
         
@@ -147,17 +158,65 @@ public class EndingManager : MonoBehaviour
         houseCam.transform.DOLocalMove(showHamsterCamPos, showHamsterDuration);
         houseCam.transform.DORotate(showHamsterCamRot, showHamsterDuration).SetEase(Ease.Linear);
         yield return new WaitForSeconds(showHamsterDuration + showHamsterHoldingDuration);
-
-        Image receiptImg = receipt.GetComponent<Image>();
-        receiptImg.color = Color.clear;
-        receipt.SetActive(true);
-        receiptImg.DOColor(Color.white, receiptFadeInDuration)
-            .OnComplete(() => scoreboard.SetActive(true));
     }
 
-    private IEnumerator BadEndingScoreboardCoroutine()
+    private void ShowScoreboard(bool isGoodEnding)
     {
-        UpdateScoreboard();
+        ShowingSb = true;
+        UpdateScoreboard(isGoodEnding);
+
+        if (isGoodEnding)
+        {
+            Image receiptImg = receipt.GetComponent<Image>();
+            receiptImg.color = Color.clear;
+            receipt.SetActive(true);
+            receiptImg.DOColor(Color.white, receiptFadeInDuration)
+                .OnComplete(() => scoreboard.SetActive(true));
+        }
+        else
+        {            
+            scoreboard.SetActive(true);
+        }
+    }
+
+    public void SkipEnding(bool isGoodEnding)
+    {
+        ShowingSb = true;
+        UpdateScoreboard(isGoodEnding);
+
+        escapeCam.enabled = false;
+        escapeCam.gameObject.SetActive(false);
+        houseCam.enabled = isGoodEnding;
+        houseCam.gameObject.SetActive(isGoodEnding);
+
+        mugShotCam.enabled = !isGoodEnding;
+        mugShotCam.gameObject.SetActive(!isGoodEnding);
+
+        if (isGoodEnding)
+        {
+            houseCam.transform.localPosition = showHamsterCamPos;
+            houseCam.transform.rotation = Quaternion.Euler(showHamsterCamRot);
+            
+            Image receiptImg = receipt.GetComponent<Image>();
+            receiptImg.color = Color.white;
+            receipt.SetActive(true);
+            scoreboard.SetActive(true);
+        }
+        else
+        {
+            mugShotCam.rect = new Rect(mugShotCamRectPos, mugShotCamRectRot);
+            mugShotCam.transform.localPosition = mugShotCamTransPos;
+            mugShotCam.transform.rotation = quaternion.Euler(mugShotCamTransRot);
+        
+            fadePanel.SetActive(false);
+            mugShotPadding.SetActive(true);
+            
+            scoreboard.SetActive(true);
+        }
+    }
+
+    private IEnumerator PoliceCoroutine()
+    {
         escapeCam.enabled = false;
         escapeCam.gameObject.SetActive(false);
         
@@ -169,6 +228,8 @@ public class EndingManager : MonoBehaviour
         houseCam.transform.localPosition = policeCamStartPos;
         houseCam.transform.rotation = Quaternion.Euler(policeCamStartRot);
         
+        houseHamsterController.gameObject.SetActive(true);
+        
         _fadePanelImg.DOColor(Color.clear, policeFadeInDuration);
         yield return new WaitForSeconds(policeFadeInDuration + policeHamsterDuration);
 
@@ -178,7 +239,7 @@ public class EndingManager : MonoBehaviour
 
         _fadePanelImg.DOColor(Color.black, policeFadeOutDuration);
         yield return new WaitForSeconds(policeFadeOutDuration);
-
+        
         mugShotCam.rect = new Rect(mugShotCamRectPos, mugShotCamRectRot);
         mugShotCam.transform.localPosition = mugShotCamTransPos;
         mugShotCam.transform.rotation = quaternion.Euler(mugShotCamTransRot);
@@ -193,11 +254,10 @@ public class EndingManager : MonoBehaviour
         mugShotCam.gameObject.SetActive(true);
         yield return new WaitForSeconds(mugShotHoldingDuration);
 
-        scoreboard.SetActive(true);
     }
 
-    private void UpdateScoreboard()
+    private void UpdateScoreboard(bool isGoodEnding)
     {
-        // TODO: UpdateScoreboard 구현
+        endingText.text = isGoodEnding ? "Mission\nComplete!" : "Mission\nComplete...?";
     }
 }
