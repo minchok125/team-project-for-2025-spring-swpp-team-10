@@ -16,9 +16,12 @@ public class CinematicSceneManager : MonoBehaviour
     private GameManager.CinematicModes _cinematicMode;
     private Image _fadePanelImg;
 
+    private bool _skip;
+
     private void Awake()
     {
         _fadePanelImg = fadePanel.GetComponent<Image>();
+        _skip = false;
     }
 
     private void Start()
@@ -43,6 +46,11 @@ public class CinematicSceneManager : MonoBehaviour
                 Debug.LogError("시네마틱 모드 이상: " + _cinematicMode);
                 break;
         }
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0)) SkipCinematicScene();
     }
 
     private void FadeIn()
@@ -104,8 +112,10 @@ public class CinematicSceneManager : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    public void SkipCinematicScene()
+    private void SkipCinematicScene()
     {
+        if (_skip) return;
+        
         switch (_cinematicMode)
         {
             case GameManager.CinematicModes.Opening:
@@ -114,9 +124,15 @@ public class CinematicSceneManager : MonoBehaviour
                 break;
             
             case GameManager.CinematicModes.GoodEnding:
+                if (endingManager.ShowingSb) return;
+                StopAllCoroutines();
+                endingManager.SkipEnding(true);
                 break;
             
             case GameManager.CinematicModes.BadEnding:
+                if (endingManager.ShowingSb) return;
+                StopAllCoroutines();
+                endingManager.SkipEnding(false);
                 break;
         }
     }
