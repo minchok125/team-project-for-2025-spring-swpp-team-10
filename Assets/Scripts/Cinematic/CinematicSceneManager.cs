@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -101,5 +102,22 @@ public class CinematicSceneManager : MonoBehaviour
     {
         yield return FadeOut();
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void SkipCinematicScene()
+    {
+        switch (_cinematicMode)
+        {
+            case GameManager.CinematicModes.Opening:
+                StopAllCoroutines();
+                StartCoroutine(Load("MainScene"));
+                break;
+            
+            case GameManager.CinematicModes.GoodEnding:
+                break;
+            
+            case GameManager.CinematicModes.BadEnding:
+                break;
+        }
     }
 }
