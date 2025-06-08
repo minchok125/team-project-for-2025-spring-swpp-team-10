@@ -29,7 +29,7 @@ public class DialogueUIController : MonoBehaviour
     [SerializeField] private Color purple;
 
     [Header("Character Sprites")]
-    [SerializeField] private Sprite hamster;
+    // [SerializeField] private Sprite hamster;
     [SerializeField] private Sprite radio;
     
     private List<DialogueBlockController> _blockControllers = new List<DialogueBlockController>();
@@ -39,6 +39,7 @@ public class DialogueUIController : MonoBehaviour
     private List<Dictionary<string, object>> _oneLineDialogueData;
     private Coroutine _dialogueCoroutine; // [추가] 현재 실행중인 코루틴을 저장할 변수
 
+    private Sprite[] _hamsterSprite;
 
     
 
@@ -48,6 +49,8 @@ public class DialogueUIController : MonoBehaviour
         _objectPool = gameObject.AddComponent<ObjectPool>();
         _objectPool.InitObjectPool(dialoguePrefab, transform, maxDialogueNum * 2);
         _textProcessor = new TextProcessor(gray, red, orange, yellow, green, blue, purple);
+
+        _hamsterSprite = Resources.LoadAll<Sprite>("Sprites/gray");
     }
     
     private void Update()
@@ -114,8 +117,16 @@ public class DialogueUIController : MonoBehaviour
                     }
                     catch { lifetime = defaultLifetime; }
 
+                    int faceIdx;
+                    try
+                    {
+                        string tmp = dialogueData[i]["face"].ToString();
+                        faceIdx = Convert.ToInt16(tmp);
+                    }
+                    catch { faceIdx = 0; }
+
                     GenerateDialogueBlock(dialogueData[i]["character"].ToString(),
-                        dialogueData[i]["text"].ToString(), lifetime);
+                        faceIdx, dialogueData[i]["text"].ToString(), lifetime);
                     break;
                 }
                 yield return null;
@@ -125,7 +136,7 @@ public class DialogueUIController : MonoBehaviour
         _dialogueCoroutine = null; // 코루틴이 정상적으로 끝나면 참조를 비움
     }
 
-    private void GenerateDialogueBlock(string character, string text, float lifetime)
+    private void GenerateDialogueBlock(string character, int faceIdx, string text, float lifetime)
     {
         // Object Pool을 통해 Dialogue Block 받아 온 뒤 Dialogue Block Controller 초기화
         GameObject newObj = _objectPool.GetObject();
@@ -139,7 +150,14 @@ public class DialogueUIController : MonoBehaviour
         Sprite charSprite;
         switch (character.ToLower())
         {
-            case "hamster": charSprite = hamster; break;
+            case "hamster":
+                if (faceIdx >= _hamsterSprite.Length)
+                {
+                    Debug.LogError($"Hamster face 이상: " + faceIdx);
+                    charSprite = _hamsterSprite[0];
+                }
+                else charSprite = _hamsterSprite[faceIdx]; 
+                break;
             case "radio": charSprite = radio; break;
             default: charSprite = null; Debug.LogError($"character 이름 이상: {character}"); break;
         }
@@ -180,11 +198,11 @@ public class DialogueUIController : MonoBehaviour
         _dialogueCoroutine = StartCoroutine(DialogueCoroutine(dialogueData)); // 코루틴 참조 저장
     }
 
-    public void StartDialogue(string character, string text, float lifetime)
+    public void StartDialogue(string character, string text, float lifetime, int faceIdx = 0)
     {
         // 직접 한 줄 짜리 dialogue 출력
         // ClearDialogue();
-        GenerateDialogueBlock(character, text, lifetime);
+        GenerateDialogueBlock(character, faceIdx, text, lifetime);
     }
 
     public void StartDialogue(int idx)
@@ -212,9 +230,16 @@ public class DialogueUIController : MonoBehaviour
         }
         catch { lifetime = defaultLifetime; }
         
+        int faceIdx;
+        try
+        {
+            string tmp = _oneLineDialogueData[idx]["face"].ToString();
+            faceIdx = Convert.ToInt16(tmp);
+        }
+        catch { faceIdx = 0; }
+        
         GenerateDialogueBlock(_oneLineDialogueData[idx]["character"].ToString(),
-            _oneLineDialogueData[idx]["text"].ToString(),
-            lifetime);
+            faceIdx, _oneLineDialogueData[idx]["text"].ToString(), lifetime);
     }
 
     public void DebugDialogue(string fileName)
