@@ -67,6 +67,8 @@ public class EndingManager : MonoBehaviour
         receipt.SetActive(false);
         policeParent.SetActive(false);
         mugShotPadding.SetActive(false);
+        
+        houseHamsterController.gameObject.SetActive(false);
     }
 
     public IEnumerator GoodEndingCoroutine(float fadeDuration)
@@ -131,6 +133,8 @@ public class EndingManager : MonoBehaviour
         houseCam.gameObject.SetActive(true);
         houseCam.transform.localPosition = houseCamStartPos;
         houseCam.transform.rotation = Quaternion.Euler(houseCamStartRot);
+        
+        houseHamsterController.gameObject.SetActive(true);
         
         _fadePanelImg.DOColor(Color.clear, houseFadeInDuration);
         yield return new WaitForSeconds(houseFadeInDuration);
