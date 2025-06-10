@@ -29,7 +29,7 @@ public class InteractionDialogueController : MonoBehaviour
 
     [SerializeField] private string character;
     [Tooltip("0 : 일반 표정, 1 : 놀란 표정, 2 : 웃는 표정, 3 : 우는 표정")]
-    [SerializeField] private int face;
+    [SerializeField] private int faceIdx;
     [SerializeField] private string text;
     [Tooltip("대사가 화면에 표시되는 시간. 이 시간이 지나면 대사가 자동으로 사라집니다.")]
     [SerializeField] private float lifetime;
@@ -121,7 +121,7 @@ public class InteractionDialogueController : MonoBehaviour
             // Oneline 커스텀
             else
             {
-                UIManager.Instance.DoDialogue(character, text, lifetime);
+                UIManager.Instance.DoDialogue(character, text, lifetime, faceIdx);
                 HLogger.General.Info(text, this);
             }
         }
@@ -184,7 +184,7 @@ public class InteractionDialogueController : MonoBehaviour
 
     private void OnValidate()
     {
-        face = Mathf.Clamp(face, 0, 3);
+        faceIdx = Mathf.Clamp(faceIdx, 0, 3);
     }
 }
 
@@ -205,7 +205,7 @@ class TriggerEnterDialogueControllerEditor : Editor
     SerializedProperty isTriggerProp;
     SerializedProperty isOnelineDialogueProp;
     SerializedProperty characterProp;
-    SerializedProperty faceProp;
+    SerializedProperty faceIdxProp;
     SerializedProperty textProp;
     SerializedProperty lifetimeProp;
     SerializedProperty fileNameProp;
@@ -228,7 +228,7 @@ class TriggerEnterDialogueControllerEditor : Editor
         isTriggerProp = serializedObject.FindProperty("isTrigger");
         isOnelineDialogueProp = serializedObject.FindProperty("isOnelineDialogue");
         characterProp = serializedObject.FindProperty("character");
-        faceProp = serializedObject.FindProperty("face");
+        faceIdxProp = serializedObject.FindProperty("faceIdx");
         textProp = serializedObject.FindProperty("text");
         lifetimeProp = serializedObject.FindProperty("lifetime");
         fileNameProp = serializedObject.FindProperty("fileName");
@@ -271,7 +271,7 @@ class TriggerEnterDialogueControllerEditor : Editor
             {
                 EditorGUILayout.PropertyField(characterProp);
                 if (characterProp.stringValue == "hamster")
-                    EditorGUILayout.PropertyField(faceProp);
+                    EditorGUILayout.PropertyField(faceIdxProp);
                 EditorGUILayout.PropertyField(textProp);
                 EditorGUILayout.PropertyField(lifetimeProp);
             }
