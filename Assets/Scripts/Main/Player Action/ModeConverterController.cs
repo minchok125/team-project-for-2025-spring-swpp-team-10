@@ -63,7 +63,8 @@ public class ModeConverterController : MonoBehaviour
     /// </summary>
     private void Convert()
     {
-        _rb.AddForce(Vector3.up * jumpSpeed, ForceMode.VelocityChange);
+        float rate = PlayerManager.Instance.isBall ? 1 : 0.5f;
+        _rb.AddForce(Vector3.up * jumpSpeed * rate, ForceMode.VelocityChange);
         _balloon.rotation = Quaternion.identity;
 
         if (!PlayerManager.Instance.isBall)

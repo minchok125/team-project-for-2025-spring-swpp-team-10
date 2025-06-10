@@ -10,6 +10,8 @@ using UnityEditor;
 // public void DoDialogue()로 외부해서 대사 호출이 가능합니다.
 public class InteractionDialogueController : MonoBehaviour
 {
+    [Tooltip("대사를 최초 한 번만 실행합니다.")]
+    [SerializeField] private bool executeOnlyOnce = false;
     [Tooltip("대사를 출력한 직후 오브젝트를 삭제합니다.")]
     [SerializeField] private bool destroyThis = false;
     [Tooltip("같은 내용을 출력하는 최소 간격")]
@@ -26,6 +28,8 @@ public class InteractionDialogueController : MonoBehaviour
     [SerializeField] private bool isOnelineFileDialogue = false;
 
     [SerializeField] private string character;
+    [Tooltip("0 : 일반 표정, 1 : 놀란 표정, 2 : 웃는 표정, 3 : 우는 표정")]
+    [SerializeField] private int faceIdx;
     [SerializeField] private string text;
     [Tooltip("대사가 화면에 표시되는 시간. 이 시간이 지나면 대사가 자동으로 사라집니다.")]
     [SerializeField] private float lifetime;
@@ -35,7 +39,7 @@ public class InteractionDialogueController : MonoBehaviour
     [SerializeField] private int index;
 
     [Header("카메라 연출 설정")]
-    [Tooltip("트리거 입장 시 대사와 함께 VirtualCamera 연출을 사용할 것인지 여부\n"+
+    [Tooltip("트리거 입장 시 대사와 함께 VirtualCamera 연출을 사용할 것인지 여부\n" +
             "public void DoDialogue()로 호출해도 카메라 연출이 실행됩니다.")]
     [SerializeField] private bool useVirtualCamera;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
@@ -53,6 +57,7 @@ public class InteractionDialogueController : MonoBehaviour
     [SerializeField] private CheckpointIndex dialogueEnableEndCheckpoint = CheckpointIndex.GameEnd;
 
     private bool _canInteract = true;
+    private bool _hasBeenExecuted = false;
 
 
 
@@ -73,7 +78,7 @@ public class InteractionDialogueController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!isTrigger || !CanDoDialogue() ||!other.CompareTag("Player"))
+        if (!isTrigger || !CanDoDialogue() || !other.CompareTag("Player"))
             return;
 
         DoDialogue();
@@ -91,6 +96,9 @@ public class InteractionDialogueController : MonoBehaviour
 
     private bool CanDoDialogue()
     {
+        if (executeOnlyOnce && _hasBeenExecuted)
+            return false;
+
         return dialogueOnTriggerOrCollier && _canInteract
             && (int)dialogueEnableStartCheckpoint - 1 <= CheckpointManager.Instance.GetCurrentCheckpointIndex()
             && CheckpointManager.Instance.GetCurrentCheckpointIndex() <= (int)dialogueEnableEndCheckpoint - 1;
@@ -113,7 +121,7 @@ public class InteractionDialogueController : MonoBehaviour
             // Oneline 커스텀
             else
             {
-                UIManager.Instance.DoDialogue(character, text, lifetime);
+                UIManager.Instance.DoDialogue(character, text, lifetime, faceIdx);
                 HLogger.General.Info(text, this);
             }
         }
@@ -123,6 +131,7 @@ public class InteractionDialogueController : MonoBehaviour
             HLogger.General.Info($"{fileName} 대사를 출력합니다.", this);
         }
 
+        _hasBeenExecuted = true; // 대사 실행됨을 표시
         _canInteract = false;
         Invoke(nameof(CanInteractTrue), minimumNotificationCooldown); // n초 뒤 다시 출력 가능
 
@@ -171,6 +180,12 @@ public class InteractionDialogueController : MonoBehaviour
     {
         Destroy(gameObject);
     }
+
+
+    private void OnValidate()
+    {
+        faceIdx = Mathf.Clamp(faceIdx, 0, 3);
+    }
 }
 
 
@@ -183,12 +198,14 @@ class TriggerEnterDialogueControllerEditor : Editor
 {
     InteractionDialogueController _target;
 
+    SerializedProperty executeOnlyOnceProp;
     SerializedProperty destroyThisProp;
     SerializedProperty minimumNotificationCooldownProp;
     SerializedProperty dialogueOnTriggerOrCollierProp;
     SerializedProperty isTriggerProp;
     SerializedProperty isOnelineDialogueProp;
     SerializedProperty characterProp;
+    SerializedProperty faceIdxProp;
     SerializedProperty textProp;
     SerializedProperty lifetimeProp;
     SerializedProperty fileNameProp;
@@ -204,12 +221,14 @@ class TriggerEnterDialogueControllerEditor : Editor
 
     private void OnEnable()
     {
+        executeOnlyOnceProp = serializedObject.FindProperty("executeOnlyOnce");
         destroyThisProp = serializedObject.FindProperty("destroyThis");
         minimumNotificationCooldownProp = serializedObject.FindProperty("minimumNotificationCooldown");
         dialogueOnTriggerOrCollierProp = serializedObject.FindProperty("dialogueOnTriggerOrCollier");
         isTriggerProp = serializedObject.FindProperty("isTrigger");
         isOnelineDialogueProp = serializedObject.FindProperty("isOnelineDialogue");
         characterProp = serializedObject.FindProperty("character");
+        faceIdxProp = serializedObject.FindProperty("faceIdx");
         textProp = serializedObject.FindProperty("text");
         lifetimeProp = serializedObject.FindProperty("lifetime");
         fileNameProp = serializedObject.FindProperty("fileName");
@@ -233,7 +252,11 @@ class TriggerEnterDialogueControllerEditor : Editor
             EditorGUILayout.PropertyField(isTriggerProp);
             EditorGUILayout.PropertyField(destroyThisProp);
             if (!destroyThisProp.boolValue)
-                EditorGUILayout.PropertyField(minimumNotificationCooldownProp);
+            {
+                EditorGUILayout.PropertyField(executeOnlyOnceProp);
+                if (!executeOnlyOnceProp.boolValue)
+                    EditorGUILayout.PropertyField(minimumNotificationCooldownProp);
+            }
         }
 
         EditorGUILayout.PropertyField(isOnelineDialogueProp);
@@ -247,6 +270,8 @@ class TriggerEnterDialogueControllerEditor : Editor
             else
             {
                 EditorGUILayout.PropertyField(characterProp);
+                if (characterProp.stringValue == "hamster")
+                    EditorGUILayout.PropertyField(faceIdxProp);
                 EditorGUILayout.PropertyField(textProp);
                 EditorGUILayout.PropertyField(lifetimeProp);
             }
