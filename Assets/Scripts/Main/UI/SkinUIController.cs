@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SkinUIController : MonoBehaviour
 {
@@ -46,6 +47,7 @@ public class SkinUIController : MonoBehaviour
 
     public void CloseSkinUI()
     {
-        skinUIPanel.SetActive(false);
+        //skinUIPanel.SetActive(false);
+        SceneManager.LoadScene("MainScene");
     }
 }
