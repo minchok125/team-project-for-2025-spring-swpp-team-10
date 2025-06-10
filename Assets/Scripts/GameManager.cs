@@ -31,6 +31,11 @@ public enum SfxType
     Pickup3
 }
 
+public enum HamsterSkinType
+{
+    Golden,
+    Gray,
+}
 
 public class GameManager : PersistentSingleton<GameManager>
 {
@@ -46,6 +51,9 @@ public class GameManager : PersistentSingleton<GameManager>
 
     [Header("Values")]
     public float bgmVolume, sfxVolume;
+
+    [Header("Skin")]
+    public HamsterSkinType selectedHamsterSkin = HamsterSkinType.Golden;
 
     private PlayerData playerData;
 
