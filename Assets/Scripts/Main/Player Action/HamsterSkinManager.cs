@@ -14,13 +14,6 @@ public class HamsterSkinManager : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log("HamsterSkinManager Awake called!");
-        ApplySkin(GameManager.Instance.selectedHamsterSkin);
-    }
-
-    void OnEnable()
-    {
-        Debug.Log("HamsterSkinManager OnEnable called!");
         ApplySkin(GameManager.Instance.selectedHamsterSkin);
     }
 
@@ -54,8 +47,6 @@ public class HamsterSkinManager : MonoBehaviour
             if (rend != null && rend.material != null)
             {
                 rend.material.SetTexture("_BaseTexture", skinTextures[skinIndex]);
-
-                Debug.Log($"Applied skin index {skinIndex} to {rend.gameObject.name}");
             }
         }
     }
