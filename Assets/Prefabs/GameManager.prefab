@@ -49,8 +49,10 @@ MonoBehaviour:
   bgmSource: {fileID: 214280053394726521}
   sfxSource: {fileID: 214280053394726520}
   bgmClips:
-  - {fileID: 8300000, guid: f4108e00cdd989a4ea0c5c680eff24ec, type: 3}
-  - {fileID: 8300000, guid: d39dd671e75a19c4b8bcd56982658646, type: 3}
+  - bgmType: 0
+    clip: {fileID: 8300000, guid: 91b330492bade2442960564ef2ac33af, type: 3}
+  - bgmType: 1
+    clip: {fileID: 8300000, guid: 7300b4ee365644e42a62377f94a8fa80, type: 3}
   sfxClips:
   - sfxType: 0
     clip: {fileID: 8300000, guid: 9b0d5fe335c62884db6ff758e669d618, type: 3}
@@ -64,6 +66,10 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: e4a3480d63e40ad4bbc529600df8cc2e, type: 3}
   - sfxType: 5
     clip: {fileID: 8300000, guid: 4af0e20a003bafc4f8fb474396109a65, type: 3}
+  - sfxType: 17
+    clip: {fileID: 8300000, guid: a1540846f415a7841b6d567ef9dcbe0c, type: 3}
+  - sfxType: 18
+    clip: {fileID: 8300000, guid: 8a6e7e37c07d8954c87c444d518e454b, type: 3}
   - sfxType: 6
     clip: {fileID: 8300000, guid: 4eb141f0f52edd149b9b9c4df4d9d9c5, type: 3}
   - sfxType: 7
@@ -88,6 +94,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 513a7380892395e4fa1e39eb0f7546e0, type: 3}
   bgmVolume: 0
   sfxVolume: 0
+  cinematicMode: 0
 --- !u!82 &214280053394726521
 AudioSource:
   m_ObjectHideFlags: 0
