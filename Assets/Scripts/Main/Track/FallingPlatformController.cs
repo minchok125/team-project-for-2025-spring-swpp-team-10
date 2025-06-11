@@ -20,7 +20,7 @@ public class FallingPlatformController : MonoBehaviour
     [Header("Dotted 매테리얼을 아래 변수에 할당해 주세요\n미할당 시 플랫폼 이동 범위가 표시되지 않습니다.")]
     [SerializeField] private Material dotted;
 
-    private float initY; // 오브젝트의 원래 y 좌표
+    private float initY, localInitY; // 오브젝트의 원래 y 좌표
     private bool onPlayer; // 플레이어가 위에 있으면 true
     [HideInInspector]
     public bool onWire; // 이 오브젝트에 와이어가 걸리면 true
@@ -34,7 +34,8 @@ public class FallingPlatformController : MonoBehaviour
 
     void Start()
     {
-        initY = transform.localPosition.y;
+        initY = transform.position.y;
+        localInitY = transform.localPosition.y;
         onPlayer = false;
 
         rb = GetComponent<Rigidbody>();
@@ -51,6 +52,7 @@ public class FallingPlatformController : MonoBehaviour
         if (dotted != null) 
         {
             cylinder = GameObject.CreatePrimitive(PrimitiveType.Cylinder).transform;
+            cylinder.gameObject.AddComponent<DeleteOutline>();
             cylinder.SetParent(transform);
             cylinder.gameObject.name = "PlatformMovementBoundary"; 
             SetDottedCylinder();
@@ -84,9 +86,9 @@ public class FallingPlatformController : MonoBehaviour
 
     private void Down()
     {
-        if (transform.localPosition.y <= initY - maxDownLength) 
+        if (transform.localPosition.y <= localInitY - maxDownLength) 
         {
-            transform.localPosition = new Vector3(transform.localPosition.x, initY - maxDownLength, transform.localPosition.z);
+            transform.localPosition = new Vector3(transform.localPosition.x, localInitY - maxDownLength, transform.localPosition.z);
             rb.velocity = Vector3.zero;
             return;
         }
@@ -96,9 +98,9 @@ public class FallingPlatformController : MonoBehaviour
 
     private void Up()
     {
-        if (transform.localPosition.y >= initY) 
+        if (transform.localPosition.y >= localInitY) 
         {
-            transform.localPosition = new Vector3(transform.localPosition.x, initY, transform.localPosition.z);
+            transform.localPosition = new Vector3(transform.localPosition.x, localInitY, transform.localPosition.z);
             rb.velocity = Vector3.zero;
             return;
         }
