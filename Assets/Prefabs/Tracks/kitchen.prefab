@@ -1226,6 +1226,49 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1786473021881329127
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6025679285053973020}
+  - component: {fileID: 3029535012083280817}
+  m_Layer: 0
+  m_Name: Occlusion Area
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6025679285053973020
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786473021881329127}
+  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 469.47925, y: 82.083336, z: 303.22922}
+  m_LocalScale: {x: 0.52083325, y: 0.5208334, z: 0.52083325}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2501988100325164997}
+  m_RootOrder: 64
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!192 &3029535012083280817
+OcclusionArea:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786473021881329127}
+  serializedVersion: 2
+  m_Size: {x: 407.77264, y: 286.42096, z: 484.64465}
+  m_Center: {x: -458.23352, y: -18.139996, z: 427.90045}
+  m_IsViewVolume: 1
 --- !u!1 &1880747156526896624
 GameObject:
   m_ObjectHideFlags: 0
@@ -1354,10 +1397,10 @@ BoxCollider:
   m_GameObject: {fileID: 1880747156526896624}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
-  m_Size: {x: 0.032586038, y: 0.0011915741, z: 0.017433703}
-  m_Center: {x: 0.0154098375, y: -0.00022372195, z: 0.031432338}
+  m_Size: {x: 0.032586038, y: 0.0011915741, z: 0.005319735}
+  m_Center: {x: 0.0154098375, y: -0.00022372174, z: 0.025375437}
 --- !u!1 &2148836698311666676
 GameObject:
   m_ObjectHideFlags: 0
@@ -8407,7 +8450,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5119
+  m_VersionIndex: 5143
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -13686,7 +13729,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 4435
+  m_VersionIndex: 4459
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -14637,6 +14680,7 @@ Transform:
   - {fileID: 1600743120}
   - {fileID: 2356740552770512235}
   - {fileID: 7967760994881452620}
+  - {fileID: 6025679285053973020}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -14900,8 +14944,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 28.85431, y: 10.413113, z: 33.74675}
-  m_Center: {x: 0.7569699, y: 9.631102, z: 17.678581}
+  m_Size: {x: 28.85431, y: 2.2236865, z: 33.74675}
+  m_Center: {x: 0.75696987, y: 7.5074935, z: 17.678577}
 --- !u!114 &2501988100655623505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14915,12 +14959,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   launchDelay: 0
-  launchBallXVelocity: -20
-  launchBallYVelocity: 50
-  launchBallZVelocity: 80
-  launchHamsterXVelocity: -20
-  launchHamsterYVelocity: 50
-  launchHamsterZVelocity: 80
+  launchBallXVelocity: -60
+  launchBallYVelocity: 30
+  launchBallZVelocity: 0
+  launchHamsterXVelocity: -90
+  launchHamsterYVelocity: 40
+  launchHamsterZVelocity: 0
   launchTextCanvas: {fileID: 0}
   launchText: {fileID: 0}
 --- !u!1 &2501988100766947689
@@ -21730,7 +21774,7 @@ Rigidbody:
   m_GameObject: {fileID: 3348902661720830114}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 1
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0

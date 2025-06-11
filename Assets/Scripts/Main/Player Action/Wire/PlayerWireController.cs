@@ -362,6 +362,7 @@ public class PlayerWireController : MonoBehaviour
         lr.SetPosition(1, predictionHit.point);
 
         // 와이어 발사
+        PlayerManager.Instance.PlayShootWireSfx();
         currentWire.WireShoot(predictionHit);
     }
 
