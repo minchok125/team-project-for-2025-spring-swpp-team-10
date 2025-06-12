@@ -373,6 +373,7 @@ public class PlayerWireController : MonoBehaviour
         grapplingWire.SetWaveHeight(waveHeight);
 
         // 와이어 발사
+        PlayerManager.Instance.PlayShootWireSfx();
         currentWire.WireShoot(predictionHit);
     }
 

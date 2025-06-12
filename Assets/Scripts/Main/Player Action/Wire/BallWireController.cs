@@ -96,13 +96,17 @@ public class BallWireController : MonoBehaviour, IWire
     }
 
 
-    
+
     public void ShortenWire(bool isFast)
     {
         // 최소 길이에 도달했으면 더 이상 감지 않음
         // 잡은 물체의 속도가 너무 빠르면 오히려 줄이 늘어남
         if (sj.maxDistance <= 2 || rb.velocity.sqrMagnitude >= 2500 || sj.maxDistance > grabDistance + 20f)
+        {
+            PlayerManager.Instance.StopPlayRetractorSfx();
             return;
+        }
+        PlayerManager.Instance.StartPlayRetractorSfx();
 
         // 와이어 최소 길이 설정
         sj.minDistance = 2;
@@ -133,6 +137,7 @@ public class BallWireController : MonoBehaviour, IWire
         // 와이어 방향 속도 성분을 줄여 자연스러운 스윙 유도
         rb.velocity -= velocityAlongWire * directionToHitPoint * 0.8f;
 
+        PlayerManager.Instance.StopPlayRetractorSfx();
         isUsingRetractor = false;
     }
 
@@ -172,14 +177,15 @@ public class BallWireController : MonoBehaviour, IWire
     }
 
 
-
-
-
     public void ExtendWire()
     {
         // 최대 길이에 도달했으면 더 이상 풀지 않음
-        if (sj.maxDistance > grabDistance) 
+        if (sj.maxDistance > grabDistance)
+        {
+            PlayerManager.Instance.StopPlayRetractorSfx();
             return;
+        }
+        PlayerManager.Instance.StartPlayRetractorSfx();
 
         // 와이어 최대 길이를 증가시킴
         sj.maxDistance += retractorSpeed * Time.fixedDeltaTime;
@@ -195,8 +201,10 @@ public class BallWireController : MonoBehaviour, IWire
         // 와이어 최대 길이를 현재 거리로 고정
         sj.maxDistance = Mathf.Max(2, (hitPoint.transform.position - transform.position).magnitude);
 
+        PlayerManager.Instance.StopPlayRetractorSfx();
         isUsingRetractor = false;
     }
+
 
     public void WireUpdate()
     {
@@ -204,9 +212,10 @@ public class BallWireController : MonoBehaviour, IWire
         sj.connectedAnchor = hitPoint.position;
 
         // 공중에 있을 때 와이어 방향으로 플레이어 회전
-        if (!PlayerManager.Instance.isGround) {
-            transform.rotation = Quaternion.Slerp(transform.rotation, 
-                                                  Quaternion.LookRotation(hitPoint.position - transform.position), 
+        if (!PlayerManager.Instance.isGround)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation,
+                                                  Quaternion.LookRotation(hitPoint.position - transform.position),
                                                   3 * Time.deltaTime);
         }
 
@@ -223,7 +232,7 @@ public class BallWireController : MonoBehaviour, IWire
         prevIsGround = PlayerManager.Instance.isGround;
 
         // 디버그
-        if (debugMax != sj.maxDistance || debugMin != sj.minDistance) 
+        if (debugMax != sj.maxDistance || debugMin != sj.minDistance)
         {
             float dist = (transform.position - hitPoint.position).magnitude;
             Debug.Log($"time: {Time.time:F2} | wire max: {sj.maxDistance:F3}, min: {sj.minDistance:F3}, \n"

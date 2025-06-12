@@ -31,7 +31,7 @@ public class PlayWarningSound : MonoBehaviour
         {
             alarmAudioSource.loop = true; // 경보음은 반복 재생
             alarmAudioSource.playOnAwake = false; // 시작 시 자동 재생 안 함
-            alarmAudioSource.volume = minVolume; // 초기 볼륨 설정
+            alarmAudioSource.volume = minVolume * GameManager.Instance.sfxVolume; // 초기 볼륨 설정
         }
         else
         {
@@ -68,7 +68,7 @@ public class PlayWarningSound : MonoBehaviour
         float evaluatedVolume = volumeCurve.Evaluate(Mathf.Clamp01(normalizedY));
 
         // 최종 볼륨을 AudioSource에 적용
-        alarmAudioSource.volume = evaluatedVolume;
+        alarmAudioSource.volume = evaluatedVolume * GameManager.Instance.sfxVolume;
     }
 
     // 특정 함수로 사운드 재생 시작
