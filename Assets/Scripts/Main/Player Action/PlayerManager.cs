@@ -223,12 +223,12 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     #region Private Variables
     private int _inputLockNumber;
     private int _mouseInputLockNumber;
+    private bool _isGlidingInputLock;
     private Rigidbody _rb;
     private GameObject _hamsterLightningShockParticle;
     [SerializeField] private GameObject _ballLightningShockParticle;
     private BalloonMovementController _balloon;
     [SerializeField] private GameObject _balloonHamsterRope;
-
 
 
     private Action _modeConvert;
@@ -260,6 +260,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         _hamsterLightningShockParticle?.SetActive(false);
         _ballLightningShockParticle?.SetActive(false);
         canLightningShock = true;
+        _isGlidingInputLock = false;
         _inputLockNumber = _mouseInputLockNumber = 0;
 
         // 씬 리셋 시 구독자 전부 제거
@@ -416,6 +417,11 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         return _mouseInputLockNumber > 0;
     }
 
+    public bool IsGlidingInputLock()
+    {
+        return _isGlidingInputLock;
+    }
+
     private void DownInputLockNumber()
     {
         _inputLockNumber--;
@@ -459,7 +465,15 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         _modeConvert?.Invoke();
 
         if (isBall && isGliding) // 햄스터 -> 공
+        {
+            // 풍선을 터뜨렸다가 다시 생성
+            CancelInvoke(nameof(ReCreateBalloon));
             Invoke(nameof(ReCreateBalloon), 0.22f);
+            // 모드 바뀌는 동안에 안전하게 활공을 막음
+            _isGlidingInputLock = true;
+            CancelInvoke(nameof(IsGlidingInputLockFalse));
+            Invoke(nameof(IsGlidingInputLockFalse), 0.5f);
+        }
     }
 
     // 공 -> 햄스터 전환 때 햄스터의 방향을 현재 속도의 방향으로 설정합니다.
@@ -481,6 +495,8 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         isGliding = false;
         playerMovement.StartGlidingFast();
     }
+
+    private void IsGlidingInputLockFalse() => _isGlidingInputLock = false;
 
     /// <summary>
     /// ModeConvert에 콜백 액션을 추가합니다.

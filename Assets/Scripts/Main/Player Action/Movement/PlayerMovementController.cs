@@ -447,7 +447,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         // 공중에서 스페이스바를 누르면 활공 토글
         if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !playerMgr.onWire
-            && !playerMgr.IsInputLock())
+            && !playerMgr.IsInputLock() && !playerMgr.IsGlidingInputLock())
         {
             // jumped : 이번 Update 프레임 때 점프를 했는지
             if (!jumped && playerMgr.skill.HasGliding())
