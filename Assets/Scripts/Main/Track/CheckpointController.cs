@@ -7,6 +7,8 @@ public class CheckpointController : MonoBehaviour
 {
     [Tooltip("체크포인트가 활성화될 때 한 번만 작동하도록 합니다.")]
     [SerializeField] private bool activateOnce = true;
+    [Tooltip("체크포인트 외관 렌더러입니다.")]
+    [SerializeField] private Renderer checkpointRenderer;
 
     [Tooltip("체크포인트 비활성화 상태일 때 사용할 머티리얼입니다.")]
     [SerializeField] private Material inactiveMaterial;
@@ -19,7 +21,6 @@ public class CheckpointController : MonoBehaviour
 
     private bool _isActivated = false;
     private Collider _collider;
-    private Renderer _renderer;
 
     void Awake()
     {
@@ -38,8 +39,7 @@ public class CheckpointController : MonoBehaviour
             _collider.isTrigger = true;
         }
 
-        _renderer = GetComponent<Renderer>();
-        if (_renderer == null)
+        if (checkpointRenderer == null)
         {
             HLogger.General.Warning("머티리얼 변경을 위해 Renderer 컴포넌트가 필요합니다. 없다면 이 기능은 작동하지 않습니다.", gameObject);
         }
@@ -48,7 +48,7 @@ public class CheckpointController : MonoBehaviour
             // 시작 시 비활성화 머티리얼로 설정
             if (inactiveMaterial != null)
             {
-                _renderer.material = inactiveMaterial;
+                checkpointRenderer.material = inactiveMaterial;
             }
             else
             {
@@ -134,11 +134,11 @@ public class CheckpointController : MonoBehaviour
     /// </summary>
     private void SetMaterial(Material materialToSet, string materialNameForLog)
     {
-        if (_renderer != null)
+        if (checkpointRenderer != null)
         {
             if (materialToSet != null)
             {
-                _renderer.material = materialToSet;
+                checkpointRenderer.material = materialToSet;
             }
             else
             {

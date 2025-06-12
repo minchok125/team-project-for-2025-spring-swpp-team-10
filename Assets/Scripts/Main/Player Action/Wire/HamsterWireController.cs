@@ -101,8 +101,12 @@ public class HamsterWireController : MonoBehaviour, IWire
 
     public void ShortenWire(bool isFast)
     {
-        if (sj.maxDistance <= 2) 
+        if (sj.maxDistance <= 2.5f)
+        {
+            PlayerManager.Instance.StopPlayRetractorSfx();
             return;
+        }
+        PlayerManager.Instance.StartPlayRetractorSfx();
 
         float _retractorMaxSpeed = SetRetractorMaxSpeed();
         if (isFast) // 마우스 우클릭으로 빠르게 당기는 동작
@@ -122,15 +126,20 @@ public class HamsterWireController : MonoBehaviour, IWire
     public void ShortenWireEnd(bool isFast)
     {
         PlayerManager.Instance.SetInputLockPermanent(false);
+        PlayerManager.Instance.StopPlayRetractorSfx();
+
         Invoke(nameof(SetIsInputLockFalse), 0.05f);
         Invoke(nameof(SetIsInputLockFalse), 0.1f);
-        Debug.Log("ShortenWireEnd");
     }
 
     public void ExtendWire()
     {
-        if (sj.maxDistance > grabDistance) 
+        if (sj.maxDistance > grabDistance)
+        {
+            PlayerManager.Instance.StopPlayRetractorSfx();
             return;
+        }
+        PlayerManager.Instance.StartPlayRetractorSfx();
 
         float _retractorMaxSpeed = SetRetractorMaxSpeed();
 
@@ -147,9 +156,10 @@ public class HamsterWireController : MonoBehaviour, IWire
     public void ExtendWireEnd()
     {
         PlayerManager.Instance.SetInputLockPermanent(false);
+        PlayerManager.Instance.StopPlayRetractorSfx();
+
         Invoke(nameof(SetIsInputLockFalse), 0.05f);
         Invoke(nameof(SetIsInputLockFalse), 0.1f);
-        Debug.Log("ExtendWireEnd");
     }
 
     /// <summary>

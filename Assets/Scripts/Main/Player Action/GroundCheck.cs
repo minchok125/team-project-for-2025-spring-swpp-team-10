@@ -10,19 +10,20 @@ public class GroundCheck : MonoBehaviour
     [Tooltip("지면이라고 인식하는 아래 방향 거리")]
     [SerializeField] private float distToGround = 0.7f;
 
-    private LayerMask detectionMask; // player를 제외한 레이어 
+    private LayerMask _detectionMask; // player를 제외한 레이어 
+    private bool _prevIsGround;
 
     void Start()
     {
-        detectionMask = ~LayerMask.GetMask("Player");
-        detectionMask &= ~LayerMask.GetMask("NoCollide");
+        _detectionMask = ~LayerMask.GetMask("Player");
+        _detectionMask &= ~LayerMask.GetMask("NoCollide");
     }
 
 
     void FixedUpdate()
     {
         // 지면 위에 있을 때 지면과 플레이어 바닥 사이의 거리 오프셋
-            float groundDist = PlayerManager.Instance.isBall ? 0.8f : 0.05f;
+        float groundDist = PlayerManager.Instance.isBall ? 0.8f : 0.05f;
 
         // 플레이어의 Position에서 플레이어 꼭대기 위치까지의 y축 거리
         float yOffset = PlayerManager.Instance.isBall ? 1f : 1.8f;
@@ -36,11 +37,13 @@ public class GroundCheck : MonoBehaviour
                             -Vector3.up,
                             out RaycastHit hit,
                             distToGround + groundDist + yOffset,
-                            detectionMask,
+                            _detectionMask,
                             QueryTriggerInteraction.Ignore))
         {
             PlayerManager.Instance.isGround = true;
             PlayerManager.Instance.curGroundCollider = hit.collider;
+            if (!_prevIsGround)
+                PlayerManager.Instance.PlayLandSfx();
 
             bool canJumpObj = hit.collider.gameObject.TryGetComponent(out ObjectProperties obj) && obj.canPlayerJump;
             PlayerManager.Instance.canJump = canJumpObj;
@@ -51,6 +54,8 @@ public class GroundCheck : MonoBehaviour
             PlayerManager.Instance.canJump = false;
             PlayerManager.Instance.curGroundCollider = null;
         }
+
+        _prevIsGround = PlayerManager.Instance.isGround;
     }
 
     /// <summary>
@@ -66,7 +71,7 @@ public class GroundCheck : MonoBehaviour
         return Physics.Raycast(transform.position + posOffset,
                                -Vector3.up,
                                rayDist + groundDist + yOffset,
-                               detectionMask,
+                               _detectionMask,
                                QueryTriggerInteraction.Ignore);
     }
 }

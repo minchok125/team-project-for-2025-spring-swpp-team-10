@@ -5,10 +5,10 @@ using TMPro;
 
 public class ToasterController : MonoBehaviour
 {
-    [Tooltip("Á¢±Ù µÚ ¹ß»ç±îÁö °É¸®´Â ½Ã°£")]
+    [Tooltip("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ï¿½ï¿½ ï¿½É¸ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½")]
     public int launchDelay = 5;
 
-    [Tooltip("¹ß»ç ½Ã yÃà ¼Óµµ")]
+    [Tooltip("ï¿½ß»ï¿½ ï¿½ï¿½ yï¿½ï¿½ ï¿½Óµï¿½")]
     public float launchBallXVelocity = -20f;
     public float launchBallYVelocity = 50f;
     public float launchBallZVelocity = -80f;
@@ -32,17 +32,32 @@ public class ToasterController : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            StopAllCoroutines();
+            hasLaunched = false;
+            if (launchTextCanvas != null)
+                launchTextCanvas.SetActive(false);
+        }
+    }
+
+
     private IEnumerator LaunchAfterDelay(Rigidbody playerRb)
     {
-        launchTextCanvas.SetActive(true);
+        if (launchTextCanvas != null)
+            launchTextCanvas.SetActive(true);
         WaitForSeconds wait = new WaitForSeconds(1f);
 
         for (int i = launchDelay; i > 0; i--)
         {
-            launchText.text = i.ToString();
+            if (launchText != null)
+                launchText.text = i.ToString();
             yield return wait;
         }
-        launchTextCanvas.SetActive(false);
+        if (launchTextCanvas != null)
+            launchTextCanvas.SetActive(false);
 
         if (playerRb != null)
         {

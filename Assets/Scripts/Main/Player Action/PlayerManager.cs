@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using DG.Tweening;
+using Hampossible.Utils;
 
 /// <summary>
 /// 플레이어 관리 클래스입니다. 모든 플레이어 관련 상태를 중앙에서 관리하고 제어합니다.
@@ -22,14 +24,23 @@ using UnityEngine;
 [RequireComponent(typeof(GroundCheck))]
 public class PlayerManager : RuntimeSingleton<PlayerManager>
 {
-    #region Inspector Properties
+    #region Audio Properties
     [Header("Audio Clips")]
     [SerializeField] private AudioClip jumpAudio;
     [SerializeField] private AudioClip landAudio;
-    [SerializeField] private AudioClip wireShootAudio;
-    [SerializeField] private AudioClip boostAudio;
-    [SerializeField] private AudioClip retractorAudio;
-    [SerializeField] private AudioClip balloonAudio;
+    [SerializeField] private AudioClip modeConvertAudio;
+    [SerializeField] private AudioClip shootWireAudio;
+    //[SerializeField] private AudioClip boostAudio;
+    //[SerializeField] private AudioClip retractorAudio;
+    [SerializeField] private AudioClip balloonCreateAudio;
+    [SerializeField] private AudioClip balloonPopAudio;
+    [SerializeField] private AudioSource retractorAudioSource;
+    [SerializeField] private AudioSource boosterAudioSource;
+    private bool _isBoosterAudioPlaying;
+    private bool _isRetractorAudioPlaying;
+    private Tween _currentBoosterAudioTween;
+    private Tween _currentRetractorAudioTween;
+    private const float AUDIO_FADE_DURATION = 0.4f;
     #endregion
 
 
@@ -224,16 +235,16 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     private Vector3 _accumulatedMovement;
 
 
-        #region Object Reaction Variables
-        private const float LIGHTNING_SHOCK_COOLTIME = 3f;
-        public bool canLightningShock { get; private set; }
-    
-    
-        private float _yForce = 10f;
-        private float _forceMag = 100f;
-        private float _laserPushTime = 0.2f;
-        private bool _canLaserPush = true;
-        #endregion
+    #region Object Reaction Variables
+    private const float LIGHTNING_SHOCK_COOLTIME = 3f;
+    public bool canLightningShock { get; private set; }
+
+
+    private float _yForce = 10f;
+    private float _forceMag = 100f;
+    private float _laserPushTime = 0.2f;
+    private bool _canLaserPush = true;
+    #endregion
     #endregion
 
 
@@ -281,6 +292,8 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         playerWire = GetComponent<PlayerWireController>();
         _rb = GetComponent<Rigidbody>();
         _balloon = transform.GetChild(2).GetComponent<BalloonMovementController>();
+
+        _isBoosterAudioPlaying = _isRetractorAudioPlaying = false;
 
         _hamsterLightningShockParticle
             = transform.GetChild(0).GetChild(0)
@@ -446,8 +459,9 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
             }
             SetRotation();
         }
-        
+
         isBall = !isBall;
+        PlayModeConvertSfx();
         _modeConvert?.Invoke();
 
         if (isBall && isGliding) // 햄스터 -> 공
@@ -561,7 +575,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         playerWire.EndShoot();
         isGliding = false;
 
-        forceDir = new Vector3(forceDir.x  * _forceMag, _yForce, forceDir.z  * _forceMag);
+        forceDir = new Vector3(forceDir.x * _forceMag, _yForce, forceDir.z * _forceMag);
         _rb.AddForce(forceDir, ForceMode.VelocityChange);
 
         GameManager.PlaySfx(SfxType.LaserPush);
@@ -572,6 +586,110 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     private void LaserPushEndAfterFewSeconds()
     {
         _canLaserPush = true;
+    }
+    #endregion
+
+    #region Play Sound
+    public void PlayJumpSfx()
+    {
+        GameManager.PlaySfx(jumpAudio);
+    }
+
+    public void PlayLandSfx()
+    {
+        GameManager.PlaySfx(landAudio);
+    }
+
+    public void PlayModeConvertSfx()
+    {
+        GameManager.PlaySfx(modeConvertAudio);
+    }
+
+    /// <summary>
+    /// 반복 재생되는 부스터 사운드 출력을 시작합니다.
+    /// </summary>
+    public void StartPlayBoosterSfx()
+    {
+        if (_isBoosterAudioPlaying)
+            return;
+
+        _currentBoosterAudioTween?.Kill(); // 기존 페이드 중단
+        _isBoosterAudioPlaying = true;
+
+        if (!boosterAudioSource.isPlaying)
+        {
+            boosterAudioSource.volume = 0f;
+            boosterAudioSource.loop = true;
+            boosterAudioSource.Play();
+        }
+
+        _currentBoosterAudioTween = boosterAudioSource.DOFade(GameManager.Instance.sfxVolume, AUDIO_FADE_DURATION);
+    }
+
+    /// <summary>
+    /// 반복 재생되는 부스터 사운드 출력을 중지합니다.
+    /// </summary>
+    public void StopPlayBoosterSfx()
+    {
+        if (!_isBoosterAudioPlaying)
+            return;
+
+        _currentBoosterAudioTween?.Kill(); // 기존 페이드 중단
+        _isBoosterAudioPlaying = false;
+
+        _currentBoosterAudioTween = boosterAudioSource.DOFade(0, AUDIO_FADE_DURATION)
+                                    .OnComplete(() => boosterAudioSource.Stop());
+    }
+
+    public void PlayShootWireSfx()
+    {
+        GameManager.PlaySfx(shootWireAudio);
+    }
+
+    /// <summary>
+    /// 반복 재생되는 리트랙터 사운드 출력을 시작합니다.
+    /// </summary>
+    public void StartPlayRetractorSfx()
+    {
+        if (_isRetractorAudioPlaying)
+            return;
+
+        _currentRetractorAudioTween?.Kill(); // 기존 페이드 중단
+        _isRetractorAudioPlaying = true;
+
+        if (!retractorAudioSource.isPlaying)
+        {
+            retractorAudioSource.volume = 0f;
+            retractorAudioSource.loop = true;
+            retractorAudioSource.Play();
+        }
+
+        _currentRetractorAudioTween = retractorAudioSource.DOFade(GameManager.Instance.sfxVolume, AUDIO_FADE_DURATION);
+    }
+
+    /// <summary>
+    /// 반복 재생되는 리트랙터 사운드 출력을 중지합니다.
+    /// </summary>
+    public void StopPlayRetractorSfx()
+    {
+        if (!_isRetractorAudioPlaying)
+            return;
+
+        _currentRetractorAudioTween?.Kill(); // 기존 페이드 중단
+        _isRetractorAudioPlaying = false;
+
+        _currentRetractorAudioTween = retractorAudioSource.DOFade(0, AUDIO_FADE_DURATION)
+                                    .OnComplete(() => retractorAudioSource.Stop());
+    }
+
+    public void PlayBalloonCreateSfx()
+    {
+        GameManager.PlaySfx(balloonCreateAudio);
+    }
+
+    public void PlayBalloonPopSfx()
+    {
+        GameManager.PlaySfx(balloonPopAudio);
     }
     #endregion
 }

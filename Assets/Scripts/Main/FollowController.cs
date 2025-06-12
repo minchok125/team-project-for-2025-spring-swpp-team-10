@@ -28,14 +28,14 @@ public class FollowController : MonoBehaviour
         if (_rigid != null)
         {
             if (isLerp)
-                _rigid.MovePosition(Vector3.Lerp(_rigid.transform.position, follow.position + offset, lerpSpeed * Time.deltaTime));
+                _rigid.MovePosition(Vector3.Lerp(_rigid.transform.position, follow.position + offset, lerpSpeed * Time.fixedDeltaTime));
             else
                 _rigid.MovePosition(follow.position + offset);
         }
         else
         {
             if (isLerp)
-                transform.position = Vector3.Lerp(transform.position, follow.position + offset, lerpSpeed * Time.deltaTime);
+                transform.position = Vector3.Lerp(transform.position, follow.position + offset, lerpSpeed * Time.fixedDeltaTime);
             else
                 transform.position = follow.position + offset;
         }
