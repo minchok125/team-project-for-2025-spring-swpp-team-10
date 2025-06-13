@@ -47,6 +47,7 @@ public class InteractionDialogueController : MonoBehaviour
     [SerializeField] private float cameraShotTime = 3f;
     [Tooltip("가상 카메라가 플레이어를 따라가도록 할지 여부를 결정합니다. (Follow를 자동으로 플레이어로 설정해줍니다.)")]
     [SerializeField] private bool isFollowPlayer = false;
+    [SerializeField] private bool isInputLockDuringCamera = false;
 
 
     public enum CheckpointIndex { GameStart, Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, GameEnd }
@@ -156,6 +157,9 @@ public class InteractionDialogueController : MonoBehaviour
         PlayerManager.Instance.SetMouseInputLockDuringSeconds(cameraShotTime + 2f);
         // 카메라의 우선순위를 다시 낮춤
         Invoke(nameof(ChangeCameraHamsterPriorityToNine), cameraShotTime);
+        // 전체 입력 잠금 설정
+        if (isInputLockDuringCamera)
+            PlayerManager.Instance.SetInputLockDuringSeconds(cameraShotTime);
     }
 
     private void ChangeCameraHamsterPriorityToNine()
@@ -215,6 +219,7 @@ class TriggerEnterDialogueControllerEditor : Editor
     SerializedProperty virtualCameraProp;
     SerializedProperty cameraShotTimeProp;
     SerializedProperty isFollowPlayerProp;
+    SerializedProperty isInputLockDuringCameraProp;
     SerializedProperty dialogueEnableStartCheckpointProp;
     SerializedProperty dialogueEnableEndCheckpointProp;
 
@@ -238,6 +243,7 @@ class TriggerEnterDialogueControllerEditor : Editor
         virtualCameraProp = serializedObject.FindProperty("virtualCamera");
         cameraShotTimeProp = serializedObject.FindProperty("cameraShotTime");
         isFollowPlayerProp = serializedObject.FindProperty("isFollowPlayer");
+        isInputLockDuringCameraProp = serializedObject.FindProperty("isInputLockDuringCamera");
         dialogueEnableStartCheckpointProp = serializedObject.FindProperty("dialogueEnableStartCheckpoint");
         dialogueEnableEndCheckpointProp = serializedObject.FindProperty("dialogueEnableEndCheckpoint");
     }
@@ -287,6 +293,7 @@ class TriggerEnterDialogueControllerEditor : Editor
             EditorGUILayout.PropertyField(virtualCameraProp);
             EditorGUILayout.PropertyField(cameraShotTimeProp);
             EditorGUILayout.PropertyField(isFollowPlayerProp);
+            EditorGUILayout.PropertyField(isInputLockDuringCameraProp);
         }
         
         EditorGUILayout.PropertyField(dialogueEnableStartCheckpointProp);

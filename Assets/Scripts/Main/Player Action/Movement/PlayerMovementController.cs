@@ -370,6 +370,7 @@ public class PlayerMovementController : MonoBehaviour
         jumpCount++;
         jumped = true;
         playerMgr.isJumping = true;
+        playerMgr.PlayJumpSfx();
 
         // 슬라이드 벽에서 점프하는 경우
         if (playerMgr.isOnSlideWall)
@@ -446,7 +447,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         // 공중에서 스페이스바를 누르면 활공 토글
         if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !playerMgr.onWire
-            && !playerMgr.IsInputLock())
+            && !playerMgr.IsInputLock() && !playerMgr.IsGlidingInputLock())
         {
             // jumped : 이번 Update 프레임 때 점프를 했는지
             if (!jumped && playerMgr.skill.HasGliding())
@@ -486,6 +487,7 @@ public class PlayerMovementController : MonoBehaviour
         playerMgr.isGliding = true;
         balloon.gameObject.SetActive(true);
         animator.SetBool("IsGliding", true);
+        playerMgr.PlayBalloonCreateSfx();
     }
 
     public void EndGliding()
@@ -496,6 +498,7 @@ public class PlayerMovementController : MonoBehaviour
         playerMgr.isGliding = false;
         balloon.EndGliding();
         animator.SetBool("IsGliding", false);
+        playerMgr.PlayBalloonPopSfx();
     }
     #endregion
 
@@ -578,6 +581,7 @@ public class PlayerMovementController : MonoBehaviour
         if (!playerMgr.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0
             || !playerMgr.isBall || !playerMgr.skill.HasBoost())
         {
+            playerMgr.StopPlayBoosterSfx();
             _boostEffectEmission.enabled = false;
             playerMgr.isBoosting = false;
             return;
@@ -598,6 +602,7 @@ public class PlayerMovementController : MonoBehaviour
             _boostEffectEmission.enabled = true;
             boostEffectInstance.Emit(20);
 
+            playerMgr.StartPlayBoosterSfx();
             playerMgr.isBoosting = true;
             ball.BurstBoost();
             currentBoostEnergy -= burstBoostEnergyUsage;
