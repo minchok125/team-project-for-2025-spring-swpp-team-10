@@ -125,6 +125,8 @@ public class GameManager : PersistentSingleton<GameManager>
 
         InitSfxDict();
         InitBgmDict();
+
+        bgmVolume = sfxVolume = 1;
         
         cinematicMode = CinematicModes.BadEnding;
     }

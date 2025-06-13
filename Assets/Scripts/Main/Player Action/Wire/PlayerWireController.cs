@@ -27,11 +27,12 @@ public class PlayerWireController : MonoBehaviour
 
 
     #region Component References
-    private LineRenderer lr;
+    //private LineRenderer lr;
     private Rigidbody rb;
+    private GrapplingWire grapplingWire;
     #endregion
 
-    
+
     #region Prediction
     [Header("Prediction")]
     private RaycastHit predictionHit;
@@ -59,6 +60,7 @@ public class PlayerWireController : MonoBehaviour
     private float convertedTime = -10; // Tab 버튼 눌러서 모드가 변환된 시간
 
     private string prevGrabObjectTag; // 잡고 있는 오브젝트의 바뀌기 전 태그 (잡고 있는 오브젝트는 태그를 바꿈)
+    private bool isObjectIClickButton;
     #endregion
 
 
@@ -75,12 +77,12 @@ public class PlayerWireController : MonoBehaviour
     private void Update()
     {
         HandlePlayerInput();
-        UpdateVisuals();
         camDist = (Camera.main.transform.position - rb.transform.position).magnitude;
     }
 
     private void LateUpdate()
     {
+        UpdateVisuals();
         CheckForSwingPoints();
     }
 
@@ -99,9 +101,10 @@ public class PlayerWireController : MonoBehaviour
     private void InitializeComponents()
     {
         WhatIsGrappable = LayerMask.GetMask("Default", "Attachable");
-        lr = GetComponent<LineRenderer>();
+        //lr = GetComponent<LineRenderer>();
         rb = GetComponent<Rigidbody>();
         followPlayerHitParent = GameObject.Find("FollowPlayer").transform;
+        grapplingWire = GetComponent<GrapplingWire>();
     }
 
     /// <summary>
@@ -235,22 +238,26 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void UpdateVisuals()
     {
-        DrawWire();
+        if (PlayerManager.Instance.onWire && !isObjectIClickButton)
+        {
+            grapplingWire.DrawWire();
+            currentWire.WireUpdate();
+        }
         DrawOutline();
     }
 
     /// <summary>
     /// 와이어 라인 렌더링
     /// </summary>
-    private void DrawWire()
-    {
-        if (PlayerManager.Instance.onWire) 
-        {
-            lr.SetPosition(0, transform.position);
-            lr.SetPosition(1, hitPoint.position);
-            currentWire.WireUpdate();
-        }
-    }
+    // private void DrawWire()
+    // {
+    //     if (PlayerManager.Instance.onWire) 
+    //     {
+    //         lr.SetPosition(0, transform.position);
+    //         lr.SetPosition(1, hitPoint.position);
+    //         currentWire.WireUpdate();
+    //     }
+    // }
 
     /// <summary>
     /// 오브젝트 외곽선 표시
@@ -258,9 +265,10 @@ public class PlayerWireController : MonoBehaviour
     private void DrawOutline()
     {
         // 조준 중인 오브젝트 외곽선 표시
-        if (predictionHit.point != Vector3.zero
+        if (predictionHit.collider != null
+            && predictionHit.point != Vector3.zero
             && predictionHit.collider.gameObject != gameObject
-            && !PlayerManager.Instance.IsMouseInputLock()) 
+            && !PlayerManager.Instance.IsMouseInputLock())
         {
             // 햄스터용 오브젝트이고 pull 스킬이 없는 경우는 외곽선 표시하지 않음
             bool reject = !PlayerManager.Instance.isBall && !PlayerManager.Instance.skill.HasHamsterWire();
@@ -318,11 +326,13 @@ public class PlayerWireController : MonoBehaviour
         {
             currentWire = PlayerManager.Instance.isBall ? GetComponent<BallWireController>() 
                                                         : GetComponent<HamsterWireController>();
+            PlayerManager.Instance.playerMovement.EndGliding();
         }
         // 공 와이어만 가능한 오브젝트
         else if (objProperty.canGrabInBallMode)
         {
             currentWire = GetComponent<BallWireController>();
+            PlayerManager.Instance.playerMovement.EndGliding();
             PlayerManager.Instance.ConvertToBall();
         }
         // 햄스터 와이어만 가능한 오브젝트
@@ -335,6 +345,7 @@ public class PlayerWireController : MonoBehaviour
                 return false;
             }
             currentWire = GetComponent<HamsterWireController>();
+            PlayerManager.Instance.playerMovement.EndGliding();
             PlayerManager.Instance.ConvertToHamster();
         }
         
@@ -347,7 +358,6 @@ public class PlayerWireController : MonoBehaviour
     /// </summary>
     private void ConfigureWireShot()
     {
-        PlayerManager.Instance.isGliding = false;
         PlayerManager.Instance.onWire = true;
         PlayerManager.Instance.onWireCollider = predictionHit.collider;
 
@@ -356,12 +366,14 @@ public class PlayerWireController : MonoBehaviour
         hitPoint.SetParent(grabObject.transform);
         hitPoint.position = predictionHit.point;
 
-        // LineRenderer 설정
-        lr.positionCount = 2;
-        lr.SetPosition(0, transform.position);
-        lr.SetPosition(1, predictionHit.point);
+        // 와이어 튕김 정도 설정
+        float dist = (hitPoint.position - transform.position).magnitude;
+        float distRate = Mathf.Min(1, dist / 50f); // 0 ~ 50 -> 0 ~ 1
+        float waveHeight = 8f * distRate;
+        grapplingWire.SetWaveHeight(waveHeight);
 
         // 와이어 발사
+        PlayerManager.Instance.PlayShootWireSfx();
         currentWire.WireShoot(predictionHit);
     }
 
@@ -379,7 +391,8 @@ public class PlayerWireController : MonoBehaviour
         hitPoint.SetParent(followPlayerHitParent);
         PlayerManager.Instance.onWire = false;
         PlayerManager.Instance.onWireCollider = null;
-        lr.positionCount = 0;
+        if (!isObjectIClickButton)
+            grapplingWire.EndWire();
         currentWire.EndShoot();
 
         // 다음 와이어 발사를 위해 hitPoint 전환
@@ -650,9 +663,11 @@ public class PlayerWireController : MonoBehaviour
 
         if (grabObject.TryGetComponent(out IWireClickButton btnObj))
         {
+            isObjectIClickButton = true;
             btnObj.Click();
             EndShoot();
         }
+        else isObjectIClickButton = false;
     }
 
     /// <summary>

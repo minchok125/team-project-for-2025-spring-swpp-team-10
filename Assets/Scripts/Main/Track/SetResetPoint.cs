@@ -12,6 +12,11 @@ public class SetResetPoint : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
+        GoToResetPoint();
+    }
+
+    public void GoToResetPoint()
+    {
         PlayerManager.Instance.transform.position = resetPoint.position;
         Rigidbody rb = PlayerManager.Instance.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;

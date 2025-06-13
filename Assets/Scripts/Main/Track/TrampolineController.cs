@@ -75,6 +75,8 @@ public class TrampolineController : MonoBehaviour
             didSuperJumpFromEarlyInput = false;
         }
         rb.velocity = newVel;
+
+        GameManager.PlaySfx(SfxType.GymBall);
         
         // 플레이어 애니메이션 설정
         tracker.SetJumpAnimator();
