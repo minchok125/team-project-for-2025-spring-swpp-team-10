@@ -4,6 +4,10 @@ using TMPro;
 /// <summary>
 /// 플레이어의 스킬과 능력치를 관리하는 컨트롤러 클래스
 /// 플레이어의 이동 속도, 점프력 증가 및 다양한 특수 능력 잠금 해제를 처리합니다.
+/// 
+/// 함수 사용 예시) PlayerManager.Instance.skill.SetSpeedRate(1.25f);
+///               PlayerManager.Instance.skill.AddSpeedRate(0.1f);
+///               if (PlayerManager.Instance.skill.HasTripleJump()) {}
 /// </summary>
 public class PlayerSkillController : MonoBehaviour
 {
