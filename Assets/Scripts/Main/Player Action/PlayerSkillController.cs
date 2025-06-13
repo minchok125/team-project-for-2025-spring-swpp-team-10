@@ -172,19 +172,27 @@ public class PlayerSkillController : MonoBehaviour
         UpdateUI();
     }
 
-    
+    /// <summary>
+    /// 와이어 최대 길이를 설정합니다. (기본값 40)
+    /// </summary>
     public void SetMaxWireLength(float maxWireLength)
     {
         _maxWireLength = maxWireLength;
         UpdateUI();
     }
 
+    /// <summary>
+    /// 1초 당 소비하는 부스터 에너지의 비율을 설정합니다. (기본값 0.3)
+    /// </summary>
     public void SetBoosterUsageRate(float boosterUsageRate)
     {
         _boosterUsageRate = boosterUsageRate;
         UpdateUI();
     }
 
+    /// <summary>
+    /// 1초 당 회복하는 부스터 에너지의 비율을 설정합니다. (기본값 0.125)
+    /// </summary>
     public void SetBoosterRecoveryRate(float boosterRecoveryRate)
     {
         _boosterRecoveryRate = boosterRecoveryRate;
