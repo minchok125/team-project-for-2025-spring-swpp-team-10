@@ -14,6 +14,7 @@ public class SkillSelectManager : MonoBehaviour
     [SerializeField] private Button gliding;
     [SerializeField] private Button pull;
     [SerializeField] private Button doubleJump;
+    [SerializeField] private Button tripleJump;
 
     private PlayerSkillController skill;
 
@@ -34,6 +35,7 @@ public class SkillSelectManager : MonoBehaviour
             gliding.interactable = !skill.HasGliding();
             pull.interactable = !skill.HasHamsterWire();
             doubleJump.interactable = !skill.HasDoubleJump();
+            tripleJump.interactable = !skill.HasTripleJump();
         }
     }
 
@@ -78,6 +80,13 @@ public class SkillSelectManager : MonoBehaviour
     {
         skill.UnlockDoubleJump();
         Hampossible.Utils.HLogger.Skill.Info("이중 점프 스킬 선택됨", this);
+        Close();
+    }
+
+    public void OnTripleJump()
+    {
+        skill.UnlockTripleJump();
+        Hampossible.Utils.HLogger.Skill.Info("트리플 점프 스킬 선택됨", this);
         Close();
     }
 

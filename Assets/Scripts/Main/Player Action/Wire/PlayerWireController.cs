@@ -4,9 +4,6 @@ using UnityEngine.EventSystems;
 public class PlayerWireController : MonoBehaviour
 {
     private LayerMask WhatIsGrappable; // 훅을 걸 수 있는 오브젝트의 레이어
-    [Tooltip("와이어를 걸 수 있는 최대 거리")]
-    public float grabDistance { get; private set; } = 40f;
-
 
     #region Wire Properties Public
     // 와이어를 걸었을 때 후크를 부착하는 포인트. 와이어가 부착된 위치
@@ -27,7 +24,6 @@ public class PlayerWireController : MonoBehaviour
 
 
     #region Component References
-    //private LineRenderer lr;
     private Rigidbody rb;
     private GrapplingWire grapplingWire;
     #endregion
@@ -101,7 +97,6 @@ public class PlayerWireController : MonoBehaviour
     private void InitializeComponents()
     {
         WhatIsGrappable = LayerMask.GetMask("Default", "Attachable");
-        //lr = GetComponent<LineRenderer>();
         rb = GetComponent<Rigidbody>();
         followPlayerHitParent = GameObject.Find("FollowPlayer").transform;
         grapplingWire = GetComponent<GrapplingWire>();
@@ -245,19 +240,6 @@ public class PlayerWireController : MonoBehaviour
         }
         DrawOutline();
     }
-
-    /// <summary>
-    /// 와이어 라인 렌더링
-    /// </summary>
-    // private void DrawWire()
-    // {
-    //     if (PlayerManager.Instance.onWire) 
-    //     {
-    //         lr.SetPosition(0, transform.position);
-    //         lr.SetPosition(1, hitPoint.position);
-    //         currentWire.WireUpdate();
-    //     }
-    // }
 
     /// <summary>
     /// 오브젝트 외곽선 표시
@@ -545,6 +527,8 @@ public class PlayerWireController : MonoBehaviour
     private void CheckForSwingPoints()
     {
         Camera cam = Camera.main;
+
+        float grabDistance = PlayerManager.Instance.skill.GetMaxWireLength();
 
         RaycastHit sphereCastHit;
         Physics.SphereCast(cam.transform.position,// + cam.transform.forward * camDist, 
