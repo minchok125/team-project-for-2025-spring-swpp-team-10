@@ -74,25 +74,13 @@ public class PlayerMovementController : MonoBehaviour
     #region Boost Variables
     [Header("Boost")]
     /// <summary>
-    /// 부스터 에너지 최대치 (기본 : 1.0). PlayerSkillController.GetMaxBoostEnergy()와 동일한 값을 가집니다.
-    /// </summary>
-    [Tooltip("부스터 에너지 최대치 (기본 : 1.0)")]
-    public float maxBoostEnergy = 1f;
-
-    /// <summary>
     /// 현재 부스터 에너지
     /// </summary>
     [Tooltip("현재 부스터 에너지")]
     public float currentBoostEnergy;
 
-    [Tooltip("1초 당 소모되는 부스터 에너지")]
-    [SerializeField] private float energyUsageRatePerSeconds = 0.4f;
-
     [Tooltip("부스터 시작 시 순간적으로 소모되는 에너지 (해당 값 이상이어야 부스터 가능)")]
     public float burstBoostEnergyUsage = 0.1f;
-
-    [Tooltip("부스터 상태가 아닐 때 1초 당 회복되는 에너지")]
-    [SerializeField] private float energyRecoveryRatePerSeconds = 0.125f;
 
     // 볼 이동 컨트롤러 참조
     private BallMovementController ball;
@@ -189,8 +177,7 @@ public class PlayerMovementController : MonoBehaviour
     #region Initialization
     private void InitializeState()
     {
-        maxBoostEnergy = playerMgr.skill.GetMaxBoostEnergy();
-        currentBoostEnergy = maxBoostEnergy;
+        currentBoostEnergy = 1;
         playerMgr.isJumping = false;
         playerMgr.isBoosting = false;
         playerMgr.isGliding = false;
@@ -328,28 +315,33 @@ public class PlayerMovementController : MonoBehaviour
             return;
 
         // 점프할 수 있는 지면에 닿아있거나 슬라이드/접착 벽에 있을 때 점프 가능
-        if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall) 
+        if (playerMgr.canJump || playerMgr.isOnSlideWall || playerMgr.isOnStickyWall)
         {
             // 점프 후 충분한 시간이 지났는지 확인 (연속 점프 방지)
-            if (Time.time - jumpStartTime > 0.2f) 
+            if (Time.time - jumpStartTime > 0.2f)
             {
                 jumpCount = 0;
             }
-            
+
             // 점프 입력이 있으면 점프 실행
-            if (Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
+            if (Input.GetKeyDown(KeyCode.Space) && !isInputLock)
             {
                 PerformJump();
                 jumpStartTime = Time.time;
             }
         }
-        // 공중에서 점프 (더블 점프)
-        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !isInputLock) 
+        // 공중에서 점프 (더블 점프, 트리플 점프)
+        else if (!playerMgr.isGround && Input.GetKeyDown(KeyCode.Space) && !isInputLock)
         {
-            if (playerMgr.skill.HasDoubleJump() && jumpCount < 2) 
+            if (playerMgr.skill.HasDoubleJump() && jumpCount < 2)
             {
                 PerformJump();
                 jumpCount = 2;
+            }
+            else if (playerMgr.skill.HasTripleJump() && jumpCount < 3)
+            {
+                PerformJump();
+                jumpCount = 3;
             }
         }
 
@@ -619,17 +611,17 @@ public class PlayerMovementController : MonoBehaviour
         {
             // 부스터 사용중 에너지 감소
             if (currentBoostEnergy > 0)
-                currentBoostEnergy -= energyUsageRatePerSeconds * Time.deltaTime;
+                currentBoostEnergy -= playerMgr.skill.GetBoosterUsageRate() * Time.deltaTime;
             else
                 currentBoostEnergy = 0;
         }
         else
         {
             // 부스터 미사용 시 에너지 회복
-            if (currentBoostEnergy < maxBoostEnergy)
-                currentBoostEnergy += energyRecoveryRatePerSeconds * Time.deltaTime;
+            if (currentBoostEnergy < 1f)
+                currentBoostEnergy += playerMgr.skill.GetBoosterRecoveryRate() * Time.deltaTime;
             else
-                currentBoostEnergy = maxBoostEnergy;
+                currentBoostEnergy = 1f;
         }
     }
     #endregion

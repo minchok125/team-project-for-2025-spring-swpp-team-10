@@ -10,7 +10,7 @@ public class GrapplingWire : MonoBehaviour
     private Spring _spring;
     private LineRenderer _lr;
     private Vector3 _currentGrapplePosition;
-    private Transform _player;
+    //private Transform _player;
     private bool _drawed;
 
     public int quality;
@@ -21,13 +21,14 @@ public class GrapplingWire : MonoBehaviour
     public float waveHeight;
     public AnimationCurve affectCurve;
     public float endWireTime;
+    public Transform wireShotPoint;
 
     void Start()
     {
         _lr = GetComponent<LineRenderer>();
         _spring = new Spring();
         _spring.SetTarget(0);
-        _player = PlayerManager.Instance.transform;
+        //_player = PlayerManager.Instance.transform;
     }
 
     public void SetWaveHeight(float waveHeight)
@@ -51,7 +52,7 @@ public class GrapplingWire : MonoBehaviour
         {
             _spring.Reset();
             _spring.SetVelocity(velocity);
-            _currentGrapplePosition = _player.position;
+            _currentGrapplePosition = wireShotPoint.position;
             _lr.positionCount = quality + 1;
         }
 
@@ -60,7 +61,7 @@ public class GrapplingWire : MonoBehaviour
         _spring.Update(Time.deltaTime);
 
         var grapplePoint = PlayerManager.Instance.playerWire.hitPoint.position;
-        var gunTipPosition = _player.position;
+        var gunTipPosition = wireShotPoint.position;
         var up = Quaternion.LookRotation((grapplePoint - gunTipPosition).normalized) * Vector3.up;
 
         _currentGrapplePosition = Vector3.Lerp(_currentGrapplePosition, grapplePoint, Time.deltaTime * 12f);
@@ -77,7 +78,7 @@ public class GrapplingWire : MonoBehaviour
 
     public void EndWire()
     {
-        _currentGrapplePosition = _player.position;
+        _currentGrapplePosition = wireShotPoint.position;
         _spring.Reset();
         StopAllCoroutines();
         StartCoroutine(EndWireAnimation());
@@ -90,8 +91,8 @@ public class GrapplingWire : MonoBehaviour
 
         while (time < endWireTime)
         {
-            _lr.SetPosition(0, _player.position);
-            Vector3 value = Vector3.Lerp(_player.position, PlayerManager.Instance.playerWire.hitPoint.position, 1 - time / endWireTime);
+            _lr.SetPosition(0, wireShotPoint.position);
+            Vector3 value = Vector3.Lerp(wireShotPoint.position, PlayerManager.Instance.playerWire.hitPoint.position, 1 - time / endWireTime);
             _lr.SetPosition(1, value);
             yield return null;
             time += Time.deltaTime;
