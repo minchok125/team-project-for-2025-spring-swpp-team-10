@@ -17,6 +17,9 @@ public class DeleteOutline : MonoBehaviour
     private void RemoveOutline()
     {
         Renderer rd = GetComponent<Renderer>();
+        if (rd == null)
+            return;
+            
         Material[] materials = rd.sharedMaterials;
         int idx = -1;
 
