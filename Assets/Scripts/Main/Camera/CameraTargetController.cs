@@ -24,7 +24,7 @@ public class CameraTargetController : MonoBehaviour
     }
 
 
-    void LateUpdate()
+    void FixedUpdate()
     {
         SetPos();
     }
