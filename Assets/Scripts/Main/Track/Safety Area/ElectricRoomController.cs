@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using Hampossible.Utils;
 using Cinemachine;
+using AudioSystem;
 
 // 금고 있는 방 직전의 방 기믹 매니저
 public class ElectricRoomController : MonoBehaviour
@@ -42,7 +43,7 @@ public class ElectricRoomController : MonoBehaviour
         leftDoor.DOLocalMoveZ(-6, 2f).SetUpdate(UpdateType.Fixed);
         rightDoor.DOLocalMoveZ(6, 2f).SetUpdate(UpdateType.Fixed);
 
-        GameManager.PlaySfx(SfxType.AutomaticDoorOpen);
+        AudioManager.Instance.PlaySfxAtPosition(SfxType.AutomaticDoorOpen, transform.position);
     }
 
     public void DoorClose()
@@ -50,7 +51,7 @@ public class ElectricRoomController : MonoBehaviour
         leftDoor.DOLocalMoveZ(-3, 2f).SetUpdate(UpdateType.Fixed);
         rightDoor.DOLocalMoveZ(3, 2f).SetUpdate(UpdateType.Fixed);
 
-        GameManager.PlaySfx(SfxType.AutomaticDoorClose);
+        AudioManager.Instance.PlaySfxAtPosition(SfxType.AutomaticDoorClose, transform.position);
     }
 
     public void OnWarning()

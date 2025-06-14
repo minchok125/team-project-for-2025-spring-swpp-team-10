@@ -1,5 +1,6 @@
 using Unity.Mathematics;
 using UnityEngine;
+using AudioSystem;
 
 public class TrampolineController : MonoBehaviour
 {
@@ -76,7 +77,7 @@ public class TrampolineController : MonoBehaviour
         }
         rb.velocity = newVel;
 
-        GameManager.PlaySfx(SfxType.GymBall);
+        AudioManager.Instance.PlaySfxAtPosition(SfxType.GymBall, transform.position);
         
         // 플레이어 애니메이션 설정
         tracker.SetJumpAnimator();

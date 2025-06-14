@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using Hampossible.Utils;
+using AudioSystem;
 
 public class SafeBoxKeypadController : MonoBehaviour
 {
@@ -65,7 +66,7 @@ public class SafeBoxKeypadController : MonoBehaviour
     {
         _success = true;
         numberText.color = successColor;
-        GameManager.PlaySfx(SfxType.KeypadSuccess);
+        AudioManager.Instance.PlaySfxAtPosition(SfxType.KeypadSuccess, transform.position);
         safeObjProp.canGrabInHamsterMode = true;
         MainSceneManager.Instance.isSafeBoxOpened = true;
         UIManager.Instance.DoDialogue("hamster", "금고 안의 <b>문서</b>를 가져가자", 4f);
@@ -77,7 +78,7 @@ public class SafeBoxKeypadController : MonoBehaviour
     private IEnumerator Fail()
     {
         numberText.color = failColor;
-        GameManager.PlaySfx(SfxType.KeypadFail);
+        AudioManager.Instance.PlaySfxAtPosition(SfxType.KeypadFail, transform.position);
 
         for (int i = 0; i < 3; i++)
         {
