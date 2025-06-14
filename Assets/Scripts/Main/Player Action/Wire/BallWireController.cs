@@ -31,7 +31,7 @@ public class BallWireController : MonoBehaviour, IWire
     #region Private Fields
     // 와이어 관련 상태 변수
     private bool isUsingRetractor;  // 리트랙터(줄 감기/풀기) 사용 중인지 여부
-    private float grabDistance;     // 와이어를 걸 수 있는 최대 거리
+    //private float grabDistance;     // 와이어를 걸 수 있는 최대 거리
 
     // 컴포넌트 캐싱
     private SpringJoint sj;     // 와이어 물리 동작을 위한 스프링 조인트
@@ -50,7 +50,6 @@ public class BallWireController : MonoBehaviour, IWire
 
     private void Start()
     {
-        grabDistance = GetComponent<PlayerWireController>().grabDistance;
         hitPoint = GetComponent<PlayerWireController>().hitPoint;
         rb = GetComponent<Rigidbody>();
 
@@ -99,6 +98,8 @@ public class BallWireController : MonoBehaviour, IWire
 
     public void ShortenWire(bool isFast)
     {
+        float grabDistance = PlayerManager.Instance.skill.GetMaxWireLength();
+
         // 최소 길이에 도달했으면 더 이상 감지 않음
         // 잡은 물체의 속도가 너무 빠르면 오히려 줄이 늘어남
         if (sj.maxDistance <= 2 || rb.velocity.sqrMagnitude >= 2500 || sj.maxDistance > grabDistance + 20f)
@@ -180,7 +181,7 @@ public class BallWireController : MonoBehaviour, IWire
     public void ExtendWire()
     {
         // 최대 길이에 도달했으면 더 이상 풀지 않음
-        if (sj.maxDistance > grabDistance)
+        if (sj.maxDistance > PlayerManager.Instance.skill.GetMaxWireLength())
         {
             PlayerManager.Instance.StopPlayRetractorSfx();
             return;

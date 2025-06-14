@@ -37,6 +37,12 @@ public class NextCheckpointUIController : MonoBehaviour
         UpdateActiveState();
     }
 
+    public void SetDisplayVisible()
+    {
+        if (!isDisplayed)
+            ToggleDisplay();
+    }
+
     // CheckpointManager로부터 호출될 메서드 (UIManager를 통해)
     public void UpdateTargetPosition(Vector3? newTargetPos)
     {
@@ -73,7 +79,10 @@ public class NextCheckpointUIController : MonoBehaviour
         Vector3 clampedScreenPos = screenPos;
         Vector3 screenCenter = new Vector3(Screen.width / 2f, Screen.height / 2f, 0f);
 
-        bool isBehindCamera = screenPos.z > 0;
+        // 카메라 뒤에 있으면 좌표를 반대로 뒤집음
+        bool isBehindCamera = screenPos.z < 0;
+        if (isBehindCamera) screenPos *= -1;
+
         bool isInsideScreen =
             screenPos.z > 0 &&
             screenPos.x >= 0 && screenPos.x <= Screen.width &&
@@ -84,8 +93,6 @@ public class NextCheckpointUIController : MonoBehaviour
         // screen 내에 target이 위치하지 않은 경우, screen 내에 UI를 표시하도록 조정 
         if (!isInsideScreen)
         {
-            if (isBehindCamera) screenPos *= -1;
-
             Vector2 dirVec = new Vector2(clampedScreenPos.x - screenCenter.x, clampedScreenPos.y - screenCenter.y);
             Vector2 newDirVec = new Vector2(Mathf.Abs(dirVec.x), Mathf.Abs(dirVec.y));
             // 가장자리에 있지 않다면

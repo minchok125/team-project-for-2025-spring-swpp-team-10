@@ -57,11 +57,10 @@ class ImageController
     public void Control(PlayerMovementController player, bool isBoosting, float deltaTime)
     {
         // 플레이어의 최대 부스트 에너지와 현재 부스트 에너지 값을 가져옴
-        float maxEnergy = player.maxBoostEnergy;
         float energy = player.currentBoostEnergy;
 
         // 테두리 이미지의 fillAmount를 현재 에너지 비율로 설정
-        _images[1].fillAmount = energy / maxEnergy;
+        _images[1].fillAmount = energy;
 
         // 플레이어가 부스팅 중인 경우
         if (isBoosting)

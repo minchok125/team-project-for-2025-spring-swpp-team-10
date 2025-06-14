@@ -38,9 +38,6 @@ public class HamsterWireController : MonoBehaviour, IWire
     [Tooltip("와이어로 물체를 당길 때의 최대 속도. 당길 때 과도한 속도를 방지")]
     [SerializeField] private float retractorMaxSpeed = 5;
 
-    // 와이어가 확장될 수 있는 최대 거리. 초기화 중에 다른 컴포넌트에서 가져옴
-    private float grabDistance;
-
     // 플레이어의 Rigidbody 컴포넌트 참조
     private Rigidbody rb;
     // 와이어 연결에 사용되는 SpringJoint 컴포넌트
@@ -56,7 +53,6 @@ public class HamsterWireController : MonoBehaviour, IWire
     {
         rb = GetComponent<Rigidbody>();
 
-        grabDistance = GetComponent<PlayerWireController>().grabDistance;
         hitPoint = GetComponent<PlayerWireController>().hitPoint;
     }
 
@@ -134,7 +130,7 @@ public class HamsterWireController : MonoBehaviour, IWire
 
     public void ExtendWire()
     {
-        if (sj.maxDistance > grabDistance)
+        if (sj.maxDistance > PlayerManager.Instance.skill.GetMaxWireLength())
         {
             PlayerManager.Instance.StopPlayRetractorSfx();
             return;
