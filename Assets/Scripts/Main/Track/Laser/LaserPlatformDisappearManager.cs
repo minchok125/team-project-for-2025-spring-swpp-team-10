@@ -21,9 +21,9 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     private bool _canDisappearStart; // Disappear가 시작될 때는 true, 시작된 후는 false
 
     private Sequence _disappearSequence; // Disappear된 후 appear되는 애니메이션
-    private const float FADE_OUT_DURATION = 2f; // FadeOut에 걸리는 시간
-    private const float FADE_IN_DURATION = 1f;  // FadeIn에 걸리는 시간
-    private const float STAY_TRANSPARENT_DURATION = 3f; // 투명한 상태에서 appear 시작될 때까지 대기하는 시간
+    private const float FADE_OUT_DURATION = 1.2f; // FadeOut에 걸리는 시간
+    private const float FADE_IN_DURATION = 0.5f;  // FadeIn에 걸리는 시간
+    private const float STAY_TRANSPARENT_DURATION = 0.8f; // 투명한 상태에서 appear 시작될 때까지 대기하는 시간
 
     private static readonly int k_BaseColorID = Shader.PropertyToID("_BaseColor");
     private static readonly int k_OutlineColorID = Shader.PropertyToID("_OutlineColor");

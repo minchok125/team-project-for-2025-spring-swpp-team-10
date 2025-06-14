@@ -18,11 +18,23 @@ public class RobotEyeBlinkController : MonoBehaviour
     private Coroutine _blinkCoroutine;
     private Transform _leftEye, _rightEye;
     private Vector3 _blinkScale;
+    private float _normalScale;
 
     void Start()
     {
-        if (isBlackDrone) _blinkScale = new Vector3(1, 0.05f, 1f);
-        else _blinkScale = new Vector3(1, 0.1f, 0.1f);
+        // if (isBlackDrone)
+        // {
+        //     _blinkScale = new Vector3(1, 0.05f, 1f);
+        //     _normalScale = 1f;
+        // }
+        // else
+        // {
+        //     _blinkScale = new Vector3(100, 10f, 10f);
+        //     _normalScale = 100f;
+        // }
+
+        _blinkScale = new Vector3(1, 0.05f, 1f);
+        _normalScale = 1f;
 
         _leftEye = transform.GetChild(1);
         _rightEye = transform.GetChild(2);
@@ -83,17 +95,14 @@ public class RobotEyeBlinkController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 실제 눈을 깜빡이는 로직을 여기에 구현합니다.
-    /// (예: 블렌드 쉐이프 제어, 애니메이션 트리거, 오브젝트 활성/비활성화 등)
-    /// </summary>
+    // 실제 눈을 깜빡이는 로직
     private void PerformBlinkAnimation()
     {
         Sequence seq = DOTween.Sequence();
         seq.Append(_leftEye.DOScale(_blinkScale, 0.15f))
            .Join(_rightEye.DOScale(_blinkScale, 0.15f))
            .AppendInterval(0.1f)
-           .Append(_leftEye.DOScale(1f, 0.15f))
-           .Join(_rightEye.DOScale(1f, 0.15f));
+           .Append(_leftEye.DOScale(_normalScale, 0.15f))
+           .Join(_rightEye.DOScale(_normalScale, 0.15f));
     }
 }

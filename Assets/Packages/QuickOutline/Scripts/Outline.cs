@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hampossible.Utils;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -181,6 +182,9 @@ public class Outline : MonoBehaviour {
 
   public void AddMaterial()
   {
+    if (renderers == null)
+      return;
+
     for (int i = 0; i < renderers.Length; i++)
     {
       var renderer = renderers[i];
@@ -225,6 +229,11 @@ public class Outline : MonoBehaviour {
 
       // Skip if smooth normals have already been adopted
       if (!registeredMeshes.Add(meshFilter.sharedMesh)) {
+        continue;
+      }
+
+      // 메시가 읽기 가능하지 않으면 건너뜀
+      if (meshFilter.sharedMesh == null || !meshFilter.sharedMesh.isReadable) {
         continue;
       }
 
