@@ -1,6 +1,7 @@
 using System.Linq;
 using UnityEngine;
 using DG.Tweening;
+using AudioSystem;
 
 public class GymBallController : MonoBehaviour
 {
@@ -41,7 +42,7 @@ public class GymBallController : MonoBehaviour
             transform.localScale = initScale * (1 + bounceScale);
             transform.DOScale(initScale, 0.5f).SetEase(Ease.InBounce);
 
-            GameManager.PlaySfx(SfxType.GymBall);
+            AudioManager.Instance.PlaySfxAtPosition(SfxType.GymBall, transform.position);
 
             // 플레이어라면 입력 제한 걸기
             if (collision.gameObject.CompareTag("Player"))

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using Hampossible.Utils;
+using AudioSystem;
 
 
 #if UNITY_EDITOR
@@ -91,7 +92,7 @@ public class SwitchController : MonoBehaviour
     {
         isSwitchOn = !isSwitchOn;
         InvokeSwitchStateEvents();
-        GameManager.PlaySfx(SfxType.SwitchClicked);
+        AudioManager.Instance.PlaySfxAtPosition(SfxType.SwitchClicked, transform.position);
         HLogger.General.Info($"Switch Toggled to {(isSwitchOn ? "On" : "Off")}", this);
     }
 

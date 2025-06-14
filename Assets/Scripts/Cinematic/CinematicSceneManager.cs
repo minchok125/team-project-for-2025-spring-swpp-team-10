@@ -66,15 +66,15 @@ public class CinematicSceneManager : MonoBehaviour
         fadePanel.SetActive(true);
         _fadePanelImg.DOColor(Color.black, fadeDuration);
 
-        float currBgmVolume = GameManager.Instance.bgmVolume;
+        float currBgmVolume = AudioManager.Instance.BgmVolume;
         for(float elapsed = 0; elapsed < fadeDuration; elapsed += Time.deltaTime)
         {
-            GameManager.SetBgmVolume(Mathf.Lerp(currBgmVolume, 0, elapsed / fadeDuration));
+            AudioManager.Instance.SetBgmVolume(Mathf.Lerp(currBgmVolume, 0, elapsed / fadeDuration));
             yield return null;
         }
         
-        GameManager.StopBgm();
-        GameManager.SetBgmVolume(1f);
+        AudioManager.Instance.StopBgm();
+        AudioManager.Instance.SetBgmVolume(1f);
     }
 
     private IEnumerator Opening()

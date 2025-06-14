@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using AudioSystem;
 
 public class PausedMenuController : MonoBehaviour
 {
@@ -14,11 +15,11 @@ public class PausedMenuController : MonoBehaviour
 	{
 		settingsPanel.SetActive(false);
 
-		bgmVolumeSlider.value = GameManager.Instance.bgmVolume;
-		sfxVolumeSlider.value = GameManager.Instance.sfxVolume;
+		bgmVolumeSlider.value = AudioManager.Instance.BgmVolume;
+		sfxVolumeSlider.value = AudioManager.Instance.SfxVolume;
 
-		bgmVolumeSlider.onValueChanged.AddListener(GameManager.SetBgmVolume);
-		sfxVolumeSlider.onValueChanged.AddListener(GameManager.SetSfxVolume);
+		bgmVolumeSlider.onValueChanged.AddListener(AudioManager.Instance.SetBgmVolume);
+		sfxVolumeSlider.onValueChanged.AddListener(AudioManager.Instance.SetSfxVolume);
 
 		if (uIManager == null)
 		{

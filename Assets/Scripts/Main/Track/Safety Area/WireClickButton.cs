@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using AudioSystem;
 
 public class WireClickButton : MonoBehaviour, IWireClickButton
 {
@@ -42,7 +43,7 @@ public class WireClickButton : MonoBehaviour, IWireClickButton
             return;
 
         onClick.Invoke();
-        GameManager.PlaySfx(SfxType.WireClickButtonClicked);
+        AudioManager.Instance.PlaySfxAtPosition(SfxType.WireClickButtonClicked, transform.position);
         transform.localPosition = clickPos;
         // 여러 번 클릭 가능한 버튼만 빨간버튼 원위치로
         if (!clickOnce)
