@@ -445,6 +445,7 @@ GameObject:
   - component: {fileID: 1310789435}
   - component: {fileID: 1310789434}
   - component: {fileID: 1310789433}
+  - component: {fileID: 1134302012}
   m_Layer: 0
   m_Name: tutorialTrigger2
   m_TagString: Untagged
@@ -545,7 +546,7 @@ MonoBehaviour:
   executeOnlyOnce: 0
   destroyThis: 1
   minimumNotificationCooldown: 0.1
-  dialogueOnTriggerOrCollier: 1
+  dialogueOnTriggerOrCollier: 0
   isTrigger: 1
   isOnelineDialogue: 0
   isOnelineFileDialogue: 0
@@ -559,8 +560,53 @@ MonoBehaviour:
   virtualCamera: {fileID: 0}
   cameraShotTime: 3
   isFollowPlayer: 0
+  isInputLockDuringCamera: 0
   dialogueEnableStartCheckpoint: 0
   dialogueEnableEndCheckpoint: 0
+--- !u!114 &1134302012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310789431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e82c8dcf3e77f54b884fa5433c67ccf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destroyAfterEvent: 1
+  disableOnlyColliderAfterEvent: 0
+  enterEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1310789433}
+        m_TargetAssemblyTypeName: InteractionDialogueController, Assembly-CSharp
+        m_MethodName: DoDialogue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: NextCheckpointUIController, Assembly-CSharp
+        m_MethodName: SetDisplayVisible
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  exitEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1461195438
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,6 +734,7 @@ MonoBehaviour:
   virtualCamera: {fileID: 0}
   cameraShotTime: 3
   isFollowPlayer: 0
+  isInputLockDuringCamera: 0
   dialogueEnableStartCheckpoint: 0
   dialogueEnableEndCheckpoint: 0
 --- !u!1 &1554198716
@@ -5644,7 +5691,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Drawer
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3069861519623670091, guid: a1f4ed0f3a900fe4d845e33dbdd46e18, type: 3}
+    - {fileID: 3069861520728706555, guid: a1f4ed0f3a900fe4d845e33dbdd46e18, type: 3}
+    - {fileID: 3069861520624225947, guid: a1f4ed0f3a900fe4d845e33dbdd46e18, type: 3}
+    - {fileID: 3069861520501197573, guid: a1f4ed0f3a900fe4d845e33dbdd46e18, type: 3}
+    - {fileID: 3069861519907573780, guid: a1f4ed0f3a900fe4d845e33dbdd46e18, type: 3}
+    - {fileID: 3069861520650844285, guid: a1f4ed0f3a900fe4d845e33dbdd46e18, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: a1f4ed0f3a900fe4d845e33dbdd46e18, type: 3}
 --- !u!1 &610888050688441859 stripped
 GameObject:
@@ -5669,12 +5722,126 @@ MonoBehaviour:
   canGrabInHamsterMode: 0
   generateRigidbody: 1
   nonDetectable: 0
+--- !u!1 &731983924446972916 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 167417079252172601, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+    type: 3}
+  m_PrefabInstance: {fileID: 610888050907411661}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &943992022
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 731983924446972916}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.600017, y: 0.10124561, z: 0.48}
+  m_Center: {x: -0.000008374454, y: 0.36670795, z: 0.078}
+--- !u!1 &1560331956217381377 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2151918904930924236, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+    type: 3}
+  m_PrefabInstance: {fileID: 610888050907411661}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1497416270
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1560331956217381377}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.6000171, y: 0.1012456, z: 0.48}
+  m_Center: {x: -0.000008419158, y: 0.16670796, z: 0.078}
+--- !u!1 &1978862340388622877 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1372502371147376336, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+    type: 3}
+  m_PrefabInstance: {fileID: 610888050907411661}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &338101670
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978862340388622877}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.600017, y: 0.10124567, z: 0.48}
+  m_Center: {x: -0.000008374454, y: 0.46670797, z: 0.078}
 --- !u!4 &3172339093041424485 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2629019073170398376, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
     type: 3}
   m_PrefabInstance: {fileID: 610888050907411661}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3482561024520434269 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4048390538929686160, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+    type: 3}
+  m_PrefabInstance: {fileID: 610888050907411661}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &703671201
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3482561024520434269}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.600017, y: 0.10124558, z: 0.48}
+  m_Center: {x: -0.000008374454, y: 0.26670796, z: 0.078}
+--- !u!1 &4483905332988668388 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3909202914817154345, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+    type: 3}
+  m_PrefabInstance: {fileID: 610888050907411661}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1797755129
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4483905332988668388}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.600017, y: 0.10124558, z: 0.48}
+  m_Center: {x: -0.000008374454, y: 0.666708, z: 0.078}
+--- !u!1 &8609250395903609962 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9151451800600328359, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+    type: 3}
+  m_PrefabInstance: {fileID: 610888050907411661}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1269487604
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8609250395903609962}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.600017, y: 0.1012457, z: 0.48}
+  m_Center: {x: -0.000008374454, y: 0.56670797, z: 0.078}
 --- !u!1001 &610888051172283214
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7082,7 +7249,7 @@ PrefabInstance:
     - target: {fileID: 6506057508394319122, guid: 2ba5ac2de7ff0764e8874d18fcb4484c,
         type: 3}
       propertyPath: m_Convex
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6701537745073358240, guid: 2ba5ac2de7ff0764e8874d18fcb4484c,
         type: 3}
@@ -7273,7 +7440,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationAxis: {x: 0, y: 1, z: 0}
-  rotationSpeed: 10
+  rotationSpeed: 100
 --- !u!114 &610888052267819348
 MonoBehaviour:
   m_ObjectHideFlags: 0
