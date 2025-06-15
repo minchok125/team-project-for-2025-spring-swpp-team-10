@@ -98,15 +98,17 @@ public class GameManager : PersistentSingleton<GameManager>
 
     protected override void Awake()
     {
-        if (IsInstanceNull())
-        {
-            base.Awake();
-            Init();
-        }
-        else
-        {
-            base.Awake();
-        }
+        base.Awake();
+        Init();
+        // if (IsInstanceNull())
+        // {
+        //     base.Awake();
+        //     Init();
+        // }
+        // else
+        // {
+        //     base.Awake();
+        // }
     }
 
     private void Init()

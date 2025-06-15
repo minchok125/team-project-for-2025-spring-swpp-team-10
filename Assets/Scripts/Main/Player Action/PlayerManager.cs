@@ -241,8 +241,8 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
 
     private float _yForce = 10f;
-    private float _forceMag = 100f;
-    private float _laserPushTime = 0.2f;
+    private float _forceMag = 40f;
+    private float _laserPushTime = 0.25f;
     private bool _canLaserPush = true;
     #endregion
     #endregion
@@ -573,8 +573,9 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
         _canLaserPush = false;
         playerWire.EndShoot();
-        isGliding = false;
+        playerMovement.EndGliding();
 
+        float forceMag = _forceMag * (isBall ? 1f : 3f);
         forceDir = new Vector3(forceDir.x * _forceMag, _yForce, forceDir.z * _forceMag);
         _rb.AddForce(forceDir, ForceMode.VelocityChange);
 
