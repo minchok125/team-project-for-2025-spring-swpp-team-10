@@ -10,12 +10,15 @@ public class TempShopController : MonoBehaviour
     public TextMeshProUGUI maxWireText;
     public TextMeshProUGUI boosterUsageText;
     public TextMeshProUGUI boosterRecoveryText;
+    public TextMeshProUGUI timeScaleText;
+
 
     private int _speedLevel;
     private int _jumpLevel;
     private int _maxWireLevel;
     private int _boosterUsageLevel;
     private int _boosterRecoveryLevel;
+    private int _timeScaleLevel;
 
     // 스킬 최대 레벨
     private const int SPEED_MAX_LEVEL = 12;
@@ -23,6 +26,7 @@ public class TempShopController : MonoBehaviour
     private const int MAX_WIRE_MAX_LEVEL = 10;
     private const int BOOSTER_USAGE_MAX_LEVEL = 5;
     private const int BOOSTER_RECOVERY_MAX_LEVEL = 8;
+    private const int TIME_SCALE_MAX_LEVEL = 10;
 
     // 강화 증가폭
     private const float SPEED_INC = 0.05f;
@@ -30,22 +34,27 @@ public class TempShopController : MonoBehaviour
     private const int MAX_WIRE_INC = 2;
     private const float BOOSTER_USAGE_INC = -0.02f; // 1초 당 사용 비율 감소
     private const float BOOSTER_RECOVERY_INC = -0.5f; // n초 후 전부 회복
+    private const float TIME_SCALE_INC = -0.02f; // 타임스케일 감소
     // 디폴트값
     private const float SPEED_DEFAULT = 1f;
     private const float JUMP_DEFAULT = 1f;
     private const int MAX_WIRE_DEFAULT = 40;
     private const float BOOSTER_USAGE_DEFAULT = 0.3f;
     private const float BOOSTER_RECOVERY_DEFAULT = 8f;
+    private const float TIME_SCALE_DEFAULT = 1f;
 
     private void Start()
     {
         _speedLevel = _jumpLevel = _maxWireLevel = 0;
-        _boosterUsageLevel = _boosterRecoveryLevel = 0;
+        _boosterUsageLevel = _boosterRecoveryLevel = _timeScaleLevel = 0;
         SetSpeedRate();
         SetJumpRate();
         SetMaxWireLength();
         SetBoosterUsageRate();
         SetBoosterRecoveryRate();
+        SetTimeScale();
+        SetTimeScaleText();
+        Time.timeScale = 0f;
     }
 
     public void SpeedUpgrade()
@@ -177,9 +186,46 @@ public class TempShopController : MonoBehaviour
 
 
 
+    public void TimeScaleUpgrade()
+    {
+        if (_timeScaleLevel >= TIME_SCALE_MAX_LEVEL)
+            return;
+        _timeScaleLevel++;
+        SetTimeScaleText();
+    }
+    public void TimeScaleDowngrade()
+    {
+        if (_timeScaleLevel <= 0)
+            return;
+        _timeScaleLevel--;
+        SetTimeScaleText();
+    }
+    private void SetTimeScaleText()
+    {
+        float timeScale = TIME_SCALE_DEFAULT + _timeScaleLevel * TIME_SCALE_INC;
+        float nextTimeScale = TIME_SCALE_DEFAULT + (_timeScaleLevel + 1) * TIME_SCALE_INC;
+        timeScaleText.text = $"{GetTimeScaleText(timeScale)}x -> {GetTimeScaleText(nextTimeScale)}x";
+        if (_timeScaleLevel == TIME_SCALE_MAX_LEVEL)
+            timeScaleText.text = $"MAX : {GetTimeScaleText(timeScale)}x";
+    }
+    private void SetTimeScale()
+    {
+        float timeScale = TIME_SCALE_DEFAULT + _timeScaleLevel * TIME_SCALE_INC;
+        MainSceneManager.Instance.SetTimeScale(timeScale);
+    }
+    private string GetTimeScaleText(float timeScale)
+    {
+        // 정수면 1.0, 2.0처럼 출력, 소수는 그대로 출력
+        return timeScale == Mathf.Floor(timeScale) ?
+                $"{timeScale:F1}"
+                : $"{timeScale}";
+    }
+
+
+
     public void Close()
     {
-        Time.timeScale = 1f;
+        SetTimeScale();
         gameObject.SetActive(false);
     }
 }
