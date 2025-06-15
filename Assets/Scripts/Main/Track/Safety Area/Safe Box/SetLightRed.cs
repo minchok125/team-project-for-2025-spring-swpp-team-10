@@ -8,7 +8,7 @@ public class SetLightRed : MonoBehaviour
 
     private void Start()
     {
-        Color white = Color.white * 1.8f;
+        Color white = Color.white * 2.3f;
         for (int i = 0; i < lightRenderer.Length; i++)
             lightRenderer[i].sharedMaterials[1].SetColor("_EmissionColor", white);
     }

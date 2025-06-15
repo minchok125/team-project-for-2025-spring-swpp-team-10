@@ -92,7 +92,7 @@ public class SkillSelectManager : MonoBehaviour
 
     public void Close()
     {
-        Time.timeScale = 1f;
+        Time.timeScale = MainSceneManager.Instance.GetCurrentTimeScale();
         gameObject.SetActive(false);
     }
 }

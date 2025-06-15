@@ -27,7 +27,7 @@ public class MainSceneFacade
 
     public void ResumeGame()
     {
-        Time.timeScale = 1f;
+        Time.timeScale = MainSceneManager.Instance.GetCurrentTimeScale();
         _uiManager.ResumeGame();
         _cursorController.LockCursor();
     }
@@ -83,6 +83,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
     private enum GameStates { Playing, Paused, BadEnding, GoodEnding };
     private GameStates _gameState;
     private float _timeRecord;
+    private float _timeScale;
 
     protected override void Awake()
     {
@@ -91,11 +92,12 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         _mainSceneFacade = new MainSceneFacade(uiManager);
 
         //if (IsInstanceNull())
-            InitMainSceneManager();
+        InitMainSceneManager();
     }
 
     private void InitMainSceneManager() // 게임 처음 시작 or 게임 재시작 시 초기화 되어야 하는 내용
     {
+        _timeScale = 1f;
         _mainSceneFacade.InitializeGame();
         _gameState = GameStates.Playing;
         _timeRecord = 0f;
@@ -145,7 +147,6 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
 
         // 게임 정지
         _gameState = GameStates.BadEnding;
-        _timeRecord += Time.deltaTime;
 
         // 최종 분, 초, 밀리초 계산
         int minutes = (int)(_timeRecord / 60);
@@ -158,7 +159,8 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
 
     private void UpdateTimer()
     {
-        _timeRecord += Time.deltaTime;
+        if (Time.timeScale > 0)
+            _timeRecord += Time.unscaledDeltaTime;
 
         // 분, 초, 밀리초 계산
         int minutes = (int)(_timeRecord / 60);
@@ -168,4 +170,12 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         // UI Manager를 통해 timer text 업데이트
         _mainSceneFacade.UpdateTimer(minutes, seconds, milliseconds);
     }
+
+
+    public void SetTimeScale(float timeScale)
+    {
+        _timeScale = timeScale;
+        Time.timeScale = timeScale;
+    }
+    public float GetCurrentTimeScale() => _timeScale;
 }
