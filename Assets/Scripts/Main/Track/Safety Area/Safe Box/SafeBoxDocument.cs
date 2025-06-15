@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AudioSystem;
 
 public class SafeBoxDocument : MonoBehaviour, IWireClickButton
 {
@@ -9,7 +10,7 @@ public class SafeBoxDocument : MonoBehaviour, IWireClickButton
 
     public void Click()
     {
-        GameManager.PlaySfx(SfxType.Pickup1);
+        AudioManager.Instance.PlaySfxAtPosition(SfxType.Pickup1, transform.position);
         warning.StartWarning();
         Destroy(otherDocument);
         Destroy(gameObject);

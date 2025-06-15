@@ -3,49 +3,6 @@ using System.Linq;
 using Hampossible.Utils;
 using UnityEngine;
 
-[System.Serializable]
-public class SfxAudioClip
-{
-    public SfxType sfxType;
-    public AudioClip clip;
-}
-
-[System.Serializable]
-public class BgmAudioClip
-{
-    public BgmType bgmType;
-    public AudioClip clip;
-}
-
-public enum SfxType
-{
-    TestSfx,
-    LightningShock,
-    LaserPlatformDisappear,
-    WireClickButtonClicked,
-    SecureAreaRoom1DoorOpen,
-    GymBall,
-    AutomaticDoorOpen,
-    AutomaticDoorClose,
-    LaserPush,
-    BlackDroneCrash,
-    SwitchClicked,
-    KeypadInput,
-    KeypadSuccess,
-    KeypadFail,
-    Pickup1,
-    Pickup2,
-    Pickup3,
-    OpeningShrinkSfx,
-    OpeningLogoSfx,
-}
-
-public enum BgmType
-{
-    OpeningHouseBgm,
-    OpeningCutSceneBgm,
-}
-
 public enum HamsterSkinType
 {
     Golden,
@@ -53,21 +10,7 @@ public enum HamsterSkinType
 }
 
 public class GameManager : PersistentSingleton<GameManager>
-{
-    [Header("References")]
-    [SerializeField] private AudioSource bgmSource;
-    [SerializeField] private AudioSource sfxSource;
-
-    [Header("AudioClips")]
-    // [SerializeField] private AudioClip[] bgmClips;
-    [SerializeField] private BgmAudioClip[] bgmClips;
-    private Dictionary<BgmType, AudioClip> bgmDict;
-    // [SerializeField] private AudioClip[] sfxClips;
-    [SerializeField] private SfxAudioClip[] sfxClips;
-    private Dictionary<SfxType, AudioClip> sfxDict;
-
-    [Header("Values")]
-    public float bgmVolume, sfxVolume;
+{    
 
     [Header("Skin")]
     public HamsterSkinType selectedHamsterSkin = HamsterSkinType.Golden;
@@ -124,68 +67,8 @@ public class GameManager : PersistentSingleton<GameManager>
 
         // 3. VSync 끄기 (VSync가 켜져 있으면 targetFrameRate가 무시될 수 있음)
         QualitySettings.vSyncCount = 0;
-
-        InitSfxDict();
-        InitBgmDict();
-
-        bgmVolume = sfxVolume = 1;
         
         cinematicMode = CinematicModes.BadEnding;
     }
 
-    // sfxdict 초기화
-    private void InitSfxDict()
-    {
-        sfxDict = new Dictionary<SfxType, AudioClip>();
-        foreach (SfxAudioClip sfx in sfxClips)
-        {
-            if (!sfxDict.ContainsKey(sfx.sfxType))
-                sfxDict.Add(sfx.sfxType, sfx.clip);
-            else
-                HLogger.General.Warning($"GameManager.sfxClips의 sfxType({sfx.sfxType})이 중복됩니다.", this);
-        }
-    }
-    
-    private void InitBgmDict()
-    {
-        bgmDict = new Dictionary<BgmType, AudioClip>();
-        foreach (BgmAudioClip bgm in bgmClips)
-        {
-            if (!bgmDict.ContainsKey(bgm.bgmType))
-                bgmDict.Add(bgm.bgmType, bgm.clip);
-            else
-                HLogger.General.Warning($"GameManager.bgmClips의 bgmType({bgm.bgmType})이 중복됩니다.", this);
-        }
-    }
-
-    public static void PlayBgm(BgmType bgmType)
-    {
-        if (Instance.bgmDict.TryGetValue(bgmType, out AudioClip bgmClip))
-            Instance.bgmSource.PlayOneShot(bgmClip);
-        else
-            HLogger.General.Warning($"BGM {bgmType}이 딕셔너리에 존재하지 않습니다.", Instance);
-    }
-    public static void StopBgm() { Instance.bgmSource.Stop(); }
-    public static void SetBgmVolume(float volume) { Instance.bgmVolume = volume; Instance.bgmSource.volume = volume; }
-    public static void PlaySfx(SfxType sfxType)
-    {
-        if (Instance.sfxDict.TryGetValue(sfxType, out AudioClip sfxClip))
-            Instance.sfxSource.PlayOneShot(sfxClip);
-        else
-            HLogger.General.Warning($"SFX {sfxType}이 딕셔너리에 존재하지 않습니다.", Instance);
-    }
-    public static void PlaySfx(AudioClip sfxClip, UnityEngine.Object caller = null)
-    {
-        if (sfxClip == null)
-        {
-            HLogger.General.Warning($"GameManager.PlaySfx : 효과음 클립이 null입니다. Caller = {caller?.name ?? "Unknown"}", caller);
-            return;
-        }
-        Instance.sfxSource.PlayOneShot(sfxClip);
-    }
-    
-    public static void SetSfxPitch(float pitch) { Instance.sfxSource.pitch = pitch; }
-    public static void SetSfxVolume(float volume) { Instance.sfxVolume = volume; Instance.sfxSource.volume = volume; }
-
-    /*****************************************************/
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using AudioSystem;
 
 public class OpeningManager : MonoBehaviour
 {
@@ -114,10 +115,10 @@ public class OpeningManager : MonoBehaviour
         houseCam.enabled = true;
         houseCam.gameObject.SetActive(true);
         
-        GameManager.PlayBgm(BgmType.OpeningHouseBgm);
+        AudioManager.Instance.PlayBgm(BgmType.OpeningHouseBgm);
         for(float elapsed = 0; elapsed < fadeDuration; elapsed += Time.deltaTime)
         {
-            GameManager.SetBgmVolume(Mathf.Lerp(0f, 1f, elapsed / fadeDuration));
+            AudioManager.Instance.SetBgmVolume(Mathf.Lerp(0f, 1f, elapsed / fadeDuration));
             yield return null;
         }
         
@@ -134,7 +135,7 @@ public class OpeningManager : MonoBehaviour
         roomCam.enabled = true;
         roomCam.gameObject.SetActive(true);
 
-        GameManager.SetBgmVolume(0.4f);
+        AudioManager.Instance.SetBgmVolume(0.4f);
         
         for (int i = 0; i < roomCamDuration.Length; i++)
         {
@@ -182,22 +183,22 @@ public class OpeningManager : MonoBehaviour
         Vector2 bottomPaddingSize = new Vector2(_maxWidth, bottomPadding);
         Vector2 topPaddingSize = new Vector2(_maxWidth, topPadding);
         
-        GameManager.SetSfxVolume(0.3f);
-        GameManager.SetSfxPitch(0.55f);
-        GameManager.PlaySfx(SfxType.OpeningShrinkSfx);
-        float currBgmVolume = GameManager.Instance.bgmVolume;
+        AudioManager.Instance.SetSfxVolume(0.3f);
+        AudioManager.Instance.SetSfxPitch(0.55f);
+        AudioManager.Instance.PlaySfx2D(SfxType.OpeningShrinkSfx);
+        float currBgmVolume = AudioManager.Instance.BgmVolume;
         for (float elapsed = 0f; elapsed < shrinkDuration; elapsed += Time.deltaTime)
         {
-            GameManager.SetBgmVolume(Mathf.Lerp(currBgmVolume, 0f, elapsed / shrinkDuration));
+            AudioManager.Instance.SetBgmVolume(Mathf.Lerp(currBgmVolume, 0f, elapsed / shrinkDuration));
             leftPaddingRect.sizeDelta = Vector2.Lerp(maxHeightSize, leftPaddingSize, elapsed / shrinkDuration);
             rightPaddingRect.sizeDelta = Vector2.Lerp(maxHeightSize, rightPaddingSize, elapsed / shrinkDuration);
             bottomPaddingRect.sizeDelta = Vector2.Lerp(maxWidthSize, bottomPaddingSize, elapsed / shrinkDuration);
             topPaddingRect.sizeDelta = Vector2.Lerp(maxWidthSize, topPaddingSize, elapsed / shrinkDuration);
             yield return null;
         }
-        GameManager.SetSfxPitch(1f);
-        GameManager.StopBgm();
-        GameManager.SetBgmVolume(1f);
+        AudioManager.Instance.SetSfxPitch(1f);
+        AudioManager.Instance.StopBgm();
+        AudioManager.Instance.SetBgmVolume(1f);
     }
 
     private IEnumerator LogoHoldingCoroutine()
@@ -205,17 +206,17 @@ public class OpeningManager : MonoBehaviour
         hamster.DOLocalMove(hamsterEndPos, standUpDuration);
         hamster.DORotate(hamsterEndRot, standUpDuration);
         logoImg.SetActive(true);
-        GameManager.SetSfxVolume(0.5f);
-        GameManager.PlaySfx(SfxType.OpeningLogoSfx);
+        AudioManager.Instance.SetSfxVolume(0.5f);
+        AudioManager.Instance.PlaySfx2D(SfxType.OpeningLogoSfx);
         yield return new WaitForSeconds(0.5f);
         yield return new WaitForSeconds(logoHoldingDuration);
-        GameManager.SetSfxVolume(1f);
+        AudioManager.Instance.SetSfxVolume(1f);
     }
 
     private IEnumerator CutSceneCoroutine()
     {
-        GameManager.SetBgmVolume(0.1f);
-        GameManager.PlayBgm(BgmType.OpeningCutSceneBgm);
+        AudioManager.Instance.SetBgmVolume(0.1f);
+        AudioManager.Instance.PlayBgm(BgmType.OpeningCutSceneBgm);
         
         foreach(GameObject cover in covers)
             cover.SetActive(true);
