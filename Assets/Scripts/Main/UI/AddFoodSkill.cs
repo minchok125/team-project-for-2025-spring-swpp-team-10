@@ -11,7 +11,7 @@ public class AddFoodSkill : MonoBehaviour
 
     public void OnClick()
     {
-        Time.timeScale = 0;
+        Time.timeScale = 0f;
         openUI.SetActive(true);
     }
 }
