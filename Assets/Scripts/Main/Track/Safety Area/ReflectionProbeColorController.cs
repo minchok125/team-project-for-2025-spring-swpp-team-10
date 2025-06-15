@@ -3,7 +3,8 @@ using DG.Tweening;
 
 public class ReflectionProbeColorController : MonoBehaviour
 {
-    private Color _orange = new Color(225f / 255f, 205f / 255f, 150f / 255f);
+    // private Color _orange = new Color(225f / 255f, 205f / 255f, 150f / 255f);
+    private Color _orange = new Color(132f / 255f, 123f / 255f, 98f / 255f);
     private Color _red = new Color(215f / 255f, 137f / 255f, 131f / 255f);
     private ReflectionProbe _probe;
 
