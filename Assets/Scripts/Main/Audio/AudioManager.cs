@@ -95,6 +95,7 @@ public class AudioManager : PersistentSingleton<AudioManager>
     // 볼륨 설정
     public float BgmVolume { get; private set; } = 1f;
     public float SfxVolume { get; private set; } = 1f;
+    public float SfxPitch { get; private set; } = 1f;
     private const float AUDIO_FADE_DURATION = 0.4f;
 
 
@@ -226,7 +227,13 @@ public class AudioManager : PersistentSingleton<AudioManager>
     {
         SfxVolume = Mathf.Clamp01(volume);
         sfxSource2D.volume = SfxVolume;
-        // 풀의 모든 소스 볼륨을 갱신하거나, 재생 시점에 설정할 수 있습니다. 여기서는 후자를 택합니다.
+    }
+    #endregion
+
+    #region --- SFX 피치 제어 ---
+    public void SetSfxPitch(float pitch)
+    {
+        SfxPitch = Mathf.Clamp(pitch, 0.1f, 3f);
     }
     #endregion
 

@@ -184,7 +184,7 @@ public class OpeningManager : MonoBehaviour
         Vector2 topPaddingSize = new Vector2(_maxWidth, topPadding);
         
         AudioManager.Instance.SetSfxVolume(0.3f);
-        //AudioManager.Instance.SetSfxPitch(0.55f);
+        AudioManager.Instance.SetSfxPitch(0.55f);
         AudioManager.Instance.PlaySfx2D(SfxType.OpeningShrinkSfx);
         float currBgmVolume = AudioManager.Instance.BgmVolume;
         for (float elapsed = 0f; elapsed < shrinkDuration; elapsed += Time.deltaTime)
@@ -196,7 +196,7 @@ public class OpeningManager : MonoBehaviour
             topPaddingRect.sizeDelta = Vector2.Lerp(maxWidthSize, topPaddingSize, elapsed / shrinkDuration);
             yield return null;
         }
-        //AudioManager.Instance.SetSfxPitch(1f);
+        AudioManager.Instance.SetSfxPitch(1f);
         AudioManager.Instance.StopBgm();
         AudioManager.Instance.SetBgmVolume(1f);
     }
