@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using AudioSystem;
 
 public class CubeStageCountButton : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class CubeStageCountButton : MonoBehaviour
 
         if (_remainButtonCount <= 0)
         {
-            GameManager.PlaySfx(SfxType.SecureAreaRoom1DoorOpen);
+            AudioManager.Instance.PlaySfx2D(SfxType.SecureAreaRoom1DoorOpen);
             StartCoroutine(OpenDoor());
         }
     }

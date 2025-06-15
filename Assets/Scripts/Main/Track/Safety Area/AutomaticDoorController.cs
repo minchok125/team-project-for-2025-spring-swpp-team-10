@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using AudioSystem;
 
 public class AutomaticDoorController : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class AutomaticDoorController : MonoBehaviour
         _leftDoor.DOLocalMoveZ(-6, 2f).SetUpdate(UpdateType.Fixed);
         _rightDoor.DOLocalMoveZ(6, 2f).SetUpdate(UpdateType.Fixed);
 
-        GameManager.PlaySfx(SfxType.AutomaticDoorOpen);
+        AudioManager.Instance.PlaySfx2D(SfxType.AutomaticDoorOpen);
     }
 
     public void DoorClose()
@@ -41,6 +42,6 @@ public class AutomaticDoorController : MonoBehaviour
         _leftDoor.DOLocalMoveZ(-3, 2f).SetUpdate(UpdateType.Fixed);
         _rightDoor.DOLocalMoveZ(3, 2f).SetUpdate(UpdateType.Fixed);
 
-        GameManager.PlaySfx(SfxType.AutomaticDoorClose);
+        AudioManager.Instance.PlaySfx2D(SfxType.AutomaticDoorClose);
     }
 }

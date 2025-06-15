@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Rendering;
 using Hampossible.Utils;
+using AudioSystem;
 
 public class LaserPlatformDisappearManager : MonoBehaviour
 {
@@ -108,7 +109,7 @@ public class LaserPlatformDisappearManager : MonoBehaviour
     private void DisappearStart()
     {
         EndShoot();
-        GameManager.PlaySfx(SfxType.LaserPlatformDisappear);
+        AudioManager.Instance.PlaySfx2D(SfxType.LaserPlatformDisappear);
         _canDisappearStart = false;
         _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
         _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);

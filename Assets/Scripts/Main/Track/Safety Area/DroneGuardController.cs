@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using AudioSystem;
 
 public class DroneGuardController : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class DroneGuardController : MonoBehaviour
         Left_Arm.DOLocalMoveX(-0.0045f, 1f);
         Right_Arm.DOLocalMoveX(0.0045f, 1f);
 
-        GameManager.PlaySfx(SfxType.BlackDroneCrash);
+        AudioManager.Instance.PlaySfxAtPosition(SfxType.BlackDroneCrash, transform.position);
         room.RemovedBlackDrone();
     }
 }

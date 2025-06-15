@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AudioSystem;
 
 public class SafeBoxButtonController : MonoBehaviour, IWireClickButton
 {
@@ -16,6 +17,6 @@ public class SafeBoxButtonController : MonoBehaviour, IWireClickButton
     public void Click()
     {
         _keypad.GetInput(myNumber);
-        GameManager.PlaySfx(SfxType.KeypadInput);
+        AudioManager.Instance.PlaySfx2D(SfxType.KeypadInput);
     }
 }
