@@ -190,10 +190,10 @@ public class PlayerMovementController : MonoBehaviour
     /// </summary>
     private void HandleSwingSound()
     {
-        // 스윙 조건: 와이어 사용 중 + 공중 상태 + 최소 속도 이상
-        bool isSwinging = playerMgr.onWire && !playerMgr.isGround && rb.velocity.magnitude > minSwingSpeed;
+        // 스윙 조건: 공중 상태 + 최소 속도 이상
+        bool isHighSpeedInAir = !playerMgr.isGround && rb.velocity.magnitude > minSwingSpeed;
 
-        if (isSwinging)
+        if (isHighSpeedInAir)
         {
             // 스윙 소리가 재생 중이 아닐 때, 재생 시작
             if (!isSwingSoundPlaying)
