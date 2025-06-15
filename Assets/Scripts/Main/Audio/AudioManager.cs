@@ -97,7 +97,7 @@ public class AudioManager : PersistentSingleton<AudioManager>
     public float BgmVolume { get; private set; } = 1f;
     public float SfxVolume { get; private set; } = 1f;
     public float SfxPitch { get; private set; } = 1f;
-    private const float AUDIO_FADE_DURATION = 1f;
+    private const float AUDIO_FADE_DURATION = 0.4f;
 
 
     protected override void Awake()
