@@ -222,11 +222,23 @@ public class AudioManager : PersistentSingleton<AudioManager>
         });
         loopingTweens[source] = fadeTween;
     }
-    
+
     public void SetSfxVolume(float volume)
     {
         SfxVolume = Mathf.Clamp01(volume);
         sfxSource2D.volume = SfxVolume;
+        
+        // 현재 재생 중인 모든 루프 사운드의 볼륨을 갱신
+        foreach(var entry in loopingTweens)
+        {
+            AudioSource source = entry.Key;
+            Tween currentTween = entry.Value;
+
+            // 기존 트윈을 중지, 새로운 볼륨으로 부드럽게 변경하는 새 트윈을 적용
+            currentTween?.Kill();
+            Tween newTween = source.DOFade(SfxVolume, 0.1f); 
+            loopingTweens[source] = newTween;
+        }
     }
     #endregion
 
@@ -234,6 +246,15 @@ public class AudioManager : PersistentSingleton<AudioManager>
     public void SetSfxPitch(float pitch)
     {
         SfxPitch = Mathf.Clamp(pitch, 0.1f, 3f);
+
+        // 현재 재생 중인 모든 루프 사운드의 피치 갱신
+        foreach(var source in loopingTweens.Keys)
+        {
+            if (source != null)
+            {
+                source.pitch = SfxPitch;
+            }
+        }
     }
     #endregion
 
