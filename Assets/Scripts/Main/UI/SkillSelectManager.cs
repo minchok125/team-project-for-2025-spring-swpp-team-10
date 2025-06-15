@@ -43,51 +43,57 @@ public class SkillSelectManager : MonoBehaviour
     {
         skill.AddSpeedRate(0.1f);
         Hampossible.Utils.HLogger.Skill.Info("이동 속도 증가 선택됨", this);
-        Close();
+        //Close();
     }
     public void OnJump()
     {
         skill.AddJumpHeightRate(0.1f);
         Hampossible.Utils.HLogger.Skill.Info("점프력 증가 선택됨", this);
-        Close();
+        //Close();
     }
     public void OnBoost()
     {
         skill.UnlockBoost();
+        boost.interactable = false;
         boostUI.SetActive(true);
         Hampossible.Utils.HLogger.Skill.Info("부스터 스킬 선택됨", this);
-        Close();
+        //Close();
     }
     public void OnRetractor()
     {
         skill.UnlockRetractor();
+        retractor.interactable = false;
         Hampossible.Utils.HLogger.Skill.Info("리트랙터 스킬 선택됨", this);
-        Close();
+        //Close();
     }
     public void OnPlasticBag()
     {
         skill.UnlockGliding();
+        gliding.interactable = false;
         Hampossible.Utils.HLogger.Skill.Info("플라스틱 백(글라이딩) 스킬 선택됨", this);
-        Close();
+        //Close();
     }
     public void OnPullWire()
     {
         skill.UnlockHamsterWire();
+        pull.interactable = false;
         Hampossible.Utils.HLogger.Skill.Info("햄스터 와이어 스킬 선택됨", this);
-        Close();
+        //Close();
     }
     public void OnDoubleJump()
     {
         skill.UnlockDoubleJump();
+        doubleJump.interactable = false;
         Hampossible.Utils.HLogger.Skill.Info("이중 점프 스킬 선택됨", this);
-        Close();
+        //Close();
     }
 
     public void OnTripleJump()
     {
         skill.UnlockTripleJump();
+        tripleJump.interactable = false;
         Hampossible.Utils.HLogger.Skill.Info("트리플 점프 스킬 선택됨", this);
-        Close();
+        //Close();
     }
 
     public void Close()
