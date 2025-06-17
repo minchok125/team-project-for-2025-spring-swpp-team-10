@@ -288,6 +288,9 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         // _ballLightningShockParticle
         //     = transform.Find("Hamster Ball")
         //                .Find("Lightning Particle")?.gameObject;
+
+        wireSwingAudioSource.volume = 0;
+        wireSwingAudioSource.Stop();
     }
 
 
