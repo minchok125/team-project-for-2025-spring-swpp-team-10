@@ -1,8 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Hampossible.Utils;
+
+public interface ICoinWallet
+{
+    int GetBalance();
+    void Add(int amount);
+    bool Spend(int amount);
+}
 
 public class ItemManager : PersistentSingleton<ItemManager>
 {
@@ -11,11 +17,23 @@ public class ItemManager : PersistentSingleton<ItemManager>
     [SerializeField] private int coinPerTick = 1; // 플레이 타임마다 지급되는 코인 수량
     [SerializeField] private float coinTickInterval = 1f; // 코인 지급 간격 (초 단위)
 
-    private int _currentCoinCount;
+    private ICoinWallet _coinWallet;
     public UnityEvent<int> OnCoinCountChanged = new UnityEvent<int>();
 
     private List<Item> _allItems = new List<Item>();
     private List<UserItem> _userItems = new List<UserItem>();
+
+    private IInventoryStorage _inventoryStorage;
+
+    public void SetInventoryStorage(IInventoryStorage storage)
+    {
+        _inventoryStorage = storage;
+    }
+
+    public void SetCoinWallet(ICoinWallet wallet)
+    {
+        _coinWallet = wallet;
+    }
 
     protected override void Awake()
     {
@@ -38,25 +56,17 @@ public class ItemManager : PersistentSingleton<ItemManager>
             HLogger.General.Info("ItemManager 및 인벤토리 초기화 시작", this);
 
             _allItems = new List<Item>(itemList.items);
-            _userItems = new List<UserItem>();
-
-            foreach (var item in _allItems)
-            {
-                var userItem = UserItem.Create(item);
-                _userItems.Add(userItem);
-                HLogger.Skill.Debug($"유저 아이템 초기화됨: {item.name} (ID: {item.id}) x{userItem.count}", this);
-            }
+            _userItems = _inventoryStorage?.LoadUserItems() ?? new List<UserItem>();
+            _inventoryStorage?.SaveUserItems(_userItems);
         }
     }
 
     // 코인 초기화 로직
     private void InitializeCoins()
     {
-        _currentCoinCount = initialCoinCount;
-        HLogger.General.Info($"코인 초기화 완료. 시작 코인: {_currentCoinCount}개", this);
-
-        // 코인 변경 이벤트 호출 (초기값 알림)
-        OnCoinCountChanged.Invoke(_currentCoinCount);
+        _coinWallet ??= new DefaultCoinWallet(initialCoinCount, OnCoinCountChanged);
+        HLogger.General.Info($"코인 초기화 완료. 시작 코인: {_coinWallet.GetBalance()}개", this);
+        OnCoinCountChanged.Invoke(_coinWallet.GetBalance());
     }
 
     private void LogInventoryContents()
@@ -75,7 +85,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
             HLogger.Skill.Debug($"- {item.name} (ID: {item.id}): {userItem.count}개", this);
         }
 
-        HLogger.Skill.Debug($"현재 보유 코인: {_currentCoinCount}개", this);
+        HLogger.Skill.Debug($"현재 보유 코인: {_coinWallet.GetBalance()}개", this);
     }
 
     // --------------------------------------------------------------------------------
@@ -170,7 +180,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
         {
             HLogger.General.Error("null 아이템을 잠금 해제하려고 시도했습니다.", this);
             return;
-    }
+        }
 
         userItem.isLocked = false;
         HLogger.Player.Info($"아이템 잠금 해제됨: {item.name}", this);
@@ -189,9 +199,9 @@ public class ItemManager : PersistentSingleton<ItemManager>
             return;
         }
 
-        _currentCoinCount += amount;
-        OnCoinCountChanged.Invoke(_currentCoinCount);
-        HLogger.Player.Info($"코인 추가됨: {amount} (현재 코인 수: {_currentCoinCount})", this);
+        _coinWallet.Add(amount);
+        OnCoinCountChanged.Invoke(_coinWallet.GetBalance());
+        HLogger.Player.Info($"코인 추가됨: {amount} (현재 코인 수: {_coinWallet.GetBalance()})", this);
     }
 
 
@@ -217,7 +227,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
 
     public int GetCoinCount()
     {
-        return _currentCoinCount;
+        return _coinWallet.GetBalance();
     }
 
 
@@ -229,16 +239,15 @@ public class ItemManager : PersistentSingleton<ItemManager>
             return false;
         }
 
-        if (_currentCoinCount >= amount)
+        if (_coinWallet.Spend(amount))
         {
-            _currentCoinCount -= amount;
-            OnCoinCountChanged.Invoke(_currentCoinCount);
-            HLogger.Player.Info($"코인 소모됨: {amount} (현재 코인 수: {_currentCoinCount})", this);
+            OnCoinCountChanged.Invoke(_coinWallet.GetBalance());
+            HLogger.Player.Info($"코인 소모됨: {amount} (현재 코인 수: {_coinWallet.GetBalance()})", this);
             return true;
         }
         else
         {
-            HLogger.Player.Warning($"코인 부족: 현재 {_currentCoinCount}, 필요 {amount}", this);
+            HLogger.Player.Warning($"코인 부족: 현재 {_coinWallet.GetBalance()}, 필요 {amount}", this);
             return false;
         }
     }
@@ -295,9 +304,9 @@ public class ItemManager : PersistentSingleton<ItemManager>
             return false;
         }
 
-        if (_currentCoinCount < item.price)
+        if (_coinWallet.GetBalance() < item.price)
         {
-            HLogger.Player.Warning($"코인 부족: 현재 {_currentCoinCount}, 필요 {item.price}", this);
+            HLogger.Player.Warning($"코인 부족: 현재 {_coinWallet.GetBalance()}, 필요 {item.price}", this);
             return false;
         }
 
@@ -327,5 +336,37 @@ public class ItemManager : PersistentSingleton<ItemManager>
 
         HLogger.Player.Info($"아이템 구매 성공: {item.name} (ID: {item.id})", this);
         return true;
+    }
+}
+
+public class DefaultCoinWallet : ICoinWallet
+{
+    private int _balance;
+    private UnityEvent<int> _onChange;
+
+    public DefaultCoinWallet(int initial, UnityEvent<int> onChange)
+    {
+        _balance = initial;
+        _onChange = onChange;
+    }
+
+    public int GetBalance() => _balance;
+
+    public void Add(int amount)
+    {
+        _balance += amount;
+        _onChange.Invoke(_balance);
+    }
+
+    public bool Spend(int amount)
+    {
+        if (_balance >= amount)
+        {
+            _balance -= amount;
+            _onChange.Invoke(_balance);
+            return true;
+        }
+
+        return false;
     }
 }
