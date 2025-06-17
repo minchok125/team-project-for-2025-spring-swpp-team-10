@@ -19,6 +19,9 @@ public class CheckpointController : MonoBehaviour
     [Tooltip("체크포인트 활성화 시 재생할 파티클 효과 등의 프리팹입니다. (선택 사항)")]
     [SerializeField] private GameObject activationEffectPrefab;
 
+    [Tooltip("이 체크포인트에서 잠금 해제할 아이템 (선택 사항)")]
+    [SerializeField] private Item unlockableItem;
+
     private bool _isActivated = false;
     private Collider _collider;
 
@@ -81,6 +84,11 @@ public class CheckpointController : MonoBehaviour
 
         if (CheckpointManager.Instance != null)
         {
+            if (unlockableItem != null && ItemManager.Instance != null)
+            {
+                ItemManager.Instance.UnlockItem(unlockableItem);
+            }
+
             CheckpointManager.Instance.CheckpointActivated(this);
             _isActivated = true;
 
