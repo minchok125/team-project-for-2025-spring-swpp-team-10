@@ -60,7 +60,8 @@ namespace AudioSystem
         OpeningShrinkSfx,
         OpeningLogoSfx,
         WireSwingLoop,
-        DialogueSequenceStart
+        DialogueSequenceStart,
+        CheckpointActivate
     }
 
     public enum BgmType

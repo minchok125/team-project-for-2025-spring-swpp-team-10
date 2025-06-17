@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Hampossible.Utils;
+using AudioSystem;
 
 public class CheckpointManager : RuntimeSingleton<CheckpointManager>
 {
@@ -69,7 +70,6 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
             return;
         }
 
-        // 활성화된 체크포인트가 orderedCheckpoints 리스트에서 몇 번째인지 찾습니다.
         int activatedIndex = orderedCheckpoints.IndexOf(activatedCheckpoint);
 
         if (activatedIndex == -1)
@@ -78,25 +78,35 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
             HLogger.General.Warning($"체크포인트 '{activatedCheckpoint.gameObject.name}'가 순서 목록에 없습니다. 리스폰 지점은 설정되지만, 순서 로직에는 영향을 주지 않습니다.", activatedCheckpoint.gameObject);
             _lastCheckpointPosition = activatedCheckpoint.transform.position;
             _hasCheckpointBeenSet = true;
-            // 순서 목록에 없는 체크포인트를 활성화하면 UI 업데이트를 하지 않습니다.
+            activatedCheckpoint.Activate();
             return;
         }
 
         // 현재까지 진행한 체크포인트보다 더 앞선 체크포인트이거나 첫 번째 체크포인트일 경우에만 순서를 업데이트합니다.
         if (activatedIndex > _currentCheckpointIndex)
         {
+
+            // 활성화 효과음 재생
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySfx2D(SfxType.CheckpointActivate);
+            }
+
             _currentCheckpointIndex = activatedIndex;
             _lastCheckpointPosition = activatedCheckpoint.transform.position; // 리스폰 위치도 갱신
             _hasCheckpointBeenSet = true;
             HLogger.General.Info($"체크포인트 '{activatedCheckpoint.gameObject.name}' (인덱스: {_currentCheckpointIndex}) 활성화됨. 위치: {_lastCheckpointPosition}");
-            /*
-            Vector3? nextCheckpointPos = GetNextCheckpointPosition(); // 다음 체크포인트 위치 가져오기
-            UpdateNextCheckpoint(nextCheckpointPos); // UI 업데이트 알림
-            */
 
-            // 1. 진행 상황이 변경되었음을 알림
+            // [변경] 현재 활성화된 체크포인트를 포함하여 이전의 모든 체크포인트를 활성화합니다.
+            for (int i = 0; i <= _currentCheckpointIndex; i++)
+            {
+                if (orderedCheckpoints[i] != null)
+                {
+                    orderedCheckpoints[i].Activate();
+                }
+            }
+
             NotifyProgressUpdated();
-            // 2. 다음 목표 위치가 변경되었음을 알림
             NotifyTargetChanged(GetNextCheckpointPosition());
         }
         else
@@ -162,29 +172,6 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
     {
         return _hasCheckpointBeenSet;
     }
-
-    /*
-    /// <summary>
-    /// UI 업데이트를 위한 이벤트를 호출하는 헬퍼 메소드입니다.
-    /// </summary>
-    private void UpdateNextCheckpoint(Vector3? nextPosition)
-    {
-        foreach (var observer in _observers)
-        {
-            observer.OnNextCheckpointChanged(nextPosition);
-        }
-
-        if (nextPosition.HasValue)
-        {
-            HLogger.General.Debug($"UI 알림: 다음 체크포인트 위치는 {nextPosition.Value} 입니다.");
-        }
-        else
-        {
-            HLogger.General.Debug("UI 알림: 다음 체크포인트가 없거나 시퀀스가 종료되었습니다.");
-        }
-    }
-    */
-
     
     /// <summary>
     /// 옵저버들에게 현재 체크포인트 진행 상황을 알립니다.
