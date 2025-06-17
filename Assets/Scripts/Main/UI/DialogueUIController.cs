@@ -6,6 +6,7 @@ using DG.Tweening;
 using DG.Tweening.Plugins.Core.PathCore;
 using UnityEditor.UIElements;
 using UnityEngine.UI;
+using AudioSystem;
 
 public class DialogueUIController : MonoBehaviour
 {
@@ -188,6 +189,8 @@ public class DialogueUIController : MonoBehaviour
         List<Dictionary<string, object>> dialogueData = CSVReader.Read(path);
 
         if (dialogueData == null) return;
+
+        AudioManager.Instance.PlaySfx2D(SfxType.DialogueSequenceStart);
 
         //기존 코루틴이 있다면 중단
         if (_dialogueCoroutine != null)
