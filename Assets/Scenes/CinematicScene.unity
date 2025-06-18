@@ -258,7 +258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &39954305
 Transform:
   m_ObjectHideFlags: 0
@@ -266,14 +266,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 39954304}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -54, y: -3.5, z: 39.9}
+  m_LocalRotation: {x: 0.12278779, y: -0.6963643, z: 0.12278779, w: 0.6963643}
+  m_LocalPosition: {x: 12.3, y: -6.7, z: 66.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1669196793}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 20, y: -90, z: 0}
 --- !u!114 &39954306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1993,7 +1993,7 @@ Transform:
   m_Children:
   - {fileID: 1565491200}
   - {fileID: 1669196793}
-  - {fileID: 1946902266}
+  - {fileID: 669574616}
   - {fileID: 1820251861}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -3623,7 +3623,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -100, y: -100}
-  m_SizeDelta: {x: 1000, y: 500}
+  m_SizeDelta: {x: 1200, y: 350}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &487338741
 MonoBehaviour:
@@ -3939,10 +3939,10 @@ MonoBehaviour:
   roomCam: {fileID: 1522045232}
   roomCamPos:
   - {x: 115, y: 95, z: 100}
-  - {x: -30, y: 15, z: 55}
+  - {x: 25, y: 45, z: 85}
   roomCamRot:
   - {x: 30, y: -120, z: 0}
-  - {x: 40, y: -120, z: 0}
+  - {x: 60, y: -120, z: 0}
   roomCamDuration:
   - 4
   - 3
@@ -3951,15 +3951,15 @@ MonoBehaviour:
   standUpDuration: 0.3
   shrinkHoldingDuration: 1
   logoHoldingDuration: 5
-  hamster: {fileID: 1946902266}
-  logoCamPos: {x: -55, y: -2, z: 44}
-  logoCamRot: {x: 10, y: 160, z: 0}
-  hamsterStartPos: {x: -50.8, y: -4, z: 39.9}
-  hamsterEndPos: {x: -50, y: -4.8, z: 39.9}
-  hamsterStartRot: {x: 90, y: 0, z: 0}
-  hamsterEndRot: {x: 0, y: 0, z: 0}
+  hamster: {fileID: 669574616}
+  logoCamPos: {x: 15.5, y: -5.5, z: 65.7}
+  logoCamRot: {x: 10, y: -60, z: 0}
+  hamsterStartPos: {x: 10.5, y: -7.5, z: 66.5}
+  hamsterEndPos: {x: 11, y: -8, z: 66.5}
+  hamsterStartRot: {x: 90, y: 180, z: 0}
+  hamsterEndRot: {x: 0, y: 180, z: 0}
   leftPadding: 150
-  rightPadding: 1200
+  rightPadding: 800
   topPadding: 500
   bottomPadding: 100
   leftPaddingRect: {fileID: 566512165}
@@ -3990,29 +3990,29 @@ MonoBehaviour:
   - {x: 1, y: 1}
   - {x: 1, y: 0.35}
   cutSceneCamsTransStartPos:
-  - {x: 0, y: 0, z: 0}
-  - {x: -54, y: -3.5, z: 39.9}
-  - {x: -70, y: 120, z: 125}
+  - {x: -205, y: 50, z: 0}
+  - {x: 15, y: -7, z: 66.5}
+  - {x: 0, y: 110, z: 130}
   - {x: -138, y: 36, z: 165}
   - {x: 30, y: 24, z: 210}
   - {x: 560, y: 105, z: 460}
   cutSceneCamsTransStartRot:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 90, z: 0}
-  - {x: 20, y: 75, z: 0}
+  - {x: 10, y: 180, z: 0}
+  - {x: 0, y: -90, z: 0}
+  - {x: 25, y: 100, z: 0}
   - {x: 30, y: -65, z: 0}
   - {x: 0, y: 60, z: 0}
   - {x: 0, y: -50, z: 0}
   cutSceneCamsTransEndPos:
-  - {x: 0, y: 0, z: 0}
-  - {x: -51.3, y: -3.3, z: 39.9}
-  - {x: -80, y: 120, z: 100}
+  - {x: -230, y: 16, z: -160}
+  - {x: 12.3, y: -6.7, z: 66.5}
+  - {x: 0, y: 110, z: 130}
   - {x: 0, y: 85, z: 218}
   - {x: 440, y: 82, z: 350}
   - {x: 530, y: 103, z: 475}
   cutSceneCamsTransEndRot:
-  - {x: 0, y: 0, z: 0}
-  - {x: 40, y: 90, z: 0}
+  - {x: 0, y: 210, z: 0}
+  - {x: 20, y: -90, z: 0}
   - {x: 25, y: 155, z: 0}
   - {x: 20, y: -50, z: 0}
   - {x: -15, y: 75, z: 0}
@@ -4028,18 +4028,18 @@ MonoBehaviour:
   - 5
   - 4
   cutSceneHoldingDuration:
-  - 0
-  - 0.7
+  - 1
+  - 1
   - 0.1
   - 0.1
   - 0.1
   - 0.1
   cutSceneCamWalkDuration:
-  - 0
-  - 1
+  - 2
+  - 0.7
   - 4
   - 4
-  - 4
+  - 2
   - 4
 --- !u!114 &506835642
 MonoBehaviour:
@@ -4059,7 +4059,7 @@ MonoBehaviour:
   mugShotCam: {fileID: 1483189289}
   townHamster: {fileID: 1167188821}
   townLights: {fileID: 1593808989}
-  trackHamsterController: {fileID: 1946902267}
+  trackHamsterController: {fileID: 0}
   houseHamsterController: {fileID: 1167188822}
   trackHamsterPos: {x: -50, y: -4.8, z: 39.9}
   trackHamsterRot: {x: 0, y: 0, z: 0}
@@ -4260,81 +4260,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3062556a3b001d0459343c895e43ad9c,
     type: 3}
   m_PrefabInstance: {fileID: 536969343}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &541839507
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 232227259}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 8.54
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -4.8
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 60.64
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: c605c71556dca4a43b82cab3ff216979,
-        type: 3}
-      propertyPath: m_Name
-      value: Track Hamster
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c605c71556dca4a43b82cab3ff216979, type: 3}
---- !u!1 &541839508 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c605c71556dca4a43b82cab3ff216979,
-    type: 3}
-  m_PrefabInstance: {fileID: 541839507}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &548880969
 PrefabInstance:
@@ -5124,7 +5049,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &658332216
 Transform:
   m_ObjectHideFlags: 0
@@ -5132,14 +5057,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 658332215}
-  m_LocalRotation: {x: 0.046846118, y: 0.95315397, z: -0.21130909, w: 0.21130922}
-  m_LocalPosition: {x: -80, y: 120, z: 100}
+  m_LocalRotation: {x: 0.13912469, y: 0.7478862, z: -0.16580234, w: 0.627551}
+  m_LocalPosition: {x: 0, y: 110, z: 130}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1669196793}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 25, y: 155, z: 0}
+  m_LocalEulerAnglesHint: {x: 25, y: 100, z: 0}
 --- !u!114 &658332217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5224,6 +5149,109 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1001 &669574615
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 232227259}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -8
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 66.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b0c887f19c5aaf648a8e14e40a840343,
+        type: 3}
+      propertyPath: m_Name
+      value: New Track Hamster
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b0c887f19c5aaf648a8e14e40a840343, type: 3}
+--- !u!4 &669574616 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b0c887f19c5aaf648a8e14e40a840343,
+    type: 3}
+  m_PrefabInstance: {fileID: 669574615}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &669574617 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b0c887f19c5aaf648a8e14e40a840343,
+    type: 3}
+  m_PrefabInstance: {fileID: 669574615}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &669574618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669574617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42352cff064244746915e08715b18787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  escapeSpeed: 10
+  escapeSpeedAdder: 6
+  escapeRunDirection: {x: -1, y: 0, z: 0}
+  escapeJumpDirection: {x: -0.5, y: 0.7, z: 0}
+  runAwaySpeed: 0
+  runAwayStartPos: {x: 0, y: 0, z: 0}
+  runAwayStartRot: {x: 0, y: 0, z: 0}
+  runAwayEndPos: {x: 0, y: 0, z: 0}
+  runAwayEndRot: {x: 0, y: 0, z: 0}
+  runAwayDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &676333447
 GameObject:
   m_ObjectHideFlags: 0
@@ -5242,7 +5270,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &676333448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5787,7 +5815,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &772384595
 Transform:
   m_ObjectHideFlags: 0
@@ -5989,14 +6017,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 786227446}
-  m_LocalRotation: {x: 0.015134449, y: 0.98106027, z: -0.085831694, w: 0.17298746}
-  m_LocalPosition: {x: -55, y: -2, z: 44}
+  m_LocalRotation: {x: 0.07547913, y: -0.4980974, z: 0.043577895, w: 0.86272997}
+  m_LocalPosition: {x: 15.5, y: -5.5, z: 65.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1669196793}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 10, y: 160, z: 0}
+  m_LocalEulerAnglesHint: {x: 10, y: -60, z: 0}
 --- !u!114 &786227448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8800,7 +8828,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1292696883
 Transform:
   m_ObjectHideFlags: 0
@@ -8808,14 +8836,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1292696882}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0.9659259, z: -0, w: -0.25881898}
+  m_LocalPosition: {x: -230, y: 16, z: -160}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1669196793}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 210, z: 0}
 --- !u!114 &1292696884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9859,7 +9887,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1509920961
 Transform:
   m_ObjectHideFlags: 0
@@ -10053,7 +10081,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1522045229
 Transform:
   m_ObjectHideFlags: 0
@@ -10061,14 +10089,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1522045228}
-  m_LocalRotation: {x: 0.32139382, y: -0.663414, z: 0.38302225, w: 0.5566704}
-  m_LocalPosition: {x: 20, y: 25, z: 65}
+  m_LocalRotation: {x: 0.24999999, y: -0.75000006, z: 0.43301275, w: 0.43301266}
+  m_LocalPosition: {x: 25, y: 45, z: 85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1669196793}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 60, y: -100, z: 0}
+  m_LocalEulerAnglesHint: {x: 60, y: -120, z: 0}
 --- !u!114 &1522045230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12404,7 +12432,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 10, y: 0}
-  m_SizeDelta: {x: 1200, y: 1100}
+  m_SizeDelta: {x: 800, y: 1100}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1921965800
 MonoBehaviour:
@@ -12518,34 +12546,6 @@ Transform:
   m_Father: {fileID: 2117763369}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1946902266 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c605c71556dca4a43b82cab3ff216979,
-    type: 3}
-  m_PrefabInstance: {fileID: 541839507}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1946902267
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 541839508}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42352cff064244746915e08715b18787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  escapeSpeed: 10
-  escapeSpeedAdder: 6
-  escapeRunDirection: {x: -1, y: 0, z: 0}
-  escapeJumpDirection: {x: -0.5, y: 0.7, z: 0}
-  runAwaySpeed: 0
-  runAwayStartPos: {x: 0, y: 0, z: 0}
-  runAwayStartRot: {x: 0, y: 0, z: 0}
-  runAwayEndPos: {x: 0, y: 0, z: 0}
-  runAwayEndRot: {x: 0, y: 0, z: 0}
-  runAwayDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &1949227354
 GameObject:
   m_ObjectHideFlags: 0
@@ -13165,7 +13165,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2045171863
 Transform:
   m_ObjectHideFlags: 0
