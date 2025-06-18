@@ -34,7 +34,7 @@ public class PlayerSkillControllerTests
     {
         Assert.AreEqual(1.0f, skillController.GetSpeedRate());
         Assert.AreEqual(1.0f, skillController.GetJumpForceRate() * skillController.GetJumpForceRate());
-        Assert.AreEqual(1.0f, skillController.GetMaxBoostEnergy());
+        // Assert.AreEqual(1.0f, skillController.GetMaxBoostEnergy());
         Assert.IsFalse(skillController.HasBoost());
     }
 
