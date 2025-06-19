@@ -586,19 +586,19 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     public void PlayJumpSfx()
     {
         //GameManager.PlaySfx(jumpAudio);
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.PlayerJump, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.PlayerJump);
     }
 
     public void PlayLandSfx()
     {
         //GameManager.PlaySfx(landAudio);
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.PlayerLand, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.PlayerLand);
     }
 
     public void PlayModeConvertSfx()
     {
         //GameManager.PlaySfx(modeConvertAudio);
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.PlayerModeConvert, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.PlayerModeConvert);
     }
 
     /// <summary>
