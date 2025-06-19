@@ -14,7 +14,7 @@ public class BallMovementController : MonoBehaviour, IMovement
     [Tooltip("방향키로 이동하는 최대 속도")]
     [SerializeField] private float maxMoveVelocity = 15;
     [Tooltip("공 자체가 가질 최대 속도. 이 속도보다 높으면 감속함")]
-    [SerializeField] private float maxBallVelocity = 45;
+    [SerializeField] public float maxBallVelocity = 45;
     [Tooltip("공중 와이어 액션에서 추가로 가할 힘")]
     [SerializeField] private float wireMovePower = 12;
 

@@ -59,6 +59,9 @@ namespace AudioSystem
         Pickup3,
         OpeningShrinkSfx,
         OpeningLogoSfx,
+        WireSwingLoop,
+        DialogueSequenceStart,
+        CheckpointActivate
     }
 
     public enum BgmType
