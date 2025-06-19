@@ -12,9 +12,11 @@ public class GroundCheck : MonoBehaviour
 
     private LayerMask _detectionMask; // player를 제외한 레이어 
     private bool _prevIsGround;
+    private Rigidbody _rb;
 
     void Start()
     {
+        _rb = GetComponent<Rigidbody>();
         _detectionMask = ~LayerMask.GetMask("Player");
         _detectionMask &= ~LayerMask.GetMask("NoCollide");
     }
@@ -42,8 +44,12 @@ public class GroundCheck : MonoBehaviour
         {
             PlayerManager.Instance.isGround = true;
             PlayerManager.Instance.curGroundCollider = hit.collider;
-            if (!_prevIsGround)
-                PlayerManager.Instance.PlayLandSfx();
+            if (!_prevIsGround && _rb.velocity.y < -5f)
+            {
+                // y속도에 5~20 => 0~1
+                float volumeRate = Mathf.Min(1, (-_rb.velocity.y - 5f) / 15f);
+                PlayerManager.Instance.PlayLandSfx(volumeRate);
+            }
 
             bool canJumpObj = hit.collider.gameObject.TryGetComponent(out ObjectProperties obj) && obj.canPlayerJump;
             PlayerManager.Instance.canJump = canJumpObj;

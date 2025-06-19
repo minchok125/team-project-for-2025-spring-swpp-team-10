@@ -200,7 +200,6 @@ public class PlayerMovementController : MonoBehaviour
             // 스윙 소리가 재생 중이 아닐 때, 재생 시작
             if (!isSwingSoundPlaying)
             {
-                //AudioManager.Instance.PlayLoopingSfx(playerMgr.wireSwingAudioSource, AudioSystem.SfxType.WireSwingLoop);
                 playerMgr.wireSwingAudioSource.Play();
                 isSwingSoundPlaying = true;
             }
@@ -220,7 +219,6 @@ public class PlayerMovementController : MonoBehaviour
             // 스윙 조건이 충족되지 않을 때, 소리가 재생 중이었다면 정지
             if (isSwingSoundPlaying)
             {
-                //AudioManager.Instance.StopLoopingSfx(playerMgr.wireSwingAudioSource);
                 float volume = Mathf.Lerp(playerMgr.wireSwingAudioSource.volume, 0, 5 * Time.fixedDeltaTime);
                 playerMgr.wireSwingAudioSource.volume = volume;
                 if (volume < 0.05f)
