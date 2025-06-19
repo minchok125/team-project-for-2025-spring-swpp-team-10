@@ -29,6 +29,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     [Header("Loop Audio Sound Sources")]
     [SerializeField] private AudioSource retractorAudioSource;
     [SerializeField] private AudioSource boosterAudioSource;
+    [SerializeField] public AudioSource wireSwingAudioSource;
     #endregion
 
 
@@ -287,6 +288,9 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         // _ballLightningShockParticle
         //     = transform.Find("Hamster Ball")
         //                .Find("Lightning Particle")?.gameObject;
+
+        wireSwingAudioSource.volume = 0;
+        wireSwingAudioSource.Stop();
     }
 
 
@@ -615,7 +619,6 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
     public void PlayShootWireSfx()
     {
-        //GameManager.PlaySfx(shootWireAudio);
         AudioManager.Instance.PlaySfx2D(SfxType.PlayerShootWire);
     }
 

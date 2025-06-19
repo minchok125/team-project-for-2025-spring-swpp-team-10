@@ -42,6 +42,7 @@ public class PlayerMovementController : MonoBehaviour
     [Tooltip("햄스터 와이어를 사용 중에 땅에 붙어있게 하기 위한 로직에서,\n"
            + "햄스터 아래에 땅이 있다고 판단하는 거리")]
     [SerializeField] private float hamsterWireCheckGroundDistance = 5f;
+    private float _maxBallVelocity;
     #endregion
 
 
@@ -98,7 +99,14 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private BalloonMovementController balloon;
     #endregion
 
-
+    #region Swing Sound Varaibles
+    [Header("Swing Sound")]
+    [Tooltip("스윙 소리가 재생되기 시작하는 최소 속도")]
+    [SerializeField] private float minSwingSpeed = 10f;
+    [Tooltip("스윙 소리의 피치가 최대가 되는 속도")]
+    [SerializeField] private float maxSwingSpeedForPitch = 40f;
+    private bool isSwingSoundPlaying = false;
+    #endregion
 
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI velocityTxt;
@@ -109,6 +117,7 @@ public class PlayerMovementController : MonoBehaviour
     private GroundCheck groundCheck;
 
     #endregion
+
 
 
     #region Unity Lifecycle Methods
@@ -168,11 +177,62 @@ public class PlayerMovementController : MonoBehaviour
         // 추가 물리 효과 적용
         AddExtraForce();
 
+        // 스윙 사운드 처리
+        HandleSwingSound();
+
         // 마지막 속도 저장
         lastVelocity = rb.velocity;
     }
-    #endregion
 
+    #endregion
+    #region Swing Sound
+    /// <summary>
+    /// 플레이어의 속도와 상태에 따라 와이어 스윙 사운드를 제어합니다.
+    /// </summary>
+    private void HandleSwingSound()
+    {
+        // 조건: 공중 상태 + 최소 속도 이상
+        float minSwingSpeedWithSkill = minSwingSpeed * playerMgr.skill.GetSpeedRate();
+        bool isSwinging = !playerMgr.isGround && rb.velocity.magnitude > minSwingSpeedWithSkill;
+
+        if (isSwinging)
+        {
+            // 스윙 소리가 재생 중이 아닐 때, 재생 시작
+            if (!isSwingSoundPlaying)
+            {
+                //AudioManager.Instance.PlayLoopingSfx(playerMgr.wireSwingAudioSource, AudioSystem.SfxType.WireSwingLoop);
+                playerMgr.wireSwingAudioSource.Play();
+                isSwingSoundPlaying = true;
+            }
+
+            // 속도에 따라 동적으로 피치(음높이) 조절
+            float currentSpeed = rb.velocity.magnitude;
+            float maxSwingSpeedForPitchWithSkill = maxSwingSpeedForPitch * playerMgr.skill.GetSpeedRate();
+            // Lerp를 사용하여 속도에 따라 피치를 1.0 ~ 1.8 사이 값으로 부드럽게 변경
+            float clamp01 = Mathf.InverseLerp(minSwingSpeedWithSkill, maxSwingSpeedForPitchWithSkill, currentSpeed);
+            float pitch = Mathf.Lerp(1.0f, 1.8f, clamp01);
+            float volume = Mathf.Lerp(playerMgr.wireSwingAudioSource.volume, AudioManager.Instance.SfxVolume * clamp01, 5 * Time.fixedDeltaTime);
+            playerMgr.wireSwingAudioSource.volume = volume;
+            playerMgr.wireSwingAudioSource.pitch = pitch;
+        }
+        else
+        {
+            // 스윙 조건이 충족되지 않을 때, 소리가 재생 중이었다면 정지
+            if (isSwingSoundPlaying)
+            {
+                //AudioManager.Instance.StopLoopingSfx(playerMgr.wireSwingAudioSource);
+                float volume = Mathf.Lerp(playerMgr.wireSwingAudioSource.volume, 0, 5 * Time.fixedDeltaTime);
+                playerMgr.wireSwingAudioSource.volume = volume;
+                if (volume < 0.05f)
+                {
+                    playerMgr.wireSwingAudioSource.Stop();
+                    isSwingSoundPlaying = false;
+                    playerMgr.wireSwingAudioSource.pitch = 1f; // 피치를 기본값으로 리셋
+                }
+            }
+        }
+    }
+    #endregion
 
     #region Initialization
     private void InitializeState()
@@ -182,6 +242,7 @@ public class PlayerMovementController : MonoBehaviour
         playerMgr.isBoosting = false;
         playerMgr.isGliding = false;
         SetIsHamsterValueAnimator();
+        _maxBallVelocity = GetComponent<BallMovementController>().maxBallVelocity;
     }
     #endregion
 
