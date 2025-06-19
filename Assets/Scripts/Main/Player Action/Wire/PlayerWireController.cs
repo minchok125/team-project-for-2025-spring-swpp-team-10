@@ -355,7 +355,6 @@ public class PlayerWireController : MonoBehaviour
         grapplingWire.SetWaveHeight(waveHeight);
 
         // 와이어 발사
-        PlayerManager.Instance.PlayShootWireSfx();
         currentWire.WireShoot(predictionHit);
     }
 
@@ -651,7 +650,12 @@ public class PlayerWireController : MonoBehaviour
             btnObj.Click();
             EndShoot();
         }
-        else isObjectIClickButton = false;
+        else
+        {
+            isObjectIClickButton = false;
+            // 실제 와이어를 발사할 때만 효과음 출력
+            PlayerManager.Instance.PlayShootWireSfx();
+        }
     }
 
     /// <summary>

@@ -533,7 +533,6 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         if (isBall) _ballLightningShockParticle.SetActive(true);
         else _hamsterLightningShockParticle.SetActive(true);
 
-        //GameManager.PlaySfx(SfxType.LightningShock);
         AudioManager.Instance.PlaySfxAtPosition(SfxType.LightningShock, transform.position);
 
         SetInputLockDuringSeconds(LIGHTNING_SHOCK_COOLTIME);
@@ -570,7 +569,6 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         forceDir = new Vector3(forceDir.x * _forceMag, _yForce, forceDir.z * _forceMag);
         _rb.AddForce(forceDir, ForceMode.VelocityChange);
 
-        //GameManager.PlaySfx(SfxType.LaserPush);
         AudioManager.Instance.PlaySfxAtPosition(SfxType.LaserPush, transform.position);
 
         SetInputLockDuringSeconds(_laserPushTime);
@@ -585,19 +583,16 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     #region Play Sound
     public void PlayJumpSfx()
     {
-        //GameManager.PlaySfx(jumpAudio);
         AudioManager.Instance.PlaySfx2D(SfxType.PlayerJump);
     }
 
-    public void PlayLandSfx()
+    public void PlayLandSfx(float volumeRate)
     {
-        //GameManager.PlaySfx(landAudio);
-        AudioManager.Instance.PlaySfx2D(SfxType.PlayerLand);
+        AudioManager.Instance.PlaySfx2D(SfxType.PlayerLand, volumeRate);
     }
 
     public void PlayModeConvertSfx()
     {
-        //GameManager.PlaySfx(modeConvertAudio);
         AudioManager.Instance.PlaySfx2D(SfxType.PlayerModeConvert);
     }
 

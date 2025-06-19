@@ -18,10 +18,11 @@ public class MainSceneFacade
         _cursorController.LockCursor();
     }
 
-    public void PauseGame()
+    public void PauseGame(bool uiActive)
     {
         Time.timeScale = 0f;
-        _uiManager.PauseGame();
+        if (uiActive)
+            _uiManager.PauseGame();
         _cursorController.UnlockCursor();
     }
 
@@ -111,7 +112,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         // esc 키가 눌렸을 때 _gameState 값에 따라 Playing / Paused 상태 토글
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (_gameState == GameStates.Playing) PauseGame();
+            if (_gameState == GameStates.Playing) PauseGame(true);
             else if (_gameState == GameStates.Paused) ResumeGame();
         }
 
@@ -127,11 +128,11 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
     }
 
-    public void PauseGame()
+    public void PauseGame(bool uiActive)
     {
         // Playing 상태일 때 esc 키 눌리면 [Playing -> Paused]
         _gameState = GameStates.Paused;
-        _mainSceneFacade.PauseGame();
+        _mainSceneFacade.PauseGame(uiActive);
     }
 
     public void ResumeGame()
