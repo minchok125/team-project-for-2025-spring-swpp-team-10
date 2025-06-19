@@ -79,7 +79,7 @@ public class ItemCheckpointIntegrationTests
             .SetValue(_checkpoint, _testItem);
 
         // Act
-        _checkpoint.ProcessActivation();
+        _checkpoint.Activate();
 
         // Assert
         Assert.IsFalse(_itemManager.IsItemLocked(_testItem), "Item should be unlocked after checkpoint activation");
