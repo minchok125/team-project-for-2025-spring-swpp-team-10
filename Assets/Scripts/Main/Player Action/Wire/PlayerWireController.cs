@@ -306,7 +306,7 @@ public class PlayerWireController : MonoBehaviour
         // 햄스터, 공 와이어 둘 다 가능한 오브젝트
         if (objProperty.canGrabInBallMode && objProperty.canGrabInHamsterMode)
         {
-            currentWire = PlayerManager.Instance.isBall ? GetComponent<BallWireController>() 
+            currentWire = PlayerManager.Instance.isBall ? GetComponent<BallWireController>()
                                                         : GetComponent<HamsterWireController>();
             PlayerManager.Instance.playerMovement.EndGliding();
         }
@@ -315,7 +315,11 @@ public class PlayerWireController : MonoBehaviour
         {
             currentWire = GetComponent<BallWireController>();
             PlayerManager.Instance.playerMovement.EndGliding();
-            PlayerManager.Instance.ConvertToBall();
+            if (!PlayerManager.Instance.isBall)
+            {
+                PlayerManager.Instance.ConvertToBall();
+                convertedTime = Time.time;
+            }
         }
         // 햄스터 와이어만 가능한 오브젝트
         else if (objProperty.canGrabInHamsterMode)
@@ -328,7 +332,11 @@ public class PlayerWireController : MonoBehaviour
             }
             currentWire = GetComponent<HamsterWireController>();
             PlayerManager.Instance.playerMovement.EndGliding();
-            PlayerManager.Instance.ConvertToHamster();
+            if (PlayerManager.Instance.isBall)
+            {
+                PlayerManager.Instance.ConvertToHamster();
+                convertedTime = Time.time;
+            }
         }
         
         return true;
