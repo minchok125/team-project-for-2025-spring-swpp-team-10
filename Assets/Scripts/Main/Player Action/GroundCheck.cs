@@ -8,7 +8,7 @@ using UnityEngine;
 public class GroundCheck : MonoBehaviour
 {
     [Tooltip("지면이라고 인식하는 아래 방향 거리")]
-    [SerializeField] private float distToGround = 0.7f;
+    [SerializeField] private float distToGround = 0.4f;
 
     private LayerMask _detectionMask; // player를 제외한 레이어 
     private bool _prevIsGround;
