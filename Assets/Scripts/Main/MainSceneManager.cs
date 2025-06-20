@@ -92,7 +92,6 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         var uiManager = GetComponent<UIManager>();
         _mainSceneFacade = new MainSceneFacade(uiManager);
 
-        //if (IsInstanceNull())
         InitMainSceneManager();
     }
 

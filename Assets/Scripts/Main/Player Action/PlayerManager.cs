@@ -533,7 +533,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         if (isBall) _ballLightningShockParticle.SetActive(true);
         else _hamsterLightningShockParticle.SetActive(true);
 
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.LightningShock, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.LightningShock);
 
         SetInputLockDuringSeconds(LIGHTNING_SHOCK_COOLTIME);
         Invoke(nameof(LightningShockEndAfterFewSeconds), LIGHTNING_SHOCK_COOLTIME);
@@ -569,7 +569,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         forceDir = new Vector3(forceDir.x * _forceMag, _yForce, forceDir.z * _forceMag);
         _rb.AddForce(forceDir, ForceMode.VelocityChange);
 
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.LaserPush, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.LaserPush);
 
         SetInputLockDuringSeconds(_laserPushTime);
         Invoke(nameof(LaserPushEndAfterFewSeconds), _laserPushTime);
@@ -635,12 +635,12 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
     public void PlayBalloonCreateSfx()
     {
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.BalloonCreate, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.BalloonCreate);
     }
 
     public void PlayBalloonPopSfx()
     {
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.BalloonPop, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.BalloonPop);
     }
     #endregion
 }
