@@ -135,7 +135,7 @@ public class HamsterWireController : MonoBehaviour, IWire
             PlayerManager.Instance.StopPlayRetractorSfx();
             return;
         }
-        PlayerManager.Instance.StartPlayRetractorSfx();
+        PlayerManager.Instance.StopPlayRetractorSfx();
 
         float _retractorMaxSpeed = SetRetractorMaxSpeed();
 
