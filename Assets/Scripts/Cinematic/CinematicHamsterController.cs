@@ -1,10 +1,12 @@
+using System;
 using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 
 public class CinematicHamsterController : MonoBehaviour
 {
-    // TODO: 애니메이션 추가
+    [Header("Animation")]
+    [SerializeField] private Animator animator;
 
     [Header("Ending - Escape")]
     [SerializeField] private float escapeSpeed;
@@ -17,13 +19,23 @@ public class CinematicHamsterController : MonoBehaviour
     [SerializeField] private Vector3 runAwayEndPos, runAwayEndRot;
     [SerializeField] private Vector3 runAwayDirection;
 
+    private void Awake()
+    {
+        animator.SetBool("Walk", false);
+        animator.SetBool("Jump", false);
+    }
+
     public IEnumerator Escape(float runDuration)
     {
+        animator.SetBool("Walk", true);
+        
         for (float elapsed = 0f; elapsed < runDuration; elapsed += Time.deltaTime)
         {
             transform.localPosition += Time.deltaTime * escapeRunDirection * escapeSpeed;
             yield return null;
         }
+        animator.SetBool("Walk", false);
+        animator.SetBool("Jump", true);
 
         while (escapeSpeed >= 0.001f)
         {
@@ -43,6 +55,7 @@ public class CinematicHamsterController : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(runAwayEndRot);
 
+        animator.SetBool("Walk", true);
         while (transform.localPosition.x < 20f)
         {
             transform.localPosition += Time.deltaTime * runAwayDirection * runAwaySpeed;
