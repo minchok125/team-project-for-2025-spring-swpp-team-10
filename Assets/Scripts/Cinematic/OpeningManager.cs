@@ -222,7 +222,10 @@ public class OpeningManager : MonoBehaviour
             cover.SetActive(true);
         
         foreach(Camera cam in cutSceneCams)
+        {
+            cam.gameObject.SetActive(true);
             cam.enabled = true;
+        }
         
         cutScenePanels.SetActive(true);
 
