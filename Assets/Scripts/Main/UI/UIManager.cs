@@ -6,7 +6,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 {
 	[Header("References")]
 	[SerializeField] private TextMeshProUGUI timerText;
-	[SerializeField] private GameObject pausedMenuPanel, settingsPanel;
+	[SerializeField] private GameObject pausedMenuPanel, settingsPanel, noteUI;
 	[SerializeField] private NextCheckpointUIController nextCheckpointUI;
 	[SerializeField] private GameObject endingTextObj;
 	[SerializeField] private GameObject storePanelPrefab;
@@ -97,6 +97,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		// Paused -> Playing
 		pausedMenuPanel.SetActive(false);
 		settingsPanel.SetActive(false);
+		noteUI.SetActive(false);
 	}
 
 	public void PauseGame()

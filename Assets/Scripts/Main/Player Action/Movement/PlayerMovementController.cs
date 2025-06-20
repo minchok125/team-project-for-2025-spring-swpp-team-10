@@ -66,8 +66,9 @@ public class PlayerMovementController : MonoBehaviour
     private bool isRKeyPressedForCheckpoint = false; // R키가 체크포인트 이동을 위해 눌렸는지 여부
     private float rKeyHoldStartTime = 0f;         // R키를 누르기 시작한 시간
     private float RKeyHoldDurationForCheckpoint = 5.0f; // 체크포인트 이동까지 R키를 누르고 있어야 하는 시간(초)
-    private float checkpointResetPositionY = -2000f; // 체크포인트 이동 시 Y좌표 기준
+    private float checkpointResetPositionY = -900f; // 체크포인트 이동 시 Y좌표 기준
     private float checkpointMovementThreshold = 0.01f; // 체크포인트 이동 시 위치 오차 허용 범위
+    [SerializeField] private TextMeshProUGUI resetText;
     #endregion
 
 
@@ -200,7 +201,6 @@ public class PlayerMovementController : MonoBehaviour
             // 스윙 소리가 재생 중이 아닐 때, 재생 시작
             if (!isSwingSoundPlaying)
             {
-                //AudioManager.Instance.PlayLoopingSfx(playerMgr.wireSwingAudioSource, AudioSystem.SfxType.WireSwingLoop);
                 playerMgr.wireSwingAudioSource.Play();
                 isSwingSoundPlaying = true;
             }
@@ -220,7 +220,6 @@ public class PlayerMovementController : MonoBehaviour
             // 스윙 조건이 충족되지 않을 때, 소리가 재생 중이었다면 정지
             if (isSwingSoundPlaying)
             {
-                //AudioManager.Instance.StopLoopingSfx(playerMgr.wireSwingAudioSource);
                 float volume = Mathf.Lerp(playerMgr.wireSwingAudioSource.volume, 0, 5 * Time.fixedDeltaTime);
                 playerMgr.wireSwingAudioSource.volume = volume;
                 if (volume < 0.05f)
@@ -312,6 +311,7 @@ public class PlayerMovementController : MonoBehaviour
             isRKeyPressedForCheckpoint = true;
             rKeyHoldStartTime = Time.time;
             HLogger.General.Info("R키 눌림. 5초 카운트다운 시작. 이동 시 취소됩니다.");
+            resetText.gameObject.SetActive(true);
         }
 
         // R키가 한 번 눌려서 타이머가 활성화된 상태일 때
@@ -323,14 +323,18 @@ public class PlayerMovementController : MonoBehaviour
                 // 이동 입력이 있으면 타이머 및 상태 해제
                 isRKeyPressedForCheckpoint = false;
                 HLogger.General.Info("이동 입력 감지됨. 체크포인트 이동 타이머 취소.");
+                resetText.gameObject.SetActive(false);
                 return;
             }
+
+            resetText.text = $"<size=110%>{5 - Mathf.FloorToInt(Time.time - rKeyHoldStartTime)}</size>초 후에 체크포인트의 위치로 돌아갑니다.";
 
             // 5초가 경과했는지 확인 (이동 입력이 없었을 경우)
             if (Time.time - rKeyHoldStartTime >= RKeyHoldDurationForCheckpoint)
             {
                 MoveToLastCheckpoint();
                 isRKeyPressedForCheckpoint = false; // 체크포인트 이동 후 상태 초기화
+                resetText.gameObject.SetActive(false);
             }
         }
     }
