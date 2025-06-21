@@ -174,19 +174,38 @@ public class ItemManager : PersistentSingleton<ItemManager>
     }
 
     /// <summary>
-    /// 아이템 잠금 해제 메서드 - CheckPointManager에서 호출
+    /// 아이템 잠금 해제, 장착 메서드 - CheckPointManager에서 호출
     /// </summary>
     public void UnlockItem(ItemEffectType type)
     {
         var userItem = _userItems.Find(ui => ui.item.effectType == type);
         if (userItem == null)
         {
-            HLogger.General.Error("null 아이템을 잠금 해제하려고 시도했습니다.", this);
+            HLogger.General.Error("null 아이템을 장착하려고 시도했습니다.", this);
             return;
         }
 
         userItem.isLocked = false;
-        HLogger.Player.Info($"아이템 잠금 해제됨: {userItem.item.name}", this);
+        userItem.isEquipped = true;
+        OnItemLevelChange?.Invoke(userItem);
+        HLogger.Player.Info($"아이템 장착됨: {userItem.item.name}", this);
+        return;
+    }
+
+    /// <summary>
+    /// 아이템을 상점에서 살 수 있도록 잠금 해제 메서드 - CheckPointManager에서 호출
+    /// </summary>
+    public void AvailableShopItem(ItemEffectType type)
+    {
+        var userItem = _userItems.Find(ui => ui.item.effectType == type);
+        if (userItem == null)
+        {
+            HLogger.General.Error("null 아이템을 상점에서 잠금 해제하려고 시도했습니다.", this);
+            return;
+        }
+
+        userItem.isLocked = false;
+        HLogger.Player.Info($"상점에서 아이템 잠금 해제됨: {userItem.item.name}", this);
         return;
     }
 
@@ -194,7 +213,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
     // MARK: 코인 관리
     // --------------------------------------------------------------------------------
 
-    private void AddCoin(int amount)
+    public void AddCoin(int amount)
     {
         if (amount <= 0)
         {

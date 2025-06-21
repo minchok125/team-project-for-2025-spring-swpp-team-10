@@ -15,33 +15,269 @@ MonoBehaviour:
   items:
   - id: 1
     name: "\uC18D\uB3C4 \uAC15\uD654 "
-    description: 
+    description: "\uC18D\uB3C4\uB97C +5% \uB298\uB9BD\uB2C8\uB2E4."
     icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
     effectType: 0
     levels:
     - level: 0
-      value: 100
-      price: 0
-      label: '%'
+      value: 1
+      price: 100
+      label: 100%
     - level: 1
-      value: 110
-      price: 0
-      label: '%'
+      value: 1.05
+      price: 100
+      label: 105%
     - level: 2
-      value: 120
+      value: 1.1
+      price: 120
+      label: 110%
+    - level: 3
+      value: 1.15
+      price: 120
+      label: 115%
+    - level: 4
+      value: 1.2
+      price: 160
+      label: 120%
+    - level: 5
+      value: 1.25
+      price: 160
+      label: 125%
+    - level: 6
+      value: 1.3
+      price: 220
+      label: 130%
+    - level: 7
+      value: 1.35
+      price: 220
+      label: 135%
+    - level: 8
+      value: 1.4
+      price: 300
+      label: 140%
+    - level: 9
+      value: 1.45
+      price: 300
+      label: 145%
+    - level: 10
+      value: 1.5
+      price: 400
+      label: 150%
+    - level: 11
+      value: 1.55
+      price: 400
+      label: 155%
+    - level: 12
+      value: 1.6
       price: 0
-      label: '%'
+      label: 'MAX : 160%'
   - id: 2
-    name: "\uC810\uD504\uB825 \uAC15\uD654 "
-    description: 
+    name: "\uC810\uD504\uB825 \uAC15\uD654"
+    description: "\uC810\uD504 \uB192\uC774\uB97C +5% \uB298\uB9BD\uB2C8\uB2E4."
     icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
     effectType: 1
     levels:
     - level: 0
-      value: 100
+      value: 1
+      price: 100
+      label: 100%
+    - level: 1
+      value: 1.05
+      price: 100
+      label: 105%
+    - level: 2
+      value: 1.1
+      price: 120
+      label: 110%
+    - level: 3
+      value: 1.15
+      price: 120
+      label: 115%
+    - level: 4
+      value: 1.2
+      price: 160
+      label: 120%
+    - level: 5
+      value: 1.25
+      price: 160
+      label: 125%
+    - level: 6
+      value: 1.3
+      price: 220
+      label: 130%
+    - level: 7
+      value: 1.35
+      price: 220
+      label: 135%
+    - level: 8
+      value: 1.4
+      price: 300
+      label: 140%
+    - level: 9
+      value: 1.45
+      price: 300
+      label: 145%
+    - level: 10
+      value: 1.5
+      price: 400
+      label: 150%
+    - level: 11
+      value: 1.55
+      price: 400
+      label: 155%
+    - level: 12
+      value: 1.6
       price: 0
-      label: '%'
+      label: 'MAX : 160%'
+  - id: 3
+    name: "\uC640\uC774\uC5B4 \uCD5C\uB300 \uAE38\uC774"
+    description: "\uBB3C\uCCB4\uC5D0 \uBC1C\uC0AC\uD558\uB294 \uC640\uC774\uC5B4\uC758
+      \uCD5C\uB300 \uAE38\uC774\uB97C 2m \uB298\uB9BD\uB2C8\uB2E4."
+    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
+    effectType: 2
+    levels:
     - level: 0
-      value: 110
+      value: 40
+      price: 100
+      label: 40m
+    - level: 1
+      value: 42
+      price: 100
+      label: 42m
+    - level: 2
+      value: 44
+      price: 100
+      label: 44m
+    - level: 3
+      value: 46
+      price: 100
+      label: 46m
+    - level: 4
+      value: 48
+      price: 100
+      label: 48m
+    - level: 5
+      value: 50
+      price: 100
+      label: 50m
+    - level: 6
+      value: 52
+      price: 100
+      label: 52m
+    - level: 7
+      value: 54
+      price: 100
+      label: 54m
+    - level: 8
+      value: 56
+      price: 100
+      label: 56m
+    - level: 9
+      value: 58
+      price: 100
+      label: 58m
+    - level: 10
+      value: 60
       price: 0
-      label: '%'
+      label: 'MAX : 60m'
+  - id: 4
+    name: "\uBD80\uC2A4\uD130 \uC18C\uBAA8 \uC18D\uB3C4 \uAC10\uC18C"
+    description: "1\uCD08 \uB2F9 \uC18C\uBAA8\uD558\uB294 \uBD80\uC2A4\uD130 \uC5D0\uB108\uC9C0\uAC00
+      2% \uAC10\uC18C\uD569\uB2C8\uB2E4."
+    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
+    effectType: 3
+    levels:
+    - level: 0
+      value: 0.3
+      price: 50
+      label: 30%
+    - level: 1
+      value: 0.28
+      price: 50
+      label: 28%
+    - level: 2
+      value: 0.26
+      price: 50
+      label: 26%
+    - level: 3
+      value: 0.24
+      price: 50
+      label: 24%
+    - level: 4
+      value: 0.22
+      price: 50
+      label: 22%
+    - level: 5
+      value: 0.2
+      price: 0
+      label: 'MAX : 20%'
+  - id: 5
+    name: "\uBD80\uC2A4\uD130 \uD68C\uBCF5 \uC18D\uB3C4 \uC99D\uAC00"
+    description: "\uBD80\uC2A4\uD130 \uAC8C\uC774\uC9C0\uAC00 \uC644\uC804 \uD68C\uBCF5\uB418\uB294
+      \uC2DC\uAC04\uC774 0.5\uCD08 \uAC10\uC18C\uD569\uB2C8\uB2E4."
+    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
+    effectType: 4
+    levels:
+    - level: 0
+      value: 0.125
+      price: 50
+      label: "8\uCD08"
+    - level: 1
+      value: 0.13333334
+      price: 50
+      label: "7.5\uCD08"
+    - level: 2
+      value: 0.14285715
+      price: 50
+      label: "7\uCD08"
+    - level: 3
+      value: 0.15384616
+      price: 50
+      label: "6.5\uCD08"
+    - level: 4
+      value: 0.16666667
+      price: 50
+      label: "6\uCD08"
+    - level: 5
+      value: 0.18181819
+      price: 50
+      label: "5.5\uCD08"
+    - level: 6
+      value: 0.2
+      price: 50
+      label: "5\uCD08"
+    - level: 7
+      value: 0.22222222
+      price: 50
+      label: "4.5\uCD08"
+    - level: 8
+      value: 0.25
+      price: 0
+      label: "MAX : 4\uCD08"
+  - id: 6
+    name: "\uAC8C\uC784 \uC18D\uB3C4 \uAC10\uC18C"
+    description: "\uAC8C\uC784 \uC18D\uB3C4\uB97C \uAC10\uC18C\uC2DC\uD0B5\uB2C8\uB2E4.\\n\uD0C0\uC774\uBA38\uC758
+      \uC18D\uB3C4\uB294 \uAC10\uC18C\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
+    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
+    effectType: 5
+    levels:
+    - level: 0
+      value: 1
+      price: 10
+      label: 1.0x
+    - level: 1
+      value: 0.95
+      price: 10
+      label: 0.95x
+    - level: 2
+      value: 0.9
+      price: 10
+      label: 0.9x
+    - level: 3
+      value: 0.85
+      price: 10
+      label: 0.85x
+    - level: 4
+      value: 0.8
+      price: 0
+      label: 'MAX : 0.8x'
