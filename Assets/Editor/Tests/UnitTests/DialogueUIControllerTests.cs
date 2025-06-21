@@ -61,6 +61,7 @@ public class DialogueUIControllerTests
         int maxDialogueNum = 5;
         SetPrivateField("maxDialogueNum", maxDialogueNum);
         
+        // 기대값 계산: (전체높이 - (개당높이 * 최대개수)) / (최대개수 - 1) + 개당높이
         float expectedOffset = (1080f - 100f * 5f) / (5f - 1f) + 100f;
 
         // Act
