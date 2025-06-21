@@ -18,17 +18,20 @@ public class SkinUIController : MonoBehaviour
     // 미리보기 햄스터에 텍스쳐를 적용
     public void ApplySkin(int skinIndex)
     {
-        if (skinIndex < 0 || skinIndex >= skinTextures.Length)
+        if (skinTextures != null)
         {
-            Debug.LogWarning("Invalid skin index");
-            return;
-        }
-
-        foreach (Renderer rend in hamsterRenderers)
-        {
-            if (rend != null && rend.material != null)
+            if (skinIndex < 0 || skinIndex >= skinTextures.Length)
             {
-                rend.material.mainTexture = skinTextures[skinIndex];
+                Debug.LogWarning("Invalid skin index");
+                return;
+            }
+
+            foreach (Renderer rend in hamsterRenderers)
+            {
+                if (rend != null && rend.material != null)
+                {
+                    rend.material.mainTexture = skinTextures[skinIndex];
+                }
             }
         }
     }
