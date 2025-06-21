@@ -16,6 +16,8 @@ public class DrawOutline : MonoBehaviour
     [Tooltip("이 오브젝트의 외곽선을 표시할 때 함께 외곽선을 표시할 렌더러 리스트입니다.\n"
              + "함께 표시될 오브젝트에는 DrawOutline 컴포넌트를 추가하지 않아야 합니다.")]
     [SerializeField] private Renderer[] _linkedOutlineRenderers;
+    [Tooltip("Player Base의 노트 UI와 연결하면 초록색 외곽선으로 표시됩니다. NoteController 스크립트도 추가해 주세요.")]
+    [SerializeField] GameObject readNoteUI;
 
     private ObjectProperties _objProp;
     private int _frameCountAfterDrawCall = 2;
@@ -33,6 +35,7 @@ public class DrawOutline : MonoBehaviour
 
     private static readonly Color BALL_COLOR = new Color(0.3981f, 0.7492f, 1f, 1f);
     private static readonly Color HAMSTER_COLOR = new Color(0.8902f, 0.6196f, 0.2745f, 1f);
+    private static readonly Color NOTE_COLOR = new Color(0.2117f, 0.8566f, 0.1988f, 1f);
 
     // 셰이더 프로퍼티 이름을 ID로 캐싱해 성능을 높입니다 (Shader.SetFloat 같은 함수에서 문자열 대신 ID 사용). k : k(c)onstant
     private static readonly int k_OutlineColorID = Shader.PropertyToID("_OutlineColor");
@@ -91,9 +94,17 @@ public class DrawOutline : MonoBehaviour
         if (_frameCountAfterDrawCall <= 2)
         {
             if (_frameCountAfterDrawCall < 2 && !dontDrawHightlightOutline)
+            {
                 SetOutlineEnabled(true);
+                if (readNoteUI != null)
+                    readNoteUIEnable(true);
+            }
             else if (_frameCountAfterDrawCall == 2)
+            {
                 SetOutlineEnabled(false);
+                if (readNoteUI != null)
+                    readNoteUIEnable(false);
+            }
             _frameCountAfterDrawCall++;
         }
     }
@@ -102,44 +113,11 @@ public class DrawOutline : MonoBehaviour
     private void FindOutlineFillIndexes()
     {
         _outlineFillIndexes = new int[_linkedOutlineRenderers.Length];
-        // List<int> tempIdxes = new List<int>();
-        // for (int i = _linkedOutlineRenderers.Count - 1; i >= 0; i--)
-        // {
-        //     int idx = FindMaterialIndex(_linkedOutlineRenderers[i], "OutlineFill");
-        //     if (idx == -1)
-        //     {
-        //         _linkedOutlineRenderers.RemoveAt(i);
-        //         continue;
-        //     }
-        //     tempIdxes.Add(idx);
-        // }
-        // for (int i = tempIdxes.Count - 1; i >= 0; i--)
-        // {
-        //     _outlineFillIndexes.Add(tempIdxes[i]);
-        // }
+
         for (int i = 0; i < _linkedOutlineRenderers.Length; i++)
             _outlineFillIndexes[i] = _linkedOutlineRenderers[i].materials.Length + 1;
     }
 
-    // private int FindMaterialIndex(Renderer renderer, string materialNamePrefix)
-    // {
-    //     if (renderer == null)
-    //     {
-    //         return -1;
-    //     }
-
-    //     // sharedMaterials를 사용하여 머티리얼 인스턴스 생성 방지
-    //     Material[] materials = renderer.sharedMaterials;
-
-    //     for (int i = 0; i < materials.Length; i++)
-    //     {
-    //         if (materials[i] != null && materials[i].name.StartsWith(materialNamePrefix))
-    //         {
-    //             return i;
-    //         }
-    //     }
-    //     return -1; // 찾지 못함
-    // }
 
     public void Draw()
     {
@@ -149,7 +127,7 @@ public class DrawOutline : MonoBehaviour
             && _isBallColor != PlayerManager.Instance.isBall)
         {
             _isBallColor = PlayerManager.Instance.isBall;
-            SetOutlineColor(_isBallColor ? BALL_COLOR : HAMSTER_COLOR);
+            SetOutlineColor();
         }
 
         _frameCountAfterDrawCall = 0;
@@ -208,7 +186,7 @@ public class DrawOutline : MonoBehaviour
             if (_outlines != null)
                 for (int i = 0; i < _outlines.Length; i++)
                     _outlines[i]?.AddMaterial();
-            SetOutlineColor(_isBallColor ? BALL_COLOR : HAMSTER_COLOR);
+            SetOutlineColor();
         }
         else
         {
@@ -223,8 +201,12 @@ public class DrawOutline : MonoBehaviour
     }
 
     // 외곽선의 색을 지정합니다.
-    private void SetOutlineColor(Color color)
+    private void SetOutlineColor()
     {
+        Color color;
+        if (readNoteUI == null) color = _isBallColor ? BALL_COLOR : HAMSTER_COLOR;
+        else color = NOTE_COLOR;
+
         _outlineColor = color;
         ApplyOutlineSettings();
     }
@@ -250,5 +232,15 @@ public class DrawOutline : MonoBehaviour
         _outlineFillMpb.SetFloat(k_OutlineWidthID, 4f);
         _outlineFillMpb.SetFloat(k_OutlineEnabledToggle, 1f);
         _outlineFillMpb.SetInt(k_StencilCompID, (int)CompareFunction.NotEqual);
+    }
+
+
+    private void readNoteUIEnable(bool active)
+    {
+        if (readNoteUI == null)
+            return;
+
+        if (active != readNoteUI.activeSelf)
+            readNoteUI.SetActive(active);
     }
 }
