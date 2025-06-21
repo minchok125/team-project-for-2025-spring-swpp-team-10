@@ -36,6 +36,9 @@ public class StorePanelController : MonoBehaviour
         }
 
         InitializeUI();
+
+        ItemManager.Instance.OnInventoryChanged += HandleItemChanged;
+        // ItemManager.Instance.OnCoinCountChanged.AddListener(HandleCoinChanged);
     }
 
     private void InitializeUI()
@@ -154,5 +157,10 @@ public class StorePanelController : MonoBehaviour
     private void CloseStorePanel()
     {
         gameObject.SetActive(false);
+    }
+
+    private void HandleItemChanged()
+    {
+        RenderAll();
     }
 }

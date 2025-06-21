@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using Hampossible.Utils;
 using System.Linq;
+using System;
+
 
 public interface ICoinWallet
 {
@@ -20,6 +22,9 @@ public class ItemManager : PersistentSingleton<ItemManager>
 
     private ICoinWallet _coinWallet;
     public UnityEvent<int> OnCoinCountChanged = new UnityEvent<int>();
+
+    public event Action OnInventoryChanged;
+
 
     private List<Item> _allItems = new List<Item>();
     private List<UserItem> _userItems = new List<UserItem>();
@@ -80,7 +85,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
             _inventoryStorage?.SaveUserItems(_userItems);
             HLogger.General.Info("아이템 데이터베이스 초기화 완료", this);
         }
-        
+
     }
 
 
@@ -336,6 +341,36 @@ public class ItemManager : PersistentSingleton<ItemManager>
         _userItems = _userItems.Select(ui => ui.item.id == item.id ? userItem : ui).ToList();
 
         HLogger.Player.Info($"아이템 구매 성공: {item.name} (ID: {item.id})", this);
+        OnInventoryChanged?.Invoke();
+        return true;
+    }
+
+    public bool TryDecrementItem(Item item)
+    {
+        if (item == null)
+        {
+            HLogger.General.Error("null 아이템을 구매하려고 시도했습니다.", this);
+            return false;
+        }
+
+        var userItem = _userItems.Find(ui => ui.item.id == item.id);
+
+        if (userItem == null)
+        {
+            HLogger.General.Error($"아이템을 찾을 수 없습니다: {item.name} (ID: {item.id})", this);
+            return false;
+        }
+
+        if (!userItem.CanLevelDown())
+        {
+            HLogger.Player.Warning($"아이템 레벨 다운 불가: {item.name} (ID: {item.id})", this);
+            return false;
+        }
+
+        userItem.LevelDown();
+        _userItems = _userItems.Select(ui => ui.item.id == item.id ? userItem : ui).ToList();
+        HLogger.Player.Info($"아이템 레벨 다운 성공: {item.name} (ID: {item.id})", this);
+        OnInventoryChanged?.Invoke();
         return true;
     }
 }
