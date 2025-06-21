@@ -7120,7 +7120,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3025413621484703881}
   - component: {fileID: 3025413621484703926}
-  - component: {fileID: 3025413621484703927}
   - component: {fileID: 3025413621484703924}
   - component: {fileID: 3025413621484703923}
   - component: {fileID: 3025413621484703922}
@@ -7182,64 +7181,6 @@ MonoBehaviour:
   m_Spacing: {x: 30, y: 20}
   m_Constraint: 1
   m_ConstraintCount: 2
---- !u!114 &3025413621484703927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3025413621484703880}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64476fe897e3c4dcba80fc855bc9a886, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  storeItemPrefab: {fileID: 8566636121350247246, guid: 81a3eb37acd7e4ff19623ebdc04824ef,
-    type: 3}
-  storePanelGrid: {fileID: 3025413621484703881}
-  itemList:
-  - id: 0
-    title: Booster A
-    description: "\uC18D\uB3C4 \uC99D\uAC00"
-    price: 100
-    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
-    isEquipped: 0
-    isLocked: 0
-  - id: 0
-    title: Booster B
-    description: "\uBC29\uC5B4\uB825 \uC99D\uAC00"
-    price: 200
-    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
-    isEquipped: 1
-    isLocked: 0
-  - id: 0
-    title: Booster C
-    description: "\uC5D0\uB108\uC9C0 \uD68C\uBCF5"
-    price: 150
-    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
-    isEquipped: 0
-    isLocked: 1
-  - id: 0
-    title: Booster D
-    description: "\uC810\uD504\uB825 \uD5A5\uC0C1"
-    price: 180
-    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
-    isEquipped: 0
-    isLocked: 0
-  - id: 0
-    title: Booster E
-    description: "\uC18D\uB3C4 \uB300\uD3ED \uC99D\uAC00"
-    price: 300
-    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
-    isEquipped: 0
-    isLocked: 0
-  - id: 0
-    title: Booster F
-    description: "\uBB34\uC801 \uC2DC\uAC04 \uC99D\uAC00"
-    price: 500
-    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
-    isEquipped: 0
-    isLocked: 1
 --- !u!114 &3025413621484703924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11533,13 +11474,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ac1ffb7d4154b71b8c1ba444aea132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  storeItemGrid: {fileID: 3025413621484703881}
+  standItemGrid: {fileID: 3025413621484703881}
   inventoryItemGrid: {fileID: 3025413621631235492}
-  storeItemPrefab: {fileID: 8566636121350247246, guid: 81a3eb37acd7e4ff19623ebdc04824ef,
+  standItemPrefab: {fileID: 8566636121350247246, guid: 81a3eb37acd7e4ff19623ebdc04824ef,
     type: 3}
   inventoryItemPrefab: {fileID: 4275944091262358497, guid: 377661af3f2194fd39fdf97dd6d0604e,
     type: 3}
   coinText: {fileID: 811763082785060039}
+  closeButton: {fileID: 3025413621022768942}
 --- !u!1001 &7497803021332714496
 PrefabInstance:
   m_ObjectHideFlags: 0
