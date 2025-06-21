@@ -46,6 +46,14 @@ public class UserItem
         }
         return 0;
     }
+    public string GetCurrentLabel()
+    {
+        if (item != null && item.levels != null && currentLevel < item.levels.Length)
+        {
+            return item.levels[currentLevel].label;
+        }
+        return "";
+    }
 
     public bool CanLevelUp()
     {
