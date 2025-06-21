@@ -130,7 +130,7 @@ public class ItemManagerTests
         _itemManager.SetInventoryStorage(stubStorage);
         _itemManager.SendMessage("Awake");
 
-        _itemManager.UnlockItem(item);
+        _itemManager.UnlockItem(item.effectType;
 
         Assert.IsFalse(userItem.isLocked);
     }
