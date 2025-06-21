@@ -322,18 +322,37 @@ public class PlayerSkillController : MonoBehaviour
                     UnlockHamsterWire();
                 }   
                 break;
+            case ItemEffectType.Booster:
+                if (!HasBoost())
+                {
+                    UnlockBoost();
+                }
+                break;  
             case ItemEffectType.DualJump:
                 if (!HasDoubleJump())
                 {
                     UnlockDoubleJump();
                 }
                 break;  
-                case ItemEffectType.TripleJump:
+            case ItemEffectType.TripleJump:
                 if (!HasTripleJump())
                 {
                     UnlockTripleJump();
                 }
                 break;
+            case ItemEffectType.Retractor:
+                if (!HasRetractor())
+                {
+                    UnlockRetractor();
+                }
+                break;
+            case ItemEffectType.Balloon:
+                if (!HasGliding())
+                {
+                    UnlockGliding();
+                }
+                break;
+            
             default:
                 Hampossible.Utils.HLogger.Error($"알 수 없는 아이템 효과 타입: {userItem.item.effectType}");
                 break;

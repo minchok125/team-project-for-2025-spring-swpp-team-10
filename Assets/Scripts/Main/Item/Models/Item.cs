@@ -80,15 +80,16 @@ public class Item
 
     public bool IsPurchaseOnlyType()
     {
-        switch (effectType)
-        {
-            case ItemEffectType.HamsterWire:
-            case ItemEffectType.DualJump:
-            case ItemEffectType.TripleJump:
-                return true;
-            default:
-                return false;
-        }
+        // switch (effectType)
+        // {
+        //     case ItemEffectType.HamsterWire:
+        //     case ItemEffectType.DualJump:
+        //     case ItemEffectType.TripleJump:
+        //         return true;
+        //     default:
+        //         return false;
+        // }
+        return (int)effectType >= (int)ItemEffectType.HamsterWire;
     }
 
 #if UNITY_EDITOR
@@ -172,7 +173,11 @@ public enum ItemEffectType
     BoostCostReduction,
     BoostRecoverySpeed,
     GameSlowdown,
+    // 아래 : PurchaseOnlyType
     HamsterWire,
-    DualJump, 
+    Booster,
+    DualJump,
     TripleJump,
+    Retractor,
+    Balloon
 }
