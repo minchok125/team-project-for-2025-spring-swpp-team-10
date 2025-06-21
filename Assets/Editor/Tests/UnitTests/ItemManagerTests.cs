@@ -194,7 +194,7 @@ public class ItemManagerTests
         _stubCoinWallet = new StubCoinWallet(100);
         _itemManager.SetCoinWallet(_stubCoinWallet);
 
-        bool result = _itemManager.TryPurchaseItem(item);
+        bool result = _itemManager.TryIncrementItem(item);
 
         Assert.IsTrue(result);
         Assert.AreEqual(80, _itemManager.GetCoinCount());

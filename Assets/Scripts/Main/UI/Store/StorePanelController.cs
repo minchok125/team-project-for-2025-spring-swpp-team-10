@@ -122,7 +122,7 @@ public class StorePanelController : MonoBehaviour
 
     public void OnClickPurchase(Item item)
     {
-        if (ItemManager.Instance.TryPurchaseItem(item))
+        if (ItemManager.Instance.TryIncrementItem(item))
         {
             // TODO: Error / Confirmation 팝업 로직 추가
             RenderAll();
