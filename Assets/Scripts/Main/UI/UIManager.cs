@@ -9,9 +9,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	[SerializeField] private GameObject pausedMenuPanel, settingsPanel, noteUI;
 	[SerializeField] private NextCheckpointUIController nextCheckpointUI;
 	[SerializeField] private GameObject endingTextObj;
-	[SerializeField] private GameObject storePanelPrefab;
-
-	private GameObject _storePanel;
+	[SerializeField] private GameObject storePanel;
 
 	protected override void Awake()
 	{
@@ -24,16 +22,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 			return;
 		}
 
-		// StorePanel 생성 및 RectTransform 설정
-		_storePanel = Instantiate(storePanelPrefab, canvas.transform);
-		RectTransform storeRect = _storePanel.GetComponent<RectTransform>();
-		storeRect.anchorMin = Vector2.zero;
-		storeRect.anchorMax = Vector2.one;
-		storeRect.offsetMin = Vector2.zero;
-		storeRect.offsetMax = Vector2.zero;
-		HLogger.Info("StorePanel 생성 완료");
 
-		_storePanel.SetActive(false);
+		storePanel.SetActive(false);
 		HLogger.Info("StorePanelController 초기화 완료");
 
 		// CheckpointManager에 옵저버로 등록
@@ -150,12 +140,12 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 
 	public void OpenStore()
 	{
-		_storePanel.GetComponent<StorePanelController>().Open();
+		storePanel.GetComponent<StorePanelController>().Open();
 	}
 
 	public void CloseStore()
 	{
-		_storePanel.GetComponent<StorePanelController>().Close();
+		storePanel.GetComponent<StorePanelController>().Close();
 	}
 
 	public void UpdateNextCheckpoint(Vector3 nextCpPos)
