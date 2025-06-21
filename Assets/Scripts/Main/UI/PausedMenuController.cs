@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using AudioSystem;
+using Hampossible.Utils;
 
 public class PausedMenuController : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class PausedMenuController : MonoBehaviour
 
 	public void OpenStore()
 	{
+		HLogger.General.Debug("Paused Menu: 상점 열기");
 		uIManager.OpenStore();
 	}
 
@@ -49,11 +51,13 @@ public class PausedMenuController : MonoBehaviour
 
 	public void GoBackToTitle()
 	{
+		HLogger.General.Debug("Paused Menu: 타이틀로 돌아가기");
 		uIManager.QuitMainScene(false);
 	}
 
 	public void TerminateGame()
 	{
+		HLogger.General.Debug("Paused Menu: 게임 종료");
 		uIManager.QuitMainScene(true);
 	}
 }

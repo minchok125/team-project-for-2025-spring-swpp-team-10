@@ -1,3 +1,4 @@
+using Hampossible.Utils;
 using UnityEngine;
 
 public class MainSceneFacade
@@ -111,6 +112,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         // esc 키가 눌렸을 때 _gameState 값에 따라 Playing / Paused 상태 토글
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            HLogger.General.Debug("Esc 입력");
             if (_gameState == GameStates.Playing) PauseGame(true);
             else if (_gameState == GameStates.Paused) ResumeGame();
         }

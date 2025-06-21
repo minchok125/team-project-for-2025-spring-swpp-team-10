@@ -103,6 +103,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	public void PauseGame()
 	{
 		// Playing -> Paused
+		HLogger.General.Info("게임 일시정지");
 		pausedMenuPanel.SetActive(true);
 		settingsPanel.SetActive(false);
 	}
