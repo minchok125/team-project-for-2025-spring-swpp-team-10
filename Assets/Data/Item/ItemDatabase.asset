@@ -20,17 +20,17 @@ MonoBehaviour:
     effectType: 0
     levels:
     - level: 0
-      value: 100
+      value: 1
       price: 0
-      label: '%'
+      label: 100%
     - level: 1
-      value: 110
+      value: 1.05
       price: 0
-      label: '%'
+      label: 105%
     - level: 2
-      value: 120
+      value: 1.1
       price: 0
-      label: '%'
+      label: 110%
   - id: 2
     name: "\uC810\uD504\uB825 \uAC15\uD654 "
     description: 
@@ -38,10 +38,10 @@ MonoBehaviour:
     effectType: 1
     levels:
     - level: 0
-      value: 100
+      value: 1
       price: 0
-      label: '%'
+      label: 100%
     - level: 0
-      value: 110
+      value: 1.05
       price: 0
-      label: '%'
+      label: 105%

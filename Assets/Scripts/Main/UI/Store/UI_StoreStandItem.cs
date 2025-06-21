@@ -36,7 +36,8 @@ public class UI_StoreStandItem : MonoBehaviour
         decrementButton.interactable = userItem.CanLevelDown();
         decrementButton.enabled = userItem.CanLevelDown();
 
-        valueText.text = userItem.GetCurrentValue().ToString("F2");
+        //valueText.text = userItem.GetCurrentValue().ToString("F2");
+        valueText.text = userItem.GetCurrentLabel();
 
         // 잠김 여부 표시
         // lockedOverlay.SetActive(userItem.isLocked);
