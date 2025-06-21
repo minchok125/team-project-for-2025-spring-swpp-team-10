@@ -361,13 +361,13 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// 지정된 시간 동안 입력을 잠금합니다.
     /// </summary>
     /// <param name="time">입력을 잠금하는 시간(초)</param>
-    public void SetInputLockDuringSeconds(float lockedTime)
+    public virtual void SetInputLockDuringSeconds(float lockedTime)
     {
         _inputLockNumber++;
         Invoke(nameof(DownInputLockNumber), lockedTime);
     }
 
-    public void SetMouseInputLockDuringSeconds(float lockedTime)
+    public virtual void SetMouseInputLockDuringSeconds(float lockedTime)
     {
         _mouseInputLockNumber++;
         Invoke(nameof(DownMouseInputLockNumber), lockedTime);
