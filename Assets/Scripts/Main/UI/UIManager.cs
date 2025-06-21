@@ -6,10 +6,13 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 {
 	[Header("References")]
 	[SerializeField] private TextMeshProUGUI timerText;
-	[SerializeField] private GameObject pausedMenuPanel, settingsPanel, noteUI;
+	[SerializeField] private GameObject pausedMenuPanel, noteUI;
 	[SerializeField] private NextCheckpointUIController nextCheckpointUI;
 	[SerializeField] private GameObject endingTextObj;
 	[SerializeField] private GameObject storePanel;
+	[SerializeField] private GameObject guidePanel;
+
+	private GameObject settingsPanel;
 
 	protected override void Awake()
 	{
@@ -21,6 +24,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 			HLogger.Error("캔버스를 찾지 못했습니다.");
 			return;
 		}
+
+		settingsPanel = pausedMenuPanel.transform.Find("Settings Panel")?.gameObject;
 
 
 		storePanel.SetActive(false);
@@ -89,6 +94,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		storePanel.SetActive(false);
 		settingsPanel.SetActive(false);
 		noteUI.SetActive(false);
+		guidePanel.SetActive(false);
 	}
 
 	public void PauseGame()
@@ -138,6 +144,18 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	{
 		// TODO: Settings 패널 연결 필요
 	}
+
+	public void OpenGuide()
+	{
+		guidePanel.SetActive(true);
+		pausedMenuPanel.SetActive(false);
+	}
+
+	public void CloseGuide()
+	{
+		guidePanel.SetActive(false);
+		pausedMenuPanel.SetActive(true);
+	}	
 
 	public void OpenStore()
 	{
