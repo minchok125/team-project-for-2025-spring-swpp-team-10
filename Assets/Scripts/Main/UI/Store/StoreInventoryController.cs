@@ -7,19 +7,12 @@ public class StoreInventoryController : MonoBehaviour
     [SerializeField] private Transform inventoryGrid;
     [SerializeField] private GameObject inventoryItemPrefab;
 
-    private List<Item> mockInventory;
+
 
     [ContextMenu("Generate Mock Inventory In Editor")]
     private void GenerateMockInventoryInEditor()
     {
         var mockSprite = Resources.Load<Sprite>("Images/mock_icon");
-        mockInventory = new List<Item>
-        {
-            new Item { id = 1, image = mockSprite },
-            new Item { id = 2, image = mockSprite },
-            new Item { id = 3, image = mockSprite }
-        };
-
         RenderInventory();
     }
 
@@ -27,19 +20,13 @@ public class StoreInventoryController : MonoBehaviour
     {
         ClearGrid();
 
-// #if UNITY_EDITOR
-//         List<Item> inventory = mockInventory ?? new List<Item>();
-// #else
-//         List<Item> inventory = ItemManager.Instance.GetInventory();
-// #endif
+        List<UserItem> inventory = ItemManager.Instance.GetInventoryItems();
 
-        List<Item> inventory = ItemManager.Instance.GetStandItems();
-
-        foreach (var item in inventory)
+        foreach (var userItem in inventory)
         {
             var go = Instantiate(inventoryItemPrefab, inventoryGrid);
             var view = go.GetComponent<UI_InventoryItem>();
-            view?.Bind(item.image, false); // false = not empty
+            view?.Bind(userItem.item.icon, false); // false = not empty
         }
 
         // 인벤토리가 부족할 경우 빈 슬롯으로 채우기 (예: 3x2 고정 그리드 기준)
