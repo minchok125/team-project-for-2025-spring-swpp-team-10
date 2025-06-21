@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 public class UserItemTests
 {
@@ -40,5 +41,20 @@ public class UserItemTests
         Assert.AreEqual(levels[1].price, priceAfter);
         Assert.AreEqual(levels[1].level, userItem.currentLevel);
         Assert.IsTrue(userItem.isEquipped);
+
+        userItem.LevelDown();
+
+        // 레벨 다운 후 값
+        valueAfter = userItem.GetCurrentValue();
+        priceAfter = userItem.GetCurrentPrice();
+
+        Assert.AreEqual(levels[0].value, valueAfter, 0.0001f);
+        Assert.AreEqual(levels[0].price, priceAfter);
+        Assert.AreEqual(levels[0].level, userItem.currentLevel);
+        Assert.IsTrue(userItem.isEquipped);
+
+        LogAssert.Expect(LogType.Warning, "아이템 레벨다운 불가능: 이미 최소 레벨입니다.");
+
+        userItem.LevelDown();
     }
 }
