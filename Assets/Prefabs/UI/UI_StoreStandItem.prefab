@@ -123,7 +123,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4652887167312506069}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8566636121350247240}
+        m_TargetAssemblyTypeName: UI_StoreStandItem, Assembly-CSharp
+        m_MethodName: OnIncrementClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &289484751731340424
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -677,7 +689,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5559644080845010065}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8566636121350247240}
+        m_TargetAssemblyTypeName: UI_StoreStandItem, Assembly-CSharp
+        m_MethodName: OnDecrementClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1763010871394779801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1301,7 +1325,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 43.975, y: -12}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 37.95, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8566636121914623178
 CanvasRenderer:

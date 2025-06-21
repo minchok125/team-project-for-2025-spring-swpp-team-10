@@ -72,7 +72,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
                     item = item,
                     currentLevel = 0,
                     isEquipped = false,
-                    isLocked = true // 기본적으로 잠금 상태로 시작
+                    isLocked = false // 기본적으로 잠금 상태로 시작
                 };
 
                 _userItems.Add(userItem);
@@ -230,11 +230,11 @@ public class ItemManager : PersistentSingleton<ItemManager>
 
     private bool SpendCoin(int amount)
     {
-        if (amount <= 0)
-        {
-            HLogger.General.Error($"잘못된 코인 소모 수량: {amount}", this);
-            return false;
-        }
+        // if (amount <= 0)
+        // {
+        //     HLogger.General.Error($"잘못된 코인 소모 수량: {amount}", this);
+        //     return false;
+        // }
 
         if (_coinWallet.Spend(amount))
         {
