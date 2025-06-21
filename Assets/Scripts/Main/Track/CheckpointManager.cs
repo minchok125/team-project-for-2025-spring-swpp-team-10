@@ -36,7 +36,10 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
         {
             HLogger.General.Warning("CheckpointManager: 초기 스폰 포인트(Initial Spawn Point)가 설정되지 않았습니다. 첫 번째 체크포인트 활성화 전까지 기본 위치를 사용합니다.");
         }
+    }
 
+    private void Start()
+    {
         // 게임 시작 시 초기 상태를 옵저버에게 알립니다.
         // 1. 초기 진행 상황 알림
         NotifyProgressUpdated();
