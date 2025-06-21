@@ -62,6 +62,7 @@ public class UserItem
         if (item != null && item.levels != null && currentLevel < item.levels.Length - 1)
         {
             currentLevel++;
+            isEquipped = true;
         }
         else
         {

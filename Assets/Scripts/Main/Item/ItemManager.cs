@@ -272,18 +272,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
     /// </summary>
     public List<UserItem> GetInventoryItems()
     {
-        var inventoryItems = new List<UserItem>();
-
-        foreach (var userItem in _userItems)
-        {
-            if (userItem.isEquipped)
-            {
-                inventoryItems.Add(userItem);
-            }
-
-        }
-
-        return inventoryItems;
+        return _userItems;
     }
 
     public bool CanPurchaseItem(UserItem item)

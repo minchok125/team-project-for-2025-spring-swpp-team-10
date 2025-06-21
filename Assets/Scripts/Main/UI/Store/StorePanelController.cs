@@ -76,7 +76,7 @@ public class StorePanelController : MonoBehaviour
         {
             var go = Instantiate(inventoryItemPrefab, inventoryItemGrid);
             var view = go.GetComponent<UI_InventoryItem>();
-            view?.Bind(userItem.item.icon, false); // isEmpty = false
+            view?.Bind(userItem.item.icon, userItem.isEquipped); // isEmpty = false
         }
     }
 
