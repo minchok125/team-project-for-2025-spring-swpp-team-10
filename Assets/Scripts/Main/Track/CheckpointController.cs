@@ -80,7 +80,7 @@ public class CheckpointController : MonoBehaviour
         {
             if (unlockableItem != null && ItemManager.Instance != null)
             {
-                ItemManager.Instance.UnlockItem(unlockableItem);
+                ItemManager.Instance.UnlockItem(unlockableItem.effectType);
             }
 
             CheckpointManager.Instance.CheckpointActivated(this);
