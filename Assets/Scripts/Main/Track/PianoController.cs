@@ -49,7 +49,7 @@ public class PianoController : MonoBehaviour
 
     private IEnumerator ShowNotesSequentially()
     {
-        Debug.Log("새로운 '나타나기' 시퀀스를 시작합니다.");
+        //Debug.Log("새로운 '나타나기' 시퀀스를 시작합니다.");
 
         for (int i = 0; i < musicalNotes.Count; i++)
         {
@@ -61,14 +61,14 @@ public class PianoController : MonoBehaviour
                 yield return new WaitForSeconds(delayBetweenNotes);
             }
         }
-        Debug.Log("'나타나기' 시퀀스 하나가 완료되었습니다.");
+        //Debug.Log("'나타나기' 시퀀스 하나가 완료되었습니다.");
     }
 
     private IEnumerator HideNotesSequentially()
     {
         yield return new WaitForSeconds(delayBeforeHide);
 
-        Debug.Log("새로운 '숨기기' 시퀀스를 시작합니다.");
+        //Debug.Log("새로운 '숨기기' 시퀀스를 시작합니다.");
 
         for (int i = 0; i < musicalNotes.Count; i++)
         {
@@ -84,6 +84,6 @@ public class PianoController : MonoBehaviour
                 yield return new WaitForSeconds(delayBetweenNotes);
             }
         }
-        Debug.Log("'숨기기' 시퀀스 하나가 완료되었습니다.");
+        //Debug.Log("'숨기기' 시퀀스 하나가 완료되었습니다.");
     }
 }
