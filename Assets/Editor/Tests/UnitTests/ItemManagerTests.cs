@@ -139,8 +139,8 @@ public class ItemManagerTests
     public void EquipItem_ShouldEquipUnlockedItem()
     {
         var item = new Item();
-        item.id = 2;
-        item.name = "Helmet";
+        item.id = 123;
+        item.name = "Equippable Item";
 
         var userItem = UserItem.Create(item);
         userItem.count = 1;
