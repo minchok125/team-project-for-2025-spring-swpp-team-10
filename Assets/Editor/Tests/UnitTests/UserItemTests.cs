@@ -24,13 +24,13 @@ public class UserItemTests
 
         var userItem = UserItem.Create(item);
 
-        // ·¹º§ ¾÷ Àü °ª
+        // ë ˆë²¨ ì—… ì „ ê°’
         float valueBefore = userItem.GetCurrentValue();
         int priceBefore = userItem.GetCurrentPrice();
 
         userItem.LevelUp();
 
-        // ·¹º§ ¾÷ ÈÄ °ª
+        // ë ˆë²¨ ì—… í›„ ê°’
         float valueAfter = userItem.GetCurrentValue();
         int priceAfter = userItem.GetCurrentPrice();
 
@@ -44,7 +44,7 @@ public class UserItemTests
 
         userItem.LevelDown();
 
-        // ·¹º§ ´Ù¿î ÈÄ °ª
+        // ë ˆë²¨ ë‹¤ìš´ í›„ ê°’
         valueAfter = userItem.GetCurrentValue();
         priceAfter = userItem.GetCurrentPrice();
 
@@ -53,7 +53,8 @@ public class UserItemTests
         Assert.AreEqual(levels[0].level, userItem.currentLevel);
         Assert.IsTrue(userItem.isEquipped);
 
-        LogAssert.Expect(LogType.Warning, "¾ÆÀÌÅÛ ·¹º§´Ù¿î ºÒ°¡´É: ÀÌ¹Ì ÃÖ¼Ò ·¹º§ÀÔ´Ï´Ù.");
+        // ë ˆë²¨ ë‹¤ìš´ ë¶ˆê°€ëŠ¥ ìƒí™©
+        LogAssert.Expect(LogType.Warning, "ì•„ì´í…œ ë ˆë²¨ë‹¤ìš´ ë¶ˆê°€ëŠ¥: ì´ë¯¸ ìµœì†Œ ë ˆë²¨ì…ë‹ˆë‹¤.");
 
         userItem.LevelDown();
     }
