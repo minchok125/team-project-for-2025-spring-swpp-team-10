@@ -212,6 +212,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         _skill |= 1 << SKILL_HamsterWire;
         AddSkillText("Pull Wire");
+        ItemManager.Instance.UnlockItem(ItemEffectType.WireLength);
         Hampossible.Utils.HLogger.Skill.Info("햄스터 와이어 스킬 해금됨", this);
     }
 
@@ -222,6 +223,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         _skill |= 1 << SKILL_BOOST;
         AddSkillText("Boost");
+        ItemManager.Instance.UnlockItem(ItemEffectType.SpeedBoost);
         Hampossible.Utils.HLogger.Skill.Info("부스터 스킬 해금됨", this);
     }
 
@@ -313,6 +315,24 @@ public class PlayerSkillController : MonoBehaviour
                 break;
             case ItemEffectType.BoostRecoverySpeed:
                 SetBoosterRecoveryRate(userItem.GetCurrentValue());
+                break;
+            case ItemEffectType.HamsterWire:
+                if (!HasHamsterWire())
+                {
+                    UnlockHamsterWire();
+                }   
+                break;
+            case ItemEffectType.DualJump:
+                if (!HasDoubleJump())
+                {
+                    UnlockDoubleJump();
+                }
+                break;  
+                case ItemEffectType.TripleJump:
+                if (!HasTripleJump())
+                {
+                    UnlockTripleJump();
+                }
                 break;
             default:
                 Hampossible.Utils.HLogger.Error($"알 수 없는 아이템 효과 타입: {userItem.item.effectType}");

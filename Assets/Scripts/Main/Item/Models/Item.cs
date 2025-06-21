@@ -78,6 +78,19 @@ public class Item
         return levels != null && currentLevel < levels.Length - 1;
     }
 
+    public bool IsPurchaseOnlyType()
+    {
+        switch (effectType)
+        {
+            case ItemEffectType.HamsterWire:
+            case ItemEffectType.DualJump:
+            case ItemEffectType.TripleJump:
+                return true;
+            default:
+                return false;
+        }
+    }
+
 #if UNITY_EDITOR
     public void GenerateDefaultLevels()
     {
@@ -158,5 +171,8 @@ public enum ItemEffectType
     WireLength,
     BoostCostReduction,
     BoostRecoverySpeed,
-    GameSlowdown
+    GameSlowdown,
+    HamsterWire,
+    DualJump, 
+    TripleJump,
 }

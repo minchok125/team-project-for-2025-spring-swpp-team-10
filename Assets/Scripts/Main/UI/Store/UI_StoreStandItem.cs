@@ -15,6 +15,7 @@ public class UI_StoreStandItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI valueText;
     [SerializeField] private Button incrementButton;
     [SerializeField] private Button decrementButton;
+    [SerializeField] private Button purchaseButton;
 
     private UserItem userItem;
 
@@ -31,10 +32,15 @@ public class UI_StoreStandItem : MonoBehaviour
         // 장착 여부 표시
         equippedTag.SetActive(userItem.isEquipped);
 
+        var purchaseOnly = userItem.item.IsPurchaseOnlyType();
+
         incrementButton.interactable = userItem.CanLevelUp();
         incrementButton.enabled = userItem.CanLevelUp();
+        incrementButton.gameObject.SetActive(!purchaseOnly);
         decrementButton.interactable = userItem.CanLevelDown();
         decrementButton.enabled = userItem.CanLevelDown();
+        decrementButton.gameObject.SetActive(!purchaseOnly);
+        purchaseButton.gameObject.SetActive(purchaseOnly);
 
         valueText.text = userItem.GetCurrentValue().ToString("F2");
 
@@ -72,5 +78,10 @@ public class UI_StoreStandItem : MonoBehaviour
         {
             Debug.Log($"레벨 다운 실패: {userItem.item.name} (조건 불충족)");
         }
+    }
+
+    public void OnPurchase()
+    {
+        bool success = ItemManager.Instance.TryPurchaseItem(userItem);
     }
 }
