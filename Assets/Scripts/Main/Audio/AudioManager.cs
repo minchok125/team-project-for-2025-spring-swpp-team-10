@@ -61,7 +61,8 @@ namespace AudioSystem
         OpeningLogoSfx,
         WireSwingLoop,
         DialogueSequenceStart,
-        CheckpointActivate
+        CheckpointActivate,
+        NoteOpen
     }
 
     public enum BgmType
@@ -170,12 +171,15 @@ public class AudioManager : PersistentSingleton<AudioManager>
 
     /// <summary>
     /// 위치와 상관없는 2D 효과음을 한번 재생합니다. (주로 UI용)
+    /// volumeRate는 현재 설정된 SFX 볼륨에 대한 비율로 효과음을 재생합니다.
+    /// 최종 volume은 0에서 1 사이의 절대적인 볼륨 값입니다.
     /// </summary>
-    public void PlaySfx2D(AudioSystem.SfxType sfxType)
+    public void PlaySfx2D(AudioSystem.SfxType sfxType, float volumeRate = 1)
     {
         if (sfxDict.TryGetValue(sfxType, out AudioClip clip))
         {
-            sfxSource2D.PlayOneShot(clip, SfxVolume);
+            float _sfxVolume = Mathf.Clamp01(SfxVolume * volumeRate);
+            sfxSource2D.PlayOneShot(clip, _sfxVolume);
         }
     }
 
