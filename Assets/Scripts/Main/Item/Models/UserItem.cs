@@ -70,6 +70,18 @@ public class UserItem
         }
     }
 
+    public void Equip()
+    {
+        if (item != null && !isLocked)
+        {
+            isEquipped = true;
+        }
+        else
+        {
+            Debug.LogWarning("아이템 장착 불가능: 아이템이 잠겨있거나 유효하지 않습니다.");
+        }
+    }
+
     public void LevelDown()
     {
         if (currentLevel > 0)

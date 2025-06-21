@@ -336,6 +336,34 @@ public class ItemManager : PersistentSingleton<ItemManager>
         return true;
     }
 
+    public bool TryPurchaseItem(UserItem item)
+    {
+        if (item == null)
+        {
+            HLogger.General.Error("null 아이템을 구매하려고 시도했습니다.", this);
+            return false;
+        }
+
+        if (!CanPurchaseItem(item))
+        {
+            return false;
+        }
+
+        if (!SpendCoin(item.GetCurrentPrice()))
+        {
+            HLogger.Player.Warning($"코인 부족으로 아이템 구매 실패: {item.item.name} (ID: {item.item.id})", this);
+            return false;
+        }
+
+        item.isEquipped = true; // 구매 시 자동으로 장착
+        _userItems = _userItems.Select(ui => ui.item.id == item.item.id ? item : ui).ToList();
+
+        HLogger.Player.Info($"아이템 구매 성공: {item.item.name} (ID: {item.item.id})", this);
+        OnInventoryChanged?.Invoke();
+        OnItemLevelChange?.Invoke(item);
+        return true;
+    }
+
     public bool TryDecrementItem(Item item)
     {
         if (item == null)
