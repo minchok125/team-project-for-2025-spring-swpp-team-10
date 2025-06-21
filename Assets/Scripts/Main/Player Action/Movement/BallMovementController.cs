@@ -143,14 +143,13 @@ public class BallMovementController : MonoBehaviour, IMovement
         // 미세한 움직임은 무시 (정밀도 이슈 방지)
         if (delta.magnitude > 0.001f)
         {
-            // 회전 축: 이동 방향 벡터와 Vector3.up의 외적
+            // 회전 축: 이동 방향 벡터와 Vector3.down의 외적
             Vector3 rotationAxis = Vector3.Cross(delta.normalized, Vector3.down);
             // 속도에 비례하는 회전량 계산
-            float rotationSpeed = delta.magnitude * 360f;
-            float rotateFactor = 0.1f;
+            float rotationSpeed = delta.magnitude * 36f;
 
             // 실제 회전 적용
-            transform.Rotate(rotationAxis, rotationSpeed * rotateFactor, Space.World);
+            transform.Rotate(rotationAxis, rotationSpeed, Space.World);
         }
     }
     

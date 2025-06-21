@@ -201,37 +201,56 @@ public class PlayerMovementController : MonoBehaviour
             // 스윙 소리가 재생 중이 아닐 때, 재생 시작
             if (!isSwingSoundPlaying)
             {
-                playerMgr.wireSwingAudioSource.Play();
-                isSwingSoundPlaying = true;
+                StartSwingSound();
             }
-
-            // 속도에 따라 동적으로 피치(음높이) 조절
-            float currentSpeed = rb.velocity.magnitude;
-            float maxSwingSpeedForPitchWithSkill = maxSwingSpeedForPitch * playerMgr.skill.GetSpeedRate();
-            // Lerp를 사용하여 속도에 따라 피치를 1.0 ~ 1.8 사이 값으로 부드럽게 변경
-            float clamp01 = Mathf.InverseLerp(minSwingSpeedWithSkill, maxSwingSpeedForPitchWithSkill, currentSpeed);
-            float pitch = Mathf.Lerp(1.0f, 1.8f, clamp01);
-            float volume = Mathf.Lerp(playerMgr.wireSwingAudioSource.volume, AudioManager.Instance.SfxVolume * clamp01, 5 * Time.fixedDeltaTime);
-            playerMgr.wireSwingAudioSource.volume = volume;
-            playerMgr.wireSwingAudioSource.pitch = pitch;
+            UpdateSwingSoundParameters(minSwingSpeedWithSkill);
         }
-        else
+        // 스윙 조건이 충족되지 않을 때, 소리가 재생 중이었다면 정지
+        else if (isSwingSoundPlaying)
         {
-            // 스윙 조건이 충족되지 않을 때, 소리가 재생 중이었다면 정지
-            if (isSwingSoundPlaying)
-            {
-                float volume = Mathf.Lerp(playerMgr.wireSwingAudioSource.volume, 0, 5 * Time.fixedDeltaTime);
-                playerMgr.wireSwingAudioSource.volume = volume;
-                if (volume < 0.05f)
-                {
-                    playerMgr.wireSwingAudioSource.Stop();
-                    isSwingSoundPlaying = false;
-                    playerMgr.wireSwingAudioSource.pitch = 1f; // 피치를 기본값으로 리셋
-                }
-            }
+            StopSwingSound();
+        }
+    }
+
+    /// <summary>
+    /// 스윙 소리 재생을 시작합니다.
+    /// </summary>
+    private void StartSwingSound()
+    {
+        playerMgr.wireSwingAudioSource.Play();
+        isSwingSoundPlaying = true;
+    }
+
+    /// <summary>
+    /// 현재 속도에 따라 스윙 소리의 피치와 볼륨을 조절합니다.
+    /// </summary>
+    private void UpdateSwingSoundParameters(float minSpeed)
+    {
+        float currentSpeed = rb.velocity.magnitude;
+        float maxSwingSpeedForPitchWithSkill = maxSwingSpeedForPitch * playerMgr.skill.GetSpeedRate();
+        float clamp01 = Mathf.InverseLerp(minSpeed, maxSwingSpeedForPitchWithSkill, currentSpeed);
+        float pitch = Mathf.Lerp(1.0f, 1.8f, clamp01);
+        float volume = Mathf.Lerp(playerMgr.wireSwingAudioSource.volume, AudioManager.Instance.SfxVolume * clamp01, 5 * Time.fixedDeltaTime);
+        playerMgr.wireSwingAudioSource.volume = volume;
+        playerMgr.wireSwingAudioSource.pitch = pitch;
+    }
+
+    /// <summary>
+    /// 스윙 소리 재생을 부드럽게  멈춥니다.
+    /// </summary>
+    private void StopSwingSound()
+    {
+        float volume = Mathf.Lerp(playerMgr.wireSwingAudioSource.volume, 0, 5 * Time.fixedDeltaTime);
+        playerMgr.wireSwingAudioSource.volume = volume;
+        if (volume < 0.05f)
+        {
+            playerMgr.wireSwingAudioSource.Stop();
+            isSwingSoundPlaying = false;
+            playerMgr.wireSwingAudioSource.pitch = 1f; // 피치를 기본값으로 리셋
         }
     }
     #endregion
+
 
     #region Initialization
     private void InitializeState()
@@ -635,8 +654,7 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleBoostInput()
     {
         // 부스트 불가능 조건 검사
-        if (!playerMgr.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0
-            || !playerMgr.isBall || !playerMgr.skill.HasBoost())
+        if (CanNotBoost())
         {
             playerMgr.StopPlayBoosterSfx();
             _boostEffectEmission.enabled = false;
@@ -665,6 +683,12 @@ public class PlayerMovementController : MonoBehaviour
             currentBoostEnergy -= burstBoostEnergyUsage;
         }
         // 지속성 부스트는 BallMovementController에서 처리
+    }
+
+    bool CanNotBoost()
+    {
+        return !playerMgr.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0
+            || !playerMgr.isBall || !playerMgr.skill.HasBoost();
     }
 
     /// <summary>
