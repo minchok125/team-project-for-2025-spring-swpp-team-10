@@ -41,6 +41,8 @@ public class PlayerSkillController : MonoBehaviour
     private void Awake()
     {
         ResetSkills();
+
+        ItemManager.Instance.OnItemLevelChange.AddListener(OnItemLevelChange);
     }
 
     /// <summary>
@@ -290,4 +292,34 @@ public class PlayerSkillController : MonoBehaviour
         }
     }
     #endregion
+
+    private void OnItemLevelChange(UserItem userItem)
+    {
+        // 아이템 레벨 변화에 따른 UI 업데이트 로직
+
+        switch (userItem.item.effectType)
+        {
+            case ItemEffectType.SpeedBoost:
+                SetSpeedRate(userItem.GetCurrentValue());
+                break;
+            case ItemEffectType.JumpBoost:
+                SetJumpHeightRate(userItem.GetCurrentValue());
+                break;
+            case ItemEffectType.WireLength:
+                SetMaxWireLength(userItem.GetCurrentValue());
+                break;
+            case ItemEffectType.BoostCostReduction:
+                SetBoosterUsageRate(userItem.GetCurrentValue());
+                break;
+            case ItemEffectType.BoostRecoverySpeed:
+                SetBoosterRecoveryRate(userItem.GetCurrentValue());
+                break;
+            default:
+                Hampossible.Utils.HLogger.Error($"알 수 없는 아이템 효과 타입: {userItem.item.effectType}");
+                break;
+        }
+
+
+        UpdateUI();
+    }
 }

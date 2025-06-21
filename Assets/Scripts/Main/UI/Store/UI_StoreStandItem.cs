@@ -49,7 +49,7 @@ public class UI_StoreStandItem : MonoBehaviour
 
     public void OnIncrementClicked()
     {
-        bool success = ItemManager.Instance.TryPurchaseItem(userItem.item);
+        bool success = ItemManager.Instance.TryIncrementItem(userItem.item);
         if (success)
         {
             Debug.Log($"구매 성공: {userItem.item.name}");

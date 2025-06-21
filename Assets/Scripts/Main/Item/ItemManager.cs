@@ -22,6 +22,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
 
     private ICoinWallet _coinWallet;
     public UnityEvent<int> OnCoinCountChanged = new UnityEvent<int>();
+    public UnityEvent<UserItem> OnItemLevelChange = new UnityEvent<UserItem>();
 
     public event Action OnInventoryChanged;
 
@@ -175,9 +176,9 @@ public class ItemManager : PersistentSingleton<ItemManager>
     /// <summary>
     /// 아이템 잠금 해제 메서드 - CheckPointManager에서 호출
     /// </summary>
-    public void UnlockItem(Item item)
+    public void UnlockItem(ItemEffectType type)
     {
-        var userItem = _userItems.Find(ui => ui.item.id == item.id);
+        var userItem = _userItems.Find(ui => ui.item.effectType == type);
         if (userItem == null)
         {
             HLogger.General.Error("null 아이템을 잠금 해제하려고 시도했습니다.", this);
@@ -185,7 +186,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
         }
 
         userItem.isLocked = false;
-        HLogger.Player.Info($"아이템 잠금 해제됨: {item.name}", this);
+        HLogger.Player.Info($"아이템 잠금 해제됨: {userItem.item.name}", this);
         return;
     }
 
@@ -298,7 +299,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
         return true;
     }
 
-    public bool TryPurchaseItem(Item item)
+    public bool TryIncrementItem(Item item)
     {
         if (item == null)
         {
@@ -331,6 +332,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
 
         HLogger.Player.Info($"아이템 구매 성공: {item.name} (ID: {item.id})", this);
         OnInventoryChanged?.Invoke();
+        OnItemLevelChange?.Invoke(userItem);
         return true;
     }
 
@@ -360,6 +362,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
         _userItems = _userItems.Select(ui => ui.item.id == item.id ? userItem : ui).ToList();
         HLogger.Player.Info($"아이템 레벨 다운 성공: {item.name} (ID: {item.id})", this);
         OnInventoryChanged?.Invoke();
+        OnItemLevelChange?.Invoke(userItem);
         return true;
     }
 }
