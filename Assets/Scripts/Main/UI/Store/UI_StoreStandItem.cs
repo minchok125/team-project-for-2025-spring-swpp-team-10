@@ -63,11 +63,14 @@ public class UI_StoreStandItem : MonoBehaviour
 
     public void OnDecrementClicked()
     {
-        
-    }
-
-    private void OnPurchaseClicked()
-    {
-      
+        bool success = ItemManager.Instance.TryDecrementItem(userItem.item);
+        if (success)
+        {
+            Debug.Log($"레벨 다운 성공: {userItem.item.name}");
+        }
+        else
+        {
+            Debug.Log($"레벨 다운 실패: {userItem.item.name} (조건 불충족)");
+        }
     }
 }
