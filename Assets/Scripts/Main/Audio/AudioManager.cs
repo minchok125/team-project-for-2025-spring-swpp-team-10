@@ -62,7 +62,8 @@ namespace AudioSystem
         WireSwingLoop,
         DialogueSequenceStart,
         CheckpointActivate,
-        NoteOpen
+        NoteOpen,
+        CoinCollect
     }
 
     public enum BgmType
