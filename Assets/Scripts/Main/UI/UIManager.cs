@@ -86,6 +86,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	{
 		// Paused -> Playing
 		pausedMenuPanel.SetActive(false);
+		storePanel.SetActive(false);
 		settingsPanel.SetActive(false);
 		noteUI.SetActive(false);
 	}
