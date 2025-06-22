@@ -183,6 +183,12 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		storePanel.GetComponent<StorePanelController>().Close();
 	}
 
+	public void InformMessage(string str)
+    {
+        informText.gameObject.SetActive(true);
+        informText.SetText(str);
+    }
+
 	public void UpdateNextCheckpoint(Vector3 nextCpPos)
 	{
 		nextCheckpointUI.UpdateTargetPosition(nextCpPos);
