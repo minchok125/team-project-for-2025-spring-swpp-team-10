@@ -16,6 +16,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	[SerializeField] private InformMessageTextController informText;
 	[SerializeField] private GameObject guidePanel;
 	[SerializeField] private GameObject fadePanel;
+	[SerializeField] private GameObject tutorialUIPanel;
 
 	[SerializeField] private GameObject settingsPanel;
 	[SerializeField] private TooltipController tooltip;
@@ -117,6 +118,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		settingsPanel.SetActive(false);
 		noteUI.SetActive(false);
 		guidePanel.SetActive(false);
+		tutorialUIPanel.SetActive(false);
 	}
 
 	public void PauseGame()
@@ -125,6 +127,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		HLogger.General.Info("게임 일시정지");
 		pausedMenuPanel.SetActive(true);
 		settingsPanel.SetActive(false);
+		tutorialUIPanel.SetActive(false);
 	}
 
 	public void QuitMainScene(bool terminateGame)

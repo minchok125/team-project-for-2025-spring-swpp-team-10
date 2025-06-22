@@ -10,7 +10,7 @@ public class SafeBoxDocument : MonoBehaviour, IWireClickButton
 
     public void Click()
     {
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.Pickup1, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.Pickup1);
         warning.StartWarning();
         Destroy(otherDocument);
         Destroy(gameObject);
