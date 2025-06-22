@@ -45,7 +45,7 @@ public class GoodEndingManager : CinematicSequence
     {
         // BGM 볼륨 및 화면 fade in
         FadeInScreen(initFadeInDuration);
-        // StartCoroutine(FadeInBgm());
+        //FadeOutBgm(initFadeInDuration);
         // TODO: 엔딩 BGM 설정
 
         // 햄스터 탈출하는 장면

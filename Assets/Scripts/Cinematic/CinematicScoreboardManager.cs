@@ -61,7 +61,7 @@ public class CinematicScoreboardManager : MonoBehaviour
         float clearSec = PersistentDataManager.Instance.clearTime % 60f;
         int clearMicroSec = (int)((clearSec % 1f) * 10);
 
-        clearTimeText.text += $"{name}: {clearMin}분 {(int)clearSec}.{clearMicroSec}초 \n";
+        clearTimeText.text = $"{name}: {clearMin}분 {(int)clearSec}.{clearMicroSec}초 \n";
     }
     
     string CenterAlign(string text, int totalWidth)
