@@ -147,6 +147,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		else
 		{
 			SceneManager.LoadScene("TitleScene");
+			Time.timeScale = 1f;
 			HLogger.General.Info("메인 씬 종료: 타이틀 씬으로 이동");
 		}
 	}
@@ -169,7 +170,12 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		Image fadePanelImg = fadePanel.GetComponent<Image>();
 		fadePanelImg.color = Color.clear;
 		fadePanel.SetActive(true);
-		fadePanelImg.DOColor(Color.black, 2f).OnComplete(() => SceneManager.LoadScene("CinematicScene"));
+		fadePanelImg.DOColor(Color.black, 2f).OnComplete(() =>
+		{
+        	Cursor.visible = true;
+        	Cursor.lockState = CursorLockMode.None;
+			SceneManager.LoadScene("CinematicScene");
+		});
 	}
 
     public void OnCheckpointProgressUpdated(int activatedIndex, int totalCheckpoints)

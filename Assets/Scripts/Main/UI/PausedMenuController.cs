@@ -91,6 +91,7 @@ public class PausedMenuController : MonoBehaviour
 	public void GoBackToTitle()
 	{
 		HLogger.General.Debug("Paused Menu: 타이틀로 돌아가기");
+		AudioManager.Instance.StopBgm();
 		UIManager.QuitMainScene(false);
 	}
 
