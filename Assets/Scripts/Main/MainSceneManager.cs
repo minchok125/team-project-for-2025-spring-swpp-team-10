@@ -86,6 +86,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
     private GameStates _gameState;
     private float _timeRecord, _safeRecord;
     private float _timeScale;
+    private float _coinTimeTick = 1f;
 
     private readonly float _endingBranchCondition = 600f;
 
@@ -128,8 +129,20 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
             _mainSceneFacade.AltCursorControl(Input.GetKey(KeyCode.LeftAlt));
         }
 
+        AddCoinByPlaytime();
+
         // Ending 잘 되는지 Debugging 용
-        if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
+        // if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
+    }
+
+    private void AddCoinByPlaytime()
+    {
+        _coinTimeTick += Time.deltaTime;
+        if (_coinTimeTick >= 1f)
+        {
+            ItemManager.Instance.AddCoinByPlaytime();
+            _coinTimeTick -= 1f;
+        }
     }
 
     public void PauseGame(bool uiActive)

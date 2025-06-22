@@ -78,7 +78,7 @@ public class ItemManager : RuntimeSingleton<ItemManager>
                     item = item,
                     currentLevel = 0,
                     isEquipped = false,
-                    isLocked = false // 기본적으로 잠금 상태로 시작
+                    isLocked = isItemStartWithLocked(item)
                 };
 
                 _userItems.Add(userItem);
@@ -86,7 +86,11 @@ public class ItemManager : RuntimeSingleton<ItemManager>
             _inventoryStorage?.SaveUserItems(_userItems);
             HLogger.General.Info("아이템 데이터베이스 초기화 완료", this);
         }
+    }
 
+    private bool isItemStartWithLocked(Item item)
+    {
+        return (int)item.effectType >= (int)ItemEffectType.DualJump;
     }
 
 

@@ -29,7 +29,7 @@ public class PersistentSingleton<T> : MonoBehaviour where T : MonoBehaviour
     protected virtual void Awake()
     {
         _instance = this as T;
-        /*if (_instance == null)
+        if (_instance == null)
         {
             _instance = this as T;
         }
@@ -37,7 +37,7 @@ public class PersistentSingleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             Destroy(gameObject);
             return;
-        }*/
+        }
 
         DontDestroyOnLoad(gameObject);
     }

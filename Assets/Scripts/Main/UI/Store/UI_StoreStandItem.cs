@@ -109,5 +109,29 @@ public class UI_StoreStandItem : MonoBehaviour
     public void OnPurchase()
     {
         bool success = ItemManager.Instance.TryPurchaseItem(userItem);
+        if (!success)
+            return;
+            
+        switch (userItem.item.effectType)
+        {
+            case ItemEffectType.HamsterWire:
+                UIManager.Instance.DoDialogue("HamsterWireUnlockDialogue");
+                break;
+            case ItemEffectType.Booster:
+                UIManager.Instance.DoDialogue("BoosterUnlockDialogue");
+                break;
+            case ItemEffectType.DualJump:
+                UIManager.Instance.DoDialogue("DoubleJumpUnlockDialogue");
+                break;
+            case ItemEffectType.TripleJump:
+                UIManager.Instance.DoDialogue("TripleJumpUnlockDialogue");
+                break;
+            case ItemEffectType.Retractor:
+                UIManager.Instance.DoDialogue("RetractorUnlockDialogue");
+                break;
+            case ItemEffectType.Balloon:
+                UIManager.Instance.DoDialogue("BalloonUnlockDialogue");
+                break;
+        }
     }
 }
