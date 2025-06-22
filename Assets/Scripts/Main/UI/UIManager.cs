@@ -10,6 +10,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	[SerializeField] private NextCheckpointUIController nextCheckpointUI;
 	[SerializeField] private GameObject endingTextObj;
 	[SerializeField] private GameObject storePanel;
+	[SerializeField] private InformMessageTextController informText;
 	[SerializeField] private GameObject guidePanel;
 
 	private GameObject settingsPanel;
@@ -130,7 +131,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		settingsPanel.SetActive(false);
 	}
 
-  public void OnCheckpointProgressUpdated(int activatedIndex, int totalCheckpoints)
+    public void OnCheckpointProgressUpdated(int activatedIndex, int totalCheckpoints)
     {
         // 체크포인트 진행상황을 3/5 이런 식으로 표시할 수 있게 알리는 메서드입니다. 추후 UI 구현 가능
     }

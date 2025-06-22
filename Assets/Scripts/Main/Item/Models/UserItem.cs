@@ -38,6 +38,16 @@ public class UserItem
         }
         return 0f;
     }
+
+    public string GetCurrentValueLabel() 
+    {
+        if (item != null && item.levels != null && currentLevel < item.levels.Length)
+        {
+            return item.levels[currentLevel].label;
+        }
+        return string.Empty;
+    }
+
     public int GetCurrentPrice()
     {
         if (item != null && item.levels != null && currentLevel < item.levels.Length)
@@ -75,6 +85,18 @@ public class UserItem
         else
         {
             Debug.LogWarning("아이템 레벨업 불가능: 이미 최대 레벨입니다.");
+        }
+    }
+
+    public void Equip()
+    {
+        if (item != null && !isLocked)
+        {
+            isEquipped = true;
+        }
+        else
+        {
+            Debug.LogWarning("아이템 장착 불가능: 아이템이 잠겨있거나 유효하지 않습니다.");
         }
     }
 

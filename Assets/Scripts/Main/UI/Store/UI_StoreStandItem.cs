@@ -9,12 +9,12 @@ public class UI_StoreStandItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private TextMeshProUGUI priceText;
-    [SerializeField] private GameObject equippedTag;
     [SerializeField] private GameObject lockedOverlay;
 
     [SerializeField] private TextMeshProUGUI valueText;
     [SerializeField] private Button incrementButton;
     [SerializeField] private Button decrementButton;
+    [SerializeField] private Button purchaseButton;
 
     private UserItem userItem;
 
@@ -28,24 +28,23 @@ public class UI_StoreStandItem : MonoBehaviour
         descriptionText.text = userItem.item.description;
         priceText.text = userItem.GetCurrentPrice().ToString();
 
-        // 장착 여부 표시
-        equippedTag.SetActive(userItem.isEquipped);
+        var purchaseOnly = userItem.item.IsPurchaseOnlyType();
 
         incrementButton.interactable = userItem.CanLevelUp();
         incrementButton.enabled = userItem.CanLevelUp();
+        incrementButton.gameObject.SetActive(!purchaseOnly);
         decrementButton.interactable = userItem.CanLevelDown();
         decrementButton.enabled = userItem.CanLevelDown();
+        decrementButton.gameObject.SetActive(!purchaseOnly);
+        valueText.text = userItem.GetCurrentValueLabel();
+        valueText.gameObject.SetActive(!purchaseOnly);
 
-        //valueText.text = userItem.GetCurrentValue().ToString("F2");
-        valueText.text = userItem.GetCurrentLabel();
+        purchaseButton.gameObject.SetActive(purchaseOnly);
+        purchaseButton.gameObject.GetComponent<StoreStandItemPurchaseButton>().Bind(userItem.isEquipped);
 
-        // 잠김 여부 표시
-        // lockedOverlay.SetActive(userItem.isLocked);
-        // purchaseButton.interactable = !userItem.isLocked;
+    
+        lockedOverlay.SetActive(userItem.isLocked);
 
-        // 버튼 클릭 이벤트 설정
-        // purchaseButton.onClick.RemoveAllListeners();
-        // purchaseButton.onClick.AddListener(OnPurchaseClicked);
     }
 
     public void OnIncrementClicked()
@@ -73,5 +72,10 @@ public class UI_StoreStandItem : MonoBehaviour
         {
             Debug.Log($"레벨 다운 실패: {userItem.item.name} (조건 불충족)");
         }
+    }
+
+    public void OnPurchase()
+    {
+        bool success = ItemManager.Instance.TryPurchaseItem(userItem);
     }
 }

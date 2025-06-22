@@ -72,12 +72,28 @@ public class StorePanelController : MonoBehaviour
     {
         ClearChildren(inventoryItemGrid);
 
-        foreach (var userItem in ItemManager.Instance.GetInventoryItems())
+        var userItems = ItemManager.Instance.GetInventoryItems();
+
+        int count = userItems.Count;
+        int fillCount = Mathf.Max(0, 6 - count);
+
+        // 실제 아이템 렌더링
+        foreach (var userItem in userItems)
         {
             var go = Instantiate(inventoryItemPrefab, inventoryItemGrid);
             var view = go.GetComponent<UI_InventoryItem>();
-            view?.Bind(userItem.item.icon, userItem.isEquipped); // isEmpty = false
+            view?.Bind(userItem.item.icon, userItem.isEquipped); // 실제 아이템
         }
+
+        // 모자란 만큼 mock으로 채우기
+        for (int i = 0; i < fillCount; i++)
+        {
+            var go = Instantiate(inventoryItemPrefab, inventoryItemGrid);
+            var view = go.GetComponent<UI_InventoryItem>();
+            view?.Bind(null, false); // mock, isEquipped = false
+        }
+
+        
     }
 
     private void UpdateCoin(int newCount)

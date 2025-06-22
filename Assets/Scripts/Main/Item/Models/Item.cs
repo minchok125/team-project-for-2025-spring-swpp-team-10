@@ -78,6 +78,34 @@ public class Item
         return levels != null && currentLevel < levels.Length - 1;
     }
 
+    public bool IsPurchaseOnlyType()
+    {
+        switch (effectType)
+        {
+            case ItemEffectType.HamsterWire:
+            case ItemEffectType.DualJump:
+            case ItemEffectType.TripleJump:
+            case ItemEffectType.Retractor:
+            case ItemEffectType.Booster:
+            case ItemEffectType.Balloon:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+      public static Item DummyItem()
+    {
+        return Create(
+            id: -1,
+            name: "",
+            description: "",
+            icon: null,
+            effectType: ItemEffectType.SpeedBoost,
+            levels: new LevelData[] { }
+        );
+    }
+
 #if UNITY_EDITOR
     public void GenerateDefaultLevels()
     {
@@ -153,10 +181,17 @@ public class LevelData
 
 public enum ItemEffectType
 {
-    SpeedBoost,
+    SpeedBoost, // 속도 강화
     JumpBoost,
     WireLength,
     BoostCostReduction,
     BoostRecoverySpeed,
-    GameSlowdown
+    GameSlowdown,
+    // 아래 : PurchaseOnlyType
+    HamsterWire,
+    Booster,
+    DualJump,
+    TripleJump,
+    Retractor,
+    Balloon,
 }

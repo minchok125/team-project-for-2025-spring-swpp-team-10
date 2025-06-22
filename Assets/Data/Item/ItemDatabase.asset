@@ -15,33 +15,285 @@ MonoBehaviour:
   items:
   - id: 1
     name: "\uC18D\uB3C4 \uAC15\uD654 "
-    description: 
-    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
+    description: "\uC18D\uB3C4\uB97C +5% \uB298\uB9BD\uB2C8\uB2E4."
+    icon: {fileID: 21300000, guid: c70df1cd6851343748d48a1bd9dab4c0, type: 3}
     effectType: 0
     levels:
     - level: 0
       value: 1
-      price: 0
+      price: 100
       label: 100%
     - level: 1
       value: 1.05
-      price: 0
+      price: 100
       label: 105%
     - level: 2
       value: 1.1
-      price: 0
+      price: 120
       label: 110%
+    - level: 3
+      value: 1.15
+      price: 120
+      label: 115%
+    - level: 4
+      value: 1.2
+      price: 160
+      label: 120%
+    - level: 5
+      value: 1.25
+      price: 160
+      label: 125%
+    - level: 6
+      value: 1.3
+      price: 220
+      label: 130%
+    - level: 7
+      value: 1.35
+      price: 220
+      label: 135%
+    - level: 8
+      value: 1.4
+      price: 300
+      label: 140%
+    - level: 9
+      value: 1.45
+      price: 300
+      label: 145%
+    - level: 10
+      value: 1.5
+      price: 400
+      label: 150%
+    - level: 11
+      value: 1.55
+      price: 400
+      label: 155%
+    - level: 12
+      value: 1.6
+      price: 0
+      label: 'MAX : 160%'
   - id: 2
-    name: "\uC810\uD504\uB825 \uAC15\uD654 "
-    description: 
-    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
+    name: "\uC810\uD504\uB825 \uAC15\uD654"
+    description: "\uC810\uD504 \uB192\uC774\uB97C +5% \uB298\uB9BD\uB2C8\uB2E4."
+    icon: {fileID: 21300000, guid: e9301cbdc155b47239504edff9311e71, type: 3}
     effectType: 1
     levels:
     - level: 0
       value: 1
-      price: 0
+      price: 100
       label: 100%
-    - level: 0
+    - level: 1
       value: 1.05
+      price: 100
+      label: 105%
+    - level: 2
+      value: 1.1
+      price: 120
+      label: 110%
+    - level: 3
+      value: 1.15
+      price: 120
+      label: 115%
+    - level: 4
+      value: 1.2
+      price: 160
+      label: 120%
+    - level: 5
+      value: 1.25
+      price: 160
+      label: 125%
+    - level: 6
+      value: 1.3
+      price: 220
+      label: 130%
+    - level: 7
+      value: 1.35
+      price: 220
+      label: 135%
+    - level: 8
+      value: 1.4
+      price: 300
+      label: 140%
+    - level: 9
+      value: 1.45
+      price: 300
+      label: 145%
+    - level: 10
+      value: 1.5
+      price: 400
+      label: 150%
+    - level: 11
+      value: 1.55
+      price: 400
+      label: 155%
+    - level: 12
+      value: 1.6
       price: 0
-      label: '%'
+      label: 'MAX : 160%'
+  - id: 3
+    name: "\uC640\uC774\uC5B4 \uCD5C\uB300 \uAE38\uC774"
+    description: "\uBB3C\uCCB4\uC5D0 \uBC1C\uC0AC\uD558\uB294 \uC640\uC774\uC5B4\uC758
+      \uCD5C\uB300 \uAE38\uC774\uB97C 2m \uB298\uB9BD\uB2C8\uB2E4."
+    icon: {fileID: 21300000, guid: 8fb696d971e824aeab12f1be0ea93a65, type: 3}
+    effectType: 2
+    levels:
+    - level: 0
+      value: 40
+      price: 100
+      label: 40m
+    - level: 1
+      value: 42
+      price: 100
+      label: 42m
+    - level: 2
+      value: 44
+      price: 100
+      label: 44m
+    - level: 3
+      value: 46
+      price: 100
+      label: 46m
+    - level: 4
+      value: 48
+      price: 100
+      label: 48m
+    - level: 5
+      value: 50
+      price: 100
+      label: 50m
+    - level: 6
+      value: 52
+      price: 100
+      label: 52m
+    - level: 7
+      value: 54
+      price: 100
+      label: 54m
+    - level: 8
+      value: 56
+      price: 100
+      label: 56m
+    - level: 9
+      value: 58
+      price: 100
+      label: 58m
+    - level: 10
+      value: 60
+      price: 0
+      label: 'MAX : 60m'
+  - id: 4
+    name: "\uBD80\uC2A4\uD130 \uC18C\uBAA8 \uC18D\uB3C4 \uAC10\uC18C"
+    description: "1\uCD08 \uB2F9 \uC18C\uBAA8\uD558\uB294 \uBD80\uC2A4\uD130 \uC5D0\uB108\uC9C0\uAC00
+      2% \uAC10\uC18C\uD569\uB2C8\uB2E4."
+    icon: {fileID: 21300000, guid: 62ef00e0bdbb946b7a277a15d1c08598, type: 3}
+    effectType: 3
+    levels:
+    - level: 0
+      value: 0.3
+      price: 50
+      label: 30%
+    - level: 1
+      value: 0.28
+      price: 50
+      label: 28%
+    - level: 2
+      value: 0.26
+      price: 50
+      label: 26%
+    - level: 3
+      value: 0.24
+      price: 50
+      label: 24%
+    - level: 4
+      value: 0.22
+      price: 50
+      label: 22%
+    - level: 5
+      value: 0.2
+      price: 0
+      label: 'MAX : 20%'
+  - id: 5
+    name: "\uBD80\uC2A4\uD130 \uD68C\uBCF5 \uC18D\uB3C4 \uC99D\uAC00"
+    description: "\uBD80\uC2A4\uD130 \uAC8C\uC774\uC9C0\uAC00 \uC644\uC804 \uD68C\uBCF5\uB418\uB294
+      \uC2DC\uAC04\uC774 0.5\uCD08 \uAC10\uC18C\uD569\uB2C8\uB2E4."
+    icon: {fileID: 21300000, guid: 789f9d8cb3e334bf3a0d6cab7282fe5a, type: 3}
+    effectType: 4
+    levels:
+    - level: 0
+      value: 0.125
+      price: 50
+      label: "8\uCD08"
+    - level: 1
+      value: 0.13333334
+      price: 50
+      label: "7.5\uCD08"
+    - level: 2
+      value: 0.14285715
+      price: 50
+      label: "7\uCD08"
+    - level: 3
+      value: 0.15384616
+      price: 50
+      label: "6.5\uCD08"
+    - level: 4
+      value: 0.16666667
+      price: 50
+      label: "6\uCD08"
+    - level: 5
+      value: 0.18181819
+      price: 50
+      label: "5.5\uCD08"
+    - level: 6
+      value: 0.2
+      price: 50
+      label: "5\uCD08"
+    - level: 7
+      value: 0.22222222
+      price: 50
+      label: "4.5\uCD08"
+    - level: 8
+      value: 0.25
+      price: 0
+      label: "MAX : 4\uCD08"
+  - id: 7
+    name: "\uBD80\uC2A4\uD130 "
+    description: "\uC640\uC774\uC5B4 \uC561\uC158 \uC911\uC5D0 \uBD80\uC2A4\uD130\uAC00
+      \uAC00\uB2A5\uD574\uC9D1\uB2C8\uB2E4. "
+    icon: {fileID: 21300000, guid: 234d4bf0571d54aa1bb7b294960c8823, type: 3}
+    effectType: 7
+    levels: []
+  - id: 8
+    name: "\uB9AC\uD2B8\uB799\uD130 "
+    description: "\uC640\uC774\uC5B4\uC758 \uAE38\uC774\uB97C \uB298\uB9AC\uAC70\uB098
+      \uC904\uC77C \uC218 \uC788\uC2B5\uB2C8\uB2E4. "
+    icon: {fileID: 21300000, guid: 48529313f34894e069a315ae7dbf98a8, type: 3}
+    effectType: 10
+    levels: []
+  - id: 9
+    name: "\uD48D\uC120 "
+    description: "\uACF5\uC911\uC5D0\uC11C \uC0AC\uC6A9 \uC2DC \uBD80\uB4DC\uB7FD\uAC8C
+      \uD558\uAC15\uD569\uB2C8\uB2E4. "
+    icon: {fileID: 21300000, guid: 04b05a62067044fa29e9628a68b91f70, type: 3}
+    effectType: 11
+    levels: []
+  - id: 10
+    name: "\uD584\uC2A4\uD130 \uC640\uC774\uC5B4 "
+    description: "\uD584\uC2A4\uD130 \uBAA8\uB4DC\uC5D0\uC11C \uC640\uC774\uC5B4\uB97C
+      \uC0AC\uC6A9\uD574 \uD2B9\uC815 \uC624\uBE0C\uC81D\uD2B8\uB97C \uB2F9\uAE38
+      \uC218 \uC788\uAC8C \uB429\uB2C8\uB2E4. "
+    icon: {fileID: 21300000, guid: ad608ab5356134ce98c8d80627ce6517, type: 3}
+    effectType: 6
+    levels: []
+  - id: 11
+    name: "\uB354\uBE14 \uC810\uD504 "
+    description: "\uACF5\uC911\uC5D0\uC11C \uD55C \uBC88 \uB354 \uC810\uD504 \uD560
+      \uC218 \uC788\uAC8C \uB429\uB2C8\uB2E4 "
+    icon: {fileID: 21300000, guid: 2a73ad1467cde41828884953d6194375, type: 3}
+    effectType: 8
+    levels: []
+  - id: 12
+    name: "\uD2B8\uB9AC\uD50C \uC810\uD504 "
+    description: "\uACF5\uC911\uC5D0\uC11C \uB450 \uB354 \uC810\uD504 \uD560 \uC218
+      \uC788\uAC8C \uB429\uB2C8\uB2E4 "
+    icon: {fileID: 21300000, guid: 4666a431ae6af46aeaf52b6a7204390c, type: 3}
+    effectType: 9
+    levels: []
