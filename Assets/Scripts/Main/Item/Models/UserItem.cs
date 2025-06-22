@@ -65,9 +65,9 @@ public class UserItem
         return "";
     }
 
-    public bool CanLevelUp()
+    public bool CanLevelUp(int step = 1)
     {
-        return item != null && item.levels != null && currentLevel < item.levels.Length - 1;
+        return item != null && item.levels != null && currentLevel < item.levels.Length - step;
     }
 
     public bool CanLevelDown()
@@ -75,11 +75,11 @@ public class UserItem
         return currentLevel > 0;
     }
 
-    public void LevelUp()
+    public void LevelUp(int step = 1)
     {
-        if (item != null && item.levels != null && currentLevel < item.levels.Length - 1)
+        if (item != null && item.levels != null && currentLevel < item.levels.Length - step)
         {
-            currentLevel++;
+            currentLevel += step;
             isEquipped = true;
         }
         else
