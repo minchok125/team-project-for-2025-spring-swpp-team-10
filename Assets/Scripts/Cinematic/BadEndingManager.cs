@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Authentication.ExtendedProtection;
+using AudioSystem;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,12 +28,16 @@ public class BadEndingManager : CinematicSequence
     [SerializeField] private Vector3 cageCamTransPos, cageCamTransRot;
     [SerializeField] private Vector2 cageCamRectPos, cageCamRectScale;
     [SerializeField] private float cageHoldDuration;
+
+    [Header("References")] [SerializeField]
+    private GameObject mugshotPadding;
     
     private ObjectPool _camPool;
     private GameObject _currCam;
     
     protected override void Init()
     {
+        mugshotPadding.SetActive(false);
         // Common 초기화
         _camPool = gameObject.AddComponent<ObjectPool>();
         _camPool.InitObjectPool(Common.CamPrefab, 2);
@@ -96,10 +101,14 @@ public class BadEndingManager : CinematicSequence
             .Join(_currCam.transform.DOLocalMove(escapeCamPath[1], escapeJumpDuration));
 
         // 햄스터 탈출과 함께 Sequence 재생
+        AudioManager.Instance.SetSfxPitch(0.7f);
+        AudioManager.Instance.SetSfxVolume(0.5f);
+        AudioManager.Instance.PlaySfx2D(SfxType.EscapingSfx);
         Track.Hamster.gameObject.SetActive(true);
         StartCoroutine(Track.Hamster.Escape(escapeRunDuration));
         CamSequence.Play();
         yield return new WaitForSeconds(escapeRunDuration + escapeJumpDuration);
+        AudioManager.Instance.SetSfxPitch(1f);
     }
 
     private IEnumerator Police()
@@ -126,6 +135,9 @@ public class BadEndingManager : CinematicSequence
         Town.Hamster.Police();
         CamSequence.Play();
         
+        AudioManager.Instance.PlaySfx2D(SfxType.SirenSfx);
+        AudioManager.Instance.SetSfxVolume(0.5f);
+            
         FadeInScreen(policeFadeInDuration);
 
         float policeWholeDuration = policeFadeInDuration + policeHoldHamsterDuration + policeCamTurnDuration +
@@ -146,8 +158,8 @@ public class BadEndingManager : CinematicSequence
         _currCam.SetActive(true);
         
         // Scoreboard Fade In
-        // Common.EndingCanvas.SetActive(true);
         Common.ActivateEndingCanvas();
+        mugshotPadding.SetActive(true);
         Common.Scoreboard.SetActive(true);
         FadeInScreen(cageFadeInDuration);
         yield return new WaitForSeconds(cageFadeInDuration);
@@ -155,7 +167,7 @@ public class BadEndingManager : CinematicSequence
     
     private void UpdateScoreboard()
     {
-        throw new System.NotImplementedException();
+        // throw new System.NotImplementedException();
     }
 
     public override void Skip()
@@ -175,6 +187,7 @@ public class BadEndingManager : CinematicSequence
         
         // Scoreboard 보이도록
         Common.EndingCanvas.SetActive(true);
+        mugshotPadding.SetActive(true);
         Common.Scoreboard.SetActive(true);
         FadeInScreen(0f);
     }

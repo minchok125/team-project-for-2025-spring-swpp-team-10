@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using AudioSystem;
 using DG.Tweening;
 using UnityEngine;
 
@@ -84,10 +85,14 @@ public class GoodEndingManager : CinematicSequence
             .Join(_currCam.transform.DOLocalMove(escapeCamPath[1], escapeJumpDuration));
 
         // 햄스터 탈출과 함께 Sequence 재생
+        AudioManager.Instance.SetSfxPitch(0.7f);
+        AudioManager.Instance.SetSfxVolume(0.5f);
+        AudioManager.Instance.PlaySfx2D(SfxType.EscapingSfx);
         Track.Hamster.gameObject.SetActive(true);
         StartCoroutine(Track.Hamster.Escape(escapeRunDuration));
         CamSequence.Play();
         yield return new WaitForSeconds(escapeRunDuration + escapeJumpDuration);
+        AudioManager.Instance.SetSfxPitch(1f);
     }
 
     private IEnumerator RunAway()
@@ -111,8 +116,9 @@ public class GoodEndingManager : CinematicSequence
         
         // Fade In 및 Sequence 재생
         Town.Hamster.gameObject.SetActive(true);
-        StartCoroutine(Town.Hamster.RunAway(runAwayFadeInDuration + houseHoldDuration));
         FadeInScreen(runAwayFadeInDuration);
+        yield return FadeInBgm(BgmType.GoodEndingBgm, runAwayFadeInDuration);
+        StartCoroutine(Town.Hamster.RunAway(houseHoldDuration));
         CamSequence.Play(); 
         float wholeTime = runAwayFadeInDuration + houseHoldDuration + camTurnDuration + hamsterHoldDuration;
         yield return new WaitForSeconds(wholeTime);
@@ -127,7 +133,7 @@ public class GoodEndingManager : CinematicSequence
 
     private void UpdateScoreboard()
     {
-        throw new System.NotImplementedException();
+        // throw new System.NotImplementedException();
     }
 
     public override void Skip()
