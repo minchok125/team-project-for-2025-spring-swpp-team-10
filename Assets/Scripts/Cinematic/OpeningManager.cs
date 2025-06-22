@@ -117,7 +117,7 @@ public class OpeningManager : CinematicSequence
         Town.Lights.SetActive(false);
         Track.Hamster.House();
         Track.Hamster.gameObject.SetActive(true);
-        AudioManager.Instance.SetBgmVolume(0.4f);
+        AudioManager.Instance.SetBgmVolume(1f);
         
         yield return new WaitForSeconds(roomCamDuration);
         
@@ -150,7 +150,7 @@ public class OpeningManager : CinematicSequence
         yield return new WaitForSeconds(beforeCutsceneDuration);
         
         StartCoroutine(FadeOutBgm(shrinkDuration));
-        AudioManager.Instance.SetSfxVolume(0.3f);
+        AudioManager.Instance.SetSfxVolume(1f);
         AudioManager.Instance.SetSfxPitch(0.55f);
         AudioManager.Instance.PlaySfx2D(SfxType.OpeningShrinkSfx);
         
@@ -170,7 +170,7 @@ public class OpeningManager : CinematicSequence
         // StandUp
         Track.Hamster.Standup(standUpDuration);
         Common.Logo.SetActive(true);
-        AudioManager.Instance.SetSfxVolume(0.5f);
+        AudioManager.Instance.SetSfxVolume(0.8f);
         AudioManager.Instance.PlaySfx2D(SfxType.OpeningLogoSfx);
         yield return new WaitForSeconds(0.5f);
         yield return new WaitForSeconds(holdLogoDuration);
