@@ -12,7 +12,9 @@ GameObject:
   - component: {fileID: 878646896937159466}
   - component: {fileID: 878646896937159469}
   - component: {fileID: 878646896937159468}
-  - component: {fileID: 6991001530081231758}
+  - component: {fileID: 3824543481121200346}
+  - component: {fileID: -390872395008759558}
+  - component: {fileID: 6813061561672107294}
   m_Layer: 5
   m_Name: UI_Button
   m_TagString: Untagged
@@ -70,7 +72,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2f5a15a07d222407fa1faaa5e6695b06, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -136,7 +138,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6991001530081231758
+--- !u!114 &3824543481121200346
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,21 +147,46 @@ MonoBehaviour:
   m_GameObject: {fileID: 878646896937159470}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c807d2f07f47d4b69917c9240a91f7a5, type: 3}
+  m_Script: {fileID: 11500000, guid: adb30198aa32dd140b5750692dd48104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 10
+  image: {fileID: 878646896937159469}
+--- !u!114 &-390872395008759558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878646896937159470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6d33ecf96d50467a9e04bc86d4ae012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   borderImage: {fileID: 8362184984471638544}
   buttonText: {fileID: 878646897935982883}
   iconImage: {fileID: 2291133595704292972}
-  defaultBorder: {fileID: 21300000, guid: 0be4c0f14f84847de845d6f7b9a0bb58, type: 3}
-  dangerBorder: {fileID: 21300000, guid: f1adef1aab2f24d2389ce785c2cd4115, type: 3}
-  defaultTextColor: {r: 0.29803923, g: 0.29803923, b: 0.29803923, a: 1}
-  dangerTextColor: {r: 0.93333334, g: 0.15294118, b: 0.2784314, a: 0}
-  defaultIconColor: {r: 0.36862746, g: 0.36862746, b: 0.36862746, a: 0}
-  dangerIconColor: {r: 0.93333334, g: 0.15294118, b: 0.2784314, a: 0}
-  icon: {fileID: 0}
-  initialText: 
-  danger: 0
+  borderSprite: {fileID: 21300000, guid: 0be4c0f14f84847de845d6f7b9a0bb58, type: 3}
+  textContent: 
+  textColor: {r: 0.33333334, g: 0.33333334, b: 0.33333334, a: 1}
+  iconSprite: {fileID: 0}
+  iconColor: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 1}
+--- !u!114 &6813061561672107294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878646896937159470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.38431373}
+  m_EffectDistance: {x: 0, y: -4}
+  m_UseGraphicAlpha: 1
 --- !u!1 &878646897935982885
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,7 +198,7 @@ GameObject:
   - component: {fileID: 878646897935982882}
   - component: {fileID: 878646897935982880}
   - component: {fileID: 878646897935982883}
-  - component: {fileID: 3868259326316228425}
+  - component: {fileID: 793154690107531506}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -197,7 +224,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -20}
+  m_SizeDelta: {x: 0, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &878646897935982880
 CanvasRenderer:
@@ -229,8 +256,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Resume
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e376d5947796343dca7a9f80a180d9b7, type: 2}
-  m_sharedMaterial: {fileID: -3189660777057774394, guid: e376d5947796343dca7a9f80a180d9b7,
+  m_fontAsset: {fileID: 11400000, guid: dd366b617c8564c4dab2c7be19bdd4d0, type: 2}
+  m_sharedMaterial: {fileID: 2442598137402517377, guid: dd366b617c8564c4dab2c7be19bdd4d0,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -255,8 +282,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
-  m_fontSizeBase: 28
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -297,7 +324,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &3868259326316228425
+--- !u!114 &793154690107531506
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
