@@ -1,7 +1,6 @@
 using System.IO;
 using UnityEngine;
 using Hampossible.Utils;
-using DG.Tweening;
 
 [RequireComponent(typeof(Collider))]
 public class CheckpointController : MonoBehaviour
@@ -20,15 +19,10 @@ public class CheckpointController : MonoBehaviour
     [Tooltip("체크포인트 활성화 시 재생할 파티클 효과 등의 프리팹입니다. (선택 사항)")]
     [SerializeField] private GameObject activationEffectPrefab;
 
-    [Tooltip("이 체크포인트에서 잠금 해제할 아이템")]
-    [SerializeField] private ItemEffectType unlockItemEffectType;
-    [Tooltip("이 체크포인트를 지났을 때 상점에서 살 수 있는 아이템 목록")]
-    [SerializeField] private ItemEffectType[] availableShopItemEffectType;
-    [SerializeField] private GameObject openShopUI;
-    
+    [Tooltip("이 체크포인트에서 잠금 해제할 아이템 (선택 사항)")]
+    [SerializeField] private Item unlockableItem;
 
     private bool _isActivated = false;
-    private bool _activatedOnce = false;
     private Collider _collider;
 
     void Awake()
@@ -71,19 +65,7 @@ public class CheckpointController : MonoBehaviour
         // 충돌한 오브젝트가 "Player" 태그를 가지고 있는지 확인
         if (other.CompareTag("Player"))
         {
-            openShopUI.SetActive(true);
-            if (activateOnce && _activatedOnce) // 한 번 활성화된 후에는 다시 발동하지 않음
-                return;
             ProcessActivation();
-            PerformDialogue();
-        }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            openShopUI.SetActive(false);
         }
     }
 
@@ -96,14 +78,9 @@ public class CheckpointController : MonoBehaviour
         // 매니저에게 활성화 처리를 위임합니다.
         if (CheckpointManager.Instance != null)
         {
-            if (ItemManager.Instance != null)
+            if (unlockableItem != null && ItemManager.Instance != null)
             {
-                if (IsValidEffectType(unlockItemEffectType))
-                    ItemManager.Instance.UnlockItem(unlockItemEffectType);
-
-                foreach (ItemEffectType effectType in availableShopItemEffectType)
-                    if (IsValidEffectType(effectType))
-                        ItemManager.Instance.UnlockItem(effectType);
+                ItemManager.Instance.UnlockItem(unlockableItem.effectType);
             }
 
             CheckpointManager.Instance.CheckpointActivated(this);
@@ -114,100 +91,6 @@ public class CheckpointController : MonoBehaviour
         }
     }
 
-    private void PerformDialogue()
-    {
-        if (!IsValidEffectType(unlockItemEffectType))
-            return;
-
-        switch (unlockItemEffectType)
-        {
-            case ItemEffectType.HamsterWire:
-                if (CheckpointManager.Instance.GetCurrentCheckpointIndex() > 0)
-                    return;
-                if (PlayerManager.Instance.skill.HasHamsterWire())
-                {
-                    UIManager.Instance.DoDialogue("Checkpoint(0)DialogueWithNoUnlock");
-                    UIManager.Instance.InformMessage("햄스터 와이어를 소지하고 있어 50 코인을 획득하였습니다.");
-                    ItemManager.Instance.AddCoin(50);
-                }
-                else
-                {
-                    UIManager.Instance.DoDialogue("Checkpoint(0)DialogueWithUnlock");
-                    UIManager.Instance.InformMessage("<size=110%>햄스터 와이어</size>를 획득하였습니다.");
-                }
-                break;
-
-            case ItemEffectType.Booster:
-                if (CheckpointManager.Instance.GetCurrentCheckpointIndex() > 1)
-                    return;
-                if (PlayerManager.Instance.skill.HasBoost())
-                {
-                    UIManager.Instance.DoDialogue("Checkpoint(1)DialogueWithNoUnlock");
-                    UIManager.Instance.InformMessage("부스터를 소지하고 있어 100 코인을 획득하였습니다.");
-                    ItemManager.Instance.AddCoin(100);
-                }
-                else
-                {
-                    UIManager.Instance.DoDialogue("Checkpoint(1)DialogueWithUnlock");
-                    UIManager.Instance.InformMessage("<size=110%>부스터</size>를 획득하였습니다.");
-                }
-                break;
-
-            case ItemEffectType.DualJump:
-                if (CheckpointManager.Instance.GetCurrentCheckpointIndex() > 2)
-                    return;
-                if (PlayerManager.Instance.skill.HasDoubleJump())
-                {
-                    UIManager.Instance.InformMessage("더블 점프를 소지하고 있어 500 코인을 획득하였습니다.");
-                    ItemManager.Instance.AddCoin(500);
-                }
-                else
-                {
-                    UIManager.Instance.DoDialogue("DoubleJumpUnlockDialogue");
-                    UIManager.Instance.InformMessage("<size=110%>더블 점프</size>를 획득하였습니다.");
-                }
-                break;
-
-            case ItemEffectType.Retractor:
-                if (CheckpointManager.Instance.GetCurrentCheckpointIndex() > 3)
-                    return;
-                if (PlayerManager.Instance.skill.HasRetractor())
-                {
-                    UIManager.Instance.DoDialogue("Checkpoint(3)DialogueWithNoUnlock");
-                    UIManager.Instance.InformMessage("리트랙터를 소지하고 있어 200 코인을 획득하였습니다.");
-                    ItemManager.Instance.AddCoin(200);
-                }
-                else
-                {
-                    UIManager.Instance.DoDialogue("Checkpoint(3)DialogueWithUnlock");
-                    UIManager.Instance.InformMessage("<size=110%>리트랙터</size>를 획득하였습니다.");
-                }
-                break;
-
-            case ItemEffectType.Balloon:
-                if (CheckpointManager.Instance.GetCurrentCheckpointIndex() > 4)
-                    return;
-                if (PlayerManager.Instance.skill.HasGliding())
-                {
-                    UIManager.Instance.InformMessage("풍선을 소지하고 있어 500 코인을 획득하였습니다.");
-                    ItemManager.Instance.AddCoin(500);
-                }
-                else
-                {
-                    Debug.Log("zz");
-                    UIManager.Instance.DoDialogue("BalloonUnlockDialogue");
-                    UIManager.Instance.InformMessage("<size=110%>풍선</size>을 획득하였습니다.");
-                }
-                break;
-        }
-    }
-
-    private bool IsValidEffectType(ItemEffectType effectType)
-    {
-        return (int)effectType >= (int)ItemEffectType.HamsterWire;
-    }
-
-
     /// <summary>
     /// 체크포인트를 활성화 상태로 만듭니다. (효과음, 머티리얼, 파티클 등)
     /// 이 메서드는 CheckpointManager에 의해 호출됩니다.
@@ -216,9 +99,8 @@ public class CheckpointController : MonoBehaviour
     {
         // 이미 활성화되었다면 아무것도 하지 않습니다. (중복 효과음 및 효과 방지)
         if (_isActivated) return;
-
+        
         _isActivated = true;
-        _activatedOnce = true;
 
         // 활성화 효과 재생 (선택 사항)
         if (activationEffectPrefab != null)
@@ -229,9 +111,10 @@ public class CheckpointController : MonoBehaviour
         // 머티리얼 변경
         SetMaterial(activeMaterial, "Active Material");
 
-
+        // 한 번 활성화된 후에는 다시 발동하지 않도록 콜라이더 비활성화
         if (activateOnce)
         {
+            _collider.enabled = false;
             HLogger.General.Debug($"Checkpoint '{gameObject.name}' 활성화됨 (일회성, 콜라이더 비활성화).", gameObject);
         }
         else
