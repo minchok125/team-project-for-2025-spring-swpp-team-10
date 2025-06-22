@@ -184,11 +184,13 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 
 	public void OpenStore()
 	{
+		MainSceneManager.Instance.CountTime();
 		storePanel.GetComponent<StorePanelController>().Open();
 	}
 
 	public void CloseStore()
 	{
+		MainSceneManager.Instance.LockTime();
 		storePanel.GetComponent<StorePanelController>().Close();
 	}
 
