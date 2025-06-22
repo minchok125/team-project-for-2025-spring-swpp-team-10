@@ -80,16 +80,18 @@ public class Item
 
     public bool IsPurchaseOnlyType()
     {
-        // switch (effectType)
-        // {
-        //     case ItemEffectType.HamsterWire:
-        //     case ItemEffectType.DualJump:
-        //     case ItemEffectType.TripleJump:
-        //         return true;
-        //     default:
-        //         return false;
-        // }
-        return (int)effectType >= (int)ItemEffectType.HamsterWire;
+        switch (effectType)
+        {
+            case ItemEffectType.HamsterWire:
+            case ItemEffectType.DualJump:
+            case ItemEffectType.TripleJump:
+            case ItemEffectType.Retractor:
+            case ItemEffectType.Booster:
+            case ItemEffectType.Balloon:
+                return true;
+            default:
+                return false;
+        }
     }
 
 #if UNITY_EDITOR
@@ -167,7 +169,7 @@ public class LevelData
 
 public enum ItemEffectType
 {
-    SpeedBoost,
+    SpeedBoost, // 속도 강화
     JumpBoost,
     WireLength,
     BoostCostReduction,
@@ -179,5 +181,5 @@ public enum ItemEffectType
     DualJump,
     TripleJump,
     Retractor,
-    Balloon
+    Balloon,
 }
