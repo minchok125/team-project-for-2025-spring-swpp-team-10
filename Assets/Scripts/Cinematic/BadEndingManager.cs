@@ -46,6 +46,7 @@ public class BadEndingManager : CinematicSequence
         // Track 초기화
         
         // Town 초기화
+        Town.Lights.SetActive(true);
         
         // Cage 초기화
     }
@@ -76,6 +77,7 @@ public class BadEndingManager : CinematicSequence
         _camPool.ReturnObject(_currCam);
         yield return Scoreboard();
 
+        CinematicSceneManager.Instance.CinematicEnded();
     }
 
     private IEnumerator Escape()

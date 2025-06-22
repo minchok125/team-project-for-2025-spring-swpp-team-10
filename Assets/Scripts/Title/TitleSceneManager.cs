@@ -23,7 +23,12 @@ public class TitleSceneManager : MonoBehaviour
     {
         fadePanel.gameObject.SetActive(true);
         fadePanel.DOColor(Color.black, 3f);
-        yield return new WaitForSeconds(3f);
+        float currBgmVolume = AudioManager.Instance.BgmVolume;
+        for (float elapsed = 0; elapsed < 3f; elapsed += Time.deltaTime)
+        {
+            AudioManager.Instance.SetBgmVolume(Mathf.Lerp(currBgmVolume, 0f, elapsed / 3f));
+            yield return null;
+        }
         SceneManager.LoadScene(2);
     }
 
