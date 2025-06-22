@@ -753,6 +753,7 @@ MonoBehaviour:
   cameraShotTime: 3
   isFollowPlayer: 0
   isInputLockDuringCamera: 0
+  isSkippable: 1
   dialogueEnableStartCheckpoint: 0
   dialogueEnableEndCheckpoint: 0
 --- !u!114 &562680949462236787
@@ -1060,6 +1061,7 @@ MonoBehaviour:
   cameraShotTime: 3
   isFollowPlayer: 0
   isInputLockDuringCamera: 0
+  isSkippable: 1
   dialogueEnableStartCheckpoint: 0
   dialogueEnableEndCheckpoint: 0
 --- !u!1 &1554198716
@@ -9228,6 +9230,41 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Drawer
+      objectReference: {fileID: 0}
+    - target: {fileID: 3762487242079315911, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+        type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4093247116414393038, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+        type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4333651911962921559, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+        type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4671139555010347704, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+        type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5256501201534320580, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+        type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5414576320051020563, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+        type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8763437200119262928, guid: a1f4ed0f3a900fe4d845e33dbdd46e18,
+        type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3069861519623670091, guid: a1f4ed0f3a900fe4d845e33dbdd46e18, type: 3}

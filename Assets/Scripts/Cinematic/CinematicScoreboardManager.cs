@@ -55,7 +55,7 @@ public class CinematicScoreboardManager : MonoBehaviour
     void PrintClearTime()
     {
         // string rank = $"{i + 1}위".PadRight(4);
-        // string name = CenterAlign(PersistentDataManager.Instance.playerName, 22);
+        string name = PersistentDataManager.Instance.playerName;
 
         int clearMin = (int)(PersistentDataManager.Instance.clearTime / 60f);
         float clearSec = PersistentDataManager.Instance.clearTime % 60f;
