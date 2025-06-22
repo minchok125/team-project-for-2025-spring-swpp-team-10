@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class EatFoodController : MonoBehaviour
 {
-    [Tooltip("À½½Ä ¼·Ãë ½Ã ´É·ÂÄ¡ Á¶Á¤·®")]
+    [Tooltip("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½É·ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
     public float playerJumpHeightRate = 1.2f;
     public float playerSpeedRate = 1.2f;
 
     public void EatFood()
     {
-        PlayerManager.Instance.skill.AddJumpHeightRate(playerJumpHeightRate);
-        PlayerManager.Instance.skill.AddSpeedRate(playerSpeedRate);
+        ItemManager.Instance.TryIncrementItemFromFood(ItemEffectType.SpeedBoost, 2);
+        ItemManager.Instance.TryIncrementItemFromFood(ItemEffectType.JumpBoost, 4);
     }
 }
