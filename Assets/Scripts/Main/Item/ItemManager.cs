@@ -339,6 +339,11 @@ public class ItemManager : PersistentSingleton<ItemManager>
             return false;
         }
 
+        if (!userItem.CanLevelUp())
+        {
+            HLogger.Player.Warning($"아이템 레벨 업 불가: {item.name} (ID: {item.id})", this);
+            return false;
+        }
 
         if (!SpendCoin(userItem.GetCurrentPrice()))
         {
