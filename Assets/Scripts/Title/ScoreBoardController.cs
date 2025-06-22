@@ -65,16 +65,31 @@ public class ScoreBoardController : MonoBehaviour
         var scores = LoadScores(mainSceneIndex);
         scores.Sort((a, b) => a.clearTime.CompareTo(b.clearTime)); // 빠른 시간 순
 
-        int count = Mathf.Min(scores.Count, 24);
+        int count = Mathf.Min(scores.Count, 25);
 
         rankingTxt.text = "";
         if (count == 0) rankingTxt.text = "--";
         for (int i = 0; i < count; i++)
         {
+            string rank = $"{i + 1}위".PadRight(4);
+            string name = CenterAlign(scores[i].playerName, 22);
+
             int clearMin = (int)(scores[i].clearTime / 60f);
             float clearSec = scores[i].clearTime % 60f;
             int clearMicroSec = (int)((clearSec % 1f) * 10);
-            rankingTxt.text += $"{i + 1}위 | {scores[i].playerName} : {clearMin}분 {(int)clearSec}.{clearMicroSec}초 \n";
+
+            rankingTxt.text += $"{rank}    {name}    {clearMin}분 {(int)clearSec}.{clearMicroSec}초 \n";
         }
+    }
+
+    string CenterAlign(string text, int totalWidth)
+    {
+        if (text.Length >= totalWidth)
+            return text;
+
+        int leftPadding = (totalWidth - text.Length) / 2;
+        int rightPadding = totalWidth - text.Length - leftPadding;
+
+        return new string(' ', leftPadding) + text + new string(' ', rightPadding);
     }
 }
