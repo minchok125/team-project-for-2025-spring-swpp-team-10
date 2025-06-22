@@ -92,7 +92,7 @@ public class SwitchController : MonoBehaviour
     {
         isSwitchOn = !isSwitchOn;
         InvokeSwitchStateEvents();
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.SwitchClicked, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.SwitchClicked);
         HLogger.General.Info($"Switch Toggled to {(isSwitchOn ? "On" : "Off")}", this);
     }
 

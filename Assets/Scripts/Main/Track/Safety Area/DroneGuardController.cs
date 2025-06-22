@@ -36,7 +36,7 @@ public class DroneGuardController : MonoBehaviour
         Left_Arm.DOLocalMoveX(-0.0045f, 1f);
         Right_Arm.DOLocalMoveX(0.0045f, 1f);
 
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.BlackDroneCrash, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.BlackDroneCrash);
         room.RemovedBlackDrone();
     }
 }
