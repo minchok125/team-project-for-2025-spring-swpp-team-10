@@ -49,28 +49,60 @@ public class UI_StoreStandItem : MonoBehaviour
 
     public void OnIncrementClicked()
     {
-        bool success = ItemManager.Instance.TryIncrementItem(userItem.item);
-        if (success)
+        bool isShift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        int attempts = 0;
+
+        if (isShift)
         {
-            Debug.Log($"구매 성공: {userItem.item.name}");
-            // TODO: Refresh UI 상태
+            while (ItemManager.Instance.TryIncrementItem(userItem.item)) {
+                if (attempts++ > 13)
+                {
+                    break;
+                }
+            }
+            Debug.Log($"Shift+클릭: {userItem.item.name}을 가능한 만큼 레벨 업 완료");
         }
         else
         {
-            Debug.Log($"구매 실패: {userItem.item.name} (코인 부족 또는 조건 불충족)");
+            bool success = ItemManager.Instance.TryIncrementItem(userItem.item);
+            if (success)
+            {
+                Debug.Log($"구매 성공: {userItem.item.name}");
+            }
+            else
+            {
+                Debug.Log($"구매 실패: {userItem.item.name} (코인 부족 또는 조건 불충족)");
+            }
         }
     }
 
     public void OnDecrementClicked()
     {
-        bool success = ItemManager.Instance.TryDecrementItem(userItem.item);
-        if (success)
+        bool isShift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        int attempts = 0;
+
+        if (isShift)
         {
-            Debug.Log($"레벨 다운 성공: {userItem.item.name}");
+            while (ItemManager.Instance.TryDecrementItem(userItem.item))
+            {
+                if (attempts++ > 13)
+                {
+                    break;
+                }
+            }
+            Debug.Log($"Shift+클릭: {userItem.item.name}을 가능한 만큼 레벨 다운 완료");
         }
         else
         {
-            Debug.Log($"레벨 다운 실패: {userItem.item.name} (조건 불충족)");
+            bool success = ItemManager.Instance.TryDecrementItem(userItem.item);
+            if (success)
+            {
+                Debug.Log($"레벨 다운 성공: {userItem.item.name}");
+            }
+            else
+            {
+                Debug.Log($"레벨 다운 실패: {userItem.item.name} (조건 불충족)");
+            }
         }
     }
 
