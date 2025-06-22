@@ -21,6 +21,7 @@ public class GoodEndingManager : CinematicSequence
     [SerializeField] private Vector3 runAwayCamRotMileStone;
     [SerializeField] private Vector3 runAwayCamEndPos, runAwayCamEndRot;
     [SerializeField] private float houseHoldDuration, camTurnDuration, hamsterHoldDuration;
+    [SerializeField] private CinematicScoreboardManager sbManager;
     
     private ObjectPool _camPool;
     private GameObject _currCam;
@@ -126,19 +127,14 @@ public class GoodEndingManager : CinematicSequence
 
     private void Scoreboard()
     {
-        UpdateScoreboard();
+        sbManager.UpdateScoreboard();
         Common.Receipt.SetActive(true);
         Common.Scoreboard.SetActive(true);
     }
 
-    private void UpdateScoreboard()
-    {
-        // throw new System.NotImplementedException();
-    }
-
     public override void Skip()
     {
-        UpdateScoreboard();
+        sbManager.UpdateScoreboard();
         
         // 현재 재생 중인 영상 정지 및 카메라 최종 위치로 변환
         if (CamSequence != null && CamSequence.IsActive()) CamSequence.Complete();
