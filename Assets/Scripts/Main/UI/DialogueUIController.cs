@@ -6,6 +6,7 @@ using DG.Tweening;
 using DG.Tweening.Plugins.Core.PathCore;
 using UnityEditor.UIElements;
 using UnityEngine.UI;
+using AudioSystem;
 
 public class DialogueUIController : MonoBehaviour
 {
@@ -194,7 +195,8 @@ public class DialogueUIController : MonoBehaviour
         {
             ClearDialogue();
         }
-            
+
+        AudioManager.Instance.PlaySfx2D(SfxType.DialogueSequenceStart);
         _dialogueCoroutine = StartCoroutine(DialogueCoroutine(dialogueData)); // 코루틴 참조 저장
     }
 
@@ -202,6 +204,7 @@ public class DialogueUIController : MonoBehaviour
     {
         // 직접 한 줄 짜리 dialogue 출력
         // ClearDialogue();
+        AudioManager.Instance.PlaySfx2D(SfxType.DialogueSequenceStart);
         GenerateDialogueBlock(character, faceIdx, text, lifetime);
     }
 
@@ -209,7 +212,7 @@ public class DialogueUIController : MonoBehaviour
     {
         // csv 파일을 통해 한 줄 짜리 dialogue를 출력
         // ClearDialogue();
-
+        
         if (idx >= _oneLineDialogueData.Count+1)
         {
             Debug.LogError($"Index out of range [idx:{idx}, max index:{_oneLineDialogueData.Count+1}]");
@@ -237,7 +240,8 @@ public class DialogueUIController : MonoBehaviour
             faceIdx = Convert.ToInt16(tmp);
         }
         catch { faceIdx = 0; }
-        
+
+        AudioManager.Instance.PlaySfx2D(SfxType.DialogueSequenceStart);
         GenerateDialogueBlock(_oneLineDialogueData[idx]["character"].ToString(),
             faceIdx, _oneLineDialogueData[idx]["text"].ToString(), lifetime);
     }

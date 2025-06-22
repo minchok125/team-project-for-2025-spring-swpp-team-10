@@ -30,6 +30,7 @@ public class DialogueBlockController : MonoBehaviour
         
         _fadeDuration = fadeDuration;
         this.text.text = text.ToString();
+        this.text.fontSize = Mathf.Lerp(32, 22, Mathf.InverseLerp(30, 60, text.Length));
         
         _objectPool = objectPool;
     }

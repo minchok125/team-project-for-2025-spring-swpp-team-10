@@ -29,6 +29,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     [Header("Loop Audio Sound Sources")]
     [SerializeField] private AudioSource retractorAudioSource;
     [SerializeField] private AudioSource boosterAudioSource;
+    [SerializeField] public AudioSource wireSwingAudioSource;
     #endregion
 
 
@@ -287,6 +288,9 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         // _ballLightningShockParticle
         //     = transform.Find("Hamster Ball")
         //                .Find("Lightning Particle")?.gameObject;
+
+        wireSwingAudioSource.volume = 0;
+        wireSwingAudioSource.Stop();
     }
 
 
@@ -357,13 +361,13 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// 지정된 시간 동안 입력을 잠금합니다.
     /// </summary>
     /// <param name="time">입력을 잠금하는 시간(초)</param>
-    public void SetInputLockDuringSeconds(float lockedTime)
+    public virtual void SetInputLockDuringSeconds(float lockedTime)
     {
         _inputLockNumber++;
         Invoke(nameof(DownInputLockNumber), lockedTime);
     }
 
-    public void SetMouseInputLockDuringSeconds(float lockedTime)
+    public virtual void SetMouseInputLockDuringSeconds(float lockedTime)
     {
         _mouseInputLockNumber++;
         Invoke(nameof(DownMouseInputLockNumber), lockedTime);
@@ -529,8 +533,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         if (isBall) _ballLightningShockParticle.SetActive(true);
         else _hamsterLightningShockParticle.SetActive(true);
 
-        //GameManager.PlaySfx(SfxType.LightningShock);
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.LightningShock, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.LightningShock);
 
         SetInputLockDuringSeconds(LIGHTNING_SHOCK_COOLTIME);
         Invoke(nameof(LightningShockEndAfterFewSeconds), LIGHTNING_SHOCK_COOLTIME);
@@ -566,8 +569,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
         forceDir = new Vector3(forceDir.x * _forceMag, _yForce, forceDir.z * _forceMag);
         _rb.AddForce(forceDir, ForceMode.VelocityChange);
 
-        //GameManager.PlaySfx(SfxType.LaserPush);
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.LaserPush, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.LaserPush);
 
         SetInputLockDuringSeconds(_laserPushTime);
         Invoke(nameof(LaserPushEndAfterFewSeconds), _laserPushTime);
@@ -581,20 +583,17 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     #region Play Sound
     public void PlayJumpSfx()
     {
-        //GameManager.PlaySfx(jumpAudio);
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.PlayerJump, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.PlayerJump);
     }
 
-    public void PlayLandSfx()
+    public void PlayLandSfx(float volumeRate)
     {
-        //GameManager.PlaySfx(landAudio);
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.PlayerLand, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.PlayerLand, volumeRate);
     }
 
     public void PlayModeConvertSfx()
     {
-        //GameManager.PlaySfx(modeConvertAudio);
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.PlayerModeConvert, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.PlayerModeConvert);
     }
 
     /// <summary>
@@ -615,7 +614,6 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
     public void PlayShootWireSfx()
     {
-        //GameManager.PlaySfx(shootWireAudio);
         AudioManager.Instance.PlaySfx2D(SfxType.PlayerShootWire);
     }
 
@@ -637,12 +635,12 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
 
     public void PlayBalloonCreateSfx()
     {
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.BalloonCreate, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.BalloonCreate);
     }
 
     public void PlayBalloonPopSfx()
     {
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.BalloonPop, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.BalloonPop);
     }
     #endregion
 }

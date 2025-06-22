@@ -82,8 +82,8 @@ public class InformGoToFallingObject : MonoBehaviour
         UIManager.Instance.DoDialogue("hamster", "저 <b>큐브</b> 위에 올라타면 될 것 같아", 7f);
         HLogger.General.Info("저 <b>큐브</b> 위에 올라타면 될 것 같아", this);
         yield return new WaitForSeconds(3f);
-        UIManager.Instance.DoDialogue("hamster", "<size=40>방향키 입력 없이</size>도 <size=40>$r$부스터$/r$</size>를 쓸 수 있으니 잘 활용해 보자", 7f);
-        HLogger.General.Info("<size=40>방향키 입력 없이</size>도 <size=40>$r$부스터$/r$</size>를 쓸 수 있으니 잘 활용해 보자", this);
+        UIManager.Instance.DoDialogue("hamster", "<size=110%>방향키 입력 없이</size>도 <size=40>$r$부스터$/r$</size>를 쓸 수 있으니 잘 활용해 보자", 7f);
+        HLogger.General.Info("<size=40>방향키 입력 없이</size>도 <size=110%>$r$부스터$/r$</size>를 쓸 수 있으니 잘 활용해 보자", this);
     }
 
     private void InformToJump()
@@ -93,7 +93,7 @@ public class InformGoToFallingObject : MonoBehaviour
              && _player.position.y > fallingObject.position.y)
         {
             UIManager.Instance.DoDialogue("hamster", "큐브 위에 올라가서 <size=42>점프!</size>", 7f);
-            HLogger.General.Info("큐브 위에 올라가서 <size=42>점프!</size>", this);
+            HLogger.General.Info("큐브 위에 올라가서 <size=115%>점프!</size>", this);
             _informedToJump = true;
             Destroy(gameObject);
         }

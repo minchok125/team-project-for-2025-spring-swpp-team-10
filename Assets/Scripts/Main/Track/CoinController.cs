@@ -1,10 +1,9 @@
 // CoinController.cs
 using UnityEngine;
-using Hampossible.Utils; // HLogger 사용 시 필요
+using Hampossible.Utils;
+using AudioSystem;
 
-// Collider 컴포넌트가 오브젝트에 반드시 존재하도록 강제
-[RequireComponent(typeof(Collider))] // 3D의 경우
-// [RequireComponent(typeof(Collider2D))] // 2D의 경우
+[RequireComponent(typeof(Collider))] 
 public class CoinController : MonoBehaviour
 {
     [Tooltip("이 코인이 제공하는 코인의 양")]
@@ -17,7 +16,7 @@ public class CoinController : MonoBehaviour
     [SerializeField] private GameObject collectEffectPrefab;
 
     [Tooltip("수집 시 재생할 오디오 클립 (선택 사항)")]
-    [SerializeField] private AudioClip collectSound;
+    [SerializeField] private SfxType collectSoundSfx = SfxType.CoinCollect;
 
     private bool isCollected = false; // 중복 수집 방지 플래그
 
@@ -76,12 +75,13 @@ public class CoinController : MonoBehaviour
             Instantiate(collectEffectPrefab, transform.position, Quaternion.identity);
         }
 
-        // 사운드 효과 재생 (주의: 오디오 소스가 없으면 씬에 임시로 생성됨)
-        if (collectSound != null)
+        if(AudioManager.Instance != null && collectSoundSfx != null)
         {
-            // 간단하게 해당 위치에서 사운드 재생
-            AudioSource.PlayClipAtPoint(collectSound, transform.position);
-            // 또는 전용 AudioManager 사용: AudioManager.Instance.PlaySound(collectSound);
+            AudioManager.Instance.PlaySfx2D(collectSoundSfx);
+        }
+        else
+        {
+            HLogger.General.Warning("AudioManager 인스턴스가 없거나, 수집 사운드가 설정되지 않았습니다.", this);
         }
     }
 }
