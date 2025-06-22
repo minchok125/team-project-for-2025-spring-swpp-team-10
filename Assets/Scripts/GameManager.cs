@@ -13,9 +13,9 @@ public class GameManager : PersistentSingleton<GameManager>
 {    
 
     [Header("Skin")]
-    public HamsterSkinType selectedHamsterSkin = HamsterSkinType.Golden;
 
     private PlayerData playerData;
+    public HamsterSkinType selectedHamsterSkin = HamsterSkinType.Golden;
 
     /* Scene 간의 이동 시 전달해야 하는 값들은 GameManager를 통해 보내면 됩니다
      * 혼선 방지를 위해 팀별로 해당하는 곳 아래에 public으로 선언 부탁드립니다
