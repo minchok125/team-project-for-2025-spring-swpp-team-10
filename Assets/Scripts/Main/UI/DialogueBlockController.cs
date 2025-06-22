@@ -2,6 +2,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 public class DialogueBlockController : MonoBehaviour
 {
@@ -30,9 +31,16 @@ public class DialogueBlockController : MonoBehaviour
         
         _fadeDuration = fadeDuration;
         this.text.text = text.ToString();
-        this.text.fontSize = Mathf.Lerp(32, 22, Mathf.InverseLerp(30, 60, text.Length));
+        this.text.fontSize = Mathf.Lerp(32, 22, Mathf.InverseLerp(30, 60, GetTextLength(text)));
         
         _objectPool = objectPool;
+    }
+
+    // <> 태그 부분을 제외한 길이
+    private int GetTextLength(string text)
+    {
+        string cleanText = Regex.Replace(text, "<.*?>", ""); // 모든 태그 제거
+        return cleanText.Length;
     }
 
     public void Remove()
