@@ -68,7 +68,7 @@ public class GameManager : PersistentSingleton<GameManager>
         // 3. VSync 끄기 (VSync가 켜져 있으면 targetFrameRate가 무시될 수 있음)
         QualitySettings.vSyncCount = 0;
         
-        cinematicMode = CinematicModes.GoodEnding;
+        cinematicMode = CinematicModes.Opening;
     }
 
 }
