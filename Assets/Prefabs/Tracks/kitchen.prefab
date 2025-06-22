@@ -1,5 +1,84 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &232882361
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 232882362}
+  - component: {fileID: 232882364}
+  - component: {fileID: 232882363}
+  m_Layer: 0
+  m_Name: MicrowaveTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &232882362
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 232882361}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.0044, y: 0.0037, z: 0.0017}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4231623292534465736}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &232882364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 232882361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d81940a866ac1694b833a3f20ad5c37a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  executeOnlyOnce: 0
+  destroyThis: 1
+  minimumNotificationCooldown: 0.1
+  dialogueOnTriggerOrCollier: 1
+  isTrigger: 1
+  isOnelineDialogue: 0
+  isOnelineFileDialogue: 0
+  character: hamster
+  faceIdx: 0
+  text: 
+  lifetime: 4
+  fileName: MicrowaveDialogue
+  index: 0
+  useVirtualCamera: 0
+  virtualCamera: {fileID: 0}
+  cameraShotTime: 5
+  isFollowPlayer: 0
+  isInputLockDuringCamera: 0
+  isSkippable: 1
+  dialogueEnableStartCheckpoint: 0
+  dialogueEnableEndCheckpoint: 12
+--- !u!65 &232882363
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 232882361}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.025354834, y: 0.025354823, z: 0.01969008}
+  m_Center: {x: -6.9561547e-15, y: -0.000000030428403, z: 0.010503925}
 --- !u!1 &336435597
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,6 +301,7 @@ MonoBehaviour:
   cameraShotTime: 5
   isFollowPlayer: 0
   isInputLockDuringCamera: 0
+  isSkippable: 1
   dialogueEnableStartCheckpoint: 0
   dialogueEnableEndCheckpoint: 12
 --- !u!1 &688172877
@@ -313,6 +393,7 @@ MonoBehaviour:
   dontDrawHightlightOutline: 0
   _linkedOutlineRenderers:
   - {fileID: 2501988099894658366}
+  readNoteUI: {fileID: 0}
 --- !u!1 &772968860
 GameObject:
   m_ObjectHideFlags: 0
@@ -8584,7 +8665,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5209
+  m_VersionIndex: 5218
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -13863,7 +13944,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 4525
+  m_VersionIndex: 4534
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -16397,6 +16478,7 @@ MonoBehaviour:
   dontDrawHightlightOutline: 0
   _linkedOutlineRenderers:
   - {fileID: 2501988099894658366}
+  readNoteUI: {fileID: 0}
 --- !u!1 &3337102199249339400
 GameObject:
   m_ObjectHideFlags: 0
@@ -18912,6 +18994,7 @@ MonoBehaviour:
   dontDrawHightlightOutline: 0
   _linkedOutlineRenderers:
   - {fileID: 2501988099894658366}
+  readNoteUI: {fileID: 0}
 --- !u!1 &8425903816944398763
 GameObject:
   m_ObjectHideFlags: 0
@@ -23115,6 +23198,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2501988099810527638}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &4231623292534465736 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -7493596028755563170, guid: 68e6098a177ed094db7e916f1671516e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2501988099810527638}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4362770423715198300 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -7047160905520775990, guid: 68e6098a177ed094db7e916f1671516e,
@@ -23134,38 +23223,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.025354834, y: 0.025354829, z: 0.0024144654}
   m_Center: {x: 0, y: -0.000000029802322, z: 0.0018661184}
---- !u!114 &1002993476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4362770423715198300}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d81940a866ac1694b833a3f20ad5c37a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  executeOnlyOnce: 0
-  destroyThis: 0
-  minimumNotificationCooldown: 0.1
-  dialogueOnTriggerOrCollier: 1
-  isTrigger: 1
-  isOnelineDialogue: 0
-  isOnelineFileDialogue: 0
-  character: hamster
-  faceIdx: 0
-  text: 
-  lifetime: 4
-  fileName: MicrowaveDialogue
-  index: 0
-  useVirtualCamera: 0
-  virtualCamera: {fileID: 0}
-  cameraShotTime: 5
-  isFollowPlayer: 0
-  isInputLockDuringCamera: 0
-  dialogueEnableStartCheckpoint: 0
-  dialogueEnableEndCheckpoint: 12
 --- !u!114 &2501988100932735783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23320,8 +23377,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.04902873, y: 0.036273163, z: 0.0015102768}
-  m_Center: {x: 0.000000059059087, y: -0.0005764516, z: 0.026948815}
+  m_Size: {x: 0.057365842, y: 0.036740873, z: 0.0015102783}
+  m_Center: {x: 0.0041686185, y: -0.00034260016, z: 0.026948815}
 --- !u!114 &2501988100831974759
 MonoBehaviour:
   m_ObjectHideFlags: 0
