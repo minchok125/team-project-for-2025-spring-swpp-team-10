@@ -292,7 +292,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
     /// </summary>
     public List<UserItem> GetInventoryItems()
     {
-        return _userItems;
+        return _userItems.Where(ui => !ui.item.IsPurchaseOnlyType()).ToList();
     }
 
     public bool CanPurchaseItem(UserItem item)
