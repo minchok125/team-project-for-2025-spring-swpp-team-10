@@ -94,6 +94,18 @@ public class Item
         }
     }
 
+      public static Item DummyItem()
+    {
+        return Create(
+            id: -1,
+            name: "",
+            description: "",
+            icon: null,
+            effectType: ItemEffectType.SpeedBoost,
+            levels: new LevelData[] { }
+        );
+    }
+
 #if UNITY_EDITOR
     public void GenerateDefaultLevels()
     {

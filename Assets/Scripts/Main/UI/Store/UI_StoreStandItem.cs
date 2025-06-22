@@ -36,9 +36,14 @@ public class UI_StoreStandItem : MonoBehaviour
         decrementButton.interactable = userItem.CanLevelDown();
         decrementButton.enabled = userItem.CanLevelDown();
         decrementButton.gameObject.SetActive(!purchaseOnly);
-        purchaseButton.gameObject.SetActive(purchaseOnly);
+        valueText.text = userItem.GetCurrentValueLabel();
+        valueText.gameObject.SetActive(!purchaseOnly);
 
-        valueText.text = userItem.GetCurrentValue().ToString("F2");
+        purchaseButton.gameObject.SetActive(purchaseOnly);
+        purchaseButton.gameObject.GetComponent<StoreStandItemPurchaseButton>().Bind(userItem.isEquipped);
+
+        
+
         lockedOverlay.SetActive(userItem.isLocked);
 
         // 잠김 여부 표시
