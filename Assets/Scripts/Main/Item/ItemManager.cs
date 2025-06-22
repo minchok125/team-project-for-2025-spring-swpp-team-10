@@ -406,6 +406,8 @@ public class ItemManager : PersistentSingleton<ItemManager>
         }
 
         userItem.LevelDown();
+        AddCoin(userItem.GetCurrentPrice());
+        
         _userItems = _userItems.Select(ui => ui.item.id == item.id ? userItem : ui).ToList();
         HLogger.Player.Info($"아이템 레벨 다운 성공: {item.name} (ID: {item.id})", this);
         OnInventoryChanged?.Invoke();
