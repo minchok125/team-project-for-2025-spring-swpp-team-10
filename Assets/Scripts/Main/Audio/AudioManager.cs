@@ -124,7 +124,6 @@ public class AudioManager : PersistentSingleton<AudioManager>
 
         // 3D 오디오 소스 풀 초기화
         sfxPool = new List<AudioSource>();
-        HLogger.General.Info($"SFX 풀 크기: {sfxPoolSize}", this);
         for (int i = 0; i < sfxPoolSize; i++)
         {
             GameObject sfxObject = new GameObject($"SfxPool_Player_{i}");
@@ -181,27 +180,17 @@ public class AudioManager : PersistentSingleton<AudioManager>
     /// </summary>
     public void PlaySfx2D(AudioSystem.SfxType sfxType, float volumeRate = 1)
     {
-        // 클립이 없거나 오디오 소스가 없으면 빠르게 리턴
-        if (!sfxDict.TryGetValue(sfxType, out AudioClip clip) || clip == null)
-        {
-            HLogger.General.Error($"SFX 클립을 찾을 수 없음: {sfxType}");
-            return;
-        }
-        
-        if (sfxSource2D == null)
-        {
-            HLogger.General.Error("sfxSource2D가 null입니다.", this);
-            return;
-        }
-        
-        try
+        HLogger.General.Debug("1111111111111111");
+        if (sfxDict.TryGetValue(sfxType, out AudioClip clip))
         {
             float _sfxVolume = Mathf.Clamp01(SfxVolume * volumeRate);
+            if (sfxSource2D == null)
+            {
+                HLogger.General.Debug(":ASdasdas333333333", this);
+                return; // ❗ 조기 리턴 필요
+            }
+            HLogger.General.Debug("aSFKHASFHFS2222222");
             sfxSource2D.PlayOneShot(clip, _sfxVolume);
-        }
-        catch (System.Exception e)
-        {
-            HLogger.General.Error($"PlaySfx2D 실행 중 오류 발생: {e.Message}", this);
         }
     }
 
