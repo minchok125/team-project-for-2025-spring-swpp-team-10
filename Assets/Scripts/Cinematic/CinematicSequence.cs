@@ -39,7 +39,8 @@ public abstract class CinematicSequence : MonoBehaviour
     {
         Common.FadePanelImg.color = Color.clear;
         Common.FadePanel.SetActive(true);
-        Common.FadePanelImg.DOColor(fadeColor, fadeDuration).OnComplete(()=> { Common.FadePanel.SetActive(false); });
+        // Common.FadePanelImg.DOColor(fadeColor, fadeDuration).OnComplete(()=> { Common.FadePanel.SetActive(false); });
+        Common.FadePanelImg.DOColor(fadeColor, fadeDuration);
     }
 
     protected IEnumerator FadeInBgm(BgmType bgmType, float fadeDuration, float targetVolume = 1f)
