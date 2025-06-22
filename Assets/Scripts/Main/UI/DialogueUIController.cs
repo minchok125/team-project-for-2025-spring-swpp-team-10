@@ -48,7 +48,7 @@ public class DialogueUIController : MonoBehaviour
     {
         InitDialogue();
         _objectPool = gameObject.AddComponent<ObjectPool>();
-        _objectPool.InitObjectPool(dialoguePrefab, transform, maxDialogueNum * 2);
+        _objectPool.InitObjectPool(dialoguePrefab, maxDialogueNum * 2, transform);
         _textProcessor = new TextProcessor(gray, red, orange, yellow, green, blue, purple);
 
         _hamsterSprite = Resources.LoadAll<Sprite>("Sprites/gray");
