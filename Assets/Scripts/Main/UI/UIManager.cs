@@ -120,7 +120,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		}
 		else
 		{
-			Debug.LogWarning("타이틀 화면으로 구현 필요");
+			SceneManager.LoadScene("TitleScene");
+			HLogger.General.Info("메인 씬 종료: 타이틀 씬으로 이동");
 		}
 	}
 
@@ -181,6 +182,12 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	{
 		storePanel.GetComponent<StorePanelController>().Close();
 	}
+
+	public void InformMessage(string str)
+    {
+        informText.gameObject.SetActive(true);
+        informText.SetText(str);
+    }
 
 	public void UpdateNextCheckpoint(Vector3 nextCpPos)
 	{
