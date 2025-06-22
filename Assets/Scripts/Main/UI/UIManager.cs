@@ -114,7 +114,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		}
 		else
 		{
-			Debug.LogWarning("타이틀 화면으로 구현 필요");
+			SceneTransitionManager.Instance.LoadScene("TitleScene");
 		}
 	}
 
