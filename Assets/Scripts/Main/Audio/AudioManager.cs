@@ -73,6 +73,7 @@ namespace AudioSystem
         OpeningHouseBgm,
         OpeningCutSceneBgm,
         GoodEndingBgm,
+        MainSceneBgm
         // 필요에 따라 추가
     }
 }
