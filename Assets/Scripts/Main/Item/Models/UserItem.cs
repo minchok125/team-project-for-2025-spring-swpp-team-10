@@ -38,6 +38,16 @@ public class UserItem
         }
         return 0f;
     }
+
+    public string GetCurrentValueLabel() 
+    {
+        if (item != null && item.levels != null && currentLevel < item.levels.Length)
+        {
+            return item.levels[currentLevel].label;
+        }
+        return string.Empty;
+    }
+
     public int GetCurrentPrice()
     {
         if (item != null && item.levels != null && currentLevel < item.levels.Length)
