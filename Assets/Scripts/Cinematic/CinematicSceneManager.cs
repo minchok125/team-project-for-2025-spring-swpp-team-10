@@ -1,51 +1,64 @@
-using System;
-using System.Collections;
-using DG.Tweening;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
-public class CinematicSceneManager : MonoBehaviour
+public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
 {
+    [Header("Common")]
     [SerializeField] private GameObject fadePanel;
-    [SerializeField] private float fadeDuration;
-    [SerializeField] private OpeningManager openingManager;
-    [SerializeField] private EndingManager endingManager;
+    [SerializeField] private GameObject camPrefab;
+    [SerializeField] private GameObject openingCanvas, endingCanvas, scoreBoard;
+    [SerializeField] private GameObject receipt;
+    [SerializeField] private GameObject logo;
+    [SerializeField] private RectTransform[] paddings;
+    [SerializeField] private GameObject[] covers;
+    
+    [Header("Track")]
+    [SerializeField] private Transform trackTransform;
+    [SerializeField] private CinematicHamsterController trackHamsterController;
+    
+    [Header("Town")]
+    [SerializeField] private Transform townTransform;
+    [SerializeField] private CinematicHamsterController townHamsterController;
+    [SerializeField] private GameObject townPoliceParent, townLightsParent;
+    
+    [Header("Cage")]
+    [SerializeField] private Transform cageTransform;
     
     private GameManager.CinematicModes _cinematicMode;
-    private Image _fadePanelImg;
+    private CinematicSequence _cinematicSequence;
 
     private bool _skip;
-
-    private void Awake()
+    
+    protected override void Awake()
     {
-        _fadePanelImg = fadePanel.GetComponent<Image>();
+        base.Awake();
+        Init();
+    }
+
+    private void Init()
+    {
         _skip = false;
+        CinematicCommonObject commonObject =
+            new CinematicCommonObject(fadePanel, camPrefab, openingCanvas, logo, paddings, covers, endingCanvas,
+                scoreBoard, receipt);
+        CinematicTrackObject trackObject = new CinematicTrackObject(trackTransform, trackHamsterController);
+        CinematicTownObject townObject =
+            new CinematicTownObject(townTransform, townHamsterController, townPoliceParent, townLightsParent);
+        CinematicCageObject cageObject = new CinematicCageObject(cageTransform);
+        
+        
+        _cinematicMode = GameManager.Instance.cinematicMode;
+
+        _cinematicSequence =
+            _cinematicMode == GameManager.CinematicModes.Opening ? gameObject.GetComponent<OpeningManager>()
+            : _cinematicMode == GameManager.CinematicModes.GoodEnding ? gameObject.GetComponent<GoodEndingManager>()
+            : gameObject.GetComponent<BadEndingManager>();
+        _cinematicSequence.Init(commonObject, trackObject, townObject, cageObject);
     }
 
     private void Start()
     {
-        _cinematicMode = GameManager.Instance.cinematicMode;
-
-        switch (_cinematicMode)
-        {
-            case GameManager.CinematicModes.Opening:
-                StartCoroutine(Opening());
-                break;
-            
-            case GameManager.CinematicModes.GoodEnding:
-                StartCoroutine(GoodEnding());
-                break;
-            
-            case GameManager.CinematicModes.BadEnding:
-                StartCoroutine(BadEnding());
-                break;
-            
-            default:
-                Debug.LogError("시네마틱 모드 이상: " + _cinematicMode);
-                break;
-        }
+        StartCoroutine(_cinematicSequence.Run());
     }
 
     private void Update()
@@ -53,87 +66,25 @@ public class CinematicSceneManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) SkipCinematicScene();
     }
 
-    private void FadeIn()
-    {
-        _fadePanelImg.color = Color.black;
-        fadePanel.SetActive(true);
-        _fadePanelImg.DOColor(Color.clear, fadeDuration).OnComplete(() => fadePanel.SetActive(false));
-    }
-
-    private IEnumerator FadeOut()
-    {
-        _fadePanelImg.color = Color.clear;
-        fadePanel.SetActive(true);
-        _fadePanelImg.DOColor(Color.black, fadeDuration);
-
-        float currBgmVolume = AudioManager.Instance.BgmVolume;
-        for(float elapsed = 0; elapsed < fadeDuration; elapsed += Time.deltaTime)
-        {
-            AudioManager.Instance.SetBgmVolume(Mathf.Lerp(currBgmVolume, 0, elapsed / fadeDuration));
-            yield return null;
-        }
-        
-        AudioManager.Instance.StopBgm();
-        AudioManager.Instance.SetBgmVolume(1f);
-    }
-
-    private IEnumerator Opening()
-    {
-        FadeIn();
-        yield return openingManager.OpeningCoroutine(fadeDuration);
-        yield return Load("MainScene");
-    }
-
-    private IEnumerator GoodEnding()
-    {
-        FadeIn();
-        yield return endingManager.GoodEndingCoroutine(fadeDuration);
-    }
-
-    private IEnumerator BadEnding()
-    {
-        FadeIn();
-        yield return endingManager.BadEndingCoroutine(fadeDuration);
-    }
-
     public void GoBackToTitle()
     {
-        StartCoroutine(Load("TitleScene"));
+        Load("TitleScene");
     }
 
     public void PlayAgain()
     {
-        StartCoroutine(Load("MainScene"));
+        Load("MainScene");
     }
 
-    private IEnumerator Load(string sceneName)
+    public void Load(string sceneName)
     {
-        yield return FadeOut();
         SceneManager.LoadScene(sceneName);
     }
 
     private void SkipCinematicScene()
     {
         if (_skip) return;
-        
-        switch (_cinematicMode)
-        {
-            case GameManager.CinematicModes.Opening:
-                StopAllCoroutines();
-                StartCoroutine(Load("MainScene"));
-                break;
-            
-            case GameManager.CinematicModes.GoodEnding:
-                if (endingManager.ShowingSb) return;
-                StopAllCoroutines();
-                endingManager.SkipEnding(true);
-                break;
-            
-            case GameManager.CinematicModes.BadEnding:
-                if (endingManager.ShowingSb) return;
-                StopAllCoroutines();
-                endingManager.SkipEnding(false);
-                break;
-        }
+        _skip = true;
+        _cinematicSequence.Skip();
     }
 }

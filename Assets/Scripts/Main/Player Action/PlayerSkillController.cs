@@ -17,6 +17,7 @@ public class PlayerSkillController : MonoBehaviour
     private float _maxWireLength; // 와이어 최대 길이 (기본값 40)
     private float _boosterUsageRate; // 부스터 에너지 소모 속도 (기본 1초 당 0.3)
     private float _boosterRecoveryRate; // 부스터 에너지 회복 속도 (기본 1초 당 0.125)
+    private float _jumpRateSqr;
 
 
     private const int SKILL_HamsterWire = 0;
@@ -51,7 +52,7 @@ public class PlayerSkillController : MonoBehaviour
     public void ResetSkills()
     {
         _skill = 0;          // 모든 스킬 비활성화
-        _speedRate = _jumpRate = 1.0f; // 기본값으로 재설정
+        _speedRate = _jumpRate = _jumpRateSqr = 1.0f; // 기본값으로 재설정
         _maxWireLength = 40f;
         _boosterUsageRate = 0.3f;
         _boosterRecoveryRate = 0.125f;
@@ -73,7 +74,7 @@ public class PlayerSkillController : MonoBehaviour
     /// 실제 물리적 힘은 점프 높이 배율의 제곱근으로 계산됩니다.
     /// </summary>
     /// <returns>점프력에 적용할 배율 (제곱근 적용 후)</returns>
-    public float GetJumpForceRate() => Mathf.Sqrt(_jumpRate);
+    public float GetJumpForceRate() => _jumpRateSqr;
 
     /// <summary>
     /// 현재 점프 높이 배율을 반환합니다.
@@ -164,6 +165,7 @@ public class PlayerSkillController : MonoBehaviour
     public void AddJumpHeightRate(float rate)
     {
         _jumpRate += rate;
+        _jumpRateSqr = Mathf.Sqrt(_jumpRate);
         UpdateUI();
     }
 
@@ -175,6 +177,7 @@ public class PlayerSkillController : MonoBehaviour
     public void SetJumpHeightRate(float rate)
     {
         _jumpRate = rate;
+        _jumpRateSqr = Mathf.Sqrt(_jumpRate);
         UpdateUI();
     }
 
