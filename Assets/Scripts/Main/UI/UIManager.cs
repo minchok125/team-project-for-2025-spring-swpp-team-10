@@ -67,7 +67,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 
 
 		// 아래는 추후에 저장 기능이 구현되면 PlayerData를 받아서 값을 설정하도록 수정되어야 함
-		timerText.text = "Timer [00:00.00 s]";
+		timerText.text = "00:00.00";
 	}
 
 	private void Update()
@@ -136,7 +136,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 
 	public void UpdateTimer(int m, int s, int ms)
 	{
-		timerText.text = $"Timer [{m:D2}:{s:D2}.{ms:D2}]";
+		timerText.text = $"{m:D2}:{s:D2}.{ms:D2}";
 	}
 
 	public void EndGame(int m, int s, int ms, bool isGoodEnding)
