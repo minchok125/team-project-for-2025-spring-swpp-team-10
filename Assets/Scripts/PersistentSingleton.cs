@@ -19,8 +19,7 @@ public class PersistentSingleton<T> : MonoBehaviour where T : MonoBehaviour
 
                 if (_instance == null)
                 {
-                    var obj = new GameObject(typeof(T).Name);
-                    _instance = obj.AddComponent<T>();
+                    
                 }
             }
             return _instance;
@@ -29,15 +28,8 @@ public class PersistentSingleton<T> : MonoBehaviour where T : MonoBehaviour
 
     protected virtual void Awake()
     {
-        // 다른 게임 오브젝트의 자식으로 설정되어 있다면, DontDestroyOnLoad가 제대로 작동하지 않을 수 있습니다.
-        if (transform.parent != null)
-        {
-            Debug.LogWarning($"{gameObject.name}은(는) 다른 오브젝트의 자식이어서 DontDestroyOnLoad를 사용할 수 없습니다.");
-            // 부모로부터 분리
-            transform.SetParent(null);
-        }
-
-        if (_instance == null)
+        _instance = this as T;
+        /*if (_instance == null)
         {
             _instance = this as T;
         }
@@ -45,7 +37,7 @@ public class PersistentSingleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             Destroy(gameObject);
             return;
-        }
+        }*/
 
         DontDestroyOnLoad(gameObject);
     }

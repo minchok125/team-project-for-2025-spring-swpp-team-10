@@ -180,15 +180,16 @@ public class AudioManager : PersistentSingleton<AudioManager>
     /// </summary>
     public void PlaySfx2D(AudioSystem.SfxType sfxType, float volumeRate = 1)
     {
+        HLogger.General.Debug("1111111111111111");
         if (sfxDict.TryGetValue(sfxType, out AudioClip clip))
         {
             float _sfxVolume = Mathf.Clamp01(SfxVolume * volumeRate);
             if (sfxSource2D == null)
             {
-                HLogger.General.Debug(":ASdasdas", this);
+                HLogger.General.Debug(":ASdasdas333333333", this);
                 return; // ❗ 조기 리턴 필요
             }
-            HLogger.General.Debug("aSFKHASFHFS");
+            HLogger.General.Debug("aSFKHASFHFS2222222");
             sfxSource2D.PlayOneShot(clip, _sfxVolume);
         }
     }
