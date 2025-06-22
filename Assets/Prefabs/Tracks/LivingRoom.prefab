@@ -447,7 +447,7 @@ MonoBehaviour:
   index: 0
   useVirtualCamera: 1
   virtualCamera: {fileID: 1049182759}
-  cameraShotTime: 4
+  cameraShotTime: 3
   isFollowPlayer: 0
   isInputLockDuringCamera: 1
   dialogueEnableStartCheckpoint: 0
@@ -636,8 +636,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 0.5063488, z: 1.566278}
-  m_Center: {x: -1.2813146e-15, y: -0.2468256, z: -0.05803289}
+  m_Size: {x: 0.8319453, y: 0.5063488, z: 1.566278}
+  m_Center: {x: -1.5410793, y: -0.2468256, z: -0.058032885}
 --- !u!114 &1745392706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -665,7 +665,7 @@ MonoBehaviour:
   index: 0
   useVirtualCamera: 1
   virtualCamera: {fileID: 401412276}
-  cameraShotTime: 5
+  cameraShotTime: 3
   isFollowPlayer: 0
   isInputLockDuringCamera: 0
   dialogueEnableStartCheckpoint: 0
@@ -681,8 +681,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.5275457, y: 0.5063488, z: 0.18627667}
-  m_Center: {x: 0.7637725, y: -0.2468256, z: 0.6246596}
+  m_Size: {x: 3.4881513, y: 0.5063488, z: 0.18627667}
+  m_Center: {x: 0.2834703, y: -0.2468256, z: 0.62465954}
 --- !u!65 &2363361642104872586
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -694,8 +694,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.466604, y: 0.5063488, z: 0.24329655}
-  m_Center: {x: 0.7333013, y: -0.2468256, z: -0.7215992}
+  m_Size: {x: 3.4005282, y: 0.5063488, z: 0.24329655}
+  m_Center: {x: 0.26634073, y: -0.2468256, z: -0.7215992}
 --- !u!1 &1954038052
 GameObject:
   m_ObjectHideFlags: 0
@@ -63554,7 +63554,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5707
+  m_VersionIndex: 5716
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
