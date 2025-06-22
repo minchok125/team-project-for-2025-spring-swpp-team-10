@@ -99,4 +99,19 @@ public class PausedMenuController : MonoBehaviour
 		HLogger.General.Debug("Paused Menu: 게임 종료");
 		UIManager.QuitMainScene(true);
 	}
+
+	public void ChangeHorizontalSensitivity()
+	{
+		cameraManager.SetHorizontalSensitivity(horizontalSensitivitySlider.value);
+	}
+
+	public void ChangeVerticalSensitivity()
+	{
+		cameraManager.SetVerticalSensitivity(verticalSensitivitySlider.value);
+	}
+
+	public void ChangeZoomSensitivity()
+	{
+		cameraManager.SetZoomSensitivity(zoomSensitivitySlider.value);
+	}
 }
