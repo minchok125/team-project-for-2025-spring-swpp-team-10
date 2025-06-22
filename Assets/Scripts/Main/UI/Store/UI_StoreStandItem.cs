@@ -43,6 +43,7 @@ public class UI_StoreStandItem : MonoBehaviour
         purchaseButton.gameObject.SetActive(purchaseOnly);
 
         valueText.text = userItem.GetCurrentValue().ToString("F2");
+        lockedOverlay.SetActive(userItem.isLocked);
 
         // 잠김 여부 표시
         // lockedOverlay.SetActive(userItem.isLocked);
