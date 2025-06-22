@@ -318,7 +318,7 @@ public class ItemManager : RuntimeSingleton<ItemManager>
         return true;
     }
 
-    public bool TryIncrementItem(Item item)
+    public bool TryIncrementItem(Item item, bool isFree = false )
     {
         if (item == null)
         {
@@ -355,6 +355,32 @@ public class ItemManager : RuntimeSingleton<ItemManager>
         _userItems = _userItems.Select(ui => ui.item.id == item.id ? userItem : ui).ToList();
 
         HLogger.Player.Info($"아이템 구매 성공: {item.name} (ID: {item.id})", this);
+        OnInventoryChanged?.Invoke();
+        OnItemLevelChange?.Invoke(userItem);
+        return true;
+    }
+
+
+    public bool TryIncrementItemFromFood(ItemEffectType itemEffectType, int step)
+    {
+        var userItem = _userItems.Find(ui => ui.item.effectType == itemEffectType);
+
+        if (userItem == null)
+        {
+            HLogger.General.Error($"아이템을 찾을 수 없습니다: {itemEffectType}", this);
+            return false;
+        }
+
+        if (!userItem.CanLevelUp(step))
+        {
+            HLogger.Player.Warning($"아이템 레벨 업 불가: {userItem.item.name} (ID: {userItem.item.id})", this);
+            return false;
+        }
+
+        userItem.LevelUp(step);
+        _userItems = _userItems.Select(ui => ui.item.id == userItem.item.id ? userItem : ui).ToList();
+
+        HLogger.Player.Info($"아이템 구매 성공: {userItem.item.name} (ID: {userItem.item.id})", this);
         OnInventoryChanged?.Invoke();
         OnItemLevelChange?.Invoke(userItem);
         return true;
