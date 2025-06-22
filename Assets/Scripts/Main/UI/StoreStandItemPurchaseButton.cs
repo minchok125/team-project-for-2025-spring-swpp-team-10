@@ -38,5 +38,7 @@ public class StoreStandItemPurchaseButton : MonoBehaviour
             buttonText.text = isPurchased ? "구매함" : "구매";
             buttonText.color = isPurchased ? purchasedTextColor : notPurchasedTextColor;
         }
+
+        GetComponent<Button>().interactable = !isPurchased;
     }
 }
