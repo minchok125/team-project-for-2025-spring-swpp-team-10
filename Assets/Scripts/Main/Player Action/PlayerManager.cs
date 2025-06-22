@@ -601,6 +601,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// </summary>
     public void StartPlayBoosterSfx()
     {
+        HLogger.General.Info("부스터스타트");
         AudioManager.Instance.PlayLoopingSfx(boosterAudioSource, SfxType.PlayerBoosterLoop);
     }
 
@@ -609,6 +610,7 @@ public class PlayerManager : RuntimeSingleton<PlayerManager>
     /// </summary>
     public void StopPlayBoosterSfx()
     {
+        HLogger.General.Info("부스터스탑");
         AudioManager.Instance.StopLoopingSfx(boosterAudioSource);
     }
 
