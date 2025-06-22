@@ -21,6 +21,6 @@ public class TitleSceneManager : MonoBehaviour
 
         PersistentDataManager.Instance.mainSceneIndex = idx;
         PersistentDataManager.Instance.playerName = name;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
 }
