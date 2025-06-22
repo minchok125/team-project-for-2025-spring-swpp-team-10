@@ -13,7 +13,7 @@ public interface ICoinWallet
     bool Spend(int amount);
 }
 
-public class ItemManager : PersistentSingleton<ItemManager>
+public class ItemManager : RuntimeSingleton<ItemManager>
 {
     [SerializeField] private ItemDatabase itemDatabase;
     [SerializeField] private int initialCoinCount = 0;
