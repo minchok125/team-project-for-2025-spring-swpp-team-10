@@ -7790,6 +7790,7 @@ GameObject:
   - component: {fileID: 755814635210011108}
   - component: {fileID: 4421106469644215683}
   - component: {fileID: 256012020520863557}
+  - component: {fileID: 1049732004113042384}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -7859,6 +7860,7 @@ MonoBehaviour:
   storePanel: {fileID: 9023560251465708287}
   informText: {fileID: 0}
   guidePanel: {fileID: 3498430155461014903}
+  fadePanel: {fileID: 0}
   dialogueUIController: {fileID: 8702810109743215213}
 --- !u!114 &755814635210011107
 MonoBehaviour:
@@ -7940,6 +7942,20 @@ MonoBehaviour:
   OnItemLevelChange:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1049732004113042384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755814635210011114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6b3cfc07ad124d4b8f4f2da287ffc89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fader: {fileID: 0}
+  fadeDuration: 0.5
 --- !u!1 &896491878092007435
 GameObject:
   m_ObjectHideFlags: 0
