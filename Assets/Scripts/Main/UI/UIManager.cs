@@ -17,6 +17,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	[SerializeField] private GameObject guidePanel;
 	[SerializeField] private GameObject fadePanel;
 	[SerializeField] private GameObject tutorialUIPanel;
+	[SerializeField] private TextMeshProUGUI coinCountText;
 
 	[SerializeField] private GameObject settingsPanel;
 	[SerializeField] private TooltipController tooltip;
@@ -99,6 +100,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 			// TODO : 상점 열기
 			HLogger.General.Info("강화가 가능한 상점을 엽니다.");
 		}
+
+		coinCountText.text = ItemManager.Instance.GetCoinCount().ToString();
 	}
 
 	// INextCheckpointObserver 인터페이스 구현 메서드
@@ -134,7 +137,12 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	{
 		if (terminateGame)
 		{
-			Debug.LogWarning("프로그램 종료 구현 필요");
+			// Debug.LogWarning("프로그램 종료 구현 필요");
+#if UNITY_EDITOR
+			UnityEditor.EditorApplication.isPlaying = false;
+#else
+			Application.Quit();
+#endif
 		}
 		else
 		{

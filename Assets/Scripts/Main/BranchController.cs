@@ -6,7 +6,7 @@ using TMPro;
 public class BranchController : MonoBehaviour
 {
     private Vector3 gameStart = new Vector3(9f, -8.39f, 66.41f);
-    private Vector3 gameStartInit = new Vector3(134.35f, -62.37f, -270.08f);
+    private Vector3 gameStartInit = new Vector3(9f, 0, 66.41f);
 
     private Vector3 livingRoom = new Vector3(40.3f, -9.7f, 158.2f);
     private Vector3 livingRoomInit = new Vector3(165.07f, -69f, -191.4f);
@@ -19,8 +19,7 @@ public class BranchController : MonoBehaviour
 
     [SerializeField] private Transform player, initialPoint;
     [SerializeField] private GameObject tutorialUI;
-    [SerializeField] private TextMeshProUGUI tutorialTxt;
-    [SerializeField] private GameObject nextCheckpointUI;
+    [SerializeField] private TextMeshProUGUI tutorialTxt, tutorialItemTxt;
     [SerializeField] private NextCheckpointUIController nextCheckpointUIController;
 
     private void Awake()
@@ -44,15 +43,15 @@ public class BranchController : MonoBehaviour
                 break;
             case 1:
                 player.position = livingRoom;
-                initialPoint.position = livingRoomInit;
+                initialPoint.position = livingRoom;
                 break;
             case 2:
                 player.position = bathroom;
-                initialPoint.position = bathroomInit;
+                initialPoint.position = bathroom;
                 break;
             case 3:
                 player.position = safetyRoom;
-                initialPoint.position = safetyRoomInit;
+                initialPoint.position = safetyRoom;
                 break;
         }
     }
@@ -65,6 +64,9 @@ public class BranchController : MonoBehaviour
                 ItemManager.Instance.TryIncrementItemFromFood(ItemEffectType.SpeedBoost, 2);
                 ItemManager.Instance.UnlockItem(ItemEffectType.HamsterWire);
                 ItemManager.Instance.UnlockItem(ItemEffectType.Booster);
+                tutorialItemTxt.text =
+                    "<size=110%><b>강화 보너스</b></size>\n"
+                    + "이동속도 110% (2강)";
                 break;
             case 2:
                 ItemManager.Instance.TryIncrementItemFromFood(ItemEffectType.SpeedBoost, 6);
@@ -73,6 +75,10 @@ public class BranchController : MonoBehaviour
                 ItemManager.Instance.UnlockItem(ItemEffectType.HamsterWire);
                 ItemManager.Instance.UnlockItem(ItemEffectType.Booster);
                 ItemManager.Instance.UnlockItem(ItemEffectType.DualJump);
+                tutorialItemTxt.text =
+                    "<size=110%><b>강화 보너스</b></size>\n"
+                    + "이동속도 130% (6강)        점프력 130% (6강)\n"
+                    + "부스터 소모 감소 2강";
                 break;
             case 3:
                 ItemManager.Instance.TryIncrementItemFromFood(ItemEffectType.SpeedBoost, 7);
@@ -83,6 +89,10 @@ public class BranchController : MonoBehaviour
                 ItemManager.Instance.UnlockItem(ItemEffectType.Booster);
                 ItemManager.Instance.UnlockItem(ItemEffectType.DualJump);
                 ItemManager.Instance.UnlockItem(ItemEffectType.Retractor);
+                tutorialItemTxt.text =
+                    "<size=110%><b>강화 보너스</b></size>\n"
+                    + "이동속도 135% (7강)        점프력 130% (6강)\n"
+                    + "최대 와이어 길이 4강        부스터 소모 감소 4강";
                 break;
         }
     }
@@ -100,20 +110,20 @@ public class BranchController : MonoBehaviour
         {
             MainSceneManager.Instance.PauseGame(false);
             tutorialUI.SetActive(true);
-            nextCheckpointUI.SetActive(true);
+            nextCheckpointUIController.SetDisplayVisible();
         }
 
         switch (PersistentDataManager.Instance.mainSceneIndex)
         {
             case 1:
-                tutorialTxt.text = "아이 방을 건너뛰고 거실부터 시작합니다.";
+                tutorialTxt.text = "아이 방을 건너뛰고 <b>거실</b>부터 시작합니다.";
                 nextCheckpointUIController.SetTargetPos(new Vector3(204.3f, 30.8f, 158f));
                 break;
             case 2:
-                tutorialTxt.text = "아이 방, 거실, 부엌을 건너뛰고 욕실부터 시작합니다.";
+                tutorialTxt.text = "아이 방, 거실, 부엌을 건너뛰고 <b>욕실</b>부터 시작합니다.";
                 break;
             case 3:
-                tutorialTxt.text = "아이 방, 거실, 부엌, 욕실을 건너뛰고 지하구역부터 시작합니다.";
+                tutorialTxt.text = "아이 방, 거실, 부엌, 욕실을 건너뛰고 <b>지하구역</b>부터 시작합니다.";
                 nextCheckpointUIController.SetTargetPos(new Vector3(308.7f, -705.5f, 591.6f));
                 break;
         }
