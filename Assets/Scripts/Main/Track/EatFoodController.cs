@@ -12,5 +12,6 @@ public class EatFoodController : MonoBehaviour
     {
         ItemManager.Instance.TryIncrementItemFromFood(ItemEffectType.SpeedBoost, 2);
         ItemManager.Instance.TryIncrementItemFromFood(ItemEffectType.JumpBoost, 4);
+        UIManager.Instance.DoDialogue("hamster", "임무는 조금 늦었지만, 더 빠르게 달릴 수 있을 것 같아!", 4f);
     }
 }
