@@ -36,7 +36,7 @@ public class MainSceneFacade
 
     public void EndGame(int minutes, int seconds, int milliseconds, bool isGoodEnding)
     {
-        Time.timeScale = 0.8f;
+        Time.timeScale = 0.7f;
         _uiManager.EndGame(minutes, seconds, milliseconds, isGoodEnding);
     }
 
@@ -170,6 +170,8 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         int milliseconds = (int)((_timeRecord * 100) % 100);
 
         bool isGoodEnding = _endingBranchCondition >= _safeRecord;
+
+        PersistentDataManager.Instance.SaveScore(_timeRecord);
 
         _mainSceneFacade.EndGame(minutes, seconds, milliseconds, isGoodEnding);
         Debug.Log("End Game - " + _gameState);
