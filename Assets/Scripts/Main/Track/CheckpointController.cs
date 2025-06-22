@@ -71,6 +71,7 @@ public class CheckpointController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             openShopUI.SetActive(true);
+            UIManager.Instance.canOpenCheckpointShop = true;
             if (activateOnce && _activatedOnce) // 한 번 활성화된 후에는 다시 발동하지 않음
                 return;
             PerformDialogue();
@@ -83,6 +84,7 @@ public class CheckpointController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             openShopUI.SetActive(false);
+            UIManager.Instance.canOpenCheckpointShop = false;
         }
     }
 
@@ -226,10 +228,8 @@ public class CheckpointController : MonoBehaviour
         // 머티리얼 변경
         SetMaterial(activeMaterial, "Active Material");
 
-        // 한 번 활성화된 후에는 다시 발동하지 않도록 콜라이더 비활성화
         if (activateOnce)
         {
-            _collider.enabled = false;
             HLogger.General.Debug($"Checkpoint '{gameObject.name}' 활성화됨 (일회성, 콜라이더 비활성화).", gameObject);
         }
         else

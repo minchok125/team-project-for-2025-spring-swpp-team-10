@@ -19,6 +19,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 
 	[SerializeField] private GameObject settingsPanel;
 
+	public bool canOpenCheckpointShop = false;
+
 	protected override void Awake()
 	{
 		base.Awake();
@@ -29,6 +31,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 			HLogger.Error("캔버스를 찾지 못했습니다.");
 			return;
 		}
+
+		canOpenCheckpointShop = false;
 
 		settingsPanel = pausedMenuPanel.transform.Find("Settings Panel")?.gameObject;
 		Debug.Log(settingsPanel == null);
@@ -41,7 +45,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		{
 			CheckpointManager.Instance.RegisterObserver(this);
 		}
-		
+
 		fadePanel.SetActive(false);
 	}
 	[SerializeField] private DialogueUIController dialogueUIController;
@@ -83,6 +87,11 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 			}
 		}
 
+		if (Input.GetKeyDown(KeyCode.F) && canOpenCheckpointShop)
+		{
+			// TODO : 상점 열기
+			HLogger.General.Info("강화가 가능한 상점을 엽니다.");
+		}
 	}
 
 	// INextCheckpointObserver 인터페이스 구현 메서드
