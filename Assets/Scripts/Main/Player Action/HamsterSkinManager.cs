@@ -12,7 +12,7 @@ public class HamsterSkinManager : MonoBehaviour
     [Header("Available Skin Textures")]
     public Texture[] skinTextures;
 
-    void Awake()
+    void Start()
     {
         ApplySkin(GameManager.Instance.selectedHamsterSkin);
     }
@@ -20,8 +20,9 @@ public class HamsterSkinManager : MonoBehaviour
     // GameManager�� skinType ���� �ش��ϴ� �ܽ��� �ؽ��� ����
     public void ApplySkin(HamsterSkinType skinType)
     {
+        Debug.Log(GameManager.Instance.selectedHamsterSkin);
         int skinIndex = 0;
-        switch (skinType)
+        switch (GameManager.Instance.selectedHamsterSkin)
         {
             case HamsterSkinType.Golden:
                 skinIndex = 0;
