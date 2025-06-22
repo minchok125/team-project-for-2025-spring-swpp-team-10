@@ -186,6 +186,7 @@ GameObject:
   - component: {fileID: 3762182052561309115}
   - component: {fileID: 289484751731340424}
   - component: {fileID: 674962301010399143}
+  - component: {fileID: 7405787929096660118}
   m_Layer: 5
   m_Name: IncrementButton
   m_TagString: Untagged
@@ -342,6 +343,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radius: 6
   image: {fileID: 4652887167312506069}
+--- !u!114 &7405787929096660118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3445556653623057529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4f0e58bbb503f2499b26880c2090ff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  content: "shift\uB97C \uB20C\uB7EC\uC11C \uD55C\uBC88\uC5D0 \uB354\uD560 \uC218
+    \uC788\uC5B4!"
 --- !u!1 &3488096377714052726
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,6 +996,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5926108997602768751}
+  - component: {fileID: 4807532351684008047}
   - component: {fileID: 747354479250366573}
   - component: {fileID: 5559644080845010065}
   - component: {fileID: 2838750219528296513}
@@ -1014,6 +1030,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 24}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4807532351684008047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6638900969608471714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4f0e58bbb503f2499b26880c2090ff6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  content: "shift\uB97C \uB20C\uB7EC\uC11C \uD55C\uBC88\uC5D0 \uBE84 \uC218 \uC788\uC5B4!"
 --- !u!222 &747354479250366573
 CanvasRenderer:
   m_ObjectHideFlags: 0
