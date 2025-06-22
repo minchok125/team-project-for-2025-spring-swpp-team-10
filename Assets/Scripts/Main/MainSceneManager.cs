@@ -87,7 +87,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
     private float _timeRecord, _safeRecord;
     private float _timeScale;
 
-    private readonly float _endingBranchCondition = 1f; 
+    private readonly float _endingBranchCondition = 600f;
 
     protected override void Awake()
     {
@@ -156,7 +156,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         int seconds = (int)(_timeRecord % 60);
         int milliseconds = (int)((_timeRecord * 100) % 100);
 
-        bool isGoodEnding = _endingBranchCondition >= _timeRecord;
+        bool isGoodEnding = _endingBranchCondition >= _safeRecord;
 
         _mainSceneFacade.EndGame(minutes, seconds, milliseconds, isGoodEnding);
         Debug.Log("End Game - " + _gameState);
