@@ -2700,6 +2700,9 @@ MonoBehaviour:
   icon: {fileID: 3025413622064648802}
   emptyIcon: {fileID: 3025413622064648802}
   outline: {fileID: 3025413620642137839}
+  emptyBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  emptyIconColor: {r: 0, g: 0, b: 0, a: 0}
+  equippedBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!222 &3025413620642137836
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3451,6 +3454,9 @@ MonoBehaviour:
   icon: {fileID: 3025413622137231630}
   emptyIcon: {fileID: 3025413622137231630}
   outline: {fileID: 3025413620798319352}
+  emptyBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  emptyIconColor: {r: 0, g: 0, b: 0, a: 0}
+  equippedBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!222 &3025413620798319353
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6089,6 +6095,9 @@ MonoBehaviour:
   icon: {fileID: 3025413621954431144}
   emptyIcon: {fileID: 3025413621954431144}
   outline: {fileID: 3025413621308359916}
+  emptyBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  emptyIconColor: {r: 0, g: 0, b: 0, a: 0}
+  equippedBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!222 &3025413621308359917
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6519,6 +6528,9 @@ MonoBehaviour:
   icon: {fileID: 3025413620818530011}
   emptyIcon: {fileID: 3025413620818530011}
   outline: {fileID: 3025413621376871611}
+  emptyBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  emptyIconColor: {r: 0, g: 0, b: 0, a: 0}
+  equippedBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!222 &3025413621376871608
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7760,7 +7772,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -300, y: -40}
+  m_AnchoredPosition: {x: -100, y: -60}
   m_SizeDelta: {x: 213, y: 154}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &3025413621627916235
@@ -7846,7 +7858,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -80, y: -140}
+  m_AnchoredPosition: {x: -80, y: -160}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &3025413621631235502
@@ -7923,7 +7935,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.19607843}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -8076,6 +8088,9 @@ MonoBehaviour:
   icon: {fileID: 3025413621535785363}
   emptyIcon: {fileID: 3025413621535785363}
   outline: {fileID: 3025413621647682446}
+  emptyBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  emptyIconColor: {r: 0, g: 0, b: 0, a: 0}
+  equippedBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!222 &3025413621647682447
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9821,6 +9836,9 @@ MonoBehaviour:
   icon: {fileID: 3025413621227671918}
   emptyIcon: {fileID: 3025413621227671918}
   outline: {fileID: 3025413621965111906}
+  emptyBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  emptyIconColor: {r: 0, g: 0, b: 0, a: 0}
+  equippedBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!222 &3025413621965111907
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11816,6 +11834,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155791163667964103, guid: 854e57afcf8f44170804e88c658e740f,
+        type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 854e57afcf8f44170804e88c658e740f, type: 3}
