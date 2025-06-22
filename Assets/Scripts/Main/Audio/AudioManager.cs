@@ -183,6 +183,12 @@ public class AudioManager : PersistentSingleton<AudioManager>
         if (sfxDict.TryGetValue(sfxType, out AudioClip clip))
         {
             float _sfxVolume = Mathf.Clamp01(SfxVolume * volumeRate);
+            if (sfxSource2D == null)
+            {
+                HLogger.General.Debug(":ASdasdas", this);
+                return; // ❗ 조기 리턴 필요
+            }
+            HLogger.General.Debug("aSFKHASFHFS");
             sfxSource2D.PlayOneShot(clip, _sfxVolume);
         }
     }

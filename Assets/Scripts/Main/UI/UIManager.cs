@@ -17,7 +17,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	[SerializeField] private GameObject guidePanel;
 	[SerializeField] private GameObject fadePanel;
 
-	private GameObject settingsPanel;
+	[SerializeField] private GameObject settingsPanel;
 
 	protected override void Awake()
 	{
@@ -31,7 +31,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		}
 
 		settingsPanel = pausedMenuPanel.transform.Find("Settings Panel")?.gameObject;
-
+		Debug.Log(settingsPanel == null);
 
 		storePanel.SetActive(false);
 		HLogger.Info("StorePanelController 초기화 완료");
@@ -42,7 +42,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 			CheckpointManager.Instance.RegisterObserver(this);
 		}
 		
-		fadePanel.SetActive(false);
+		///fadePanel.SetActive(false);
 	}
 	[SerializeField] private DialogueUIController dialogueUIController;
 
