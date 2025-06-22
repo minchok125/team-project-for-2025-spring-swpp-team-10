@@ -120,7 +120,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		}
 		else
 		{
-			SceneTransitionManager.Instance.LoadScene("TitleScene");
+			SceneManager.LoadScene("TitleScene");
+			HLogger.General.Info("메인 씬 종료: 타이틀 씬으로 이동");
 		}
 	}
 
