@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using TMPro;
 
 public class SlowMotionButtonController : MonoBehaviour
 {
@@ -12,7 +14,59 @@ public class SlowMotionButtonController : MonoBehaviour
     public Sprite slowOnSprite;
     public Sprite slowOffSprite;
 
+    [Header("Slow Motion Explanain UI")]
+    public GameObject explainUI;
+    public TextMeshProUGUI explainText;
+
     private bool _isSlow = false;
+    private GraphicRaycaster _raycaster;
+    private EventSystem _eventSystem;
+
+    private void Awake()
+    {
+        _raycaster = GetComponentInParent<Canvas>().GetComponent<GraphicRaycaster>();
+        _eventSystem = EventSystem.current;
+    }
+
+    private void Update()
+    {
+        if (IsMouseOverThisUI())
+        {
+            if (!explainUI.activeSelf)
+                explainUI.SetActive(true);
+            SetExplainText();
+        }
+        else
+        {
+            if (explainUI.activeSelf)
+                explainUI.SetActive(false);
+        }
+    }
+
+    private void SetExplainText()
+    {
+        if (!_isSlow) explainText.text = "í˜„ì¬ ê²Œì„ ì†ë„ : <size=110%>1.0ë°°</size>\n\nê²Œì„ ì†ë„ë¥¼ 0.8ë°°ë¡œ ë§Œë“­ë‹ˆë‹¤.\níƒ€ì´ë¨¸ëŠ” ì‹¤ì œ ì‹œê°„ ê¸°ì¤€ìœ¼ë¡œ íë¥´ë©°\nëŠë ¤ì§€ì§€ ì•ŠìŠµë‹ˆë‹¤.";
+        else explainText.text = "í˜„ì¬ ê²Œì„ ì†ë„ : <size=110%>0.8ë°°</size>\n\nê²Œì„ ì†ë„ë¥¼ 1.0ë°°ë¡œ ë§Œë“­ë‹ˆë‹¤.\níƒ€ì´ë¨¸ëŠ” ì‹¤ì œ ì‹œê°„ ê¸°ì¤€ìœ¼ë¡œ íë¥´ë©°\nëŠë ¤ì§€ì§€ ì•ŠìŠµë‹ˆë‹¤.";
+    }
+
+    bool IsMouseOverThisUI()
+    {
+        PointerEventData pointerData = new PointerEventData(_eventSystem)
+        {
+            position = Input.mousePosition
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        _raycaster.Raycast(pointerData, results);
+
+        foreach (var result in results)
+        {
+            if (result.gameObject == gameObject) // ì´ ì˜¤ë¸Œì íŠ¸ê°€ ë§ëŠ”ì§€ í™•ì¸
+                return true;
+        }
+
+        return false;
+    }
 
     public void ToggleSlowMotion()
     {
@@ -31,9 +85,9 @@ public class SlowMotionButtonController : MonoBehaviour
     private void ApplySlowMotion()
     {
         slowButtonImage.sprite = slowOnSprite;
-        // 0.8À¸·Î °íÁ¤
+        // 0.8ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         MainSceneManager.Instance.SetTimeScale(0.8f);
-        // ÇöÀç »óÁ¡¿¡¼­ ¼³Á¤ÇÑ timeScale·Î ¼³Á¤ÇÏ·Á¸é, MainSceneManagerÀÇ SetTimeScaleÀ» _timescale ¼³Á¤¸¸ ÇÏ´Â ºÎºĞ°ú Time.timescale¿¡ ½ÇÁ¦·Î Àû¿ëÇÏ´Â ºÎºĞ (ApplyTimeScale)À¸·Î ³ª´©¾î¾ß ÇÔ
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ timeScaleï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½, MainSceneManagerï¿½ï¿½ SetTimeScaleï¿½ï¿½ _timescale ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ÎºĞ°ï¿½ Time.timescaleï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Îºï¿½ (ApplyTimeScale)ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
         // MainSceneManager.Instance.ApplyTimeScale();
     }
 
@@ -41,6 +95,6 @@ public class SlowMotionButtonController : MonoBehaviour
     {
         slowButtonImage.sprite = slowOffSprite;
         MainSceneManager.Instance.SetTimeScale(1f);
-        // ¸¶Âù°¡Áö·Î ÇöÀç »óÁ¡¿¡¼­ ¼³Á¤ÇÑ timeScaleÀ» º¸Á¸ÇÏ·Á¸é, MainSceneManager¿¡¼­ ÀÓ½Ã·Î 1·Î ¸¸µé¾î ÁÖ¾î¾ß ÇÔ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ timeScaleï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½, MainSceneManagerï¿½ï¿½ï¿½ï¿½ ï¿½Ó½Ã·ï¿½ 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ ï¿½ï¿½
     }
 }
