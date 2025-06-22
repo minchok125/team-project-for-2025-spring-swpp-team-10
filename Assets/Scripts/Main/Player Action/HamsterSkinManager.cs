@@ -46,7 +46,7 @@ public class HamsterSkinManager : MonoBehaviour
         {
             if (rend != null && rend.material != null)
             {
-                rend.material.SetTexture("_BaseMap", skinTextures[skinIndex]);
+                rend.material.SetTexture("_BaseTexture", skinTextures[skinIndex]);
             }
         }
     }
