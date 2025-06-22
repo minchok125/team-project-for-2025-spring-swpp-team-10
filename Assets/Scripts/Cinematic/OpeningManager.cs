@@ -94,7 +94,7 @@ public class OpeningManager : CinematicSequence
         // FadeOut 및 Scene Load
         FadeOutScreen(cutSceneFadeOutDuration, Color.black);
         yield return FadeOutBgm(cutSceneFadeOutDuration);
-
+        Common.FadePanel.SetActive(true);
         CinematicSceneManager.Instance.Load("MainScene");
     }
 
@@ -232,6 +232,7 @@ public class OpeningManager : CinematicSequence
     {
         FadeOutScreen(cutSceneFadeOutDuration, Color.black);
         yield return FadeOutBgm(cutSceneFadeOutDuration);
+        Common.FadePanel.SetActive(true);
         CinematicSceneManager.Instance.Load("MainScene");
     }
 }
