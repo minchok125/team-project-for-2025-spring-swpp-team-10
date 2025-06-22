@@ -19,7 +19,7 @@ public class CinemachineCameraManager : RuntimeSingleton<CinemachineCameraManage
     [Tooltip("게임 시작 시 설정되는 카메라 줌")]
     [SerializeField] private float zoomDefault = 1f;
     [Tooltip("마우스 휠 감도")]
-    [SerializeField] private float zoomSpeed = 0.4f;
+    [SerializeField] private float zoomSensitivity = 0.4f;
     [Tooltip("마우스 수직 움직임 민감도 (default : 1)")]
     [SerializeField, Range(0.1f, 4f)] private float mouseVerticalSensitivity = 1f;
     [Tooltip("마우스 수평 움직임 민감도 (default : 1)")]
@@ -29,6 +29,9 @@ public class CinemachineCameraManager : RuntimeSingleton<CinemachineCameraManage
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI txt;
 
+    private const float _defaultHorizontalSensitivity = 1f;
+    private const float _defaultVerticalSensitivity = 1f;
+    private const float _defaultZoomSensitivity = 0.4f;
 
     private CinemachineBrain brain;
     private bool isBallWireCam; // ballWireCam1/2 라면 true
@@ -55,7 +58,9 @@ public class CinemachineCameraManager : RuntimeSingleton<CinemachineCameraManage
 
     private CamRig hamsterRig, hamsterWireRig, ballRig, ballWireRig;
 
-
+    public float MouseHorizontalSensitivity => mouseHorizontalSensitivity;
+    public float MouseVerticalSensitivity => mouseVerticalSensitivity;
+    public float ZoomSensitivity => zoomSensitivity;
 
     protected override void Awake()
     {
@@ -93,13 +98,35 @@ public class CinemachineCameraManager : RuntimeSingleton<CinemachineCameraManage
         FreeLookCamSetting();
     }
 
+    public void SetHorizontalSensitivity(float value)
+    {
+        mouseHorizontalSensitivity = value;
+    }
+
+    public void SetVerticalSensitivity(float value)
+    {
+        mouseVerticalSensitivity = value;
+    }
+
+    public void SetZoomSensitivity(float value)
+    {
+        zoomSensitivity = value;
+    }
+
+    public void ResetCameraSettings()
+    {
+        mouseHorizontalSensitivity = _defaultHorizontalSensitivity;
+        mouseVerticalSensitivity = _defaultVerticalSensitivity;
+        zoomSensitivity = _defaultZoomSensitivity;
+    }
+
 
     /// <summary>
     /// 마우스 휠로 줌 거리 조절
     /// </summary>
     void Zoom()
     {
-        float scroll = Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+        float scroll = Input.GetAxis("Mouse ScrollWheel") * zoomSensitivity;
         
         targetZoom -= scroll;
         targetZoom = Mathf.Clamp(targetZoom, zoomMin, zoomMax);
