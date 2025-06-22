@@ -39,25 +39,12 @@ public class UI_StoreStandItem : MonoBehaviour
         valueText.text = userItem.GetCurrentValueLabel();
         valueText.gameObject.SetActive(!purchaseOnly);
 
-<<<<<<< HEAD
         purchaseButton.gameObject.SetActive(purchaseOnly);
         purchaseButton.gameObject.GetComponent<StoreStandItemPurchaseButton>().Bind(userItem.isEquipped);
 
-        
-
+    
         lockedOverlay.SetActive(userItem.isLocked);
-=======
-        //valueText.text = userItem.GetCurrentValue().ToString("F2");
-        valueText.text = userItem.GetCurrentLabel();
->>>>>>> 61707ea26247e8d2917613293c59ead63587970b
 
-        // 잠김 여부 표시
-        // lockedOverlay.SetActive(userItem.isLocked);
-        // purchaseButton.interactable = !userItem.isLocked;
-
-        // 버튼 클릭 이벤트 설정
-        // purchaseButton.onClick.RemoveAllListeners();
-        // purchaseButton.onClick.AddListener(OnPurchaseClicked);
     }
 
     public void OnIncrementClicked()
