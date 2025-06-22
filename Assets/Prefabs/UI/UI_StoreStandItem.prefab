@@ -1721,7 +1721,6 @@ MonoBehaviour:
   titleText: {fileID: 8566636122188181528}
   descriptionText: {fileID: 8566636121675105609}
   priceText: {fileID: 8566636121317726526}
-  equippedTag: {fileID: 0}
   lockedOverlay: {fileID: 431150846757684628}
   valueText: {fileID: 5356166251658022461}
   incrementButton: {fileID: 3762182052561309115}
@@ -1970,7 +1969,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 65.09, y: -144.035}
+  m_AnchoredPosition: {x: 60, y: -144.035}
   m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8566636122130737679
@@ -2302,6 +2301,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8566636122677702587}
   - component: {fileID: 8566636122677702586}
+  - component: {fileID: 8442329487571584483}
   m_Layer: 5
   m_Name: StoreItemLeftGroup
   m_TagString: Untagged
@@ -2357,6 +2357,26 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &8442329487571584483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8566636122677702584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 120
+  m_PreferredHeight: 160.07
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &8566636122751294354
 GameObject:
   m_ObjectHideFlags: 0
@@ -2368,6 +2388,7 @@ GameObject:
   - component: {fileID: 8566636122751294061}
   - component: {fileID: 8566636122751294063}
   - component: {fileID: 8566636122751294060}
+  - component: {fileID: 4068576085930319821}
   m_Layer: 5
   m_Name: StoreItemImage
   m_TagString: Untagged
@@ -2433,6 +2454,26 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4068576085930319821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8566636122751294354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 120
+  m_PreferredHeight: 120
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &8566636122991620597
 GameObject:
   m_ObjectHideFlags: 0
@@ -2494,7 +2535,7 @@ MonoBehaviour:
     m_Bottom: 20
   m_ChildAlignment: 4
   m_Spacing: 20
-  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 0
