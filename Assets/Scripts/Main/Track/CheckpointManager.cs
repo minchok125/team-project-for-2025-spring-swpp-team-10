@@ -168,7 +168,7 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
         return _lastCheckpointPosition;
     }
 
-    public int GetCurrentCheckpointIndex() => _currentCheckpointIndex;
+    public virtual int GetCurrentCheckpointIndex() => _currentCheckpointIndex;
     public int GetTotalCheckpoints() => orderedCheckpoints.Count;
 
     public bool HasCheckpointBeenSet()

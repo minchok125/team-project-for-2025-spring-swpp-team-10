@@ -172,8 +172,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		nextCheckpointUI.UpdateTargetPosition(nextCpPos);
 	}
 
-	public void DoDialogue(string fileName) { dialogueUIController.StartDialogue(fileName); }
-	public void DoDialogue(string character, string text, float lifetime, int faceIdx = 0) { dialogueUIController.StartDialogue(character, text, lifetime, faceIdx); }
-	public void DoDialogue(int idx) { dialogueUIController.StartDialogue(idx); }
+	public virtual void DoDialogue(string fileName) { dialogueUIController.StartDialogue(fileName); }
+	public virtual void DoDialogue(string character, string text, float lifetime, int faceIdx = 0) { dialogueUIController.StartDialogue(character, text, lifetime, faceIdx); }
+	public virtual void DoDialogue(int idx) { dialogueUIController.StartDialogue(idx); }
 	public void ClearDialogue() { dialogueUIController.ClearDialogue(); }
 }
