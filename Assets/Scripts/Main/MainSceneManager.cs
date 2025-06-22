@@ -34,10 +34,10 @@ public class MainSceneFacade
         _cursorController.LockCursor();
     }
 
-    public void EndGame(int minutes, int seconds, int milliseconds)
+    public void EndGame(int minutes, int seconds, int milliseconds, bool isGoodEnding)
     {
         Time.timeScale = 0f;
-        _uiManager.EndGame(minutes, seconds, milliseconds);
+        _uiManager.EndGame(minutes, seconds, milliseconds, isGoodEnding);
     }
 
     public void UpdateTimer(int minutes, int seconds, int milliseconds)
@@ -84,8 +84,10 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
 
     private enum GameStates { Playing, Paused, BadEnding, GoodEnding };
     private GameStates _gameState;
-    private float _timeRecord;
+    private float _timeRecord, _safeRecord;
     private float _timeScale;
+
+    private readonly float _endingBranchCondition = 1f; 
 
     protected override void Awake()
     {
@@ -102,6 +104,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         _mainSceneFacade.InitializeGame();
         _gameState = GameStates.Playing;
         _timeRecord = 0f;
+        _safeRecord = 0f;
 
         isSafeBoxOpened = false;
         doYouKnowSafeBoxPassword = false;
@@ -145,8 +148,6 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
 
     public void EndGame()
     {
-        // TODO: timeRecord에 따른 엔딩 분기 추가 필요
-
         // 게임 정지
         _gameState = GameStates.BadEnding;
 
@@ -155,14 +156,20 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         int seconds = (int)(_timeRecord % 60);
         int milliseconds = (int)((_timeRecord * 100) % 100);
 
-        _mainSceneFacade.EndGame(minutes, seconds, milliseconds);
+        bool isGoodEnding = _endingBranchCondition >= _timeRecord;
+
+        _mainSceneFacade.EndGame(minutes, seconds, milliseconds, isGoodEnding);
         Debug.Log("End Game - " + _gameState);
     }
 
     private void UpdateTimer()
     {
         if (Time.timeScale > 0)
+        {
             _timeRecord += Time.unscaledDeltaTime;
+            if (isSafeBoxOpened)
+                _safeRecord += Time.unscaledDeltaTime;
+        }
 
         // 분, 초, 밀리초 계산
         int minutes = (int)(_timeRecord / 60);
