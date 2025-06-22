@@ -36,7 +36,7 @@ public class MainSceneFacade
 
     public void EndGame(int minutes, int seconds, int milliseconds, bool isGoodEnding)
     {
-        Time.timeScale = 0f;
+        Time.timeScale = 0.8f;
         _uiManager.EndGame(minutes, seconds, milliseconds, isGoodEnding);
     }
 
@@ -132,7 +132,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         AddCoinByPlaytime();
 
         // Ending 잘 되는지 Debugging 용
-        // if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
+        if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
     }
 
     private void AddCoinByPlaytime()

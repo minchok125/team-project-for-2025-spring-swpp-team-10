@@ -43,7 +43,7 @@ public class ElectricRoomController : MonoBehaviour
         leftDoor.DOLocalMoveZ(-6, 2f).SetUpdate(UpdateType.Fixed);
         rightDoor.DOLocalMoveZ(6, 2f).SetUpdate(UpdateType.Fixed);
 
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.AutomaticDoorOpen, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.AutomaticDoorOpen);
     }
 
     public void DoorClose()
@@ -51,7 +51,7 @@ public class ElectricRoomController : MonoBehaviour
         leftDoor.DOLocalMoveZ(-3, 2f).SetUpdate(UpdateType.Fixed);
         rightDoor.DOLocalMoveZ(3, 2f).SetUpdate(UpdateType.Fixed);
 
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.AutomaticDoorClose, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.AutomaticDoorClose);
     }
 
     public void OnWarning()
@@ -88,7 +88,7 @@ public class ElectricRoomController : MonoBehaviour
     private void CameraControl()
     {
         virtualCamera.Priority = 11;
-        Invoke(nameof(ChangeCameraHamsterPriorityToNine), 3f);
+        Invoke(nameof(ChangeCameraHamsterPriorityToNine), 1.5f);
     }
 
     private void ChangeCameraHamsterPriorityToNine()

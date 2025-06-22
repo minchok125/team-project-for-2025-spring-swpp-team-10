@@ -383,6 +383,7 @@ public class PlayerWireController : MonoBehaviour
         if (!isObjectIClickButton)
             grapplingWire.EndWire();
         currentWire.EndShoot();
+        PlayerManager.Instance.StopPlayRetractorSfx(); // 혹시 리트랙터 중이었다면 루프 종료
 
         // 다음 와이어 발사를 위해 hitPoint 전환
         isHitPoint1 = !isHitPoint1;
