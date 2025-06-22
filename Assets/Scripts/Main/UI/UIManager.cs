@@ -42,7 +42,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 			CheckpointManager.Instance.RegisterObserver(this);
 		}
 		
-		///fadePanel.SetActive(false);
+		fadePanel.SetActive(false);
 	}
 	[SerializeField] private DialogueUIController dialogueUIController;
 
