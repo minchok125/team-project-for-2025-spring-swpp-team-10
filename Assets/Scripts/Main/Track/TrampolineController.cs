@@ -77,7 +77,7 @@ public class TrampolineController : MonoBehaviour
         }
         rb.velocity = newVel;
 
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.GymBall, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.GymBall);
         
         // 플레이어 애니메이션 설정
         tracker.SetJumpAnimator();

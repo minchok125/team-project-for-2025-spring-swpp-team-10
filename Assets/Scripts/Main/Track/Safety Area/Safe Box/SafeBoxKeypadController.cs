@@ -66,7 +66,7 @@ public class SafeBoxKeypadController : MonoBehaviour
     {
         _success = true;
         numberText.color = successColor;
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.KeypadSuccess, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.KeypadSuccess);
         safeObjProp.canGrabInHamsterMode = true;
         MainSceneManager.Instance.isSafeBoxOpened = true;
         UIManager.Instance.DoDialogue("hamster", "금고 안의 <b>문서</b>를 가져가자", 4f);
@@ -78,7 +78,7 @@ public class SafeBoxKeypadController : MonoBehaviour
     private IEnumerator Fail()
     {
         numberText.color = failColor;
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.KeypadFail, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.KeypadFail);
 
         for (int i = 0; i < 3; i++)
         {
