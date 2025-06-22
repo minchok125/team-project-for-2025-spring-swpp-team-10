@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Hampossible.Utils;
+using System.Linq;
+using System;
+
 
 public interface ICoinWallet
 {
@@ -12,13 +15,17 @@ public interface ICoinWallet
 
 public class ItemManager : PersistentSingleton<ItemManager>
 {
-    [SerializeField] private ItemList itemList;
+    [SerializeField] private ItemDatabase itemDatabase;
     [SerializeField] private int initialCoinCount = 0;
     [SerializeField] private int coinPerTick = 1; // 플레이 타임마다 지급되는 코인 수량
     [SerializeField] private float coinTickInterval = 1f; // 코인 지급 간격 (초 단위)
 
     private ICoinWallet _coinWallet;
     public UnityEvent<int> OnCoinCountChanged = new UnityEvent<int>();
+    public UnityEvent<UserItem> OnItemLevelChange = new UnityEvent<UserItem>();
+
+    public event Action OnInventoryChanged;
+
 
     private List<Item> _allItems = new List<Item>();
     private List<UserItem> _userItems = new List<UserItem>();
@@ -39,27 +46,49 @@ public class ItemManager : PersistentSingleton<ItemManager>
     {
         base.Awake();
 
-        InitializeInventory();
+        InitializeItems();
         InitializeCoins();
         LogInventoryContents();
     }
 
-    // 인벤토리 초기화 로직
-    private void InitializeInventory()
+    private void InitializeItems()
     {
-        if (itemList == null || itemList.items == null)
+        if (itemDatabase == null || itemDatabase.GetAllItems() == null)
         {
-            HLogger.General.Error("아이템 인벤토리가 초기화 실패.", this);
+            _allItems = new List<Item>();
+            _userItems = new List<UserItem>();
+            HLogger.General.Error("아이템 데이터베이스가 초기화되지 않았습니다.", this);
+            return;
         }
         else
         {
-            HLogger.General.Info("ItemManager 및 인벤토리 초기화 시작", this);
+            _allItems = itemDatabase?.GetAllItems() ?? new List<Item>();
+            _userItems = new List<UserItem>();
 
-            _allItems = new List<Item>(itemList.items);
-            _userItems = _inventoryStorage?.LoadUserItems() ?? new List<UserItem>();
+            foreach (var item in _allItems)
+            {
+                if (item == null)
+                {
+                    HLogger.General.Error("아이템이 null입니다. 아이템 데이터베이스를 확인하세요.", this);
+                    continue;
+                }
+
+                var userItem = new UserItem
+                {
+                    item = item,
+                    currentLevel = 0,
+                    isEquipped = false,
+                    isLocked = false // 기본적으로 잠금 상태로 시작
+                };
+
+                _userItems.Add(userItem);
+            }
             _inventoryStorage?.SaveUserItems(_userItems);
+            HLogger.General.Info("아이템 데이터베이스 초기화 완료", this);
         }
+
     }
+
 
     // 코인 초기화 로직
     private void InitializeCoins()
@@ -82,38 +111,12 @@ public class ItemManager : PersistentSingleton<ItemManager>
         foreach (var userItem in _userItems)
         {
             var item = userItem.item;
-            HLogger.Skill.Debug($"- {item.name} (ID: {item.id}): {userItem.count}개", this);
+            HLogger.Skill.Debug($"- {item.name} (ID: {item.id})", this);
         }
 
         HLogger.Skill.Debug($"현재 보유 코인: {_coinWallet.GetBalance()}개", this);
     }
 
-    // --------------------------------------------------------------------------------
-    // MARK: 아이템 관리
-    // --------------------------------------------------------------------------------
-    public bool IsItemLocked(Item item)
-    {
-        var userItem = _userItems.Find(ui => ui.item.id == item.id);
-        if (userItem == null)
-        {
-            HLogger.General.Error($"아이템을 찾을 수 없습니다: {item.name}", this);
-            return false;
-        }
-
-        return userItem.isLocked;
-    }
-
-    public bool IsItemEquipped(Item item)
-    {
-        var userItem = _userItems.Find(ui => ui.item.id == item.id);
-        if (userItem == null)
-        {
-            HLogger.General.Error($"아이템을 찾을 수 없습니다: {item.name}", this);
-            return false;
-        }
-
-        return userItem.isEquipped;
-    }
 
     /// <summary>
     /// 아이템 장착 메서드
@@ -128,14 +131,14 @@ public class ItemManager : PersistentSingleton<ItemManager>
 
         var userItem = _userItems.Find(ui => ui.item.id == item.id);
 
-        if (userItem != null && userItem.count > 0)
+        if (userItem != null && userItem.currentLevel > 0)
         {
             if (userItem.isLocked)
             {
                 HLogger.Player.Warning($"아이템 잠금 해제 필요: {item.name}", this);
                 return;
             }
-            else if (userItem.count <= 0)
+            else if (userItem.currentLevel <= 0)
             {
                 HLogger.Player.Warning($"아이템 수량 부족: {item.name}", this);
                 return;
@@ -173,9 +176,9 @@ public class ItemManager : PersistentSingleton<ItemManager>
     /// <summary>
     /// 아이템 잠금 해제 메서드 - CheckPointManager에서 호출
     /// </summary>
-    public void UnlockItem(Item item)
+    public void UnlockItem(ItemEffectType type)
     {
-        var userItem = _userItems.Find(ui => ui.item.id == item.id);
+        var userItem = _userItems.Find(ui => ui.item.effectType == type);
         if (userItem == null)
         {
             HLogger.General.Error("null 아이템을 잠금 해제하려고 시도했습니다.", this);
@@ -183,7 +186,7 @@ public class ItemManager : PersistentSingleton<ItemManager>
         }
 
         userItem.isLocked = false;
-        HLogger.Player.Info($"아이템 잠금 해제됨: {item.name}", this);
+        HLogger.Player.Info($"아이템 잠금 해제됨: {userItem.item.name}", this);
         return;
     }
 
@@ -233,11 +236,11 @@ public class ItemManager : PersistentSingleton<ItemManager>
 
     private bool SpendCoin(int amount)
     {
-        if (amount <= 0)
-        {
-            HLogger.General.Error($"잘못된 코인 소모 수량: {amount}", this);
-            return false;
-        }
+        // if (amount <= 0)
+        // {
+        //     HLogger.General.Error($"잘못된 코인 소모 수량: {amount}", this);
+        //     return false;
+        // }
 
         if (_coinWallet.Spend(amount))
         {
@@ -259,15 +262,9 @@ public class ItemManager : PersistentSingleton<ItemManager>
     /// <summary>
     /// 상점 아이템 목록을 반환합니다.
     /// </summary>
-    public List<Item> GetStandItems()
+    public List<UserItem> GetStandItems()
     {
-        if (_allItems == null || _allItems.Count == 0)
-        {
-            HLogger.General.Error("상점 아이템 목록이 초기화되지 않았습니다.", this);
-            return new List<Item>();
-        }
-
-        return _allItems;
+        return _userItems;
     }
 
 
@@ -276,21 +273,10 @@ public class ItemManager : PersistentSingleton<ItemManager>
     /// </summary>
     public List<UserItem> GetInventoryItems()
     {
-        var inventoryItems = new List<UserItem>();
-
-        foreach (var userItem in _userItems)
-        {
-            if (userItem.isEquipped)
-            {
-                inventoryItems.Add(userItem);
-            }
-
-        }
-
-        return inventoryItems;
+        return _userItems;
     }
 
-    public bool CanPurchaseItem(Item item)
+    public bool CanPurchaseItem(UserItem item)
     {
         if (item == null)
         {
@@ -298,22 +284,22 @@ public class ItemManager : PersistentSingleton<ItemManager>
             return false;
         }
 
-        if (IsItemLocked(item))
+        if (item.isLocked)
         {
-            HLogger.Player.Warning($"아이템 구매 실패: 아이템이 잠겨있습니다. ID={item.id}", this);
+            HLogger.Player.Warning($"아이템 구매 실패: 아이템이 잠겨있습니다. ID={item.item.id}", this);
             return false;
         }
 
-        if (_coinWallet.GetBalance() < item.price)
+        if (_coinWallet.GetBalance() < item.GetCurrentPrice())
         {
-            HLogger.Player.Warning($"코인 부족: 현재 {_coinWallet.GetBalance()}, 필요 {item.price}", this);
+            HLogger.Player.Warning($"코인 부족: 현재 {_coinWallet.GetBalance()}, 필요 {item.GetCurrentPrice()}", this);
             return false;
         }
 
         return true;
     }
 
-    public bool TryPurchaseItem(Item item)
+    public bool TryIncrementItem(Item item)
     {
         if (item == null)
         {
@@ -321,20 +307,62 @@ public class ItemManager : PersistentSingleton<ItemManager>
             return false;
         }
 
-        if (!CanPurchaseItem(item))
+        var userItem = _userItems.Find(ui => ui.item.id == item.id);
+
+        if (userItem == null)
+        {
+            HLogger.General.Error($"아이템을 찾을 수 없습니다: {item.name} (ID: {item.id})", this);
+            return false;
+        }
+
+        if (!CanPurchaseItem(userItem))
         {
             return false;
         }
 
-        if (!SpendCoin(item.price))
+
+        if (!SpendCoin(userItem.GetCurrentPrice()))
         {
+            HLogger.Player.Warning($"코인 부족으로 아이템 구매 실패: {item.name} (ID: {item.id})", this);
+            return false;
+        }
+
+        userItem.LevelUp();
+        _userItems = _userItems.Select(ui => ui.item.id == item.id ? userItem : ui).ToList();
+
+        HLogger.Player.Info($"아이템 구매 성공: {item.name} (ID: {item.id})", this);
+        OnInventoryChanged?.Invoke();
+        OnItemLevelChange?.Invoke(userItem);
+        return true;
+    }
+
+    public bool TryDecrementItem(Item item)
+    {
+        if (item == null)
+        {
+            HLogger.General.Error("null 아이템을 구매하려고 시도했습니다.", this);
             return false;
         }
 
         var userItem = _userItems.Find(ui => ui.item.id == item.id);
-        userItem.count += 1;
 
-        HLogger.Player.Info($"아이템 구매 성공: {item.name} (ID: {item.id})", this);
+        if (userItem == null)
+        {
+            HLogger.General.Error($"아이템을 찾을 수 없습니다: {item.name} (ID: {item.id})", this);
+            return false;
+        }
+
+        if (!userItem.CanLevelDown())
+        {
+            HLogger.Player.Warning($"아이템 레벨 다운 불가: {item.name} (ID: {item.id})", this);
+            return false;
+        }
+
+        userItem.LevelDown();
+        _userItems = _userItems.Select(ui => ui.item.id == item.id ? userItem : ui).ToList();
+        HLogger.Player.Info($"아이템 레벨 다운 성공: {item.name} (ID: {item.id})", this);
+        OnInventoryChanged?.Invoke();
+        OnItemLevelChange?.Invoke(userItem);
         return true;
     }
 }

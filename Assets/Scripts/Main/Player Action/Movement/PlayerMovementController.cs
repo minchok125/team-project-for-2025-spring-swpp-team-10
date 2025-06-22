@@ -42,6 +42,7 @@ public class PlayerMovementController : MonoBehaviour
     [Tooltip("햄스터 와이어를 사용 중에 땅에 붙어있게 하기 위한 로직에서,\n"
            + "햄스터 아래에 땅이 있다고 판단하는 거리")]
     [SerializeField] private float hamsterWireCheckGroundDistance = 5f;
+    private float _maxBallVelocity;
     #endregion
 
 
@@ -65,8 +66,9 @@ public class PlayerMovementController : MonoBehaviour
     private bool isRKeyPressedForCheckpoint = false; // R키가 체크포인트 이동을 위해 눌렸는지 여부
     private float rKeyHoldStartTime = 0f;         // R키를 누르기 시작한 시간
     private float RKeyHoldDurationForCheckpoint = 5.0f; // 체크포인트 이동까지 R키를 누르고 있어야 하는 시간(초)
-    private float checkpointResetPositionY = -2000f; // 체크포인트 이동 시 Y좌표 기준
+    private float checkpointResetPositionY = -900f; // 체크포인트 이동 시 Y좌표 기준
     private float checkpointMovementThreshold = 0.01f; // 체크포인트 이동 시 위치 오차 허용 범위
+    [SerializeField] private TextMeshProUGUI resetText;
     #endregion
 
 
@@ -98,7 +100,14 @@ public class PlayerMovementController : MonoBehaviour
     [SerializeField] private BalloonMovementController balloon;
     #endregion
 
-
+    #region Swing Sound Varaibles
+    [Header("Swing Sound")]
+    [Tooltip("스윙 소리가 재생되기 시작하는 최소 속도")]
+    [SerializeField] private float minSwingSpeed = 10f;
+    [Tooltip("스윙 소리의 피치가 최대가 되는 속도")]
+    [SerializeField] private float maxSwingSpeedForPitch = 40f;
+    private bool isSwingSoundPlaying = false;
+    #endregion
 
     [Header("Debug")]
     [SerializeField] private TextMeshProUGUI velocityTxt;
@@ -109,6 +118,7 @@ public class PlayerMovementController : MonoBehaviour
     private GroundCheck groundCheck;
 
     #endregion
+
 
 
     #region Unity Lifecycle Methods
@@ -168,8 +178,76 @@ public class PlayerMovementController : MonoBehaviour
         // 추가 물리 효과 적용
         AddExtraForce();
 
+        // 스윙 사운드 처리
+        HandleSwingSound();
+
         // 마지막 속도 저장
         lastVelocity = rb.velocity;
+    }
+
+    #endregion
+    #region Swing Sound
+    /// <summary>
+    /// 플레이어의 속도와 상태에 따라 와이어 스윙 사운드를 제어합니다.
+    /// </summary>
+    private void HandleSwingSound()
+    {
+        // 조건: 공중 상태 + 최소 속도 이상
+        float minSwingSpeedWithSkill = minSwingSpeed * playerMgr.skill.GetSpeedRate();
+        bool isSwinging = !playerMgr.isGround && rb.velocity.magnitude > minSwingSpeedWithSkill;
+
+        if (isSwinging)
+        {
+            // 스윙 소리가 재생 중이 아닐 때, 재생 시작
+            if (!isSwingSoundPlaying)
+            {
+                StartSwingSound();
+            }
+            UpdateSwingSoundParameters(minSwingSpeedWithSkill);
+        }
+        // 스윙 조건이 충족되지 않을 때, 소리가 재생 중이었다면 정지
+        else if (isSwingSoundPlaying)
+        {
+            StopSwingSound();
+        }
+    }
+
+    /// <summary>
+    /// 스윙 소리 재생을 시작합니다.
+    /// </summary>
+    private void StartSwingSound()
+    {
+        playerMgr.wireSwingAudioSource.Play();
+        isSwingSoundPlaying = true;
+    }
+
+    /// <summary>
+    /// 현재 속도에 따라 스윙 소리의 피치와 볼륨을 조절합니다.
+    /// </summary>
+    private void UpdateSwingSoundParameters(float minSpeed)
+    {
+        float currentSpeed = rb.velocity.magnitude;
+        float maxSwingSpeedForPitchWithSkill = maxSwingSpeedForPitch * playerMgr.skill.GetSpeedRate();
+        float clamp01 = Mathf.InverseLerp(minSpeed, maxSwingSpeedForPitchWithSkill, currentSpeed);
+        float pitch = Mathf.Lerp(1.0f, 1.8f, clamp01);
+        float volume = Mathf.Lerp(playerMgr.wireSwingAudioSource.volume, AudioManager.Instance.SfxVolume * clamp01, 5 * Time.fixedDeltaTime);
+        playerMgr.wireSwingAudioSource.volume = volume;
+        playerMgr.wireSwingAudioSource.pitch = pitch;
+    }
+
+    /// <summary>
+    /// 스윙 소리 재생을 부드럽게  멈춥니다.
+    /// </summary>
+    private void StopSwingSound()
+    {
+        float volume = Mathf.Lerp(playerMgr.wireSwingAudioSource.volume, 0, 5 * Time.fixedDeltaTime);
+        playerMgr.wireSwingAudioSource.volume = volume;
+        if (volume < 0.05f)
+        {
+            playerMgr.wireSwingAudioSource.Stop();
+            isSwingSoundPlaying = false;
+            playerMgr.wireSwingAudioSource.pitch = 1f; // 피치를 기본값으로 리셋
+        }
     }
     #endregion
 
@@ -182,6 +260,7 @@ public class PlayerMovementController : MonoBehaviour
         playerMgr.isBoosting = false;
         playerMgr.isGliding = false;
         SetIsHamsterValueAnimator();
+        _maxBallVelocity = GetComponent<BallMovementController>().maxBallVelocity;
     }
     #endregion
 
@@ -251,6 +330,7 @@ public class PlayerMovementController : MonoBehaviour
             isRKeyPressedForCheckpoint = true;
             rKeyHoldStartTime = Time.time;
             HLogger.General.Info("R키 눌림. 5초 카운트다운 시작. 이동 시 취소됩니다.");
+            resetText.gameObject.SetActive(true);
         }
 
         // R키가 한 번 눌려서 타이머가 활성화된 상태일 때
@@ -262,14 +342,18 @@ public class PlayerMovementController : MonoBehaviour
                 // 이동 입력이 있으면 타이머 및 상태 해제
                 isRKeyPressedForCheckpoint = false;
                 HLogger.General.Info("이동 입력 감지됨. 체크포인트 이동 타이머 취소.");
+                resetText.gameObject.SetActive(false);
                 return;
             }
+
+            resetText.text = $"<size=110%>{5 - Mathf.FloorToInt(Time.time - rKeyHoldStartTime)}</size>초 후에 체크포인트의 위치로 돌아갑니다.";
 
             // 5초가 경과했는지 확인 (이동 입력이 없었을 경우)
             if (Time.time - rKeyHoldStartTime >= RKeyHoldDurationForCheckpoint)
             {
                 MoveToLastCheckpoint();
                 isRKeyPressedForCheckpoint = false; // 체크포인트 이동 후 상태 초기화
+                resetText.gameObject.SetActive(false);
             }
         }
     }
@@ -570,8 +654,7 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleBoostInput()
     {
         // 부스트 불가능 조건 검사
-        if (!playerMgr.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0
-            || !playerMgr.isBall || !playerMgr.skill.HasBoost())
+        if (CanNotBoost())
         {
             playerMgr.StopPlayBoosterSfx();
             _boostEffectEmission.enabled = false;
@@ -600,6 +683,12 @@ public class PlayerMovementController : MonoBehaviour
             currentBoostEnergy -= burstBoostEnergyUsage;
         }
         // 지속성 부스트는 BallMovementController에서 처리
+    }
+
+    bool CanNotBoost()
+    {
+        return !playerMgr.onWire || Input.GetKeyUp(KeyCode.LeftShift) || currentBoostEnergy <= 0
+            || !playerMgr.isBall || !playerMgr.skill.HasBoost();
     }
 
     /// <summary>

@@ -136,6 +136,94 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &672860796
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 672860797}
+  - component: {fileID: 672860800}
+  - component: {fileID: 672860799}
+  - component: {fileID: 672860798}
+  m_Layer: 0
+  m_Name: KitchenDialogueTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &672860797
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672860796}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 145.2, y: 76.145836, z: 127.6}
+  m_LocalScale: {x: 20.833332, y: 151.25003, z: 83.33334}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2501988100325164997}
+  m_RootOrder: 66
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!33 &672860800
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672860796}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &672860799
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672860796}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.2402602, y: 0.13316134, z: 0.22143891}
+  m_Center: {x: -0.120130084, y: -0.11519334, z: -1.1353905}
+--- !u!114 &672860798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672860796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d81940a866ac1694b833a3f20ad5c37a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  executeOnlyOnce: 0
+  destroyThis: 1
+  minimumNotificationCooldown: 0.1
+  dialogueOnTriggerOrCollier: 1
+  isTrigger: 1
+  isOnelineDialogue: 1
+  isOnelineFileDialogue: 0
+  character: hamster
+  faceIdx: 0
+  text: "\uC778\uB355\uC158\uC774 \uCF1C\uC838 \uC788\uC5B4\uC11C \uB2E4\uB978 \uAE38\uC744
+    \uCC3E\uC544\uC57C \uD560 \uAC83 \uAC19\uC544"
+  lifetime: 4
+  fileName: KitchenDialogue
+  index: 0
+  useVirtualCamera: 0
+  virtualCamera: {fileID: 0}
+  cameraShotTime: 5
+  isFollowPlayer: 0
+  isInputLockDuringCamera: 0
+  dialogueEnableStartCheckpoint: 0
+  dialogueEnableEndCheckpoint: 12
 --- !u!1 &688172877
 GameObject:
   m_ObjectHideFlags: 0
@@ -8496,7 +8584,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 5200
+  m_VersionIndex: 5209
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -13775,7 +13863,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 4516
+  m_VersionIndex: 4525
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -14728,6 +14816,7 @@ Transform:
   - {fileID: 7967760994881452620}
   - {fileID: 1259362973760045042}
   - {fileID: 6025679285053973020}
+  - {fileID: 672860797}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -23045,6 +23134,38 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.025354834, y: 0.025354829, z: 0.0024144654}
   m_Center: {x: 0, y: -0.000000029802322, z: 0.0018661184}
+--- !u!114 &1002993476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4362770423715198300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d81940a866ac1694b833a3f20ad5c37a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  executeOnlyOnce: 0
+  destroyThis: 0
+  minimumNotificationCooldown: 0.1
+  dialogueOnTriggerOrCollier: 1
+  isTrigger: 1
+  isOnelineDialogue: 0
+  isOnelineFileDialogue: 0
+  character: hamster
+  faceIdx: 0
+  text: 
+  lifetime: 4
+  fileName: MicrowaveDialogue
+  index: 0
+  useVirtualCamera: 0
+  virtualCamera: {fileID: 0}
+  cameraShotTime: 5
+  isFollowPlayer: 0
+  isInputLockDuringCamera: 0
+  dialogueEnableStartCheckpoint: 0
+  dialogueEnableEndCheckpoint: 12
 --- !u!114 &2501988100932735783
 MonoBehaviour:
   m_ObjectHideFlags: 0

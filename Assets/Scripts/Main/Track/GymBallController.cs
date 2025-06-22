@@ -42,7 +42,7 @@ public class GymBallController : MonoBehaviour
             transform.localScale = initScale * (1 + bounceScale);
             transform.DOScale(initScale, 0.5f).SetEase(Ease.InBounce);
 
-            AudioManager.Instance.PlaySfxAtPosition(SfxType.GymBall, transform.position);
+            AudioManager.Instance.PlaySfx2D(SfxType.GymBall);
 
             // 플레이어라면 입력 제한 걸기
             if (collision.gameObject.CompareTag("Player"))

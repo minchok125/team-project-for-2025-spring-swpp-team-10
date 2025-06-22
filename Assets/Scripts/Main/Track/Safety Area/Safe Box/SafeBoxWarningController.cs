@@ -46,15 +46,6 @@ public class SafeBoxWarningController : MonoBehaviour
         wallEmissionMaterial.SetColor(k_EmissionColor, _defaultEmissionColor * _defaultEmissionIntensity);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            StartWarning();
-        }
-    }
-
-
     public void StartWarning()
     {
         HLogger.General.Warning("Safe Box Warning!!!", this);
@@ -62,7 +53,7 @@ public class SafeBoxWarningController : MonoBehaviour
         StartCoroutine(SetWallColorRed());
         SetObjectColorRed();
         SetObjectActive();
-        warningEvent?.Invoke();
+        InvokeEvents();
         UIManager.Instance.DoDialogue("SafeBoxOpenDialogue");
 
         // Custom Logic
@@ -100,5 +91,10 @@ public class SafeBoxWarningController : MonoBehaviour
             activeCols[i].enabled = true;
         for (int i = 0; i < inactiveCols.Length; i++)
             inactiveCols[i].enabled = false;
+    }
+
+    private void InvokeEvents()
+    {
+        warningEvent?.Invoke();
     }
 }

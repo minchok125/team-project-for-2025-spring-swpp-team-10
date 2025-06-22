@@ -69,48 +69,21 @@ public class CheckpointController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 체크포인트를 활성화합니다.
-    /// CheckpointManager에 알리고, 머티리얼을 변경하며, 필요시 효과를 재생합니다.
-    /// </summary>
-    public void ProcessActivation()
-    {
-        // 이미 활성화되었고, 한 번만 활성화되도록 설정되었다면 더 이상 진행하지 않음
-        if (activateOnce && _isActivated)
-        {
-            HLogger.General.Debug($"Checkpoint '{gameObject.name}'는 이미 활성화되었으며, activateOnce가 true입니다.", gameObject);
-            return;
-        }
 
+    /// <summary>
+    /// 플레이어 진입 시 CheckpointManager에 활성화를 요청합니다.
+    /// </summary>
+    private void ProcessActivation()
+    {
+        // 매니저에게 활성화 처리를 위임합니다.
         if (CheckpointManager.Instance != null)
         {
             if (unlockableItem != null && ItemManager.Instance != null)
             {
-                ItemManager.Instance.UnlockItem(unlockableItem);
+                ItemManager.Instance.UnlockItem(unlockableItem.effectType);
             }
 
             CheckpointManager.Instance.CheckpointActivated(this);
-            _isActivated = true;
-
-            // 활성화 효과 재생 (선택 사항)
-            if (activationEffectPrefab != null)
-            {
-                Instantiate(activationEffectPrefab, transform.position, Quaternion.identity);
-            }
-
-            // 머티리얼 변경
-            SetMaterial(activeMaterial, "Active Material");
-
-            // 한 번 활성화된 후에는 다시 발동하지 않도록 트리거 비활성화
-            if (activateOnce)
-            {
-                _collider.enabled = false;
-                HLogger.General.Debug($"Checkpoint '{gameObject.name}' 활성화됨 (일회성, 콜라이더 비활성화).", gameObject);
-            }
-            else
-            {
-                HLogger.General.Debug($"Checkpoint '{gameObject.name}' 활성화됨 (반복 가능).", gameObject);
-            }
         }
         else
         {
@@ -119,18 +92,49 @@ public class CheckpointController : MonoBehaviour
     }
 
     /// <summary>
-    /// 체크포인트를 비활성화 상태로 되돌립니다.
-    /// 머티리얼을 inactiveMaterial로 변경하고, 콜라이더를 다시 활성화합니다.
+    /// 체크포인트를 활성화 상태로 만듭니다. (효과음, 머티리얼, 파티클 등)
+    /// 이 메서드는 CheckpointManager에 의해 호출됩니다.
     /// </summary>
-    public void ProcessDeactivation()
+    public void Activate()
     {
+        // 이미 활성화되었다면 아무것도 하지 않습니다. (중복 효과음 및 효과 방지)
+        if (_isActivated) return;
+        
+        _isActivated = true;
+
+        // 활성화 효과 재생 (선택 사항)
+        if (activationEffectPrefab != null)
+        {
+            Instantiate(activationEffectPrefab, transform.position, Quaternion.identity);
+        }
+
+        // 머티리얼 변경
+        SetMaterial(activeMaterial, "Active Material");
+
+        // 한 번 활성화된 후에는 다시 발동하지 않도록 콜라이더 비활성화
+        if (activateOnce)
+        {
+            _collider.enabled = false;
+            HLogger.General.Debug($"Checkpoint '{gameObject.name}' 활성화됨 (일회성, 콜라이더 비활성화).", gameObject);
+        }
+        else
+        {
+            HLogger.General.Debug($"Checkpoint '{gameObject.name}' 활성화됨 (반복 가능).", gameObject);
+        }
+    }
+
+    /// <summary>
+    /// 체크포인트를 비활성화 상태로 되돌립니다.
+    /// </summary>
+    public void Deactivate()
+    {
+        if (!_isActivated) return;
+        
         _isActivated = false;
 
-        // 머티리얼을 비활성화 상태로 변경
         SetMaterial(inactiveMaterial, "Inactive Material (Deactivate)");
 
-        // 콜라이더를 다시 활성화하여 재작동 가능하게 함
-        if (!_collider.enabled)
+        if (activateOnce && !_collider.enabled)
         {
             _collider.enabled = true;
         }

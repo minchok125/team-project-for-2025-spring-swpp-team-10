@@ -122,10 +122,11 @@ public class EndingManager : MonoBehaviour
         _endingSeq = DOTween.Sequence();
 
         _endingSeq
-            .Append(escapeCam.transform.DORotate(escapeCamRot[0], runDuration / 2).SetEase(Ease.Linear))
-            .Append(escapeCam.transform.DORotate(escapeCamRot[1], runDuration / 2).SetEase(Ease.Linear))
-            .Append(escapeCam.transform.DORotate(escapeCamRot[2], jumpDuration))
-            .Insert(0f, escapeCam.transform.DOLocalPath(escapeCamPath, runDuration + jumpDuration));
+            .Insert(1.5f, escapeCam.transform.DORotate(escapeCamRot[0], runDuration-1.5f).SetEase(Ease.Linear))
+            .Join(escapeCam.transform.DOLocalMove(escapeCamPath[0], runDuration-1.5f).SetEase(Ease.Linear));
+        _endingSeq
+            .Append(escapeCam.transform.DORotate(escapeCamRot[1], jumpDuration))
+            .Join(escapeCam.transform.DOLocalMove(escapeCamPath[1], jumpDuration));
         
         trackHamsterController.transform.localPosition = trackHamsterPos;
         trackHamsterController.transform.rotation = Quaternion.Euler(trackHamsterRot);

@@ -6,12 +6,13 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 {
 	[Header("References")]
 	[SerializeField] private TextMeshProUGUI timerText;
-	[SerializeField] private GameObject pausedMenuPanel, settingsPanel;
+	[SerializeField] private GameObject pausedMenuPanel, noteUI;
 	[SerializeField] private NextCheckpointUIController nextCheckpointUI;
 	[SerializeField] private GameObject endingTextObj;
-	[SerializeField] private GameObject storePanelPrefab;
+	[SerializeField] private GameObject storePanel;
+	[SerializeField] private GameObject guidePanel;
 
-	private GameObject _storePanel;
+	private GameObject settingsPanel;
 
 	protected override void Awake()
 	{
@@ -24,16 +25,10 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 			return;
 		}
 
-		// StorePanel 생성 및 RectTransform 설정
-		_storePanel = Instantiate(storePanelPrefab, canvas.transform);
-		RectTransform storeRect = _storePanel.GetComponent<RectTransform>();
-		storeRect.anchorMin = Vector2.zero;
-		storeRect.anchorMax = Vector2.one;
-		storeRect.offsetMin = Vector2.zero;
-		storeRect.offsetMax = Vector2.zero;
-		HLogger.Info("StorePanel 생성 완료");
+		settingsPanel = pausedMenuPanel.transform.Find("Settings Panel")?.gameObject;
 
-		_storePanel.SetActive(false);
+
+		storePanel.SetActive(false);
 		HLogger.Info("StorePanelController 초기화 완료");
 
 		// CheckpointManager에 옵저버로 등록
@@ -96,12 +91,16 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	{
 		// Paused -> Playing
 		pausedMenuPanel.SetActive(false);
+		storePanel.SetActive(false);
 		settingsPanel.SetActive(false);
+		noteUI.SetActive(false);
+		guidePanel.SetActive(false);
 	}
 
 	public void PauseGame()
 	{
 		// Playing -> Paused
+		HLogger.General.Info("게임 일시정지");
 		pausedMenuPanel.SetActive(true);
 		settingsPanel.SetActive(false);
 	}
@@ -146,14 +145,26 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		// TODO: Settings 패널 연결 필요
 	}
 
+	public void OpenGuide()
+	{
+		guidePanel.SetActive(true);
+		pausedMenuPanel.SetActive(false);
+	}
+
+	public void CloseGuide()
+	{
+		guidePanel.SetActive(false);
+		pausedMenuPanel.SetActive(true);
+	}	
+
 	public void OpenStore()
 	{
-		_storePanel.GetComponent<StorePanelController>().Open();
+		storePanel.GetComponent<StorePanelController>().Open();
 	}
 
 	public void CloseStore()
 	{
-		_storePanel.GetComponent<StorePanelController>().Close();
+		storePanel.GetComponent<StorePanelController>().Close();
 	}
 
 	public void UpdateNextCheckpoint(Vector3 nextCpPos)
@@ -161,8 +172,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		nextCheckpointUI.UpdateTargetPosition(nextCpPos);
 	}
 
-	public void DoDialogue(string fileName) { dialogueUIController.StartDialogue(fileName); }
-	public void DoDialogue(string character, string text, float lifetime, int faceIdx = 0) { dialogueUIController.StartDialogue(character, text, lifetime, faceIdx); }
-	public void DoDialogue(int idx) { dialogueUIController.StartDialogue(idx); }
+	public virtual void DoDialogue(string fileName) { dialogueUIController.StartDialogue(fileName); }
+	public virtual void DoDialogue(string character, string text, float lifetime, int faceIdx = 0) { dialogueUIController.StartDialogue(character, text, lifetime, faceIdx); }
+	public virtual void DoDialogue(int idx) { dialogueUIController.StartDialogue(idx); }
 	public void ClearDialogue() { dialogueUIController.ClearDialogue(); }
 }
