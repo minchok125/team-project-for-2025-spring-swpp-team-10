@@ -12,6 +12,7 @@ public class TitleSceneManager : MonoBehaviour
     [SerializeField] TMP_InputField nameInputField;
     [SerializeField] GameObject notAcceptTxt;
     [SerializeField] private Image fadePanel;
+    [SerializeField] private AudioSource audioSource;
 
     private void Awake()
     {
@@ -23,10 +24,10 @@ public class TitleSceneManager : MonoBehaviour
     {
         fadePanel.gameObject.SetActive(true);
         fadePanel.DOColor(Color.black, 3f);
-        float currBgmVolume = AudioManager.Instance.BgmVolume;
+        float currBgmVolume = audioSource.volume;
         for (float elapsed = 0; elapsed < 3f; elapsed += Time.deltaTime)
         {
-            AudioManager.Instance.SetBgmVolume(Mathf.Lerp(currBgmVolume, 0f, elapsed / 3f));
+            audioSource.volume = Mathf.Lerp(currBgmVolume, 0f, elapsed / 3f);
             yield return null;
         }
         SceneManager.LoadScene(2);
