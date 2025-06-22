@@ -18,6 +18,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	[SerializeField] private GameObject fadePanel;
 
 	[SerializeField] private GameObject settingsPanel;
+	[SerializeField] private TooltipController tooltip;
 
 	public bool canOpenCheckpointShop = false;
 
@@ -64,6 +65,11 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		pausedMenuPanel.SetActive(false);
 		settingsPanel.SetActive(false);
 		endingTextObj.SetActive(false);
+
+		if (tooltip != null)
+        {
+            tooltip.gameObject.SetActive(false);
+        }
 
 
 		// 아래는 추후에 저장 기능이 구현되면 PlayerData를 받아서 값을 설정하도록 수정되어야 함
@@ -158,6 +164,28 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
     public void OnCheckpointProgressUpdated(int activatedIndex, int totalCheckpoints)
     {
         // 체크포인트 진행상황을 3/5 이런 식으로 표시할 수 있게 알리는 메서드입니다. 추후 UI 구현 가능
+    }
+
+	/// <summary>
+    /// 툴팁을 화면에 표시합니다.
+    /// </summary>
+    /// <param name="content">툴팁에 표시될 내용</param>
+    public void ShowTooltip(string content)
+    {
+        if (tooltip == null) return;
+
+        tooltip.SetText(content);
+        tooltip.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// 툴팁을 화면에서 숨깁니다.
+    /// </summary>
+    public void HideTooltip()
+    {
+        if (tooltip == null) return;
+
+        tooltip.gameObject.SetActive(false);
     }
 
 	public void OpenSettings()
