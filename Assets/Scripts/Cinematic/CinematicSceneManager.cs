@@ -85,6 +85,7 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
     {
         if (_skip) return;
         _skip = true;
+        StopAllCoroutines();
         _cinematicSequence.Skip();
     }
 }

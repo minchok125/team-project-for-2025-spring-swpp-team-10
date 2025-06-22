@@ -28,6 +28,7 @@ public class BadEndingManager : CinematicSequence
     [SerializeField] private Vector3 cageCamTransPos, cageCamTransRot;
     [SerializeField] private Vector2 cageCamRectPos, cageCamRectScale;
     [SerializeField] private float cageHoldDuration;
+    [SerializeField] private CinematicScoreboardManager sbManager;
 
     [Header("References")] [SerializeField]
     private GameObject mugshotPadding;
@@ -147,7 +148,7 @@ public class BadEndingManager : CinematicSequence
 
     private IEnumerator Scoreboard()
     {
-        UpdateScoreboard();
+        sbManager.UpdateScoreboard();
         
         // 카메라 위치 초기화
         _currCam = _camPool.GetObject();
@@ -164,15 +165,10 @@ public class BadEndingManager : CinematicSequence
         FadeInScreen(cageFadeInDuration);
         yield return new WaitForSeconds(cageFadeInDuration);
     }
-    
-    private void UpdateScoreboard()
-    {
-        // throw new System.NotImplementedException();
-    }
 
     public override void Skip()
     {
-        UpdateScoreboard();
+        sbManager.UpdateScoreboard();
         
         // 현재 재생 중인 영상 정지 및 카메라 최종 위치로 변환
         if (CamSequence != null && CamSequence.IsActive()) CamSequence.Complete();
@@ -180,7 +176,7 @@ public class BadEndingManager : CinematicSequence
         
         _currCam = _camPool.GetObject();
         _currCam.transform.SetParent(Cage.Transform);
-        _currCam.transform.localPosition = cageCamRectPos;
+        _currCam.transform.localPosition = cageCamTransPos;
         _currCam.transform.rotation = Quaternion.Euler(cageCamTransRot);
         _currCam.GetComponent<Camera>().rect = new Rect(cageCamRectPos, cageCamRectScale);
         _currCam.SetActive(true);
