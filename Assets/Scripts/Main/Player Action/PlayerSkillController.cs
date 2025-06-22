@@ -52,7 +52,7 @@ public class PlayerSkillController : MonoBehaviour
     public void ResetSkills()
     {
         _skill = 0;          // 모든 스킬 비활성화
-        _speedRate = _jumpRate = 1.0f; // 기본값으로 재설정
+        _speedRate = _jumpRate = _jumpRateSqr = 1.0f; // 기본값으로 재설정
         _maxWireLength = 40f;
         _boosterUsageRate = 0.3f;
         _boosterRecoveryRate = 0.125f;
