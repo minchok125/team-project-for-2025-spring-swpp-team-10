@@ -48,9 +48,9 @@ public class SkinUIController : MonoBehaviour
         GameManager.Instance.selectedHamsterSkin = HamsterSkinType.Gray;
     }
 
-    public void CloseSkinUI()
-    {
-        //skinUIPanel.SetActive(false);
-        SceneManager.LoadScene("MainScene");
-    }
+    // public void CloseSkinUI()
+    // {
+    //     //skinUIPanel.SetActive(false);
+    //     SceneManager.LoadScene("MainScene");
+    // }
 }
