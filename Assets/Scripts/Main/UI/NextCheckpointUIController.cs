@@ -72,6 +72,11 @@ public class NextCheckpointUIController : MonoBehaviour
         }
     }
 
+    public void SetTargetPos(Vector3 pos)
+    {
+        _targetPos = pos;
+    }
+
     private void AdjustNextCheckpointUI()
     {
         // target pos를 screen 기준 좌표로 변환 후, screen 내에 위치하는지 확인
