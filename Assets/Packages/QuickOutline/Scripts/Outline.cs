@@ -146,6 +146,9 @@ public class Outline : MonoBehaviour {
   }
 
   void OnDisable() {
+    if (renderers == null)
+      return;
+      
     for (int i = 0; i < renderers.Length; i++)
     {
       var renderer = renderers[i];
