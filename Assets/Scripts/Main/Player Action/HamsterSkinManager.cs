@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class HamsterSkinManager : MonoBehaviour
 {
-    // ÀÎ°ÔÀÓ¿¡ ³ªÅ¸³¯ ÇÜ½ºÅÍÀÔ´Ï´Ù.
+    // ï¿½Î°ï¿½ï¿½Ó¿ï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½Ü½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½.
     [Header("Hamster Renderers")]
     public Renderer[] hamsterRenderers;
 
-    // ÇÜ½ºÅÍ¿¡ Àû¿ë °¡´ÉÇÑ ÅØ½ºÃÄÀÔ´Ï´Ù.
+    // ï¿½Ü½ï¿½ï¿½Í¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½ï¿½ï¿½ï¿½Ô´Ï´ï¿½.
     [Header("Available Skin Textures")]
     public Texture[] skinTextures;
 
@@ -17,7 +17,7 @@ public class HamsterSkinManager : MonoBehaviour
         ApplySkin(GameManager.Instance.selectedHamsterSkin);
     }
 
-    // GameManagerÀÇ skinType °ª¿¡ ÇØ´çÇÏ´Â ÇÜ½ºÅÍ ÅØ½ºÃÄ Àû¿ë
+    // GameManagerï¿½ï¿½ skinType ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ï¿½Ï´ï¿½ ï¿½Ü½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     public void ApplySkin(HamsterSkinType skinType)
     {
         int skinIndex = 0;
@@ -46,7 +46,7 @@ public class HamsterSkinManager : MonoBehaviour
         {
             if (rend != null && rend.material != null)
             {
-                rend.material.SetTexture("_BaseTexture", skinTextures[skinIndex]);
+                rend.material.SetTexture("_BaseMap", skinTextures[skinIndex]);
             }
         }
     }
