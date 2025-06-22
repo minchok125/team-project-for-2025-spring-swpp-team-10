@@ -24,15 +24,7 @@ public class ScoreBoardController : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerPrefs.DeleteAll();
         OnButtonClick(0);
-        PersistentDataManager.Instance.SaveScore(0, "가나다", 666.55f);
-        PersistentDataManager.Instance.SaveScore(0, "마바사", 163.711f);
-        PersistentDataManager.Instance.SaveScore(0, "아아라", 1773.1767f);
-        PersistentDataManager.Instance.SaveScore(1, "qwerqwer", 563.1f);
-        PersistentDataManager.Instance.SaveScore(1, "마바자", 1636.0f);
-        for (int i = 0; i < 30; i++)
-            PersistentDataManager.Instance.SaveScore(0, "가나다", 666.55f);
         PrintTopScores(0);
     }
 
