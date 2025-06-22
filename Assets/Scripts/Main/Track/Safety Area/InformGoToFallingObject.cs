@@ -41,8 +41,8 @@ public class InformGoToFallingObject : MonoBehaviour
         {
             StartCoroutine(DoFallingObjectDialogue());
             virtualCameraFalling.Priority = 11;
-            PlayerManager.Instance.SetMouseInputLockDuringSeconds(5f);
-            Invoke(nameof(ChangeCameraFallingPriorityToNine), 3f);
+            PlayerManager.Instance.SetMouseInputLockDuringSeconds(4.5f);
+            Invoke(nameof(ChangeCameraFallingPriorityToNine), 2f);
             _informedFallingObject = true;
         }
     }
@@ -73,7 +73,7 @@ public class InformGoToFallingObject : MonoBehaviour
             virtualCameraHamster.Priority = 11;
             _lastInformtime = Time.time;
             _firstInformedHamsterObject = true;
-            Invoke(nameof(ChangeCameraHamsterPriorityToNine), 3f);
+            Invoke(nameof(ChangeCameraHamsterPriorityToNine), 2f);
         }
     }
 
