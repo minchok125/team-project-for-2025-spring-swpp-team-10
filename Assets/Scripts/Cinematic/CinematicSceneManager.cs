@@ -23,6 +23,8 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
     
     [Header("Cage")]
     [SerializeField] private Transform cageTransform;
+
+    [SerializeField] private GameObject skipButton;
     
     private GameManager.CinematicModes _cinematicMode;
     private CinematicSequence _cinematicSequence;
@@ -37,6 +39,8 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
 
     private void Init()
     {
+        skipButton.SetActive(true);
+        
         _skip = false;
         CinematicCommonObject commonObject =
             new CinematicCommonObject(fadePanel, camPrefab, openingCanvas, logo, paddings, covers, endingCanvas,
@@ -61,10 +65,10 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
         StartCoroutine(_cinematicSequence.Run());
     }
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0)) SkipCinematicScene();
-    }
+    // private void Update()
+    // {
+    //     if (Input.GetMouseButtonDown(0)) SkipCinematicScene();
+    // }
 
     public void GoBackToTitle()
     {
@@ -81,11 +85,18 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
         SceneManager.LoadScene(sceneName);
     }
 
-    private void SkipCinematicScene()
+    public void SkipCinematicScene()
     {
         if (_skip) return;
         _skip = true;
+        skipButton.SetActive(false);
         StopAllCoroutines();
         _cinematicSequence.Skip();
+    }
+
+    public void CinematicEnded()
+    {
+        _skip = true;
+        skipButton.SetActive(false);
     }
 }

@@ -91,6 +91,8 @@ public class OpeningManager : CinematicSequence
         // CutScene
         yield return CutScene();
         
+        CinematicSceneManager.Instance.CinematicEnded();
+        
         // FadeOut 및 Scene Load
         FadeOutScreen(cutSceneFadeOutDuration, Color.black);
         yield return FadeOutBgm(cutSceneFadeOutDuration + 0.01f);
@@ -114,7 +116,7 @@ public class OpeningManager : CinematicSequence
         _currCam.transform.SetParent(Track.Transform);
         _currCam.transform.localPosition = roomCamPos;
         _currCam.transform.rotation = Quaternion.Euler(roomCamRot);
-        Town.Lights.SetActive(false);
+        // Town.Lights.SetActive(false);
         Track.Hamster.House();
         Track.Hamster.gameObject.SetActive(true);
         AudioManager.Instance.SetBgmVolume(1f);
@@ -170,7 +172,7 @@ public class OpeningManager : CinematicSequence
         // StandUp
         Track.Hamster.Standup(standUpDuration);
         Common.Logo.SetActive(true);
-        AudioManager.Instance.SetSfxVolume(0.8f);
+        AudioManager.Instance.SetSfxVolume(1f);
         AudioManager.Instance.PlaySfx2D(SfxType.OpeningLogoSfx);
         yield return new WaitForSeconds(0.5f);
         yield return new WaitForSeconds(holdLogoDuration);
@@ -183,7 +185,7 @@ public class OpeningManager : CinematicSequence
     private IEnumerator CutScene()
     {
         // cover 및 bgm 초기화
-        AudioManager.Instance.SetBgmVolume(0.1f);
+        AudioManager.Instance.SetBgmVolume(1f);
         AudioManager.Instance.PlayBgm(BgmType.OpeningCutSceneBgm);
         
         foreach(GameObject cover in Common.Covers)

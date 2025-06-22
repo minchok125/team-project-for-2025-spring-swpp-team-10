@@ -36,6 +36,7 @@ public class GoodEndingManager : CinematicSequence
         // Track 초기화
         
         // Town 초기화
+        Town.Lights.SetActive(true);
         
         // Cage 초기화
     }
@@ -60,6 +61,8 @@ public class GoodEndingManager : CinematicSequence
         
         // Scoreboard
         Scoreboard();
+        
+        CinematicSceneManager.Instance.CinematicEnded();
     }
     
     private IEnumerator Escape()
