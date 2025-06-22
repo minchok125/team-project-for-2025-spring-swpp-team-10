@@ -18,7 +18,7 @@ public class Coin
             return grade switch
             {
                 CoinGrade.Silver => 10,
-                CoinGrade.Gold => 30,
+                CoinGrade.Gold => 50,
                 _ => 0
             };
         }

@@ -59,16 +59,20 @@ namespace AudioSystem
         Pickup3,
         OpeningShrinkSfx,
         OpeningLogoSfx,
+        EscapingSfx,
+        SirenSfx,
         WireSwingLoop,
         DialogueSequenceStart,
         CheckpointActivate,
-        NoteOpen
+        NoteOpen,
+        CoinCollect
     }
 
     public enum BgmType
     {
         OpeningHouseBgm,
         OpeningCutSceneBgm,
+        GoodEndingBgm,
         // 필요에 따라 추가
     }
 }
@@ -253,6 +257,8 @@ public class AudioManager : PersistentSingleton<AudioManager>
     public void SetSfxPitch(float pitch)
     {
         SfxPitch = Mathf.Clamp(pitch, 0.1f, 3f);
+        
+        sfxSource2D.pitch = SfxPitch;
 
         // 현재 재생 중인 모든 루프 사운드의 피치 갱신
         foreach(var source in loopingTweens.Keys)

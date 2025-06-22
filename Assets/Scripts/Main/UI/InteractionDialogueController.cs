@@ -48,6 +48,7 @@ public class InteractionDialogueController : MonoBehaviour
     [Tooltip("가상 카메라가 플레이어를 따라가도록 할지 여부를 결정합니다. (Follow를 자동으로 플레이어로 설정해줍니다.)")]
     [SerializeField] private bool isFollowPlayer = false;
     [SerializeField] private bool isInputLockDuringCamera = false;
+    [SerializeField] private bool isSkippable = true; // 카메라 연출이 스킵 가능한지 여부
 
 
     public enum CheckpointIndex { GameStart, Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, GameEnd }
@@ -59,6 +60,8 @@ public class InteractionDialogueController : MonoBehaviour
 
     private bool _canInteract = true;
     private bool _hasBeenExecuted = false;
+    private bool _isDuringCameraCutscene = false;
+
 
 
 
@@ -74,6 +77,15 @@ public class InteractionDialogueController : MonoBehaviour
 
         if (destroyThis)
             minimumNotificationCooldown = 999999;
+    }
+
+    private void Update()
+    {
+        if(_isDuringCameraCutscene && Input.GetKeyDown(KeyCode.G) && isSkippable)
+        {
+            // 카메라 연출 중 G 키를 누르면 카메라 연출을 중단하고 대사를 출력합니다.
+            SkipCameraCutscene();
+        }
     }
 
 
@@ -151,6 +163,8 @@ public class InteractionDialogueController : MonoBehaviour
         if (!useVirtualCamera)
             return;
 
+        _isDuringCameraCutscene = true;
+
         // 해당 카메라의 우선순위를 높여서 이 카메라의 화면이 보이도록 함
         virtualCamera.Priority = 11;
         // 마우스 입력 잠금
@@ -160,6 +174,32 @@ public class InteractionDialogueController : MonoBehaviour
         // 전체 입력 잠금 설정
         if (isInputLockDuringCamera)
             PlayerManager.Instance.SetInputLockDuringSeconds(cameraShotTime);
+    }
+
+    // 카메라 연출 스킵 함수
+    private void SkipCameraCutscene()
+    {
+        HLogger.General.Info("카메라 연출을 스킵했습니다.", this);
+
+        // 예약된 함수 호출(Invoke)을 모두 취소
+        CancelInvoke(nameof(ChangeCameraHamsterPriorityToNine));
+        CancelInvoke(nameof(DestroyThis));
+
+        // 카메라 우선순위 즉시 복원
+        ChangeCameraHamsterPriorityToNine();
+
+        // 입력 잠금 즉시 해제
+        if (isInputLockDuringCamera)
+        {
+            PlayerManager.Instance.SetInputLockDuringSeconds(0f);
+        }
+        PlayerManager.Instance.SetMouseInputLockDuringSeconds(0f);
+
+        // 오브젝트 삭제가 필요하면 즉시 삭제
+        if (destroyThis)
+        {
+            DestroyThis();
+        }
     }
 
     private void ChangeCameraHamsterPriorityToNine()
@@ -222,6 +262,7 @@ class TriggerEnterDialogueControllerEditor : Editor
     SerializedProperty isInputLockDuringCameraProp;
     SerializedProperty dialogueEnableStartCheckpointProp;
     SerializedProperty dialogueEnableEndCheckpointProp;
+    SerializedProperty isSkippableProp;
 
 
     private void OnEnable()
@@ -246,6 +287,7 @@ class TriggerEnterDialogueControllerEditor : Editor
         isInputLockDuringCameraProp = serializedObject.FindProperty("isInputLockDuringCamera");
         dialogueEnableStartCheckpointProp = serializedObject.FindProperty("dialogueEnableStartCheckpoint");
         dialogueEnableEndCheckpointProp = serializedObject.FindProperty("dialogueEnableEndCheckpoint");
+        isSkippableProp = serializedObject.FindProperty("isSkippable");
     }
 
     public override void OnInspectorGUI()
@@ -295,6 +337,8 @@ class TriggerEnterDialogueControllerEditor : Editor
             EditorGUILayout.PropertyField(isFollowPlayerProp);
             EditorGUILayout.PropertyField(isInputLockDuringCameraProp);
         }
+        EditorGUILayout.PropertyField(isSkippableProp);
+
         
         EditorGUILayout.PropertyField(dialogueEnableStartCheckpointProp);
         EditorGUILayout.PropertyField(dialogueEnableEndCheckpointProp);
