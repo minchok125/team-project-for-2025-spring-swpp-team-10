@@ -72,6 +72,7 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
 
     public void GoBackToTitle()
     {
+        AudioManager.Instance.StopBgm();
         Load("TitleScene");
     }
 

@@ -104,7 +104,7 @@ public class BranchController : MonoBehaviour
 
     private IEnumerator OpenTutorialUICoroutine()
     {
-        yield return new WaitForSeconds(0.02f);
+        yield return new WaitForSeconds(0.05f);
 
         if (PersistentDataManager.Instance.mainSceneIndex > 0)
         {

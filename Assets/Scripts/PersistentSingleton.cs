@@ -28,18 +28,16 @@ public class PersistentSingleton<T> : MonoBehaviour where T : MonoBehaviour
 
     protected virtual void Awake()
     {
-        _instance = this as T;
         if (_instance == null)
         {
             _instance = this as T;
+            DontDestroyOnLoad(gameObject);
         }
         else if (_instance != this)
         {
             Destroy(gameObject);
             return;
         }
-
-        DontDestroyOnLoad(gameObject);
     }
     
     /// <summary>

@@ -170,6 +170,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         int milliseconds = (int)((_timeRecord * 100) % 100);
 
         bool isGoodEnding = _endingBranchCondition >= _safeRecord;
+        isGoodEnding = false;
 
         PersistentDataManager.Instance.SaveScore(_timeRecord);
 

@@ -105,13 +105,15 @@ public class BadEndingManager : CinematicSequence
 
         // 햄스터 탈출과 함께 Sequence 재생
         AudioManager.Instance.SetSfxPitch(0.7f);
-        AudioManager.Instance.SetSfxVolume(0.5f);
+        float originalSfxVolume = AudioManager.Instance.SfxVolume;
+        AudioManager.Instance.SetSfxVolume(0.7f);
         AudioManager.Instance.PlaySfx2D(SfxType.EscapingSfx);
         Track.Hamster.gameObject.SetActive(true);
         StartCoroutine(Track.Hamster.Escape(escapeRunDuration));
         CamSequence.Play();
         yield return new WaitForSeconds(escapeRunDuration + escapeJumpDuration);
         AudioManager.Instance.SetSfxPitch(1f);
+        AudioManager.Instance.SetSfxVolume(originalSfxVolume);
     }
 
     private IEnumerator Police()
@@ -122,7 +124,7 @@ public class BadEndingManager : CinematicSequence
         _currCam.transform.localPosition = policeCamStartPos;
         _currCam.transform.rotation = Quaternion.Euler(policeCamStartRot);
         _currCam.SetActive(true);
-        
+
         // Camera 움직임 Sequence 제작
         if (CamSequence != null && CamSequence.IsActive()) CamSequence.Complete();
 
@@ -131,21 +133,24 @@ public class BadEndingManager : CinematicSequence
             .Insert(policeFadeInDuration + policeHoldHamsterDuration,
                 _currCam.transform.DORotate(policeCamEndRot, policeCamTurnDuration).SetEase(Ease.Linear))
             .Join(_currCam.transform.DOLocalMove(policeCamEndPos, policeCamTurnDuration));
-        
+
         // Fade In 및 Sequence 재생
         Town.Police.SetActive(true);
         Town.Hamster.gameObject.SetActive(true);
         Town.Hamster.Police();
         CamSequence.Play();
-        
+
+        float originalSfxVolume = AudioManager.Instance.SfxVolume;
+        AudioManager.Instance.SetSfxVolume(0.45f);
         AudioManager.Instance.PlaySfx2D(SfxType.SirenSfx);
-        AudioManager.Instance.SetSfxVolume(0.5f);
-            
+
+
         FadeInScreen(policeFadeInDuration);
 
         float policeWholeDuration = policeFadeInDuration + policeHoldHamsterDuration + policeCamTurnDuration +
-                                    policeHoldCarDuration;
+                                    policeHoldCarDuration + 0.3f;
         yield return new WaitForSeconds(policeWholeDuration);
+        AudioManager.Instance.SetSfxVolume(originalSfxVolume);
     }
 
     private IEnumerator Scoreboard()
