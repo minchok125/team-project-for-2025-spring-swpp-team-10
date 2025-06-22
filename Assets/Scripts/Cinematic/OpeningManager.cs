@@ -93,7 +93,7 @@ public class OpeningManager : CinematicSequence
         
         // FadeOut 및 Scene Load
         FadeOutScreen(cutSceneFadeOutDuration, Color.black);
-        yield return FadeOutBgm(cutSceneFadeOutDuration);
+        yield return FadeOutBgm(cutSceneFadeOutDuration + 0.01f);
         Common.FadePanel.SetActive(true);
         CinematicSceneManager.Instance.Load("MainScene");
     }
@@ -231,7 +231,7 @@ public class OpeningManager : CinematicSequence
     private IEnumerator SkipCoroutine()
     {
         FadeOutScreen(cutSceneFadeOutDuration, Color.black);
-        yield return FadeOutBgm(cutSceneFadeOutDuration);
+        yield return FadeOutBgm(cutSceneFadeOutDuration + 0.01f);
         Common.FadePanel.SetActive(true);
         CinematicSceneManager.Instance.Load("MainScene");
     }
