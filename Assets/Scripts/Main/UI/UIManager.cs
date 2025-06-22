@@ -1,6 +1,9 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using Hampossible.Utils;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 {
@@ -12,6 +15,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	[SerializeField] private GameObject storePanel;
 	[SerializeField] private InformMessageTextController informText;
 	[SerializeField] private GameObject guidePanel;
+	[SerializeField] private GameObject fadePanel;
 
 	private GameObject settingsPanel;
 
@@ -37,6 +41,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		{
 			CheckpointManager.Instance.RegisterObserver(this);
 		}
+		
+		fadePanel.SetActive(false);
 	}
 	[SerializeField] private DialogueUIController dialogueUIController;
 
@@ -123,12 +129,20 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		timerText.text = $"Timer [{m:D2}:{s:D2}.{ms:D2}]";
 	}
 
-	public void EndGame(int m, int s, int ms)
+	public void EndGame(int m, int s, int ms, bool isGoodEnding)
 	{
-		endingTextObj.GetComponent<TextMeshProUGUI>().text = $"You Completed Game in [{m:D2}:{s:D2}.{ms:D2}]";
-		endingTextObj.SetActive(true);
+		// endingTextObj.GetComponent<TextMeshProUGUI>().text = $"You Completed Game in [{m:D2}:{s:D2}.{ms:D2}]";
+		// endingTextObj.SetActive(true);
 		pausedMenuPanel.SetActive(false);
 		settingsPanel.SetActive(false);
+
+		GameManager.Instance.cinematicMode =
+			isGoodEnding ? GameManager.CinematicModes.GoodEnding : GameManager.CinematicModes.BadEnding;
+		
+		Image fadePanelImg = fadePanel.GetComponent<Image>();
+		fadePanelImg.color = Color.clear;
+		fadePanel.SetActive(true);
+		fadePanelImg.DOColor(Color.black, 2f).OnComplete(() => SceneManager.LoadScene("CinematicScene"));
 	}
 
     public void OnCheckpointProgressUpdated(int activatedIndex, int totalCheckpoints)
