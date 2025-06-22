@@ -7,11 +7,20 @@ public class CinematicHamsterController : MonoBehaviour
 {
     [Header("Animation")]
     [SerializeField] private Animator animator;
+    
+    [Header("Opening - Logo")]
+    [SerializeField] private Vector3 logoStartPos, logoStartRot;
+    [SerializeField] private Vector3 logoEndPos, logoEndRot;
 
     [Header("Ending - Escape")]
     [SerializeField] private float escapeSpeed;
+    [SerializeField] private Vector3 escapeStartPos, escapeStartRot;
     [SerializeField] private float escapeSpeedAdder;
     [SerializeField] private Vector3 escapeRunDirection, escapeJumpDirection;
+
+    [Header("Ending - Police")]
+    [SerializeField] private Vector3 policePos;
+    [SerializeField] private Vector3 policeRot;
     
     [Header("Good Ending - RunAway")]
     [SerializeField] private float runAwaySpeed;
@@ -25,8 +34,22 @@ public class CinematicHamsterController : MonoBehaviour
         animator.SetBool("Jump", false);
     }
 
+    public void House()
+    {
+        transform.localPosition = logoStartPos;
+        transform.localRotation = Quaternion.Euler(logoStartRot);
+    }
+
+    public void Standup(float standUpDuration)
+    {
+        transform.DOLocalMove(logoEndPos, standUpDuration);
+        transform.DORotate(logoEndRot, standUpDuration);
+    }
+
     public IEnumerator Escape(float runDuration)
     {
+        transform.localPosition = escapeStartPos;
+        transform.rotation = Quaternion.Euler(escapeStartRot);
         animator.SetBool("Walk", true);
         
         for (float elapsed = 0f; elapsed < runDuration; elapsed += Time.deltaTime)
@@ -43,6 +66,12 @@ public class CinematicHamsterController : MonoBehaviour
             escapeSpeed -= Time.deltaTime * escapeSpeedAdder;
             yield return null;
         }
+    }
+
+    public void Police()
+    {
+        transform.localPosition = policePos;
+        transform.rotation = Quaternion.Euler(policeRot);
     }
 
     public IEnumerator RunAway(float runAwayDuration)
