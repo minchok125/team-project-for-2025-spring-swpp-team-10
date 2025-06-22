@@ -9,7 +9,6 @@ public class UI_StoreStandItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private TextMeshProUGUI priceText;
-    [SerializeField] private GameObject equippedTag;
     [SerializeField] private GameObject lockedOverlay;
 
     [SerializeField] private TextMeshProUGUI valueText;
@@ -28,9 +27,6 @@ public class UI_StoreStandItem : MonoBehaviour
         titleText.text = userItem.item.name;
         descriptionText.text = userItem.item.description;
         priceText.text = userItem.GetCurrentPrice().ToString();
-
-        // 장착 여부 표시
-        equippedTag.SetActive(userItem.isEquipped);
 
         var purchaseOnly = userItem.item.IsPurchaseOnlyType();
 
