@@ -2515,6 +2515,7 @@ GameObject:
   - component: {fileID: 2172067867100047889}
   - component: {fileID: 2172067867100047895}
   - component: {fileID: 2172067867100047888}
+  - component: {fileID: 2087350153555459209}
   m_Layer: 0
   m_Name: Sparks (1)
   m_TagString: Untagged
@@ -7391,6 +7392,18 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &2087350153555459209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2172067867100047890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d4e7a3bf660cde41b44fef29087fe0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2172067868379935640
 GameObject:
   m_ObjectHideFlags: 0
@@ -7402,6 +7415,7 @@ GameObject:
   - component: {fileID: 2172067868379935647}
   - component: {fileID: 2172067868379935645}
   - component: {fileID: 2172067868379935646}
+  - component: {fileID: 6753869524005761500}
   m_Layer: 0
   m_Name: Sparks
   m_TagString: Untagged
@@ -12279,6 +12293,18 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &6753869524005761500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2172067868379935640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d4e7a3bf660cde41b44fef29087fe0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2349751937119493716
 GameObject:
   m_ObjectHideFlags: 0
