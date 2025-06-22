@@ -51,7 +51,9 @@ public class DialogueUIController : MonoBehaviour
         _objectPool.InitObjectPool(dialoguePrefab, maxDialogueNum * 2, transform);
         _textProcessor = new TextProcessor(gray, red, orange, yellow, green, blue, purple);
 
-        _hamsterSprite = Resources.LoadAll<Sprite>("Sprites/gray");
+        string hamsterSpriteName = GameManager.Instance.selectedHamsterSkin == HamsterSkinType.Golden ? "Sprites/golden"
+            : "Sprites/gray";
+        _hamsterSprite = Resources.LoadAll<Sprite>(hamsterSpriteName);
     }
     
     private void Update()
