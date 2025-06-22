@@ -306,6 +306,7 @@ public class PlayerSkillController : MonoBehaviour
         {
             case ItemEffectType.SpeedBoost:
                 SetSpeedRate(userItem.GetCurrentValue());
+                PlayerManager.Instance.isBoosting = userItem.GetCurrentValue() > 0;
                 break;
             case ItemEffectType.JumpBoost:
                 SetJumpHeightRate(userItem.GetCurrentValue());
