@@ -357,6 +357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   content: "shift\uB97C \uB20C\uB7EC\uC11C \uD55C\uBC88\uC5D0 \uB354\uD560 \uC218
     \uC788\uC5B4!"
+  isTooltipEnabled: 1
 --- !u!1 &3488096377714052726
 GameObject:
   m_ObjectHideFlags: 0
@@ -769,6 +770,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   content: "\uC544\uC774\uD15C\uC740 \uCCB4\uD06C\uD3EC\uC778\uD2B8 \uADFC\uCC98\uC5D0\uC11C\uB9CC
     \uAD6C\uB9E4\uD560 \uC218 \uC788\uC5B4!"
+  isTooltipEnabled: 1
 --- !u!1 &6086783590627244712
 GameObject:
   m_ObjectHideFlags: 0
@@ -1058,6 +1060,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   content: "shift\uB97C \uB20C\uB7EC\uC11C \uD55C\uBC88\uC5D0 \uBE84 \uC218 \uC788\uC5B4!"
+  isTooltipEnabled: 1
 --- !u!222 &747354479250366573
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1884,6 +1887,7 @@ MonoBehaviour:
   incrementButton: {fileID: 3762182052561309115}
   decrementButton: {fileID: 2838750219528296513}
   purchaseButton: {fileID: 5074262016272795726}
+  buttonGroup: {fileID: 4640764462246981421}
 --- !u!1 &8566636121675105615
 GameObject:
   m_ObjectHideFlags: 0
