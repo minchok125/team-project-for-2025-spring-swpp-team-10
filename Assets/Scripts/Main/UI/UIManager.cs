@@ -125,6 +125,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		noteUI.SetActive(false);
 		guidePanel.SetActive(false);
 		tutorialUIPanel.SetActive(false);
+		coinPanel.SetActive(true);
 	}
 
 	public void PauseGame()
