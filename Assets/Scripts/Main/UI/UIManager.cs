@@ -99,6 +99,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		{
 			// TODO : 상점 열기
 			HLogger.General.Info("강화가 가능한 상점을 엽니다.");
+			OpenStore(false);
 		}
 
 		coinCountText.text = ItemManager.Instance.GetCoinCount().ToString();
@@ -227,15 +228,15 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		pausedMenuPanel.SetActive(true);
 	}	
 
-	public void OpenStore()
+	public void OpenStore(bool isStoreLocked = true)
 	{
-		MainSceneManager.Instance.CountTime();
+		ItemManager.Instance.SetStoreLocked(isStoreLocked);
 		storePanel.GetComponent<StorePanelController>().Open();
 	}
 
 	public void CloseStore()
 	{
-		MainSceneManager.Instance.LockTime();
+		ItemManager.Instance.SetStoreLocked(true);
 		storePanel.GetComponent<StorePanelController>().Close();
 	}
 

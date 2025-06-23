@@ -60,11 +60,13 @@ public class StorePanelController : MonoBehaviour
     {
         ClearChildren(standItemGrid);
 
+        var isStoreLocked = ItemManager.Instance.IsStoreLocked();
+
         foreach (var item in ItemManager.Instance.GetStandItems())
         {
             var go = Instantiate(standItemPrefab, standItemGrid);
             var view = go.GetComponent<UI_StoreStandItem>();
-            view?.Bind(item);
+            view?.Bind(item, isStoreLocked);
         }
     }
 
