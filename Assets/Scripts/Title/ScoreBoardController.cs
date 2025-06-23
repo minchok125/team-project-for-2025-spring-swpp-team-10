@@ -29,6 +29,10 @@ public class ScoreBoardController : MonoBehaviour
         if (scores == null || scores.Count == 0)
             PersistentDataManager.Instance.SaveScore(0, "개발자", 978.9f);
 
+        scores = LoadScores(3);
+        if (scores == null || scores.Count == 0)
+            PersistentDataManager.Instance.SaveScore(3, "개발자", 541.5f);
+
         OnButtonClick(0);
         PrintTopScores(0);
     }
