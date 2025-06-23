@@ -24,6 +24,11 @@ public class ScoreBoardController : MonoBehaviour
 
     private void OnEnable()
     {
+        // 개발자 기록 넣기
+        List<ScoreEntry> scores = LoadScores(0);
+        if (scores == null || scores.Count == 0)
+            PersistentDataManager.Instance.SaveScore(0, "개발자", 978.9f);
+
         OnButtonClick(0);
         PrintTopScores(0);
     }
