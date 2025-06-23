@@ -47,10 +47,10 @@ public class UI_StoreStandItem : MonoBehaviour
 
         lockedOverlay.SetActive(userItem.isLocked);
 
-        var tooltipTriggers = buttonGroup.GetComponentsInChildren<TooltipTrigger>(true);
-        foreach (var tooltip in tooltipTriggers)
+        var tooltipTrigger = buttonGroup.GetComponent<TooltipTrigger>();
+        if (tooltipTrigger != null)
         {
-            tooltip.isTooltipEnabled = isStoreLocked;
+            tooltipTrigger.isTooltipEnabled = isStoreLocked;
         }
         buttonGroup.SetActive(!isStoreLocked);
     }
