@@ -72,6 +72,7 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
 
     public void GoBackToTitle()
     {
+        GameManager.Instance.cinematicMode = GameManager.CinematicModes.Opening;
         AudioManager.Instance.StopBgm();
         Load("TitleScene");
     }
