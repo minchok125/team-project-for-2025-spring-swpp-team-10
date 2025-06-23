@@ -169,7 +169,7 @@ public class StorePanelController : MonoBehaviour
         //     });
         // }
 
-        gameObject.SetActive(false);
+        UIManager.Instance.CloseStore();
     }
 
     private void CloseStorePanel()
