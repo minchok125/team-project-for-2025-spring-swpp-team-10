@@ -151,12 +151,13 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
             if (isTimerRunning)
             {
                 UpdateTimer();
+                AddCoinByPlaytime();
             }
             // ALT 키로 마우스 잠금 해제
             _mainSceneFacade.AltCursorControl(Input.GetKey(KeyCode.LeftAlt));
         }
 
-        AddCoinByPlaytime();
+        
 
         // Ending 잘 되는지 Debugging 용
         if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
