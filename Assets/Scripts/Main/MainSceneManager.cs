@@ -21,15 +21,27 @@ public class MainSceneFacade
 
     public void PauseGame(bool uiActive)
     {
-        Time.timeScale = 0f;
+        LockTime();
         if (uiActive)
             _uiManager.PauseGame();
         _cursorController.UnlockCursor();
     }
 
+    public void LockTime()
+    {
+        HLogger.DebugLog("LockTime 호출");
+        Time.timeScale = 0f;
+    }
+
+    public void CountTime()
+    {
+        HLogger.DebugLog("CountTime 호출");
+        Time.timeScale = MainSceneManager.Instance.GetCurrentTimeScale();
+    }
+
     public void ResumeGame()
     {
-        Time.timeScale = MainSceneManager.Instance.GetCurrentTimeScale();
+        CountTime();
         _uiManager.ResumeGame();
         _cursorController.LockCursor();
     }
@@ -175,6 +187,16 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
 
         _mainSceneFacade.EndGame(minutes, seconds, milliseconds, isGoodEnding);
         Debug.Log("End Game - " + _gameState);
+    }
+
+    public void LockTime()
+    {
+        _mainSceneFacade.LockTime();
+    }
+
+    public void CountTime()
+    {
+        _mainSceneFacade.CountTime();
     }
 
     private void UpdateTimer()

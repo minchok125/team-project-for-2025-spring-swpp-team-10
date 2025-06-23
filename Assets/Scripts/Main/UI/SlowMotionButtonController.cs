@@ -26,6 +26,7 @@ public class SlowMotionButtonController : MonoBehaviour
     {
         _raycaster = GetComponentInParent<Canvas>().GetComponent<GraphicRaycaster>();
         _eventSystem = EventSystem.current;
+        slowButtonImage.sprite = _isSlow ? slowOnSprite : slowOffSprite;
     }
 
     private void Update()
@@ -85,9 +86,7 @@ public class SlowMotionButtonController : MonoBehaviour
     private void ApplySlowMotion()
     {
         slowButtonImage.sprite = slowOnSprite;
-        // 0.8���� ����
         MainSceneManager.Instance.SetTimeScale(0.8f);
-        // ���� �������� ������ timeScale�� �����Ϸ���, MainSceneManager�� SetTimeScale�� _timescale ������ �ϴ� �κа� Time.timescale�� ������ �����ϴ� �κ� (ApplyTimeScale)���� ������� ��
         // MainSceneManager.Instance.ApplyTimeScale();
     }
 
@@ -95,6 +94,5 @@ public class SlowMotionButtonController : MonoBehaviour
     {
         slowButtonImage.sprite = slowOffSprite;
         MainSceneManager.Instance.SetTimeScale(1f);
-        // ���������� ���� �������� ������ timeScale�� �����Ϸ���, MainSceneManager���� �ӽ÷� 1�� ����� �־�� ��
     }
 }
