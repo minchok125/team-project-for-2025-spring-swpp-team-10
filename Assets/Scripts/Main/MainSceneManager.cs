@@ -91,6 +91,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
     public bool isSafeBoxOpened = false;
     [HideInInspector]
     public bool doYouKnowSafeBoxPassword = false;
+    private bool isTimerRunning = false;
 
     private MainSceneFacade _mainSceneFacade;
 
@@ -121,6 +122,17 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
 
         isSafeBoxOpened = false;
         doYouKnowSafeBoxPassword = false;
+
+        int startIndex = PersistentDataManager.Instance.mainSceneIndex;
+
+        if (startIndex == 0)
+        {
+            isTimerRunning = false;
+        }
+        else
+        {
+            isTimerRunning = true;
+        }
     }
 
     private void Update()
@@ -136,12 +148,16 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         // Playing일 때만 타이머 업데이트
         if (_gameState == GameStates.Playing)
         {
-            UpdateTimer();
+            if (isTimerRunning)
+            {
+                UpdateTimer();
+                AddCoinByPlaytime();
+            }
             // ALT 키로 마우스 잠금 해제
             _mainSceneFacade.AltCursorControl(Input.GetKey(KeyCode.LeftAlt));
         }
 
-        AddCoinByPlaytime();
+        
 
         // Ending 잘 되는지 Debugging 용
         if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
@@ -162,6 +178,16 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         // Playing 상태일 때 esc 키 눌리면 [Playing -> Paused]
         _gameState = GameStates.Paused;
         _mainSceneFacade.PauseGame(uiActive);
+    }
+
+    public void StartTimer()
+    {
+        isTimerRunning = true;
+    }
+
+    public void StopTimer()
+    {
+        isTimerRunning = false;
     }
 
     public void ResumeGame()
