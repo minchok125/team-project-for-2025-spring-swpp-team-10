@@ -30,6 +30,8 @@ public class ItemManager : RuntimeSingleton<ItemManager>
     private List<Item> _allItems = new List<Item>();
     private List<UserItem> _userItems = new List<UserItem>();
 
+    private bool _isStoreLocked = true;
+
     private IInventoryStorage _inventoryStorage;
 
     public void SetInventoryStorage(IInventoryStorage storage)
@@ -86,6 +88,17 @@ public class ItemManager : RuntimeSingleton<ItemManager>
             _inventoryStorage?.SaveUserItems(_userItems);
             HLogger.General.Info("아이템 데이터베이스 초기화 완료", this);
         }
+    }
+
+    public bool IsStoreLocked()
+    {
+        return _isStoreLocked;
+    }
+
+    public void SetStoreLocked(bool isLocked)
+    {
+        _isStoreLocked = isLocked;
+        HLogger.General.Info($"상점 잠금 상태 변경: {isLocked}", this);
     }
 
     private bool isItemStartWithLocked(Item item)
