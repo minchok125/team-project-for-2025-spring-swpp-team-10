@@ -16,9 +16,11 @@ public class UI_StoreStandItem : MonoBehaviour
     [SerializeField] private Button decrementButton;
     [SerializeField] private Button purchaseButton;
 
+    [SerializeField] private GameObject buttonGroup;
+
     private UserItem userItem;
 
-    public void Bind(UserItem userItem)
+    public void Bind(UserItem userItem, bool isStoreLocked)
     {
         this.userItem = userItem;
 
@@ -42,9 +44,15 @@ public class UI_StoreStandItem : MonoBehaviour
         purchaseButton.gameObject.SetActive(purchaseOnly);
         purchaseButton.gameObject.GetComponent<StoreStandItemPurchaseButton>().Bind(userItem.isEquipped);
 
-    
+
         lockedOverlay.SetActive(userItem.isLocked);
 
+        var tooltipTriggers = buttonGroup.GetComponentsInChildren<TooltipTrigger>(true);
+        foreach (var tooltip in tooltipTriggers)
+        {
+            tooltip.enabled = isStoreLocked;
+        }
+        buttonGroup.SetActive(!isStoreLocked);
     }
 
     public void OnIncrementClicked()
