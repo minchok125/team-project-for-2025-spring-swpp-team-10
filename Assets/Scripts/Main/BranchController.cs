@@ -12,7 +12,7 @@ public class BranchController : MonoBehaviour
 
     private Vector3 bathroom = new Vector3(550.2f, 87.4f, 381.5f);
 
-    private Vector3 safetyRoom = new Vector3(307.8f, -683.75f, 592.4f);
+    private Vector3 safetyRoom = new Vector3(307.8f, -690f, 592.4f);
 
     [SerializeField] private Transform player, initialPoint;
     [SerializeField] private GameObject tutorialUI;
@@ -23,7 +23,7 @@ public class BranchController : MonoBehaviour
     private string booster = "\n<size=110%>부스터</size>           - 와이어 액션 시 부스터";
     private string doubleJump = "\n<size=110%>더블 점프</size>       - 공중에서 한 번 더 점프";
     private string retractor = "\n<size=110%>리트랙터</size>        - 와이어 길이 조절";
-
+    
     private void Awake()
     {
         SetPoint();
