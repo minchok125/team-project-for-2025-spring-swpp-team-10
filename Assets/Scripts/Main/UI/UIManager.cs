@@ -241,13 +241,9 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 
 	public void CloseStore()
 	{
-		if (!ItemManager.Instance.IsStoreLocked())
-		{
-			MainSceneManager.Instance.ResumeGame();
-		}
-		 
+		MainSceneManager.Instance.ResumeGame();
 		ItemManager.Instance.SetStoreLocked(true);
-		storePanel.GetComponent<StorePanelController>().Close();
+		storePanel.SetActive(false);
 	}
 
 	public void InformMessage(string str)
