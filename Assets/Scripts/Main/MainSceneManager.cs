@@ -27,6 +27,18 @@ public class MainSceneFacade
         _cursorController.UnlockCursor();
     }
 
+    public void UnlockCursor()
+    {
+        HLogger.DebugLog("UnlockCursor 호출");
+        _cursorController.UnlockCursor();
+    }
+
+    public void LockCursor()
+    {
+        HLogger.DebugLog("LockCursor 호출");
+        _cursorController.LockCursor();
+    }
+
     public void LockTime()
     {
         HLogger.DebugLog("LockTime 호출");
