@@ -20,6 +20,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	[SerializeField] private TextMeshProUGUI coinCountText;
 
 	[SerializeField] private GameObject settingsPanel;
+
+	[SerializeField] private GameObject coinPanel;
 	[SerializeField] private TooltipController tooltip;
 
 	public bool canOpenCheckpointShop = false;
@@ -232,6 +234,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	{
 		ItemManager.Instance.SetStoreLocked(isStoreLocked);
 		storePanel.GetComponent<StorePanelController>().Open();
+		coinPanel.SetActive(false);
 
 		if (!isStoreLocked)
 		{
@@ -241,6 +244,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 
 	public void CloseStore()
 	{
+		coinPanel.SetActive(true);
 		MainSceneManager.Instance.ResumeGame();
 		ItemManager.Instance.SetStoreLocked(true);
 		storePanel.SetActive(false);
