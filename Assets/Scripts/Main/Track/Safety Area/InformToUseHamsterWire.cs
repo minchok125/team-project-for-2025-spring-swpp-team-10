@@ -46,7 +46,7 @@ public class InformToUseHamsterWire : MonoBehaviour
             ChangeCameraPriority(11);
             timeFromLastInform = Time.time;
             _firstInformed = true;
-            Invoke(nameof(ChangeCameraPriorityToNine), 3f);
+            Invoke(nameof(ChangeCameraPriorityToNine), 2f);
         }
     }
 

@@ -66,6 +66,6 @@ public abstract class CinematicSequence : MonoBehaviour
         }
         
         AudioManager.Instance.StopBgm();
-        AudioManager.Instance.SetBgmVolume(1f);
+        AudioManager.Instance.SetBgmVolume(currBgmVolume);
     }
 }

@@ -15,6 +15,12 @@ public class PersistentDataManager : PersistentSingleton<PersistentDataManager>
         SaveScore(mainSceneIndex, playerName, clearTime);
     }
 
+    public void SaveScore(float clearTime)
+    {
+        this.clearTime = clearTime;
+        SaveScore(mainSceneIndex, playerName, clearTime);
+    }
+
     public void SaveScore(int mainSceneIndex, string playerName, float clearTime)
     {
         string key = $"MainScene{mainSceneIndex}";
@@ -23,12 +29,26 @@ public class PersistentDataManager : PersistentSingleton<PersistentDataManager>
         string json = PlayerPrefs.GetString(key, "");
         StageScoreData stageData = string.IsNullOrEmpty(json) ? new StageScoreData() : JsonUtility.FromJson<StageScoreData>(json);
 
-        // 새로운 기록 추가
-        stageData.scores.Add(new ScoreEntry
+        // 기존 동일한 이름의 기록이 있는지 확인
+        ScoreEntry existingEntry = stageData.scores.Find(entry => entry.playerName == playerName);
+
+        if (existingEntry != null)
         {
-            playerName = playerName,
-            clearTime = clearTime
-        });
+            // 기존 기록보다 클리어 시간이 더 짧으면 갱신
+            if (clearTime < existingEntry.clearTime)
+            {
+                existingEntry.clearTime = clearTime;
+            }
+        }
+        else
+        {
+            // 새로운 기록 추가
+            stageData.scores.Add(new ScoreEntry
+            {
+                playerName = playerName,
+                clearTime = clearTime
+            });
+        }
 
         // 저장
         string updatedJson = JsonUtility.ToJson(stageData);

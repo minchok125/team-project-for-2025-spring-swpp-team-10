@@ -155,6 +155,7 @@ public class CheckpointManager : RuntimeSingleton<CheckpointManager>
         {
             if (initialSpawnPoint != null)
             {
+                HLogger.General.Info($"여기는{initialSpawnPoint.position}");
                 return initialSpawnPoint.position;
             }
             if (orderedCheckpoints.Count > 0 && orderedCheckpoints[0] != null)

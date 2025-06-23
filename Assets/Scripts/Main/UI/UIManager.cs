@@ -16,8 +16,11 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	[SerializeField] private InformMessageTextController informText;
 	[SerializeField] private GameObject guidePanel;
 	[SerializeField] private GameObject fadePanel;
+	[SerializeField] private GameObject tutorialUIPanel;
+	[SerializeField] private TextMeshProUGUI coinCountText;
 
 	[SerializeField] private GameObject settingsPanel;
+	[SerializeField] private TooltipController tooltip;
 
 	public bool canOpenCheckpointShop = false;
 
@@ -65,6 +68,11 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		settingsPanel.SetActive(false);
 		endingTextObj.SetActive(false);
 
+		if (tooltip != null)
+        {
+            tooltip.gameObject.SetActive(false);
+        }
+
 
 		// 아래는 추후에 저장 기능이 구현되면 PlayerData를 받아서 값을 설정하도록 수정되어야 함
 		timerText.text = "00:00.00";
@@ -92,6 +100,8 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 			// TODO : 상점 열기
 			HLogger.General.Info("강화가 가능한 상점을 엽니다.");
 		}
+
+		coinCountText.text = ItemManager.Instance.GetCoinCount().ToString();
 	}
 
 	// INextCheckpointObserver 인터페이스 구현 메서드
@@ -111,6 +121,7 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		settingsPanel.SetActive(false);
 		noteUI.SetActive(false);
 		guidePanel.SetActive(false);
+		tutorialUIPanel.SetActive(false);
 	}
 
 	public void PauseGame()
@@ -119,17 +130,24 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		HLogger.General.Info("게임 일시정지");
 		pausedMenuPanel.SetActive(true);
 		settingsPanel.SetActive(false);
+		tutorialUIPanel.SetActive(false);
 	}
 
 	public void QuitMainScene(bool terminateGame)
 	{
 		if (terminateGame)
 		{
-			Debug.LogWarning("프로그램 종료 구현 필요");
+			// Debug.LogWarning("프로그램 종료 구현 필요");
+#if UNITY_EDITOR
+			UnityEditor.EditorApplication.isPlaying = false;
+#else
+			Application.Quit();
+#endif
 		}
 		else
 		{
 			SceneManager.LoadScene("TitleScene");
+			Time.timeScale = 1f;
 			HLogger.General.Info("메인 씬 종료: 타이틀 씬으로 이동");
 		}
 	}
@@ -152,12 +170,39 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		Image fadePanelImg = fadePanel.GetComponent<Image>();
 		fadePanelImg.color = Color.clear;
 		fadePanel.SetActive(true);
-		fadePanelImg.DOColor(Color.black, 2f).OnComplete(() => SceneManager.LoadScene("CinematicScene"));
+		fadePanelImg.DOColor(Color.black, 2f).OnComplete(() =>
+		{
+        	Cursor.visible = true;
+        	Cursor.lockState = CursorLockMode.None;
+			SceneManager.LoadScene("CinematicScene");
+		});
 	}
 
     public void OnCheckpointProgressUpdated(int activatedIndex, int totalCheckpoints)
     {
         // 체크포인트 진행상황을 3/5 이런 식으로 표시할 수 있게 알리는 메서드입니다. 추후 UI 구현 가능
+    }
+
+	/// <summary>
+    /// 툴팁을 화면에 표시합니다.
+    /// </summary>
+    /// <param name="content">툴팁에 표시될 내용</param>
+    public void ShowTooltip(string content)
+    {
+        if (tooltip == null) return;
+
+        tooltip.SetText(content);
+        tooltip.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// 툴팁을 화면에서 숨깁니다.
+    /// </summary>
+    public void HideTooltip()
+    {
+        if (tooltip == null) return;
+
+        tooltip.gameObject.SetActive(false);
     }
 
 	public void OpenSettings()
