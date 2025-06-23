@@ -50,7 +50,7 @@ public class UI_StoreStandItem : MonoBehaviour
         var tooltipTriggers = buttonGroup.GetComponentsInChildren<TooltipTrigger>(true);
         foreach (var tooltip in tooltipTriggers)
         {
-            tooltip.enabled = isStoreLocked;
+            tooltip.isTooltipEnabled = isStoreLocked;
         }
         buttonGroup.SetActive(!isStoreLocked);
     }
