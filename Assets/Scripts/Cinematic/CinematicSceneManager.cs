@@ -30,6 +30,8 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
     private CinematicSequence _cinematicSequence;
 
     private bool _skip;
+
+    private float _initialBgmVolume, _initialSfxVolume;
     
     protected override void Awake()
     {
@@ -40,6 +42,9 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
     private void Init()
     {
         skipButton.SetActive(true);
+
+        _initialBgmVolume = AudioManager.Instance.BgmVolume;
+        _initialSfxVolume = AudioManager.Instance.SfxVolume;
         
         _skip = false;
         CinematicCommonObject commonObject =
@@ -72,6 +77,10 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
 
     public void GoBackToTitle()
     {
+        AudioManager.Instance.SetBgmVolume(_initialBgmVolume);
+        AudioManager.Instance.SetSfxVolume(_initialSfxVolume);
+        AudioManager.Instance.SetSfxPitch(1f);
+        
         GameManager.Instance.cinematicMode = GameManager.CinematicModes.Opening;
         AudioManager.Instance.StopBgm();
         Load("TitleScene");
@@ -79,12 +88,20 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
 
     public void PlayAgain()
     {
+        AudioManager.Instance.SetBgmVolume(_initialBgmVolume);
+        AudioManager.Instance.SetSfxVolume(_initialSfxVolume);
+        AudioManager.Instance.SetSfxPitch(1f);
+        
         GameManager.Instance.cinematicMode = GameManager.CinematicModes.Opening;
         Load("MainScene");
     }
 
     public void Load(string sceneName)
     {
+        AudioManager.Instance.SetBgmVolume(_initialBgmVolume);
+        AudioManager.Instance.SetSfxVolume(_initialSfxVolume);
+        AudioManager.Instance.SetSfxPitch(1f);
+        
         SceneManager.LoadScene(sceneName);
     }
 
