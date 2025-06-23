@@ -233,11 +233,10 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 		ItemManager.Instance.SetStoreLocked(isStoreLocked);
 		storePanel.GetComponent<StorePanelController>().Open();
 
-		if (isStoreLocked)
+		if (!isStoreLocked)
 		{
 			MainSceneManager.Instance.PauseGame(false);
 		}
-		
 	}
 
 	public void CloseStore()
