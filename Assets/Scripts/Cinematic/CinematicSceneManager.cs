@@ -79,6 +79,7 @@ public class CinematicSceneManager : RuntimeSingleton<CinematicSceneManager>
 
     public void PlayAgain()
     {
+        GameManager.Instance.cinematicMode = GameManager.CinematicModes.Opening;
         Load("MainScene");
     }
 
