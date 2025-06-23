@@ -48,7 +48,7 @@ public class MainSceneFacade
 
     public void EndGame(int minutes, int seconds, int milliseconds, bool isGoodEnding)
     {
-        LockTime();
+        Time.timeScale = 0.7f;
         _uiManager.EndGame(minutes, seconds, milliseconds, isGoodEnding);
     }
 
@@ -98,6 +98,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
     private GameStates _gameState;
     private float _timeRecord, _safeRecord;
     private float _timeScale;
+    private float _coinTimeTick = 1f;
 
     private readonly float _endingBranchCondition = 600f;
 
@@ -140,8 +141,20 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
             _mainSceneFacade.AltCursorControl(Input.GetKey(KeyCode.LeftAlt));
         }
 
+        AddCoinByPlaytime();
+
         // Ending 잘 되는지 Debugging 용
         if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
+    }
+
+    private void AddCoinByPlaytime()
+    {
+        _coinTimeTick += Time.deltaTime;
+        if (_coinTimeTick >= 1f)
+        {
+            ItemManager.Instance.AddCoinByPlaytime();
+            _coinTimeTick -= 1f;
+        }
     }
 
     public void PauseGame(bool uiActive)
@@ -169,6 +182,8 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         int milliseconds = (int)((_timeRecord * 100) % 100);
 
         bool isGoodEnding = _endingBranchCondition >= _safeRecord;
+
+        PersistentDataManager.Instance.SaveScore(_timeRecord);
 
         _mainSceneFacade.EndGame(minutes, seconds, milliseconds, isGoodEnding);
         Debug.Log("End Game - " + _gameState);

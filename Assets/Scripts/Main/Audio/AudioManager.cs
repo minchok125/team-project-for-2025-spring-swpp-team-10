@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening; // DOTween 사용을 위해 필요합니다.
 using Hampossible.Utils;
+using System.Linq;
 
 /// <summary>
 /// 오디오 데이터 관리를 위한 네임스페이스
@@ -181,16 +182,13 @@ public class AudioManager : PersistentSingleton<AudioManager>
     /// </summary>
     public void PlaySfx2D(AudioSystem.SfxType sfxType, float volumeRate = 1)
     {
-        HLogger.General.Debug("1111111111111111");
         if (sfxDict.TryGetValue(sfxType, out AudioClip clip))
         {
             float _sfxVolume = Mathf.Clamp01(SfxVolume * volumeRate);
             if (sfxSource2D == null)
             {
-                HLogger.General.Debug(":ASdasdas333333333", this);
                 return; // ❗ 조기 리턴 필요
             }
-            HLogger.General.Debug("aSFKHASFHFS2222222");
             sfxSource2D.PlayOneShot(clip, _sfxVolume);
         }
     }
@@ -246,16 +244,15 @@ public class AudioManager : PersistentSingleton<AudioManager>
     {
         SfxVolume = Mathf.Clamp01(volume);
         sfxSource2D.volume = SfxVolume;
-        
+
         // 현재 재생 중인 모든 루프 사운드의 볼륨을 갱신
-        foreach(var entry in loopingTweens)
+        foreach (var entry in loopingTweens.ToList())
         {
             AudioSource source = entry.Key;
             Tween currentTween = entry.Value;
 
-            // 기존 트윈을 중지, 새로운 볼륨으로 부드럽게 변경하는 새 트윈을 적용
             currentTween?.Kill();
-            Tween newTween = source.DOFade(SfxVolume, 0.1f); 
+            Tween newTween = source.DOFade(SfxVolume, 0.1f);
             loopingTweens[source] = newTween;
         }
     }

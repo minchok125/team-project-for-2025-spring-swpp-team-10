@@ -43,7 +43,7 @@ public class WireClickButton : MonoBehaviour, IWireClickButton
             return;
 
         onClick.Invoke();
-        AudioManager.Instance.PlaySfxAtPosition(SfxType.WireClickButtonClicked, transform.position);
+        AudioManager.Instance.PlaySfx2D(SfxType.WireClickButtonClicked);
         transform.localPosition = clickPos;
         // 여러 번 클릭 가능한 버튼만 빨간버튼 원위치로
         if (!clickOnce)

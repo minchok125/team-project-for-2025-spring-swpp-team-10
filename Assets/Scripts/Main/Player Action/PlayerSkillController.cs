@@ -28,9 +28,7 @@ public class PlayerSkillController : MonoBehaviour
     private const int SKILL_GLIDING = 5;
 
 
-    [Header("디버그 UI")]
-    [Tooltip("플레이어 스킬 및 스탯 정보를 표시할 텍스트 컴포넌트")]
-    [SerializeField] private TextMeshProUGUI txt;
+    [SerializeField] private GameObject boosterUI;
     // 획득한 스킬을 텍스트로 표시하기 위한 문자열
     private string skillListText;
 
@@ -58,7 +56,7 @@ public class PlayerSkillController : MonoBehaviour
         _boosterRecoveryRate = 0.125f;
         skillListText = ""; // 스킬 텍스트 초기화
 
-        UpdateUI();
+         
     }
 
 
@@ -144,7 +142,6 @@ public class PlayerSkillController : MonoBehaviour
     public void AddSpeedRate(float rate)
     {
         _speedRate += rate;
-        UpdateUI();
     }
 
     /// <summary>
@@ -155,7 +152,6 @@ public class PlayerSkillController : MonoBehaviour
     public void SetSpeedRate(float rate)
     {
         _speedRate = rate;
-        UpdateUI();
     }
 
     /// <summary>
@@ -166,7 +162,6 @@ public class PlayerSkillController : MonoBehaviour
     {
         _jumpRate += rate;
         _jumpRateSqr = Mathf.Sqrt(_jumpRate);
-        UpdateUI();
     }
 
     /// <summary>
@@ -178,7 +173,6 @@ public class PlayerSkillController : MonoBehaviour
     {
         _jumpRate = rate;
         _jumpRateSqr = Mathf.Sqrt(_jumpRate);
-        UpdateUI();
     }
 
     /// <summary>
@@ -187,7 +181,6 @@ public class PlayerSkillController : MonoBehaviour
     public void SetMaxWireLength(float maxWireLength)
     {
         _maxWireLength = maxWireLength;
-        UpdateUI();
     }
 
     /// <summary>
@@ -196,7 +189,6 @@ public class PlayerSkillController : MonoBehaviour
     public void SetBoosterUsageRate(float boosterUsageRate)
     {
         _boosterUsageRate = boosterUsageRate;
-        UpdateUI();
     }
 
     /// <summary>
@@ -205,7 +197,6 @@ public class PlayerSkillController : MonoBehaviour
     public void SetBoosterRecoveryRate(float boosterRecoveryRate)
     {
         _boosterRecoveryRate = boosterRecoveryRate;
-        UpdateUI();
     }
 
     /// <summary>
@@ -215,7 +206,7 @@ public class PlayerSkillController : MonoBehaviour
     {
         _skill |= 1 << SKILL_HamsterWire;
         AddSkillText("Pull Wire");
-        ItemManager.Instance.UnlockItem(ItemEffectType.WireLength);
+        //ItemManager.Instance.UnlockItem(ItemEffectType.WireLength);
         Hampossible.Utils.HLogger.Skill.Info("햄스터 와이어 스킬 해금됨", this);
     }
 
@@ -226,7 +217,8 @@ public class PlayerSkillController : MonoBehaviour
     {
         _skill |= 1 << SKILL_BOOST;
         AddSkillText("Boost");
-        ItemManager.Instance.UnlockItem(ItemEffectType.SpeedBoost);
+        //ItemManager.Instance.UnlockItem(ItemEffectType.SpeedBoost);
+        boosterUI.SetActive(true);
         Hampossible.Utils.HLogger.Skill.Info("부스터 스킬 해금됨", this);
     }
 
@@ -282,18 +274,6 @@ public class PlayerSkillController : MonoBehaviour
         if (!string.IsNullOrEmpty(newSkillName))
         {
             skillListText += $"\n{newSkillName}";
-        }
-        UpdateUI();
-    }
-
-    /// <summary>
-    /// UI 텍스트를 최신 정보로 업데이트합니다.
-    /// </summary>
-    private void UpdateUI()
-    {
-        if (txt != null)
-        {
-            txt.text = $"Speed : {_speedRate:F2}x\nJump : {_jumpRate:F2}x\n{skillListText}";
         }
     }
     #endregion
@@ -361,8 +341,5 @@ public class PlayerSkillController : MonoBehaviour
                 Hampossible.Utils.HLogger.Error($"알 수 없는 아이템 효과 타입: {userItem.item.effectType}");
                 break;
         }
-
-
-        UpdateUI();
     }
 }

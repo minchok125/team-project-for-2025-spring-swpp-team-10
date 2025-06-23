@@ -36,6 +36,7 @@ public class GoodEndingManager : CinematicSequence
         // Track 초기화
         
         // Town 초기화
+        Town.Lights.SetActive(true);
         
         // Cage 초기화
     }
@@ -44,7 +45,7 @@ public class GoodEndingManager : CinematicSequence
     {
         // BGM 볼륨 및 화면 fade in
         FadeInScreen(initFadeInDuration);
-        // StartCoroutine(FadeInBgm());
+        //FadeOutBgm(initFadeInDuration);
         // TODO: 엔딩 BGM 설정
 
         // 햄스터 탈출하는 장면
@@ -60,8 +61,10 @@ public class GoodEndingManager : CinematicSequence
         
         // Scoreboard
         Scoreboard();
+        
+        CinematicSceneManager.Instance.CinematicEnded();
     }
-    
+
     private IEnumerator Escape()
     {
         // 카메라 위치 초기화
@@ -70,10 +73,10 @@ public class GoodEndingManager : CinematicSequence
         _currCam.transform.localPosition = escapeCamStartPos;
         _currCam.transform.rotation = Quaternion.Euler(escapeCamStartRot);
         _currCam.SetActive(true);
-        
+
         // Camera 움직임 Sequence 제작
         if (CamSequence != null && CamSequence.IsActive()) CamSequence.Complete();
-        
+
         CamSequence = DOTween.Sequence();
         CamSequence
             .Insert(escapeCamHoldDuration,
@@ -87,13 +90,15 @@ public class GoodEndingManager : CinematicSequence
 
         // 햄스터 탈출과 함께 Sequence 재생
         AudioManager.Instance.SetSfxPitch(0.7f);
-        AudioManager.Instance.SetSfxVolume(0.5f);
+        float originalSfxVolume = AudioManager.Instance.SfxVolume;
+        AudioManager.Instance.SetSfxVolume(0.7f);
         AudioManager.Instance.PlaySfx2D(SfxType.EscapingSfx);
         Track.Hamster.gameObject.SetActive(true);
         StartCoroutine(Track.Hamster.Escape(escapeRunDuration));
         CamSequence.Play();
         yield return new WaitForSeconds(escapeRunDuration + escapeJumpDuration);
         AudioManager.Instance.SetSfxPitch(1f);
+        AudioManager.Instance.SetSfxVolume(originalSfxVolume);
     }
 
     private IEnumerator RunAway()

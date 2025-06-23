@@ -46,8 +46,8 @@ public class SlowMotionButtonController : MonoBehaviour
 
     private void SetExplainText()
     {
-        if (!_isSlow) explainText.text = "현재 게임 속도 : <size=110%>1.0배</size>\n\n게임 속도를 0.8배로 만듭니다.\n타이머는 실제 시간 기준으로 흐르며\n느려지지 않습니다.";
-        else explainText.text = "현재 게임 속도 : <size=110%>0.8배</size>\n\n게임 속도를 1.0배로 만듭니다.\n타이머는 실제 시간 기준으로 흐르며\n느려지지 않습니다.";
+        if (!_isSlow) explainText.text = "<size=105%>현재 게임 속도 : </size><size=115%>1.0배</size>\n\n게임 속도를 0.8배로 만듭니다.\n타이머는 실제 시간 기준으로 흐르며\n느려지지 않습니다.";
+        else explainText.text = "<size=105%>현재 게임 속도 : </size><size=115%>0.8배</size>\n\n게임 속도를 1.0배로 만듭니다.\n타이머는 실제 시간 기준으로 흐르며\n느려지지 않습니다.";
     }
 
     bool IsMouseOverThisUI()
