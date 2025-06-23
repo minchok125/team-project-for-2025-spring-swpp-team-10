@@ -361,7 +361,7 @@ public class PlayerMovementController : MonoBehaviour
     /// <summary>
     /// 저장된 마지막 체크포인트로 플레이어를 이동시킵니다.
     /// </summary>
-    private void MoveToLastCheckpoint()
+    public void MoveToLastCheckpoint()
     {
         if (CheckpointManager.Instance != null)
         {
