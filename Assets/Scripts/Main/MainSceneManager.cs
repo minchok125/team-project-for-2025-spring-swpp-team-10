@@ -172,7 +172,7 @@ public class MainSceneManager : RuntimeSingleton<MainSceneManager>
         
 
         // Ending 잘 되는지 Debugging 용
-        if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
+        //if (Input.GetKeyDown(KeyCode.Backspace)) EndGame();
     }
 
     private void AddCoinByPlaytime()
