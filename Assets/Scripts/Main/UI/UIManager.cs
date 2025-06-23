@@ -226,16 +226,27 @@ public class UIManager : RuntimeSingleton<UIManager>, INextCheckpointObserver
 	{
 		guidePanel.SetActive(false);
 		pausedMenuPanel.SetActive(true);
-	}	
+	}
 
 	public void OpenStore(bool isStoreLocked = true)
 	{
 		ItemManager.Instance.SetStoreLocked(isStoreLocked);
 		storePanel.GetComponent<StorePanelController>().Open();
+
+		if (isStoreLocked)
+		{
+			MainSceneManager.Instance.PauseGame(false);
+		}
+		
 	}
 
 	public void CloseStore()
 	{
+		if (!ItemManager.Instance.IsStoreLocked())
+		{
+			MainSceneManager.Instance.ResumeGame();
+		}
+		 
 		ItemManager.Instance.SetStoreLocked(true);
 		storePanel.GetComponent<StorePanelController>().Close();
 	}
