@@ -6,15 +6,17 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     [TextArea(4, 10)]
     public string content;
 
+    public bool isTooltipEnabled = true;
+
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // UIManager의 인스턴스를 통해 ShowTooltip 메서드 호출
+        if (!isTooltipEnabled) return;
         UIManager.Instance.ShowTooltip(content);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        // UIManager의 인스턴스를 통해 HideTooltip 메서드 호출
+        if (!isTooltipEnabled) return;
         UIManager.Instance.HideTooltip();
     }
 }
